@@ -1,0 +1,48 @@
+<h3>Welcome to Shorterloops {{setusername | titlecase}}</h3>
+<div class="container centeralign" *ngIf="selectrole==false">
+    <a class="btn btn-primary" routerLink="/addcity" role="button">Create a City</a>
+    <button class="btn btn-primary" (click)="selectrole=true">Join a Existing City</button>
+</div>
+<div *ngIf="selectrole">
+
+    <div class="mb-3">
+        <label for="City" class="form-label">Select your City</label>
+        <select name="Cityname"  class="form-control" value="selectedcity" class="form-control" id="City" onchange="checkavailablity()">
+            <option selected disabled=true>--Select your City--</option>
+            <option *ngFor="let item of dataList; " [value]="item" >
+                    {{item.CityName}}
+                </option>
+        </select>
+     
+
+
+    </div>
+    <div class="mb-3">
+        <label for="facilityname" class="form-label">Select your Role</label>
+        <select name="facilityname" class="form-control" id="role" value="selectedfacility" onchange="checkindata()">
+            <option selected disabled=true>--Select your Role--</option>
+            <option value="Supermarket"> Supermarket Owner </option>
+            <option value="Grocery shop"> Grocery shop Owner </option>
+            <option value="Ubottle"> Universal bottle Owner </option>
+            <option value="making plant"> Making plant Owner </option>
+            <option value="Reverse Vending Machine"> Reverse Vending Machine Owner</option>
+            <option value="Plastic Recycling plant"> Plastic Recycling plant Owner </option>
+            <option value="Refilling Van"> Refilling Van Owner </option>
+            <option value="Bottle collection truck"> Bottle collection truck Owner </option>
+            <option value="Recycling truck"> Recycling truck Owner </option>
+            <option value="House1"> House1 Owner </option>
+            <option value="House2"> House2 Owner </option>
+            <option value="House3"> House3 Owner </option>
+            <option value="House4"> House4 Owner </option>
+            <option value="House5"> House5 Owner </option>
+            <option value="House6"> House6 Owner </option>
+            <option value="House7"> House7 Owner </option>
+            <option value="House8"> House8 Owner </option>
+            <option value="House9"> House9 Owner </option>
+            <option value="House10"> House10 Owner </option>
+        </select>
+    </div>
+
+    <button type="submit" class="save btn btn-primary facilitysave">Save</button>
+    <a href="/home/">Back</a>
+</div>

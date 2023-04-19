@@ -1,0 +1,30 @@
+<div class="container-fluid">
+    <div class="row no-gutter">
+        <!-- Demo content-->
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-xl-4 mx-auto">
+                    <h3 class="display-4">Login</h3>
+                    <p></p>
+                    <form [formGroup]="loginForm" (ngSubmit)="login()">
+                        <div class="form-group mb-3">
+                            <input id="inputusername" type="username" formControlName="username"
+                                [ngClass]="{ 'is-invalid': submitted  }" placeholder="Username" required="" autofocus=""
+                                class="form-control rounded-pill border-0 shadow-sm px-4">
+                        </div>
+                        <div class="form-group mb-3">
+                            <input id="inputPassword" type="password" formControlName="password"
+                                [ngClass]="{ 'is-invalid': submitted  }" placeholder="Password" required=""
+                                class="form-control rounded-pill border-0 shadow-sm px-4 text-primary">
+                        </div>
+                        <button type="submit"
+                            class="btn btn-primary btn-block text-uppercase mb-2 rounded-pill shadow-sm">Login</button>
+                    </form>
+                    <span>Don't have an account?
+                        <a routerLink="/signup">signUp</a></span>
+                </div>
+            </div>
+       </div><!-- End -->
+
+    </div>
+</div>
