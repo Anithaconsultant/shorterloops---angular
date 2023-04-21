@@ -23,7 +23,7 @@ export class AddcityComponent implements OnInit {
   } 
   city = {
     'CityName': '',
-    'MayorId':0,
+    'MayorId':this.logser.currentuser.UserId,
     'Clocktickrate': '',
     'Citystartdate': '',
     'CityCreateTime': '',

@@ -7,10 +7,10 @@
 
     <div class="mb-3">
         <label for="City" class="form-label">Select your City</label>
-        <select name="Cityname"  class="form-control" value="selectedcity" class="form-control" id="City" onchange="checkavailablity()">
+        <select name="Cityname"  class="form-control" id="City" [(ngModel)]="selectedCity" >
             <option selected disabled=true>--Select your City--</option>
-            <option *ngFor="let item of dataList; " [value]="item" >
-                    {{item.CityName}}
+            <option *ngFor="let item of setList; " [value]="item[0]" >
+                    {{item[0]}}
                 </option>
         </select>
      
@@ -19,7 +19,7 @@
     </div>
     <div class="mb-3">
         <label for="facilityname" class="form-label">Select your Role</label>
-        <select name="facilityname" class="form-control" id="role" value="selectedfacility" onchange="checkindata()">
+        <select name="facilityname" class="form-control" id="role" [(ngModel)]="selectedfacility" (change)="checkavailablity()">
             <option selected disabled=true>--Select your Role--</option>
             <option value="Supermarket"> Supermarket Owner </option>
             <option value="Grocery shop"> Grocery shop Owner </option>

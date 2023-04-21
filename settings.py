@@ -77,7 +77,7 @@ TEMPLATES = [
 ]
 CRISPY_TEMPLATE_PACK = 'bootstrap4' 
 WSGI_APPLICATION = 'shorterloops.wsgi.application'
-
+CSRF_TRUSTED_ORIGINS = ['http://'+ os.environ['localhost:4200']]
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -151,8 +151,4 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAdminUser',
    ),
 }
-EMAIL_USE_TLS = True  
-EMAIL_HOST = 'smtp.gmail.com'  
-EMAIL_PORT = 587  
-EMAIL_HOST_USER = 'ani.feb22@gmail.com'
-EMAIL_HOST_PASSWORD = 'iljqqnsdjoturppj'  
+
