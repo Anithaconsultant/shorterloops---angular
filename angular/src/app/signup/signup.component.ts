@@ -29,7 +29,7 @@ export class SignupComponent implements OnInit {
     this.signupForm = this.formbuilder.group({
       username: ['', Validators.required],
       email: ['', Validators.required],
-      mobile: ['', Validators.required],
+      mobile: [null, Validators.required],
       password: ['', Validators.required]
     })
   }

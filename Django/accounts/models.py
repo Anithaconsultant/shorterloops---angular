@@ -133,10 +133,10 @@ class CustomUser(models.Model):
     Username = models.CharField(max_length=70, blank=False, unique=True)
     email = models.CharField(max_length=50, blank=False, unique=True)
     Password = models.CharField(max_length=70, blank=False)
-    mobile = models.BigIntegerField(blank=False)
+    mobile = models.CharField(blank=False,max_length=20)
     wallet = models.CharField(max_length=70,default=2000, blank=False)
     status = models.CharField(max_length=70, blank=False)
-    User_cityid = models.IntegerField(null=True)
-    Role = models.CharField(max_length=30, blank=False)
+    User_cityid = models.CharField(max_length=11, blank=True,default=0)
+    Role = models.CharField(max_length=30, blank=True)
 
 

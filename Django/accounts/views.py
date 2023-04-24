@@ -2,7 +2,7 @@
 from django.template import loader
 from django.shortcuts import render, redirect
 from .models import City, CustomUser, Facility, FACILITY_CHOICES, Cityrule
-from .serializers import userSerializer,citySerializer,facilitySerializer
+from .serializers import userSerializer,citySerializer,facilitySerializer,cityRuleSerializer
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from rest_framework import status
@@ -27,6 +27,8 @@ def signup(request):
         serializer = userSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
+        else:
+            print("not valid")
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
     if request.method == 'GET':
         data = CustomUser.objects.all()
@@ -63,6 +65,35 @@ def facility(request):
     if request.method == 'GET':
         data = Facility.objects.all()
         serializer = facilitySerializer(data, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+@api_view(['GET', 'POST'])
+def updatefacility(request):
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        print(data)
+        serializer = facilitySerializer(data=data)
+        # if serializer.is_valid():
+        #     serializer.save()
+        # else:
+        #     print("invalid data")
+        return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+
+    
+@api_view(['GET', 'POST'])
+def cityrule(request):
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        print(data)
+        serializer = cityRuleSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            print("invalid data")
+        return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+    if request.method == 'GET':
+        data = Cityrule.objects.all()
+        serializer = cityRuleSerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
 
 

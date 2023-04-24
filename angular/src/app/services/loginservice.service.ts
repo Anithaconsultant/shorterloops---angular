@@ -48,11 +48,16 @@ baseurl="http://127.0.0.1:8000/";
   }
   updateuser(user:any): Observable<any> {
     const body = { Username: user.Username, email: user.email, Password: user.Password, mobile: user.mobile, wallet: user.wallet, status: user.status, User_cityid: user.User_cityid, Role: user.Role };
-    return this.http.put(this.baseurl + 'editcity/' + this.currentuser.UserId + '/', body,
+    return this.http.put(this.baseurl + 'addcity/' + this.currentuser.UserId + '/', body,
     {headers: this.httpHeaders});
   }
   getallfacility():Observable<any>{
     return this.http.get(this.baseurl+'facility/',
     { headers: this.httpHeaders });
+  }
+  updatefacility(facilityobj:any):Observable<any>{
+    const body={Facilityname:facilityobj.facilityname,Owner_id:facilityobj.Ownerid,Facility_cityid_id:facilityobj.facilityname}
+    return this.http.put(this.baseurl + 'updatefaciliity/' , body,
+    {headers: this.httpHeaders});
   }
 }

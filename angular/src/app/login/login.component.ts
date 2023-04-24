@@ -42,14 +42,14 @@ export class LoginComponent implements OnInit {
           this.logser.currentuser.Role=user.Role;
           this.logser.currentuser.wallet=user.wallet;
           this.loginForm.reset()
-          if (user.User_cityid == null) {
+          if (user.User_cityid == 0) {
             this.router.navigate(["home"])
           }
           else {
             this.router.navigate(["maincity"])
           }
         } else {
-          alert("user not found")
+          alert("Please Check your Username and Password")
         }
       }, err => {
         alert("Something went wrong")

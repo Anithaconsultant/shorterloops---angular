@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from accounts.models import City,CustomUser,Facility
+from accounts.models import City,CustomUser,Facility,Cityrule
 
 
 
@@ -20,3 +20,10 @@ class facilitySerializer(serializers.ModelSerializer):
         model= Facility
         fields = [ 'Facility_cityid','Facilityname', 'Owner_status', 'Owner_id', 'Cashbox',
                   'LedgerId', 'cartId']
+
+class cityRuleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= Cityrule
+        fields = '__all__'
+        
+        
