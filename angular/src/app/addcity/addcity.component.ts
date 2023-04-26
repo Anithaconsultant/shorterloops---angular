@@ -15,20 +15,28 @@ export class AddcityComponent implements OnInit {
   submitted = false;
   currentDate: any;
   currentTime: any;
-
+  allcity = [];
   constructor(private formbuilder: FormBuilder, private http: HttpClientModule, private router: Router, private logser: LoginserviceService, public datepipe: DatePipe) {
-    this.currentDate =this.datepipe.transform((new Date), 'MM/dd/yyyy');
-    this.currentTime=this.datepipe.transform((new Date),'hh:mm:ss')
+    this.currentDate = this.datepipe.transform((new Date), 'MM/dd/yyyy');
+    this.currentTime = this.datepipe.transform((new Date), 'hh:mm:ss')
 
-  } 
+  }
   city = {
     'CityName': '',
-    'MayorId':this.logser.currentuser.UserId,
+    'MayorId': this.logser.currentuser.UserId,
     'Clocktickrate': '',
     'Citystartdate': '',
     'CityCreateTime': '',
     'Status': 'Yes'
   };
+  userobj={
+    'cityid':'',
+    'Role':'Mayor'
+  }
+  
+  firstfacility={
+    'CityId':'',
+  }
 
   ngOnInit(): void {
     this.addcityForm = this.formbuilder.group({
@@ -37,8 +45,8 @@ export class AddcityComponent implements OnInit {
       Citystartdate: [this.currentDate, Validators.required],
       CityCreateTime: [this.currentTime, Validators.required]
     })
-    this.city.CityCreateTime=this.currentTime
-    this.city.Citystartdate=this.currentDate
+    this.city.CityCreateTime = this.currentTime
+    this.city.Citystartdate = this.currentDate
   }
   addcity() {
     this.submitted = true;
@@ -50,13 +58,37 @@ export class AddcityComponent implements OnInit {
       this.logser.createcity(this.city).subscribe(
         data => {
           this.city = data;
-          console.log(this.logser.currentuser)
         },
         error => {
           console.log(error);
         }
       );
-      this.router.navigate(["maincity"])
+      setTimeout(() => {
+        this.logser.getAllCities().subscribe((data) => {
+          this.allcity = data;
+          let length=this.allcity.length;
+          this.userobj['cityid']=length.toString();
+          this.firstfacility['CityId']=length.toString();
+          this.logser.updateuser(this.userobj).subscribe(
+            data => {
+              this.userobj = data;
+            },
+            error => {
+              console.log(error);
+            }
+          );
+          this.logser.createfacility(this.firstfacility).subscribe(
+            data => {
+              this.firstfacility = data;
+            },
+            error => {
+              console.log(error);
+            }
+          );
+        })
+      }, 2000)
+      
+       this.router.navigate(["maincity"])
     }
   }
 }

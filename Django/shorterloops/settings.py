@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'shorterloops.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'newtest',
+        'NAME': 'fresh',
         'USER': 'root',
         'PASSWORD': 'Admin@123',
         'HOST': '127.0.0.1',

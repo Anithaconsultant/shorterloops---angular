@@ -18,8 +18,7 @@ class citySerializer(serializers.ModelSerializer):
 class facilitySerializer(serializers.ModelSerializer):
     class Meta:
         model= Facility
-        fields = [ 'Facility_cityid','Facilityname', 'Owner_status', 'Owner_id', 'Cashbox',
-                  'LedgerId', 'cartId']
+        fields = '__all__'
 
 class cityRuleSerializer(serializers.ModelSerializer):
     class Meta:
