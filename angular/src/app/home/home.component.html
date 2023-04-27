@@ -13,13 +13,12 @@
                     {{item[0]}}
                 </option>
         </select>
-     
 
 
     </div>
     <div class="mb-3">
         <label for="facilityname" class="form-label">Select your Role</label>
-        <select name="facilityname" class="form-control" id="role" [(ngModel)]="selectedfacility" (change)="checkavailablity()">
+        <select name="facilityname" class="form-control" id="role"  [(ngModel)]="selectedfacility" (change)="checkindata()">
             <option selected disabled=true>--Select your Role--</option>
             <option value="Supermarket"> Supermarket Owner </option>
             <option value="Grocery shop"> Grocery shop Owner </option>
@@ -43,6 +42,6 @@
         </select>
     </div>
 
-    <button type="submit" class="save btn btn-primary facilitysave">Save</button>
+    <button type="submit" class="save btn btn-primary facilitysave" (click)="dochanges()">Save</button>
     <a href="/home/">Back</a>
 </div>

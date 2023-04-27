@@ -5,8 +5,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class LoginserviceService {
- username = "anitha";
- password = "anitha";
+   username = "anitha";
+   password = "anitha";
   // username = "admin";
   // password = "admin";
   currentuser = {
@@ -16,9 +16,9 @@ export class LoginserviceService {
     'Role': '',
     'wallet': ''
   };
-   baseurl = "http://dbl.iihs.in/api/";
+   baseurl = "https://dbl.iihs.in/api/";
 
-  //baseurl = "http://127.0.0.1:8000/";
+  //baseurl = "http://127.0.0.1:8000/api/";
   authorizationData = 'Basic ' + btoa(this.username + ':' + this.password);
   httpHeaders = new HttpHeaders({
     'Content-Type': 'application/json',
@@ -50,20 +50,19 @@ export class LoginserviceService {
     return this.http.put(this.baseurl + 'updateusercity/' + this.currentuser.UserId, body,
       { headers: this.httpHeaders });
   }
-  getallfacility(): Observable<any> {
-    return this.http.get(this.baseurl + 'facility/',
+  getallfacility(cityid:any): Observable<any> {
+    return this.http.get(this.baseurl + 'getfacility/'+cityid,
       { headers: this.httpHeaders });
   }
   updatefacility(facilityobj: any): Observable<any> {
-    const body = { Facilityname: facilityobj.facilityname, Owner_id: facilityobj.Ownerid, Facility_cityid_id: facilityobj.facilityname }
-    return this.http.post(this.baseurl + 'updatefaciliity/', body,
+    const body = { Facilityname: facilityobj.facilityname, Owner_id: facilityobj.Ownerid, Facility_cityid_id: facilityobj.facilityCityId }
+    
+    return this.http.put(this.baseurl + 'updatefacility/', body,
       { headers: this.httpHeaders });
   }
- // setfacility: any[] = [];
- // facilitylist = ['Municipality Office', 'Supermarket', 'Grocery shop', 'Clock Tower', 'Ubottle', 'Making plant', 'Reverse Vending Machine', 'Plastic Recycling plant', 'Refilling Van', 'Public Dustbin', 'Municipality landfill', 'Garbage truck', 'Bottle collection truck', 'Recycling truck', 'House1', 'House2', 'House3', 'House4', 'House5', 'House6', 'House7', 'House8', 'House9', 'House10']
   createfacility(firstfacility: any): Observable<any> {
-    const body= {Facility_cityid_id: firstfacility.CityId};
-    return this.http.post(this.baseurl + 'facility/'+ this.currentuser.UserId, body,
+    const body = { Facility_cityid_id: firstfacility.CityId };
+    return this.http.post(this.baseurl + 'facility/' + this.currentuser.UserId, body,
       { headers: this.httpHeaders });
   }
 }

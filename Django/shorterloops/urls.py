@@ -21,5 +21,6 @@ urlpatterns = [
     path('api/addcity/', views.addcity, name='addcity'),
     path('api/addcity/<cityid>', views.editcity, name='editcity'),
     path('api/facility/<mayorid>', views.facility, name='facility'),
+    path('api/getfacility/<cityid>', views.getfacility, name='getfacility'),
     path('api/updatefacility/', views.updatefacility, name='updatefacility')
 ]

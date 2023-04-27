@@ -53,7 +53,16 @@ def addcity(request):
         serializer = citySerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
 
+@api_view(['GET', 'POST'])
+def getfacility(request,cityid):
+     if request.method == 'GET':
+        print(cityid)    
+        data = Facility.objects.filter(Facility_cityid_id=cityid)
+        print(data)
+        serializer = facilitySerializer(data, many=True)
+        return JsonResponse(serializer.data, safe=False)
 
+    
 @api_view(['GET', 'POST'])
 def facility(request, mayorid):
     if request.method == 'POST':
@@ -83,16 +92,20 @@ def facility(request, mayorid):
         return JsonResponse(serializer.data, safe=False)
 
 
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'POST','PUT'])
 def updatefacility(request):
-    if request.method == 'POST':
+    if request.method == 'PUT':
         data = JSONParser().parse(request)
         print(data)
-        serializer = facilitySerializer(data=data)
-        # if serializer.is_valid():
-        #     serializer.save()
-        # else:
-        #     print("invalid data")
+        serval = {'Owner_id': data['Owner_id'], 'Owner_status': 'Active'}
+        getfacility = Facility.objects.filter(Facilityname=data['Facilityname'], Facility_cityid=data['Facility_cityid_id']).first()
+        print(getfacility)
+        print(serval)
+        serializer = facilitySerializer(getfacility, data=serval, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            print("invalid data")
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
 
 

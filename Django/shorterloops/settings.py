@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'shorterloops.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
+ 'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'fresh',
         'USER': 'root',
@@ -91,8 +91,16 @@ DATABASES = {
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
+    #     'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'shorterloop',
+    #     'USER': 'dbluser',
+    #     'PASSWORD': 'Dbladmin@123',
+    #     'HOST': '127.0.0.1',
+    #     'PORT': '3306',
+    # }
 }
-
+   
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -141,6 +149,21 @@ CRISPY_TEMPLATE_PACK =  'bootstrap4'
 LOGIN_REDIRECT_URL =  '/'
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
+CORS_REPLACE_HTTPS_REFERER = True
+# CORS_ALLOWED_ORIGINS = [
+#     "https://dbl.iihs.in",
+#     "https://10.10.4.129"
+# ]
+
+# CSRF_TRUSTED_ORIGINS = [
+#     'https://dbl.iihs.in',
+#     'https://10.10.4.129',
+# ]
+
+# CORS_ORIGIN_WHITELIST = (
+#     'https://dbl.iihs.in',
+#     'https://10.10.4.129',
+# )
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
@@ -151,8 +174,3 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAdminUser',
    ),
 }
-EMAIL_USE_TLS = True  
-EMAIL_HOST = 'smtp.gmail.com'  
-EMAIL_PORT = 587  
-EMAIL_HOST_USER = 'ani.feb22@gmail.com'
-EMAIL_HOST_PASSWORD = 'iljqqnsdjoturppj'  

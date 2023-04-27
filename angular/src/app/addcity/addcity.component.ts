@@ -66,6 +66,7 @@ export class AddcityComponent implements OnInit {
       setTimeout(() => {
         this.logser.getAllCities().subscribe((data) => {
           this.allcity = data;
+          console.log(this.allcity)
           let length=this.allcity.length;
           this.userobj['cityid']=length.toString();
           this.firstfacility['CityId']=length.toString();
