@@ -1,0 +1,25 @@
+.maincity_container {
+    width: 100vw;
+    height: 100vh;
+
+    .maincity {
+        background-image: url('./../../assets/img/city.png');
+        background-repeat: no-repeat;
+        background-size: cover;
+        width:8001px;
+        background-position: center;
+        height:4501px;
+        margin:auto;
+
+        .cart {
+            background-image: url('./../../assets/img/shoppingcart.svg');
+            width: 63px;
+            background-repeat: no-repeat;
+            left: 0px;
+            top: 0px;
+            position: absolute;
+            height: 59px;
+            background-size: contain;
+        }
+    }
+}
