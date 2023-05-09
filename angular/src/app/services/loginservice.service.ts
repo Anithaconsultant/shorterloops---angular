@@ -5,18 +5,18 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class LoginserviceService {
-  //  username = "anitha";
-  //  password = "anitha";
-  username = "admin";
-  password = "admin";
+  username = "anitha";
+  password = "anitha";
+
   currentuser = {
     'Username': '',
     'UserId': '',
     'CityId': '',
     'Role': '',
-    'wallet': ''
+    'wallet': '',
+    'cartId':''
   };
-   //baseurl = "https://dbl.iihs.in/api/";
+  //baseurl = "https://dbl.iihs.in/api/";
 
   baseurl = "http://127.0.0.1:8000/api/";
   authorizationData = 'Basic ' + btoa(this.username + ':' + this.password);
@@ -31,7 +31,7 @@ export class LoginserviceService {
       { headers: this.httpHeaders });
   }
   createUser(user: any): Observable<any> {
-    const body = { Username: user.Username, email: user.email, Password: user.Password, mobile: user.mobile, wallet: user.wallet, status: user.status, User_cityid: user.User_cityid, Role: user.Role };
+    const body = { Username: user.Username, email: user.email, Password: user.Password, mobile: user.mobile, wallet: user.wallet, status: user.status, User_cityid: user.User_cityid, Role: user.Role,cartId:user.cartId };
     return this.http.post(this.baseurl + 'signup/', body,
       { headers: this.httpHeaders });
   }
@@ -45,18 +45,25 @@ export class LoginserviceService {
       { headers: this.httpHeaders });
   }
   updateuser(edituser: any): Observable<any> {
-    const body = { User_cityid: edituser.cityid, Role: edituser.Role };
+    let body;
+    console.log(edituser.cartId)
+    if (edituser.cartId == undefined && edituser.Role=="Mayor") {
+      body = { User_cityid: edituser.cityid, Role: edituser.Role, cartId: edituser.cityid+'_100' };
+    } 
+    else { 
+      body = { User_cityid: edituser.cityid, Role: edituser.Role, cartId:  edituser.cartId};
+     }
     console.log(body)
     return this.http.put(this.baseurl + 'updateusercity/' + this.currentuser.UserId, body,
       { headers: this.httpHeaders });
   }
-  getallfacility(cityid:any): Observable<any> {
-    return this.http.get(this.baseurl + 'getfacility/'+cityid,
+  getallfacility(cityid: any): Observable<any> {
+    return this.http.get(this.baseurl + 'getfacility/' + cityid,
       { headers: this.httpHeaders });
   }
   updatefacility(facilityobj: any): Observable<any> {
     const body = { Facilityname: facilityobj.facilityname, Owner_id: facilityobj.Ownerid, Facility_cityid_id: facilityobj.facilityCityId }
-    
+
     return this.http.put(this.baseurl + 'updatefacility/', body,
       { headers: this.httpHeaders });
   }

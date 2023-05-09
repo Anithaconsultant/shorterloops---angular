@@ -6,8 +6,7 @@ from accounts.models import City,CustomUser,Facility,Cityrule
 class userSerializer(serializers.ModelSerializer):
     class Meta:
         model= CustomUser
-        fields = [ 'UserId','Username', 'email', 'Password', 'mobile',
-                  'wallet', 'status', 'User_cityid', 'Role']
+        fields = '__all__'
 
 class citySerializer(serializers.ModelSerializer):
     class Meta:

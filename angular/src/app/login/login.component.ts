@@ -41,6 +41,7 @@ export class LoginComponent implements OnInit {
           this.logser.currentuser.CityId=user.User_cityid;
           this.logser.currentuser.Role=user.Role;
           this.logser.currentuser.wallet=user.wallet;
+          this.logser.currentuser.cartId=user.cartId;
           this.loginForm.reset()
           if (user.User_cityid == 0) {
             this.router.navigate(["home"])

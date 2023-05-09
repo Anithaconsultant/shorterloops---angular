@@ -6,20 +6,35 @@
         background-image: url('./../../assets/img/city.png');
         background-repeat: no-repeat;
         background-size: cover;
-        width:8001px;
+        width: 8001px;
         background-position: center;
-        height:4501px;
-        margin:auto;
+        height: 4501px;
+        margin: auto;
 
         .cart {
             background-image: url('./../../assets/img/shoppingcart.svg');
-            width: 63px;
+            width: 98px;
             background-repeat: no-repeat;
-            left: 0px;
-            top: 0px;
             position: absolute;
-            height: 59px;
+            height: 99px;
             background-size: contain;
+        }
+
+        .housedisplay {
+            width: 165px;
+            height: 20px;
+            color: #fff;
+            font-size: 12px;
+            position: absolute;
+        }
+
+        .displaypanel {
+            width: 52px;
+            height: 25px;
+            position: absolute;
+            color: #f00;
+            font-size: 20px;
+
         }
     }
 }

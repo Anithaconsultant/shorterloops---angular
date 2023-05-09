@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from django.http import HttpResponse, JsonResponse
 data1 = list()
 currentuser = ''
-
+cartcount=100
 
 @api_view(['GET', 'POST'])
 def login(request):
@@ -68,18 +68,21 @@ def facility(request, mayorid):
     if request.method == 'POST':
         data = JSONParser().parse(request)
         for value in range(len(FACILITY_CHOICES)):
+            global cartcount
             faciname = FACILITY_CHOICES[value][1]
             if (faciname == 'Municipality Office' or faciname == 'Clock Tower' or faciname == 'Public Dustbin' or faciname == 'Municipality landfill' or faciname == 'Garbage truck'):
                 if (faciname == 'Municipality Office'):
-                    cartIds = str(data['Facility_cityid_id'])+'_'+str(100)
+                    cartIds = str(data['Facility_cityid_id'])+'_'+str(cartcount)
                     serval = {'Facilityname': faciname, 'Facility_cityid': data['Facility_cityid_id'],
                               'Owner_status': 'Active', 'Owner_id': mayorid, 'Cashbox': '', 'LedgerId': '0', 'cartId': cartIds}
                 else:
                     serval = {'Facilityname': faciname, 'Facility_cityid': data['Facility_cityid_id'],
                               'Owner_status': 'Active', 'Owner_id': mayorid, 'Cashbox': '', 'LedgerId': '0', 'cartId': '0'}
             else:
+                cartcount=cartcount+1
+                cartIds = str(data['Facility_cityid_id'])+'_'+str(cartcount)
                 serval = {'Facilityname': faciname, 'Facility_cityid': data['Facility_cityid_id'],
-                          'Owner_status': '', 'Owner_id': '', 'Cashbox': '', 'LedgerId': '0', 'cartId': '0'}
+                          'Owner_status': '', 'Owner_id': '', 'Cashbox': '', 'LedgerId': '0', 'cartId': cartIds}
             serializer = facilitySerializer(data=serval)
             if serializer.is_valid():
                 serializer.save()

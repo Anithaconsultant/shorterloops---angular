@@ -51,7 +51,7 @@ class Facility(models.Model):
     Owner_status = models.CharField(max_length=70, blank=True, default='')
     Owner_id = models.CharField(max_length=70, blank=True, default='')
     Cashbox = models.CharField(max_length=70, blank=True, default='')
-    LedgerId = models.CharField(default='',blank=True,max_length=70, )
+    LedgerId = models.CharField(default='', blank=True, max_length=70, )
     cartId = models.CharField(blank=True, max_length=70, default='')
 
 
@@ -128,7 +128,6 @@ class Cityrule(models.Model):
     Dustbin_display = models.BooleanField(default=0, blank=True)
     Carbage_display = models.BooleanField(default=0, blank=True)
 
-
 class CustomUser(models.Model):
     class Meta:
         db_table = 'usertable'
@@ -136,8 +135,11 @@ class CustomUser(models.Model):
     Username = models.CharField(max_length=70, blank=False, unique=True)
     email = models.CharField(max_length=50, blank=False, unique=True)
     Password = models.CharField(max_length=70, blank=False)
-    mobile = models.CharField(blank=False, max_length=20)
+    mobile = models.CharField(blank=False, max_length=20,unique=True)
     wallet = models.CharField(max_length=70, default=2000, blank=False)
     status = models.CharField(max_length=70, blank=False)
     User_cityid = models.CharField(max_length=11, blank=True, default=0)
     Role = models.CharField(max_length=30, blank=True)
+    cartId = models.CharField(max_length=30, blank=True, default=0)
+    avatar = models.CharField(max_length=30, blank=True, default=0)
+    gender=models.CharField(max_length=30, blank=False)

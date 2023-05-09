@@ -31,7 +31,8 @@ export class AddcityComponent implements OnInit {
   };
   userobj={
     'cityid':'',
-    'Role':'Mayor'
+    'Role':'Mayor',
+    'cartId':''
   }
   
   firstfacility={
@@ -70,6 +71,7 @@ export class AddcityComponent implements OnInit {
           let length=this.allcity.length;
           this.userobj['cityid']=length.toString();
           this.firstfacility['CityId']=length.toString();
+          this.logser.currentuser.Role='Mayor';
           this.logser.updateuser(this.userobj).subscribe(
             data => {
               this.userobj = data;
