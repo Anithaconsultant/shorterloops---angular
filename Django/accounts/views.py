@@ -29,7 +29,7 @@ def signup(request):
         if serializer.is_valid():
             serializer.save()
         else:
-            print("not valid")
+            return JsonResponse({'message':'Username or Email Id is already present!'})
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
     if request.method == 'GET':
         data = CustomUser.objects.all()

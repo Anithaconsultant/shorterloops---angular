@@ -6,35 +6,76 @@
                 <div class="col-lg-6 col-xl-4 mx-auto">
                     <h3 class="display-4">Signup form</h3>
                     <p></p>
-                    <form [formGroup]="signupForm" (ngSubmit)="signup()">
+                    <form [formGroup]="signupForm">
                         <div class="form-group mb-3">
-                            <input id="inputusername" type="username"  [(ngModel)]="newuser.Username" formControlName="username"
-                                [ngClass]="{ 'is-invalid': submitted  }" placeholder="Username" required="" autofocus=""
+                            <input id="inputusername" type="username" [(ngModel)]="newuser.Username"
+                                formControlName="username" [ngClass]="{ 'is-invalid': submitted  }"
+                                placeholder="Username" required="" autofocus=""
                                 class="form-control rounded-pill border-0 shadow-sm px-4">
                         </div>
                         <div class="form-group mb-3">
                             <input id="inputemail" type="email" formControlName="email" [(ngModel)]="newuser.email"
-                                [ngClass]="{ 'is-invalid': submitted  }" placeholder="Enter EmailId" required="" autofocus=""
-                                class="form-control rounded-pill border-0 shadow-sm px-4">
+                                [ngClass]="{ 'is-invalid': submitted  }" placeholder="Enter EmailId" required=""
+                                autofocus="" class="form-control rounded-pill border-0 shadow-sm px-4">
                         </div>
                         <div class="form-group mb-3">
-                            <input id="inputPassword" type="password" formControlName="password"  [(ngModel)]="newuser.Password"
-                                [ngClass]="{ 'is-invalid': submitted  }" placeholder="Password" required=""
+                            <input id="inputPassword" type="password" formControlName="password"
+                                [(ngModel)]="newuser.Password" [ngClass]="{ 'is-invalid': submitted  }"
+                                placeholder="Password" required=""
                                 class="form-control rounded-pill border-0 shadow-sm px-4 text-primary">
                         </div>
+
                         <div class="form-group mb-3">
                             <input id="inputmobile" type="mobile" formControlName="mobile" [(ngModel)]="newuser.mobile"
-                                [ngClass]="{ 'is-invalid': submitted  }" placeholder="Mobile number" required="" autofocus=""
-                                class="form-control rounded-pill border-0 shadow-sm px-4">
+                                [ngClass]="{ 'is-invalid': submitted  }" placeholder="Mobile number" required=""
+                                autofocus="" class="form-control rounded-pill border-0 shadow-sm px-4">
                         </div>
-                      
-                       
+                        <div class="form-group mb-3">
+
+                            <label class="custom-control-label">Gender :</label>
+                            <input type="radio" value="male" name="gender" formControlName="gender"
+                                [(ngModel)]="newuser.gender"> Male
+                            <input type="radio" value="female" name="gender" formControlName="gender"
+                                [(ngModel)]="newuser.gender"> Female
+
+                        </div>
+                        <div class="form-group mb-3">
+                            <div class="btn btn-primary btn-block  mb-2 rounded-pill shadow-sm" (click)="open(content)">
+                                Select Your Avatar</div>
+                        </div>
                         <button type="submit"
-                            class="btn btn-primary btn-block text-uppercase mb-2 rounded-pill shadow-sm">Register User</button>
+                            class="btn btn-primary btn-block text-uppercase mb-2 rounded-pill shadow-sm"
+                            (click)="signup()">Register User</button>
+                          
                     </form>
                 </div>
             </div>
-       </div><!-- End -->
+        </div><!-- End -->
 
     </div>
+
 </div>
+<!-- Modal -->
+<ng-template #content let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Select Your Avatar</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div *ngIf="newuser.gender=='male'">
+            <div *ngFor='let in of newmale;let i = index' class="male pics" id="pic_{{in}}"
+                (click)="selectphoto(in)">
+
+            </div>
+        </div>
+        <div *ngIf="newuser.gender=='female'">
+            <div *ngFor='let in of newfemale;let i = index' class="female pics" id="pic_{{in}}"
+                (click)="selectphoto(in)">
+            </div>
+        </div>
+    </div>
+    <!-- ,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39-->
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
+    </div>
+</ng-template>

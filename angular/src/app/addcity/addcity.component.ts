@@ -31,8 +31,7 @@ export class AddcityComponent implements OnInit {
   };
   userobj={
     'cityid':'',
-    'Role':'Mayor',
-    'cartId':''
+    'Role':'Mayor'
   }
   
   firstfacility={
@@ -41,13 +40,16 @@ export class AddcityComponent implements OnInit {
 
   ngOnInit(): void {
     this.addcityForm = this.formbuilder.group({
-      CityName: ['', Validators.required],
-      Clocktickrate: ['', Validators.required],
-      Citystartdate: [this.currentDate, Validators.required],
-      CityCreateTime: [this.currentTime, Validators.required]
+      CityName: [''],
+      Clocktickrate: [''],
+      Citystartdate: [this.currentDate],
+      CityCreateTime: [this.currentTime]
     })
     this.city.CityCreateTime = this.currentTime
     this.city.Citystartdate = this.currentDate
+    if(this.logser.currentuser.Username==''){
+      this.router.navigate(["login"])
+     }
   }
   addcity() {
     this.submitted = true;
@@ -72,9 +74,11 @@ export class AddcityComponent implements OnInit {
           this.userobj['cityid']=length.toString();
           this.firstfacility['CityId']=length.toString();
           this.logser.currentuser.Role='Mayor';
+          console.log(this.logser.currentuser);
           this.logser.updateuser(this.userobj).subscribe(
             data => {
               this.userobj = data;
+              
             },
             error => {
               console.log(error);
@@ -83,15 +87,16 @@ export class AddcityComponent implements OnInit {
           this.logser.createfacility(this.firstfacility).subscribe(
             data => {
               this.firstfacility = data;
+              this.router.navigate(["maincity"])
             },
             error => {
               console.log(error);
             }
           );
         })
-      }, 2000)
+      }, 200)
       
-       this.router.navigate(["maincity"])
+      
     }
   }
 }

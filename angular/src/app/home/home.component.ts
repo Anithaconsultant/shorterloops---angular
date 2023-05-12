@@ -34,7 +34,11 @@ export class HomeComponent implements OnInit {
       this.getcityList();
     });
   }
-  ngOnInit() { }
+  ngOnInit(): void {
+    if(this.logser.currentuser.Username==''){
+     this.router.navigate(["login"])
+    }
+  }
   setList: any[] = [];
   getcityList() {
     if (this.city) {

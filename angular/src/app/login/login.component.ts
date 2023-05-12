@@ -14,11 +14,13 @@ export class LoginComponent implements OnInit {
   constructor(private formbuilder: FormBuilder, private http: HttpClientModule, private router: Router, private logser: LoginserviceService) {
 
   }
-
+  userobj={
+    'login':'0'
+  }
   ngOnInit(): void {
     this.loginForm = this.formbuilder.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required]
+      username: [''],
+      password: ['']
     })
   }
   login() {
@@ -42,7 +44,19 @@ export class LoginComponent implements OnInit {
           this.logser.currentuser.Role=user.Role;
           this.logser.currentuser.wallet=user.wallet;
           this.logser.currentuser.cartId=user.cartId;
+          this.logser.currentuser.gender=user.gender;
+          this.logser.currentuser.avatar=user.avatar;
+          this.logser.currentuser.login=user.login;
           this.loginForm.reset()
+          this.userobj.login='1';
+          this.logser.updateloggeduser(this.userobj).subscribe(
+            (data) => {
+              this.userobj = data;
+            },
+            (error) => {
+              console.log(error);
+            }
+          );
           if (user.User_cityid == 0) {
             this.router.navigate(["home"])
           }

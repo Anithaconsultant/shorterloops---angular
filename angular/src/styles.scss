@@ -24,3 +24,7 @@ app-maincity {
 
 
 }
+::ng-deep  .modal-dialog { 
+    max-width: 80%;
+    width: 80%;
+}

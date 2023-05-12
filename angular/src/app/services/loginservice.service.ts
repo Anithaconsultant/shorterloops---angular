@@ -14,7 +14,10 @@ export class LoginserviceService {
     'CityId': '',
     'Role': '',
     'wallet': '',
-    'cartId':''
+    'cartId':'',
+    'gender':'',
+    'avatar':'',
+    'login':''
   };
   //baseurl = "https://dbl.iihs.in/api/";
 
@@ -31,7 +34,7 @@ export class LoginserviceService {
       { headers: this.httpHeaders });
   }
   createUser(user: any): Observable<any> {
-    const body = { Username: user.Username, email: user.email, Password: user.Password, mobile: user.mobile, wallet: user.wallet, status: user.status, User_cityid: user.User_cityid, Role: user.Role,cartId:user.cartId };
+    const body = { Username: user.Username, email: user.email, Password: user.Password, mobile: user.mobile, wallet: user.wallet, status: user.status, User_cityid: user.User_cityid, Role: user.Role,cartId:user.cartId,gender:user.gender,avatar:user.avatar};
     return this.http.post(this.baseurl + 'signup/', body,
       { headers: this.httpHeaders });
   }
@@ -44,10 +47,19 @@ export class LoginserviceService {
     return this.http.get(this.baseurl + 'addcity/',
       { headers: this.httpHeaders });
   }
+  updateloggeduser(loguser: any): Observable<any> {
+    let body;
+    console.log(loguser.login)
+    body = { login: loguser.login};
+     console.log(body)
+    return this.http.put(this.baseurl + 'updateusercity/' + this.currentuser.UserId, body,
+      { headers: this.httpHeaders });
+  }
   updateuser(edituser: any): Observable<any> {
     let body;
-    console.log(edituser.cartId)
+    console.log(edituser.cartId,edituser,edituser.Role);
     if (edituser.cartId == undefined && edituser.Role=="Mayor") {
+      this.currentuser.cartId=edituser.cityid+'_100';
       body = { User_cityid: edituser.cityid, Role: edituser.Role, cartId: edituser.cityid+'_100' };
     } 
     else { 

@@ -1,7 +1,11 @@
 .maincity_container {
     width: 100vw;
     height: 100vh;
-
+    #logout{
+        position:absolute;
+        right:0px;
+        top:0px;
+    }
     .maincity {
         background-image: url('./../../assets/img/city.png');
         background-repeat: no-repeat;
@@ -10,10 +14,10 @@
         background-position: center;
         height: 4501px;
         margin: auto;
-
+    
         .cart {
             background-image: url('./../../assets/img/shoppingcart.svg');
-            width: 98px;
+            width: 67px;
             background-repeat: no-repeat;
             position: absolute;
             height: 99px;

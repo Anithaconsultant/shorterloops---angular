@@ -1,0 +1,137 @@
+.pics{
+    width: 150px;
+	height: 150px;
+    margin: 12px;
+    padding: 20px;
+    border-radius: 50%;
+    display: inline-block;
+    border:4px solid #fff;
+    &:hover{
+        border: 4px solid gainsboro;
+        cursor: pointer;
+    }
+    &:user-select{
+        border: 4px solid gray;
+    }
+}
+#pic_0{
+    background-image: url('./../../assets/img/male1.svg');
+   
+}
+#pic_1{
+    background-image: url('./../../assets/img/male2.svg');
+}
+#pic_2{
+    background-image: url('./../../assets/img/male3.svg');
+}
+#pic_3{
+    background-image: url('./../../assets/img/male4.svg');
+}
+#pic_4{
+    background-image: url('./../../assets/img/male5.svg');
+}
+#pic_5{
+    background-image: url('./../../assets/img/male6.svg');
+}
+#pic_6{
+    background-image: url('./../../assets/img/male7.svg');
+}
+#pic_7{
+    background-image: url('./../../assets/img/male8.svg');
+}
+#pic_8{
+    background-image: url('./../../assets/img/male9.svg');
+}
+#pic_9{
+    background-image: url('./../../assets/img/male10.svg');
+}
+#pic_10{
+    background-image: url('./../../assets/img/male11.svg');
+}
+#pic_11{
+    background-image: url('./../../assets/img/female1.svg');
+}
+#pic_12{
+    background-image: url('./../../assets/img/female2.svg');
+}
+#pic_13{
+    background-image: url('./../../assets/img/female3.svg');
+}
+#pic_14{
+    background-image: url('./../../assets/img/female4.svg');
+}
+#pic_15{
+    background-image: url('./../../assets/img/female5.svg');
+}
+#pic_16{
+    background-image: url('./../../assets/img/female6.svg');
+}
+#pic_17{
+    background-image: url('./../../assets/img/female7.svg');
+}
+#pic_18{
+    background-image: url('./../../assets/img/female8.svg');
+}
+#pic_19{
+    background-image: url('./../../assets/img/female9.svg');
+}
+#pic_20{
+    background-image: url('./../../assets/img/female10.svg');
+}
+#pic_21{
+    background-image: url('./../../assets/img/female11.svg');
+}
+// #pic_22{
+//     background-image: url('./../../assets/img/female6.svg');
+// }
+// #pic_23{
+//     background-image: url('./../../assets/img/female6.svg');
+// }
+// #pic_24{
+//     background-image: url('./../../assets/img/female7.svg');
+// }
+// #pic_25{
+//     background-image: url('./../../assets/img/female8.svg');
+// }
+// #pic_26{
+//     background-image: url('./../../assets/img/female9.svg');
+// }
+// #pic_27{
+//     background-image: url('./../../assets/img/female10.svg');
+// }
+// #pic_28{
+//     background-image: url('./../../assets/img/female11.svg');
+// }
+// #pic_29{
+//     background-position: -4309px -1013px;
+// }
+// #pic_30{
+//     background-position: -180px -1429px;
+// }
+// #pic_31{
+//     background-position: -680px -1444px;
+// }
+// #pic_32{
+//     background-position: -1111px -1433px;
+// }
+// #pic_33{
+//     background-position: -1526px -1468px;
+// }
+// #pic_34{
+//     background-position: -1929px -1444px;
+// }#pic_35{
+//     background-position: -2393px -1431px;
+// }#pic_36{
+//     background-position: -2954px -1439px;
+// }#pic_37{
+//     background-position: -3331px -1429px;
+// }#pic_38{
+//     background-position: -3840px -1453px;
+// }#pic_39{
+//     background-position: -4309px -1457px;
+// }
+
+::ng-deep  .modal-dialog { 
+    max-width: 80%;
+    width: 80%;
+}
