@@ -21,6 +21,7 @@ export class HomeComponent implements OnInit {
     facilityCityId: 0,
     Ownerid: "",
   };
+  user:any;
   userobj = {
     'cityid': 0,
     'Role': '',
@@ -35,9 +36,15 @@ export class HomeComponent implements OnInit {
     });
   }
   ngOnInit(): void {
-    if(this.logser.currentuser.Username==''){
-     this.router.navigate(["login"])
+    if (this.logser.currentuser.Username == '') {
+      this.router.navigate(["login"])
     }
+    this.logser.getAllUsers().subscribe((data) => {
+      this.user = data;
+      console.log(this.user);
+    
+  
+    })
   }
   setList: any[] = [];
   getcityList() {
@@ -49,6 +56,14 @@ export class HomeComponent implements OnInit {
       newdata = [this.dataList[key].CityName, this.dataList[key].CityId];
       this.setList.push(newdata);
     }
+      // for (var t = 0; t < this.user.length; t++) {
+      //   if (this.user[t].Role !== '') {
+      //     $('#role').find('option').each(function(){
+      //       console.log($(this).text());
+      //       console.log($(this).val());
+      //   });
+      //   }
+      // }
     //  console.log(this.setList, this.selectedCity);
   }
   getCityId() {
@@ -81,7 +96,7 @@ export class HomeComponent implements OnInit {
           let currentcartId;
           if (this.facility[key].Facilityname == this.selectedfacility) {
             currentcartId = this.facility[key].cartId;
-            console.log('currentcartId'+currentcartId);
+            console.log('currentcartId' + currentcartId);
             this.facilityobj.facilityCityId = selectedcityid;
             this.facilityobj.facilityname = this.selectedfacility;
             this.facilityobj.Ownerid = this.logser.currentuser.UserId;

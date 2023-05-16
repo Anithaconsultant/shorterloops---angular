@@ -1,11 +1,56 @@
 .maincity_container {
     width: 100vw;
     height: 100vh;
-    #logout{
-        position:absolute;
-        right:0px;
-        top:0px;
+
+    .topbar {
+        position: absolute;
+        height: 60px;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+
+        #logout {
+            position: absolute;
+            right: 10px;
+            background-color: #bed8a7 !important;
+            border: 1px solid #bed8a7;
+        }
+
+        .displaypic {
+            position: absolute;
+            right: 99px;
+            width: 50px;
+            height: 50px;
+            background-size: cover;
+            border-radius: 50%;
+        }
+
+        .cityname {
+            position: absolute;
+            margin: 0 auto;
+            font-size: 26px;
+            color: #fff;
+            text-align: center;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        .logo {
+            position: absolute;
+            left: 0px;
+            width: 60px;
+            height: 60px;
+            background-image: url('./../../assets/img/logo.png');
+            background-size: cover;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
     }
+
+
     .maincity {
         background-image: url('./../../assets/img/city.png');
         background-repeat: no-repeat;
@@ -14,7 +59,15 @@
         background-position: center;
         height: 4501px;
         margin: auto;
-    
+
+        .houselite {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-image: url('./../../assets/img/houselight.png');
+            background-size:cover;
+        }
+
         .cart {
             background-image: url('./../../assets/img/shoppingcart.svg');
             width: 67px;
@@ -22,6 +75,14 @@
             position: absolute;
             height: 99px;
             background-size: contain;
+
+            .cartavatar {
+                width: 30px;
+                height: 30px;
+                position: absolute;
+                left: -30px;
+                border-radius: 50%;
+            }
         }
 
         .housedisplay {
@@ -33,12 +94,165 @@
         }
 
         .displaypanel {
-            width: 52px;
-            height: 25px;
+            width: 75px;
+            height: 33px;
             position: absolute;
-            color: #f00;
-            font-size: 20px;
+            color: #fff;
+            font-size: 12px;
+            line-height: 14px;
+            align-items: center;
+            display: flex;
+            justify-content: center;
 
         }
+
+        .House1 {
+            top: 3419px;
+            left: 727px;
+        }
+
+        .House2 {
+            top: 3419px;
+            left: 1065px;
+        }
+
+        .House3 {
+            top: 3419px;
+            left: 1401px;
+        }
+
+        .House4 {
+            top: 3419px;
+            left: 1738px;
+        }
+
+        .House5 {
+            top: 3419px;
+            left: 2074px;
+        }
+
+        .House6 {
+            top: 3848px;
+            left: 727px;
+        }
+
+        .House7 {
+            top: 3848px;
+            left: 1065px;
+        }
+
+        .House8 {
+            top: 3848px;
+            left: 1401px;
+        }
+
+        .House9 {
+            top: 3848px;
+            left: 1738px;
+        }
+
+        .House10 {
+            top: 3848px;
+            left: 2074px;
+        }
+
+        .Recycling {
+            top: 3844px;
+            left: 7306px;
+        }
+
+        .Supermarket {
+            top: 3844px;
+            left: 6969px;
+        }
+
+        .Grocery {
+            top: 3844px;
+            left: 6633px;
+        }
+
+        .Ubottle {
+            top: 3844px;
+            left: 6296px;
+        }
+
+        .Making {
+            top: 3844px;
+            left: 5961px;
+        }
+
+        .Reverse {
+            top: 3418px;
+            left: 7306px;
+        }
+
+        .Plastic {
+            top: 3418px;
+            left: 6969px;
+        }
+
+        .Refilling {
+            top: 3418px;
+            left: 6633px;
+        }
+
+        .Bottle {
+            top: 3418px;
+            left: 6296px;
+        }
+
+        .Mayor {
+
+            top: 3418px;
+            left: 5961px;
+        }
+
+        .boardholder {
+            .commoncls {
+                position: absolute;
+                width: 163px;
+                height: 150px;
+                background-size: cover;
+            }
+
+            .closeflag {
+                background-image: url('./../../assets/img/closedboard.svg')
+            }
+
+            .openflag {
+                background-image: url('./../../assets/img/openboard.svg')
+            }
+
+            .Supermarket {
+                left: 1777px;
+                top: 2772px;
+            }
+
+            .Recycling {
+                left: 2142px;
+                top: 816px;
+            }
+
+            .Making {
+                left: 4228px;
+                top: 755px;
+            }
+
+            .Ubottle {
+                left: 4350px;
+                top: 1446px;
+            }
+
+            .Reverse {
+                left: 6010px;
+                top: 2316px;
+            }
+
+            .Refilling {
+                left: 5915px;
+                top: 2783px;
+            }
+        }
+
     }
 }

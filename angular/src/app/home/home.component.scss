@@ -1,5 +1,50 @@
-.centeralign{
+.centeralign {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
+}
+
+.landingpage {
+    width: 100%;
+    height: 100%;
+    background-image: url('./../../assets/img/register.png');
+    background-size: cover;
+
+    .selectrolecontent {
+        margin-top: 2%;
+    }
+
+    .displaytext {
+        font-size: 36px;
+        color: #fff;
+        text-align: center;
+    }
+
+    .create {
+        margin-top: 30px;
+        margin-bottom: 40px;
+        background-color: #b6b3a5 !important;
+        border-color: #b6b3a5 !important;
+    }
+
+    .join,
+    .facilitysave {
+        background-color: #b6b3a5 !important;
+        border-color: #b6b3a5 !important;
+    }
+
+    h3 {
+        font-size: 36px;
+        font-weight: 300;
+        color: #fff;
+        text-align: center;
+    }
+
+    label {
+        font-size: 20px;
+        font-weight: 300;
+        color: #fff;
+    }
+
 }

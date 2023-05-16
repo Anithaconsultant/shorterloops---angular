@@ -20,6 +20,7 @@ urlpatterns = [
     path('api/signup/', views.signup, name='signup'),
     path('api/addcity/', views.addcity, name='addcity'),
     path('api/addcity/<cityid>', views.editcity, name='editcity'),
+    path('api/getcityname/<cityid>', views.getcityname, name='getcityname'),
     path('api/facility/<mayorid>', views.facility, name='facility'),
     path('api/getfacility/<cityid>', views.getfacility, name='getfacility'),
     path('api/updatefacility/', views.updatefacility, name='updatefacility')

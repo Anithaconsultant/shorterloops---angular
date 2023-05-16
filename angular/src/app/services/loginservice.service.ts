@@ -17,7 +17,9 @@ export class LoginserviceService {
     'cartId':'',
     'gender':'',
     'avatar':'',
-    'login':''
+    'login':'',
+    'cityname':''
+
   };
   //baseurl = "https://dbl.iihs.in/api/";
 
@@ -45,6 +47,10 @@ export class LoginserviceService {
   }
   getAllCities(): Observable<any> {
     return this.http.get(this.baseurl + 'addcity/',
+      { headers: this.httpHeaders });
+  }
+  getcitynames(): Observable<any> {
+    return this.http.get(this.baseurl + 'getcityname/'+this.currentuser.CityId,
       { headers: this.httpHeaders });
   }
   updateloggeduser(loguser: any): Observable<any> {

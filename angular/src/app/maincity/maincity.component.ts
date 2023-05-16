@@ -12,35 +12,42 @@ import { Router } from '@angular/router';
 export class MaincityComponent implements AfterViewInit, OnInit {
 
   public instance: any;
-  currentUserRole:string='';
-  currentUserCartId='';
+  currentUserRole: string = '';
+  currentUserCartId = '';
+  objkey = Object.keys;
   positionObject = {
-    'House6':  [[ -199, -3525],[712, 3965],[665, 3887],[628, 3811]],
-    'House7':  [[ -443, -3538],[1049, 3965],[1003, 3887],[967, 3811]],
-    'House8':  [[ -744, -3475],[1384, 3965],[1337, 3887],[1303, 3811]],
-    'House9':  [[-1053, -3468],[1718, 3965],[1674, 3887],[1638, 3811]],
-    'House10': [[-1282, -3537],[2061, 3965],[2009, 3887],[1978, 3811]],
-    'House1':  [[ -277, -3247],[712, 3584],[665, 3459],[628, 3385]],
-    'House2':  [[ -443, -3154],[1049, 3584],[1003, 3459],[967, 3385]],
-    'House3':  [[ -744, -3154],[1384, 3584],[1337, 3459],[1303, 3385]],
-    'House4':  [[-1053, -3154],[1718, 3584],[1674, 3459],[1638, 3385]],
-    'House5': [[-1282,-3154],[2061, 3584],[2009, 3459],[1978, 3385]],
-    'Recycling truck': [[-5641, -3623],[5930, 3965],[5898, 3887],[6023, 3811]],
-    'Supermarket': [[ -5651, -3616],[6268, 3965],[6235, 3887],[6361, 3811]],
-    'Grocery shop': [[-6011, -3608],[6602, 3965],[6576, 3887],[6698, 3811]],
-    'Ubottle': [[-6360, -3606],[6945, 3965],[6910, 3887],[7034, 3811]],
-    'Making plant': [[-6613, -3622],[7282, 3975],[7246, 3887],[7371, 3811]],
-    'Reverse Vending Machine': [[-6635, -3154],[7295, 3584],[7246, 3459],[7371, 3385]],
-    'Plastic Recycling plant': [[-6254, -3154],[6958, 3584],[6910, 3459],[7034, 3385]],
-    'Refilling Van': [[-6158, -3154],[6617, 3584],[6576, 3459],[6698, 3385]],
-    'Bottle collection truck': [[-5762, -3154],[6279, 3584],[6235, 3459],[6361, 3385]],
-    'Mayor': [[-5762, -3154],[6268, 3584],[6235, 3459],[6361, 3385]]
+    'House6': [[-199, -3525], [712, 3965], [665, 3898], [628, 3809]],
+    'House7': [[-443, -3538], [1049, 3965], [1003, 3898], [967, 3809]],
+    'House8': [[-744, -3475], [1384, 3965], [1337, 3898], [1303, 3809]],
+    'House9': [[-1053, -3468], [1718, 3965], [1674, 3898], [1638, 3809]],
+    'House10': [[-1282, -3537], [2061, 3965], [2009, 3898], [1978, 3809]],
+    'House1': [[-277, -3247], [712, 3584], [665, 3472], [614, 3382]],
+    'House2': [[-443, -3154], [1049, 3584], [1003, 3472], [952, 3382]],
+    'House3': [[-744, -3154], [1384, 3584], [1337, 3472], [1289, 3382]],
+    'House4': [[-1053, -3154], [1718, 3584], [1674, 3472], [1620, 3382]],
+    'House5': [[-1282, -3154], [2061, 3584], [2009, 3472], [1978, 3382]],
+    'Recycling': [[-5641, -3623], [5930, 3965], [5898, 3898], [6023, 3809]],
+    'Supermarket': [[-5651, -3616], [6268, 3965], [6235, 3898], [6350, 3809]],
+    'Grocery': [[-6011, -3608], [6602, 3965], [6576, 3898], [6685, 3809]],
+    'Ubottle': [[-6360, -3606], [6945, 3965], [6910, 3898], [7034, 3809]],
+    'Making': [[-6613, -3622], [7282, 3975], [7246, 3898], [7371, 3809]],
+    'Reverse': [[-6635, -3154], [7295, 3584], [7246, 3898], [7371, 3382]],
+    'Plastic': [[-6254, -3154], [6958, 3584], [6910, 3459], [7034, 3382]],
+    'Refilling': [[-6158, -3154], [6617, 3584], [6576, 3459], [6698, 3382]],
+    'Bottle': [[-5762, -3154], [6279, 3584], [6235, 3459], [6361, 3382]],
+    'Mayor': [[-5762, -3154], [5931, 3584], [5898, 3459], [6010, 3382]]
   }
-  constructor(private logser: LoginserviceService,private router:Router) {
-    this.currentUserRole=this.logser.currentuser.Role;
-    this.currentUserCartId=this.logser.currentuser.cartId;
-  }
+  user: any;
+  cityname: any;
+  constructor(private logser: LoginserviceService, private router: Router) {
+    this.currentUserRole = this.logser.currentuser.Role;
+    this.currentUserCartId = this.logser.currentuser.cartId;
+    this.logser.getcitynames().subscribe((data) => {
+      this.logser.currentuser.cityname = data[0].CityName;
+      this.cityname = this.logser.currentuser.cityname;
+    });
 
+  }
   @HostListener('document:keydown.arrowdown', ['$event'])
   movedown($event: any) {
     $event.stopPropagation();
@@ -82,15 +89,36 @@ export class MaincityComponent implements AfterViewInit, OnInit {
 
 
   ngOnInit(): void {
-   if(this.logser.currentuser.Username==''){
-    this.router.navigate(["login"])
-   }
+    if (this.logser.currentuser.Username == '') {
+      this.router.navigate(["login"])
+    }
+    this.logser.getAllUsers().subscribe((data) => {
+      this.user = data;
+      console.log(this.user)
+      for (var t = 0; t < this.user.length; t++) {
+        if (this.user[t].login == 1) {
+          console.log(this.user[t].Role.split(" ")[0])
+          $("." + this.user[t].Role.split(" ")[0]).show();
+        }
+        if (this.user[t].Role !== '') {
+          console.log(this.user[t].Role);
+          let word = this.user[t].Role.split(" ")[0];
+          let xpos = this.positionObject[word as keyof typeof this.positionObject][3][0];
+          let ypos = this.positionObject[word as keyof typeof this.positionObject][3][1];
+          $(".displaypanel." + word).css({ 'left': xpos + 'px', 'top': ypos + 'px' }).html(this.user[t].Role);
+          if(word=='Supermarket' || word=='Recycling'|| word=='Ubottle'|| word=='Making'|| word=='Reverse'|| word=='Refilling'){
+            $(".commoncls."+word).addClass('openflag');
+            $(".commoncls."+word).removeClass('closeflag');
+          }
+        }
+      }
+    });
   }
   @ViewChild('maincity', { static: false })
   private scene!: ElementRef;
   ngAfterViewInit(): void {
     this.instance = panzoom(this.scene.nativeElement, {
-      maxZoom: 2,
+      maxZoom: 3,
       minZoom: 0.3,
       transformOrigin: { x: 0, y: 0 },
       bounds: true,
@@ -99,27 +127,30 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         return true;
       },
     });
-  
-    let a=this.currentUserRole;
-    console.log(a);
-    let x=this.positionObject[a as keyof typeof this.positionObject][0][0];
-    let y=this.positionObject[a as keyof typeof this.positionObject][0][1];
-    let x1=this.positionObject[a as keyof typeof this.positionObject][1][0];
-    let y1=this.positionObject[a as keyof typeof this.positionObject][1][1];
-    let x2=this.positionObject[a as keyof typeof this.positionObject][2][0];
-    let y2=this.positionObject[a as keyof typeof this.positionObject][2][1];
-    let x3=this.positionObject[a as keyof typeof this.positionObject][3][0];
-    let y3=this.positionObject[a as keyof typeof this.positionObject][3][1];
+    let a = this.currentUserRole.split(" ")[0];
+    let x = this.positionObject[a as keyof typeof this.positionObject][0][0];
+    let y = this.positionObject[a as keyof typeof this.positionObject][0][1];
+    let x1 = this.positionObject[a as keyof typeof this.positionObject][1][0];
+    let y1 = this.positionObject[a as keyof typeof this.positionObject][1][1];
+    let x2 = this.positionObject[a as keyof typeof this.positionObject][2][0];
+    let y2 = this.positionObject[a as keyof typeof this.positionObject][2][1];
+    let x3 = this.positionObject[a as keyof typeof this.positionObject][3][0];
+    let y3 = this.positionObject[a as keyof typeof this.positionObject][3][1];
     this.dopanzoom(x, y, '1');
-    $(".cart").css({ 'left': x1+'px', 'top':y1+'px' });
-    $(".housedisplay").css({ 'left': x2+'px', 'top':y2+'px' }).html(a+'<br/>cart ID : '+this.currentUserCartId);
-    $(".displaypanel").css({ 'left': x3+'px', 'top':y3+'px' }).html('2000');
+    $(".cart").css({ 'left': x1 + 'px', 'top': y1 + 'px' });
+    $(".housedisplay").css({ 'left': x2 + 'px', 'top': y2 + 'px' }).html('cart ID : ' + this.currentUserCartId);
+    $(".houselite").hide();
+    $(".displaypic,.cartavatar").addClass('pic_' + this.logser.currentuser.avatar);
+    //$("").addClass('pic_' + this.logser.currentuser.avatar);
+
+    console.log(this.logser.currentuser.cityname);
   }
-  userobj={
-    'login':'1'
+  userobj = {
+    'login': '1'
   }
-  logout(){
-    this.userobj.login='0';
+
+  logout() {
+    this.userobj.login = '0';
     this.logser.updateloggeduser(this.userobj).subscribe(
       (data) => {
         this.userobj = data;

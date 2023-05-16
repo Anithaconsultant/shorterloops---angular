@@ -1,47 +1,51 @@
-<h3>Welcome to Shorterloops {{setusername | titlecase}}</h3>
-<div class="container centeralign" *ngIf="selectrole==false">
-    <a class="btn btn-primary" routerLink="/addcity" role="button">Create a City</a>
-    <button class="btn btn-primary" (click)="selectrole=true">Join a Existing City</button>
-</div>
-<div *ngIf="selectrole">
+<div class="container-fluid landingpage">
+    <h3>Welcome to Shorterloops, {{setusername | titlecase}}</h3>
+    <div class="container centeralign" *ngIf="selectrole==false">
+        <a class="btn btn-primary create" routerLink="/addcity" role="button">Create a City</a>
+        <button class="btn btn-primary join" (click)="selectrole=true">Join a Existing City</button>
+    </div>
+    <div *ngIf="selectrole" class="selectrolecontent">
 
-    <div class="mb-3">
-        <label for="City" class="form-label">Select your City</label>
-        <select name="Cityname"  class="form-control" id="City" [(ngModel)]="selectedCity" >
-            <option selected disabled=true>--Select your City--</option>
-            <option *ngFor="let item of setList; " [value]="item[0]" >
+        <div class="mb-3 col-xl-4 mx-auto">
+            <label for="City" class="form-label">Select your City</label>
+            <select name="Cityname" class="form-control" id="City" [(ngModel)]="selectedCity">
+                <option selected disabled=true>--Select your City--</option>
+                <option *ngFor="let item of setList; " [value]="item[0]">
                     {{item[0]}}
                 </option>
-        </select>
+            </select>
 
 
+        </div>
+        <div class="mb-3 col-xl-4  mx-auto">
+            <label for="facilityname" class="form-label">Select your Role</label>
+            <select name="facilityname" class="form-control" id="role" [(ngModel)]="selectedfacility"
+                (change)="checkindata()">
+                <option selected disabled=true>--Select your Role--</option>
+                <option value="Supermarket"> Supermarket Owner </option>
+                <option value="Grocery shop"> Grocery shop Owner </option>
+                <option value="Ubottle"> Universal bottle Owner </option>
+                <option value="Making plant"> Making plant Owner </option>
+                <option value="Reverse Vending Machine"> Reverse Vending Machine Owner</option>
+                <option value="Plastic Recycling plant"> Plastic Recycling plant Owner </option>
+                <option value="Refilling Van"> Refilling Van Owner </option>
+                <option value="Bottle collection truck"> Bottle collection truck Owner </option>
+                <option value="Recycling truck"> Recycling truck Owner </option>
+                <option value="House1"> House1 Owner </option>
+                <option value="House2"> House2 Owner </option>
+                <option value="House3"> House3 Owner </option>
+                <option value="House4"> House4 Owner </option>
+                <option value="House5"> House5 Owner </option>
+                <option value="House6"> House6 Owner </option>
+                <option value="House7"> House7 Owner </option>
+                <option value="House8"> House8 Owner </option>
+                <option value="House9"> House9 Owner </option>
+                <option value="House10"> House10 Owner </option>
+            </select>
+        </div>
+        <div class="mb-3 col-xl-4  mx-auto">
+            <button type="submit" class="save btn btn-primary facilitysave" (click)="dochanges()">Save</button>
+            <a href="/home/">Back</a>
+        </div>
     </div>
-    <div class="mb-3">
-        <label for="facilityname" class="form-label">Select your Role</label>
-        <select name="facilityname" class="form-control" id="role"  [(ngModel)]="selectedfacility" (change)="checkindata()">
-            <option selected disabled=true>--Select your Role--</option>
-            <option value="Supermarket"> Supermarket Owner </option>
-            <option value="Grocery shop"> Grocery shop Owner </option>
-            <option value="Ubottle"> Universal bottle Owner </option>
-            <option value="Making plant"> Making plant Owner </option>
-            <option value="Reverse Vending Machine"> Reverse Vending Machine Owner</option>
-            <option value="Plastic Recycling plant"> Plastic Recycling plant Owner </option>
-            <option value="Refilling Van"> Refilling Van Owner </option>
-            <option value="Bottle collection truck"> Bottle collection truck Owner </option>
-            <option value="Recycling truck"> Recycling truck Owner </option>
-            <option value="House1"> House1 Owner </option>
-            <option value="House2"> House2 Owner </option>
-            <option value="House3"> House3 Owner </option>
-            <option value="House4"> House4 Owner </option>
-            <option value="House5"> House5 Owner </option>
-            <option value="House6"> House6 Owner </option>
-            <option value="House7"> House7 Owner </option>
-            <option value="House8"> House8 Owner </option>
-            <option value="House9"> House9 Owner </option>
-            <option value="House10"> House10 Owner </option>
-        </select>
-    </div>
-
-    <button type="submit" class="save btn btn-primary facilitysave" (click)="dochanges()">Save</button>
-    <a href="/home/">Back</a>
 </div>

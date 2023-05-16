@@ -1,0 +1,14 @@
+.landingpage{
+    width:100%;
+    height:100%;    
+    background-image: url('./../../assets/img/landingpage.png');
+    background-size: cover;
+    .loginblock{
+        margin-top:12%;
+    }
+    .displaytext{
+        font-size: 36px;
+        color: #fff;
+        text-align: center;
+    }
+}

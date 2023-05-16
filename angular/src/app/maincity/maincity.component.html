@@ -1,8 +1,30 @@
 <div class="maincity_container">
     <div class="maincity" #maincity id="maincity">
-        <div class="cart"></div>
+        <div class="cart">
+            <div class="cartavatar"></div>
+        </div>
         <div class="housedisplay"></div>
-        <div class="displaypanel"></div>
+        <div class="boardholder">
+            <div class="Supermarket closeflag commoncls"></div>
+            <div class="Recycling closeflag commoncls"></div>
+            <div class="Ubottle closeflag commoncls"></div>
+            <div class="Making closeflag commoncls"></div>
+            <div class="Reverse closeflag commoncls"></div>
+            <div class="Refilling closeflag commoncls"></div>
+        </div>
+        <div class="houselitewrapper">
+            <div *ngFor='let key of objkey(positionObject);let i = index' class="houselite {{key}}">
+            </div>
+        </div>
+        <div class="householder">
+            <div *ngFor='let key of objkey(positionObject);let i = index' class="displaypanel {{key}}">
+            </div>
+        </div>
     </div>
-    <button type="button" (click)='logout()' id="logout" class="btn btn-primary btn-block  mb-2 rounded-pill shadow-sm">Logout</button>
+    <div class="topbar">
+        <div class="logo"></div>
+        <div class="cityname">{{cityname | titlecase}}</div>
+        <div class="displaypic"></div>
+        <button type="button" (click)='logout()' id="logout" class="btn btn-block  mb-2 shadow-sm">Logout</button>
+    </div>
 </div>

@@ -10,7 +10,8 @@ from rest_framework.response import Response
 from django.http import HttpResponse, JsonResponse
 data1 = list()
 currentuser = ''
-cartcount=100
+cartcount = 100
+
 
 @api_view(['GET', 'POST'])
 def login(request):
@@ -29,7 +30,7 @@ def signup(request):
         if serializer.is_valid():
             serializer.save()
         else:
-            return JsonResponse({'message':'Username or Email Id is already present!'})
+            return JsonResponse({'message': 'Username or Email Id is already present!'})
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
     if request.method == 'GET':
         data = CustomUser.objects.all()
@@ -38,10 +39,16 @@ def signup(request):
 
 
 @api_view(['GET', 'POST'])
+def getcityname(request,cityid):
+        if request.method == 'GET':
+            data = City.objects.filter(pk=cityid)
+            serializer = citySerializer(data, many=True)
+            return JsonResponse(serializer.data, safe=False)
+    
+@api_view(['GET', 'POST'])
 def addcity(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
-        print(data)
         serializer = citySerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -53,15 +60,13 @@ def addcity(request):
         serializer = citySerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
 
+
 @api_view(['GET', 'POST'])
-def getfacility(request,cityid):
+def getfacility(request, cityid):
      if request.method == 'GET':
-        print(cityid)    
         data = Facility.objects.filter(Facility_cityid_id=cityid)
-        print(data)
         serializer = facilitySerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
-
     
 @api_view(['GET', 'POST'])
 def facility(request, mayorid):
@@ -99,11 +104,8 @@ def facility(request, mayorid):
 def updatefacility(request):
     if request.method == 'PUT':
         data = JSONParser().parse(request)
-        print(data)
         serval = {'Owner_id': data['Owner_id'], 'Owner_status': 'Active'}
         getfacility = Facility.objects.filter(Facilityname=data['Facilityname'], Facility_cityid=data['Facility_cityid_id']).first()
-        print(getfacility)
-        print(serval)
         serializer = facilitySerializer(getfacility, data=serval, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -116,7 +118,6 @@ def updatefacility(request):
 def cityrule(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
-        print(data)
         serializer = cityRuleSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -133,7 +134,6 @@ def cityrule(request):
 def editcity(request, cityid):
     if request.method == 'POST':
         data = JSONParser().parse(request)
-        print(data)
         getcity = City.objects.filter(pk=cityid)
         serializer = citySerializer(getcity, data=data, partial=True)
         if serializer.is_valid():
@@ -147,9 +147,7 @@ def editcity(request, cityid):
 def updateusercity(request, userid):
     if request.method == 'PUT':
         data = JSONParser().parse(request)
-        # print(data)
         getuser = CustomUser.objects.filter(pk=userid).first()
-        print(getuser)
         serializer = userSerializer(getuser, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
