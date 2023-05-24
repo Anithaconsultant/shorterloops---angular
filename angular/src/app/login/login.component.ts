@@ -38,6 +38,7 @@ export class LoginComponent implements OnInit {
 
         });
         if (user) {
+          console.log(this.logser.currentuser.CityId)
           this.logser.currentuser.Username=user.Username;
           this.logser.currentuser.UserId=user.UserId;
           this.logser.currentuser.CityId=user.User_cityid;
@@ -52,17 +53,18 @@ export class LoginComponent implements OnInit {
           this.logser.updateloggeduser(this.userobj).subscribe(
             (data) => {
               this.userobj = data;
+              if (user.User_cityid == 0) {
+                this.router.navigate(["home"])
+              }
+              else {
+                this.router.navigate(["maincity"])
+              }
             },
             (error) => {
               console.log(error);
             }
           );
-          if (user.User_cityid == 0) {
-            this.router.navigate(["home"])
-          }
-          else {
-            this.router.navigate(["maincity"])
-          }
+         
         } else {
           alert("user not found")
         }

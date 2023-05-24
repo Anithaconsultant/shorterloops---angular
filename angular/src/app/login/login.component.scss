@@ -1,14 +1,55 @@
-.landingpage{
-    width:100%;
-    height:100%;    
+.landingpage {
+    width: 100%;
+    height: 100%;
     background-image: url('./../../assets/img/landingpage.png');
     background-size: cover;
-    .loginblock{
-        margin-top:12%;
+
+    .loginblock {
+        margin-top: 13%;
     }
-    .displaytext{
-        font-size: 36px;
+
+    .commonclas {
         color: #fff;
         text-align: center;
+    }
+
+    .displaytext {
+        @extend .commonclas;
+        font-size: 34px;
+
+    }
+
+    .leftblock {
+        margin-left: 8%;
+    }
+
+    .displaytext1 {
+        @extend .commonclas;
+        font-size: 20px;
+    }
+
+    .loginbtn {
+        margin: 0 auto;
+        background-color: #636569;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        width: 100px;
+        justify-content: center;
+        height: 30px;
+        font-size: 14px;
+    }
+
+    .signuptxt {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        a {
+            color: #636569;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
     }
 }

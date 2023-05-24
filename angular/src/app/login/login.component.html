@@ -3,11 +3,12 @@
         <!-- Demo content-->
         <div class="container loginblock">
             <div class="row">
-                <div class="col-lg-6 col-xl-4 ">
+                <div class="col-lg-6 col-xl-3 leftblock">
                     <h3 class="displaytext">Login</h3>
+                    <h4 class="displaytext1">Welcome to Shorterloops!</h4>
                     <p></p>
                     <form [formGroup]="loginForm" (ngSubmit)="login()">
-                        <div class="form-group mb-3">
+                        <div class="form-group mb-2">
                             <input id="inputusername" type="username" formControlName="username"
                                 [ngClass]="{ 'is-invalid': submitted  }" placeholder="Username" required="" autofocus=""
                                 class="form-control rounded-pill border-0 shadow-sm px-4">
@@ -18,10 +19,9 @@
                                 class="form-control rounded-pill border-0 shadow-sm px-4 text-primary">
                         </div>
                         <button type="submit"
-                            class="btn btn-primary btn-block text-uppercase mb-2 rounded-pill shadow-sm">Login</button>
+                            class="btn btn-block text-uppercase mb-2 rounded-pill shadow-sm loginbtn">Login</button>
                     </form>
-                    <span>Don't have an account?
-                        <a routerLink="/signup">signUp</a></span>
+                    <div class="signuptxt"><a routerLink="/signup">Create Account</a></div>
                 </div>
             </div>
        </div><!-- End -->

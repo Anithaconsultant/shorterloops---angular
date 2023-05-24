@@ -1,83 +1,69 @@
-.pics{
+.pics {
     width: 150px;
-	height: 150px;
+    height: 150px;
     margin: 12px;
     padding: 20px;
     border-radius: 50%;
     display: inline-block;
-    border:4px solid #fff;
-    &:hover{
+    border: 4px solid #fff;
+
+    &:hover {
         border: 4px solid gainsboro;
         cursor: pointer;
     }
-    &:user-select{
+
+    &:user-select {
         border: 4px solid gray;
     }
 }
-.landingpage{
-    width:100%;
-    height:100%;    
+
+.landingpage {
+    width: 100%;
+    height: 100%;
     background-image: url('./../../assets/img/register.png');
     background-size: cover;
+
+    .signupblock {
+        margin-top: 7%;
+    }
+
+    .innerblk {
+        margin-left: 8%;
+    }
    
-    .displaytext{
-        font-size: 36px;
+    .displaytext {
+        font-size: 32px;
         color: #fff;
         text-align: center;
     }
+    .clickbtn{
+        background-color: #636569;
+        color: #fff;
+        font-size:12px;
+    }
+    .gender{
+        width: 81%;
+        margin: 0 auto;
+        font-size: 12px;
+        input{
+            margin-left: 5px;
+            margin-top:5px;
+        }
+    }
+    .btnblk{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        button{
+            margin-top:15px;
+        }
+    }
 }
 
-// #pic_22{
-//     background-image: url('./../../assets/img/female6.svg');
-// }
-// #pic_23{
-//     background-image: url('./../../assets/img/female6.svg');
-// }
-// #pic_24{
-//     background-image: url('./../../assets/img/female7.svg');
-// }
-// #pic_25{
-//     background-image: url('./../../assets/img/female8.svg');
-// }
-// #pic_26{
-//     background-image: url('./../../assets/img/female9.svg');
-// }
-// #pic_27{
-//     background-image: url('./../../assets/img/female10.svg');
-// }
-// #pic_28{
-//     background-image: url('./../../assets/img/female11.svg');
-// }
-// #pic_29{
-//     background-position: -4309px -1013px;
-// }
-// #pic_30{
-//     background-position: -180px -1429px;
-// }
-// #pic_31{
-//     background-position: -680px -1444px;
-// }
-// #pic_32{
-//     background-position: -1111px -1433px;
-// }
-// #pic_33{
-//     background-position: -1526px -1468px;
-// }
-// #pic_34{
-//     background-position: -1929px -1444px;
-// }#pic_35{
-//     background-position: -2393px -1431px;
-// }#pic_36{
-//     background-position: -2954px -1439px;
-// }#pic_37{
-//     background-position: -3331px -1429px;
-// }#pic_38{
-//     background-position: -3840px -1453px;
-// }#pic_39{
-//     background-position: -4309px -1457px;
-// }
 
-::ng-deep  .modal-dialog { 
+
+::ng-deep .modal-dialog {
     max-width: 80%;
     width: 80%;
 }

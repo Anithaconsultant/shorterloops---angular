@@ -47,6 +47,22 @@ export class HomeComponent implements OnInit {
     })
   }
   setList: any[] = [];
+  choosefacility(){
+    console.log(this.user);
+    let selectedcityid = parseInt(this.getCityId());
+    console.log(selectedcityid);
+    for (var t = 0; t < this.user.length; t++) {
+      if (this.user[t].Role !== '' &&  this.user[t].User_cityid==selectedcityid) {
+        console.log(this.user[t].Role)
+        let that=this;
+        $('#role').find('option').each(function(){
+           if($(this).attr('value')==that.user[t].Role){
+            $(this).attr('disabled','true');
+           }
+      });
+      }
+    }
+  }
   getcityList() {
     if (this.city) {
       this.dataList = JSON.parse(JSON.stringify(this.city));
@@ -56,15 +72,8 @@ export class HomeComponent implements OnInit {
       newdata = [this.dataList[key].CityName, this.dataList[key].CityId];
       this.setList.push(newdata);
     }
-      // for (var t = 0; t < this.user.length; t++) {
-      //   if (this.user[t].Role !== '') {
-      //     $('#role').find('option').each(function(){
-      //       console.log($(this).text());
-      //       console.log($(this).val());
-      //   });
-      //   }
-      // }
-    //  console.log(this.setList, this.selectedCity);
+   
+     console.log(this.setList, this.selectedCity);
   }
   getCityId() {
     for (var i = 0; i < this.setList.length; i++) {
@@ -105,6 +114,7 @@ export class HomeComponent implements OnInit {
             this.userobj.cartId = currentcartId;
             this.logser.currentuser.Role = this.selectedfacility;
             this.logser.currentuser.cartId = currentcartId;
+            this.logser.currentuser.CityId = selectedcityid.toString();
           }
 
         }

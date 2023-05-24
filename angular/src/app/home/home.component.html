@@ -8,7 +8,7 @@
 
         <div class="mb-3 col-xl-4 mx-auto">
             <label for="City" class="form-label">Select your City</label>
-            <select name="Cityname" class="form-control" id="City" [(ngModel)]="selectedCity">
+            <select name="Cityname" class="form-control" id="City" [(ngModel)]="selectedCity" (change)="choosefacility()">
                 <option selected disabled=true>--Select your City--</option>
                 <option *ngFor="let item of setList; " [value]="item[0]">
                     {{item[0]}}

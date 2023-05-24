@@ -44,13 +44,13 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'bootstrap4',
-    
+
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-     'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -75,7 +75,7 @@ TEMPLATES = [
         },
     },
 ]
-CRISPY_TEMPLATE_PACK = 'bootstrap4' 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 WSGI_APPLICATION = 'shorterloops.wsgi.application'
 
 
@@ -83,7 +83,8 @@ WSGI_APPLICATION = 'shorterloops.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
- 'default': {
+    'default':
+    {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'fresh',
         'USER': 'root',
@@ -91,7 +92,7 @@ DATABASES = {
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
-    #     'default': {
+    # {
     #     'ENGINE': 'django.db.backends.mysql',
     #     'NAME': 'shorterloop',
     #     'USER': 'dbluser',
@@ -100,7 +101,7 @@ DATABASES = {
     #     'PORT': '3306',
     # }
 }
-   
+
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -145,8 +146,8 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-CRISPY_TEMPLATE_PACK =  'bootstrap4'
-LOGIN_REDIRECT_URL =  '/'
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+LOGIN_REDIRECT_URL = '/'
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_REPLACE_HTTPS_REFERER = True
@@ -170,7 +171,7 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
-      'DEFAULT_PERMISSION_CLASSES': (
+    'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAdminUser',
-   ),
+    ),
 }

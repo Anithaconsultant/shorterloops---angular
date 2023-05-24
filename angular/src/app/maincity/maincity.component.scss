@@ -4,26 +4,29 @@
 
     .topbar {
         position: absolute;
-        height: 60px;
+        height: 50px;
         top: 0px;
         left: 0px;
         width: 100%;
-        background: rgba(0, 0, 0, 0.4);
+        background: rgba(255, 255, 255, 0.4);
         display: flex;
         align-items: center;
 
         #logout {
+            font-size: 12px;
+        }
+
+        .picholder {
             position: absolute;
-            right: 10px;
-            background-color: #bed8a7 !important;
-            border: 1px solid #bed8a7;
+            right: 28px;
+            width: 40px;
+            height: 40px;
         }
 
         .displaypic {
             position: absolute;
-            right: 99px;
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             background-size: cover;
             border-radius: 50%;
         }
@@ -32,17 +35,29 @@
             position: absolute;
             margin: 0 auto;
             font-size: 26px;
-            color: #fff;
+            color: #000;
             text-align: center;
             font-weight: bold;
             width: 100%;
         }
 
+        .displayrole {
+            width: 100px;
+            position: absolute;
+            right: 69px;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            height: 50px;
+            display: flex;
+            @extend .commmoncenter;
+        }
+
         .logo {
             position: absolute;
             left: 0px;
-            width: 60px;
-            height: 60px;
+            width: 80px;
+            height: 80px;
             background-image: url('./../../assets/img/logo.png');
             background-size: cover;
             background-color: rgba(255, 255, 255, 0.8);
@@ -60,12 +75,38 @@
         height: 4501px;
         margin: auto;
 
+        .location {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            border: 1px solid #fff;
+
+            .supermarket_loc {
+                left: 1632px;
+                top: 2752px;
+                width: 20px;
+                height: 20px;
+                border: 1px solid #fff;
+                position: absolute;
+            }
+            .junction_role{
+                left: 1632px;
+                top: 2752px;
+                width: 20px;
+                height: 20px;
+                border: 1px solid #fff;
+                position: absolute;
+            }
+        }
+
         .houselite {
             position: absolute;
-            width: 12px;
-            height: 12px;
+            width: 54px;
+            height: 55px;
             background-image: url('./../../assets/img/houselight.png');
-            background-size:cover;
+            background-size: cover;
         }
 
         .cart {
@@ -94,165 +135,181 @@
         }
 
         .displaypanel {
-            width: 75px;
+            width: 77px;
             height: 33px;
             position: absolute;
             color: #fff;
-            font-size: 12px;
+            font-size: 9px;
             line-height: 14px;
-            align-items: center;
-            display: flex;
-            justify-content: center;
-
+            text-align: center;
+            @extend .commmoncenter;
         }
 
         .House1 {
-            top: 3419px;
-            left: 727px;
+            top: 3429px;
+            left: 705px;
         }
 
         .House2 {
-            top: 3419px;
-            left: 1065px;
+            top: 3428px;
+            left: 1042px;
         }
 
         .House3 {
-            top: 3419px;
-            left: 1401px;
+            top: 3428px;
+            left: 1379px;
         }
 
         .House4 {
-            top: 3419px;
-            left: 1738px;
+            top: 3428px;
+            left: 1715px;
         }
 
         .House5 {
-            top: 3419px;
-            left: 2074px;
+            top: 3428px;
+            left: 2054px;
         }
 
         .House6 {
-            top: 3848px;
-            left: 727px;
+            top: 3853px;
+            left: 706px;
         }
 
         .House7 {
-            top: 3848px;
-            left: 1065px;
+            top: 3853px;
+            left: 1041px;
         }
 
         .House8 {
-            top: 3848px;
-            left: 1401px;
+            top: 3854px;
+            left: 1378px;
         }
 
         .House9 {
-            top: 3848px;
-            left: 1738px;
+            top: 3853px;
+            left: 1715px;
         }
 
         .House10 {
-            top: 3848px;
-            left: 2074px;
+            top: 3854px;
+            left: 2053px;
         }
 
         .Recycling {
-            top: 3844px;
-            left: 7306px;
+            top: 3854px;
+            left: 5938px;
         }
 
         .Supermarket {
-            top: 3844px;
-            left: 6969px;
+            top: 3854px;
+            left: 6275px;
         }
 
         .Grocery {
-            top: 3844px;
-            left: 6633px;
+            top: 3853px;
+            left: 6613px;
         }
 
         .Ubottle {
-            top: 3844px;
-            left: 6296px;
+            top: 3853px;
+            left: 6949px;
         }
 
         .Making {
-            top: 3844px;
-            left: 5961px;
+            top: 3853px;
+            left: 7287px;
         }
 
         .Reverse {
-            top: 3418px;
-            left: 7306px;
+            top: 3428px;
+            left: 7286px;
         }
 
         .Plastic {
-            top: 3418px;
-            left: 6969px;
+            top: 3429px;
+            left: 6950px;
         }
 
         .Refilling {
-            top: 3418px;
-            left: 6633px;
+            top: 3428px;
+            left: 6613px;
         }
 
         .Bottle {
-            top: 3418px;
-            left: 6296px;
+            top: 3428px;
+            left: 6275px;
         }
 
         .Mayor {
-
-            top: 3418px;
-            left: 5961px;
+            top: 3428px;
+            left: 5938px;
         }
 
         .boardholder {
             .commoncls {
                 position: absolute;
-                width: 163px;
-                height: 150px;
+                width: 95px;
+                height: 37px;
                 background-size: cover;
-            }
+                color: #fff;
+                font-size: 20px;
+                @extend .commmoncenter;
 
-            .closeflag {
-                background-image: url('./../../assets/img/closedboard.svg')
-            }
-
-            .openflag {
-                background-image: url('./../../assets/img/openboard.svg')
             }
 
             .Supermarket {
-                left: 1777px;
-                top: 2772px;
+                @extend .commoncls;
+                left: 1910px;
+                top: 2466px;
             }
 
             .Recycling {
-                left: 2142px;
-                top: 816px;
+                @extend .commoncls;
+                left: 1985px;
+                top: 877px;
             }
 
             .Making {
-                left: 4228px;
-                top: 755px;
+                @extend .commoncls;
+                left: 4185px;
+                top: 615px;
             }
 
             .Ubottle {
-                left: 4350px;
-                top: 1446px;
-            }
-
-            .Reverse {
-                left: 6010px;
-                top: 2316px;
+                @extend .commoncls;
+                left: 4500px;
+                top: 1511px
             }
 
             .Refilling {
-                left: 5915px;
-                top: 2783px;
+                @extend .commoncls;
+                left: 5622px;
+                top: 2807px;
             }
         }
 
+        .mayorflag {
+            background-image: url('./../../assets/img/openflag.svg');
+            width: 161px;
+            height: 145px;
+            position: absolute;
+            left: 4028px;
+            top: 2041px;
+            display: none;
+        }
+
     }
+
+    .supermarketlocation {
+
+        top: 3854px;
+        left: 6275px;
+
+    }
+}
+
+.commmoncenter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

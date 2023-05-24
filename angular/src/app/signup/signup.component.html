@@ -3,8 +3,8 @@
         <!-- Demo content-->
         <div class="container signupblock">
             <div class="row">
-                <div class="col-lg-6 col-xl-3 mx-auto ">
-                    <h3 class="displaytext">Register Here!</h3>
+                <div class="col-lg-6 col-xl-3 innerblk">
+                    <h3 class="displaytext">Register</h3>
                     <p></p>
                     <form [formGroup]="signupForm">
                         <div class="form-group mb-3">
@@ -30,23 +30,24 @@
                                 [ngClass]="{ 'is-invalid': submitted  }" placeholder="Mobile number" required=""
                                 autofocus="" class="form-control rounded-pill border-0 shadow-sm px-4">
                         </div>
-                        <div class="form-group mb-3">
+                        <div class="form-group mb-3 gender">
 
                             <label class="custom-control-label">Gender :</label>
                             <input type="radio" value="male" name="gender" formControlName="gender"
-                                [(ngModel)]="newuser.gender"> Male
+                                [(ngModel)]="newuser.gender"><span class="spancls"> Male</span>
                             <input type="radio" value="female" name="gender" formControlName="gender"
-                                [(ngModel)]="newuser.gender"> Female
+                                [(ngModel)]="newuser.gender"> <span class="spancls"> Female</span>
 
                         </div>
-                        <div class="form-group mb-3">
-                            <div class="btn btn-primary btn-block  mb-2 rounded-pill shadow-sm" (click)="open(content)">
+                        <div class="form-group mb-3 btnblk">
+                            <div class="btn btn-block clickbtn " (click)="open(content)">
                                 Select Your Avatar</div>
+                            <button type="submit"
+                                class="btn btn-block clickbtn  rounded-pill shadow-sm"
+                                (click)="signup()">Register User</button>
+
                         </div>
-                        <button type="submit"
-                            class="btn btn-primary btn-block text-uppercase mb-2 rounded-pill shadow-sm"
-                            (click)="signup()">Register User</button>
-                          
+
                     </form>
                 </div>
             </div>
@@ -63,14 +64,12 @@
     </div>
     <div class="modal-body">
         <div *ngIf="newuser.gender=='male'">
-            <div *ngFor='let in of newmale;let i = index' class="male pics pic_{{in}}" 
-                (click)="selectphoto(in)">
+            <div *ngFor='let in of newmale;let i = index' class="male pics pic_{{in}}" (click)="selectphoto(in)">
 
             </div>
         </div>
         <div *ngIf="newuser.gender=='female'">
-            <div *ngFor='let in of newfemale;let i = index' class="female pics pic_{{in}}" 
-                (click)="selectphoto(in)">
+            <div *ngFor='let in of newfemale;let i = index' class="female pics pic_{{in}}" (click)="selectphoto(in)">
             </div>
         </div>
     </div>

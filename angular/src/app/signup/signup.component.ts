@@ -102,7 +102,7 @@ export class SignupComponent implements OnInit {
 
   selectphoto(ind: any) {
     $(".pics").css('border', '4px solid #fff');
-    $("#pic_" + ind).css('border', '4px solid #333');
+    $(".pic_" + ind).css('border', '4px solid #333');
     this.newuser.avatar = String(ind);
     console.log(this.newuser.avatar);
 
