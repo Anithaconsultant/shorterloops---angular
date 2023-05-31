@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
   login() {
     this.submitted = true;
     if (this.loginForm.invalid) {
-      alert("invalid");
+      alert("Please enter Username and Password");
       return;
     }
     if (this.submitted) {
@@ -66,7 +66,7 @@ export class LoginComponent implements OnInit {
           );
          
         } else {
-          alert("user not found")
+          alert("Kindly Check your Credentials")
         }
       }, err => {
         alert("Something went wrong")

@@ -8,7 +8,8 @@
 
         <div class="mb-3 col-xl-4 mx-auto">
             <label for="City" class="form-label">Select your City</label>
-            <select name="Cityname" class="form-control" id="City" [(ngModel)]="selectedCity" (change)="choosefacility()">
+            <select name="Cityname" class="form-control" id="City" [(ngModel)]="selectedCity"
+                (change)="choosefacility()">
                 <option selected disabled=true>--Select your City--</option>
                 <option *ngFor="let item of setList; " [value]="item[0]">
                     {{item[0]}}
@@ -43,6 +44,7 @@
                 <option value="House10"> House10 Owner </option>
             </select>
         </div>
+      
         <div class="mb-3 col-xl-4  mx-auto">
             <button type="submit" class="save btn btn-primary facilitysave" (click)="dochanges()">Save</button>
             <a href="/home/">Back</a>

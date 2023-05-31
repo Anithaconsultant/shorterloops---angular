@@ -86,49 +86,120 @@ app-home {
 }
 
 .pic_11 {
-    background-image: url('./assets/img/female1.svg');
+    background-image: url('./assets/img/male12.svg');
 }
 
 .pic_12 {
-    background-image: url('./assets/img/female2.svg');
+    background-image: url('./assets/img/male13.svg');
 }
 
 .pic_13 {
-    background-image: url('./assets/img/female3.svg');
+    background-image: url('./assets/img/male14.svg');
 }
 
 .pic_14 {
-    background-image: url('./assets/img/female4.svg');
+    background-image: url('./assets/img/male15.svg');
 }
 
 .pic_15 {
-    background-image: url('./assets/img/female5.svg');
+    background-image: url('./assets/img/male16.svg');
 }
 
 .pic_16 {
-    background-image: url('./assets/img/female6.svg');
+    background-image: url('./assets/img/male17.svg');
 }
 
 .pic_17 {
-    background-image: url('./assets/img/female7.svg');
+    background-image: url('./assets/img/male18.svg');
 }
 
 .pic_18 {
-    background-image: url('./assets/img/female8.svg');
+    background-image: url('./assets/img/male19.svg');
 }
 
 .pic_19 {
-    background-image: url('./assets/img/female9.svg');
+    background-image: url('./assets/img/male20.svg');
 }
 
 .pic_20 {
-    background-image: url('./assets/img/female10.svg');
+    background-image: url('./assets/img/female1.svg');
 }
 
 .pic_21 {
+    background-image: url('./assets/img/female2.svg');
+}
+.pic_22 {
+    background-image: url('./assets/img/female3.svg');
+}
+.pic_23 {
+    background-image: url('./assets/img/female4.svg');
+}
+.pic_24 {
+    background-image: url('./assets/img/female5.svg');
+}
+.pic_25 {
+    background-image: url('./assets/img/female6.svg');
+}
+.pic_26 {
+    background-image: url('./assets/img/female7.svg');
+}
+.pic_27 {
+    background-image: url('./assets/img/female8.svg');
+}
+.pic_28 {
+    background-image: url('./assets/img/female9.svg');
+}
+.pic_29 {
+    background-image: url('./assets/img/female10.svg');
+}
+.pic_30 {
     background-image: url('./assets/img/female11.svg');
 }
+.pic_31 {
+    background-image: url('./assets/img/female12.svg');
+}
+.pic_32 {
+    background-image: url('./assets/img/female13.svg');
+}
+.pic_33 {
+    background-image: url('./assets/img/female14.svg');
+}
+.pic_34 {
+    background-image: url('./assets/img/female15.svg');
+}
+.pic_35 {
+    background-image: url('./assets/img/female16.svg');
+}
+.pic_36 {
+    background-image: url('./assets/img/female17.svg');
+}
+.pic_37 {
+    background-image: url('./assets/img/female18.svg');
+}
+.pic_38 {
+    background-image: url('./assets/img/female19.svg');
+}
+.pic_39 {
+    background-image: url('./assets/img/female20.svg');
+}
+.pics {
+    width: 150px;
+    height: 150px;
+    margin: 12px;
+    padding: 20px;
+    border-radius: 50%;
+    display: inline-block;
+    border: 4px solid #fff;
 
+    &:hover {
+        border: 4px solid gainsboro;
+        cursor: pointer;
+    }
+
+    &:user-select {
+        border: 4px solid gray;
+    }
+}
 input::placeholder {
     opacity: 0.5 !important;
 }
@@ -157,9 +228,254 @@ input::placeholder {
     transform: translate(20px, 52px) !important;
 }
 
-app-login,app-signup {
+app-login,
+app-signup {
     .form-control {
         width: 83% !important;
         margin: 0 auto !important;
     }
+}
+
+.maincity_container {
+    .topbar {
+        position: absolute;
+        height: 50px;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.4);
+        display: flex;
+        align-items: center;
+
+        #logout {
+            font-size: 12px;
+        }
+
+        .picholder {
+            position: absolute;
+            right: 28px;
+            width: 40px;
+            height: 40px;
+        }
+
+        .displaypic {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-size: cover;
+            border-radius: 50%;
+        }
+
+        .cityname {
+            position: absolute;
+            margin: 0 auto;
+            font-size: 26px;
+            color: #000;
+            text-align: center;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        .displayrole {
+            width: 100px;
+            position: absolute;
+            right: 69px;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            height: 50px;
+            display: flex;
+            @extend .commmoncenter;
+        }
+
+        .logo {
+            position: absolute;
+            left: 0px;
+            width: 80px;
+            height: 80px;
+            background-image: url('./assets/img/logo.png');
+            background-size: cover;
+            background-color: rgb(255, 255, 255);
+            background-position: -159px -152px;
+
+        }
+
+    }
+    .maincity {
+        .House1 {
+            top: 3429px;
+            left: 705px;
+        }
+
+        .House2 {
+            top: 3428px;
+            left: 1042px;
+        }
+
+        .House3 {
+            top: 3428px;
+            left: 1379px;
+        }
+
+        .House4 {
+            top: 3428px;
+            left: 1715px;
+        }
+
+        .House5 {
+            top: 3428px;
+            left: 2054px;
+        }
+
+        .House6 {
+            top: 3853px;
+            left: 706px;
+        }
+
+        .House7 {
+            top: 3853px;
+            left: 1041px;
+        }
+
+        .House8 {
+            top: 3854px;
+            left: 1378px;
+        }
+
+        .House9 {
+            top: 3853px;
+            left: 1715px;
+        }
+
+        .House10 {
+            top: 3854px;
+            left: 2053px;
+        }
+
+        .Recycling {
+            top: 3854px;
+            left: 5938px;
+        }
+
+        .Supermarket {
+            top: 3854px;
+            left: 6275px;
+        }
+
+        .Grocery {
+            top: 3853px;
+            left: 6613px;
+        }
+
+        .Ubottle {
+            top: 3853px;
+            left: 6949px;
+        }
+
+        .Making {
+            top: 3853px;
+            left: 7287px;
+        }
+
+        .Reverse {
+            top: 3428px;
+            left: 7286px;
+        }
+
+        .Plastic {
+            top: 3429px;
+            left: 6950px;
+        }
+
+        .Refilling {
+            top: 3428px;
+            left: 6613px;
+        }
+
+        .Bottle {
+            top: 3428px;
+            left: 6275px;
+        }
+
+        .Mayor {
+            top: 3428px;
+            left: 5938px;
+        }
+    }
+
+    .boardholder {
+        .commoncls {
+            position: absolute;
+            width: 95px;
+            height: 37px;
+            background-size: cover;
+            color: #fff;
+            font-size: 20px;
+            @extend .commmoncenter;
+
+        }
+
+        .Supermarket {
+            @extend .commoncls;
+            left: 1910px;
+            top: 2466px;
+        }
+
+        .Recycling {
+            @extend .commoncls;
+            left: 1985px;
+            top: 877px;
+        }
+
+        .Making {
+            @extend .commoncls;
+            left: 4185px;
+            top: 615px;
+        }
+
+        .Ubottle {
+            @extend .commoncls;
+            left: 4500px;
+            top: 1511px
+        }
+
+        .Refilling {
+            @extend .commoncls;
+            left: 5622px;
+            top: 2807px;
+        }
+    }
+
+    .commmoncenter {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .cart {
+        background-image: url('./assets/img/shoppingcart.svg');
+        width: 67px;
+        background-repeat: no-repeat;
+        position: absolute;
+        height: 99px;
+        background-size: contain;
+
+        .cartavatar {
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            left: -30px;
+            border-radius: 50%;
+        }
+
+        .cartid {
+            position: absolute;
+            color: #fff;
+            left: 12px;
+            font-size: 7px;
+            top: 2px;
+        }
+    }
+
+    
 }

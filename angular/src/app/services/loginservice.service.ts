@@ -62,6 +62,13 @@ export class LoginserviceService {
     return this.http.put(this.baseurl + 'updateusercity/' + this.currentuser.UserId, body,
       { headers: this.httpHeaders });
   }
+  updateuseravatar(avatar: any): Observable<any> {
+    let body;
+    body = { avatar: avatar };
+    console.log(body)
+    return this.http.put(this.baseurl + 'updateusercity/' + this.currentuser.UserId, body,
+      { headers: this.httpHeaders });
+  }
   updateuser(edituser: any): Observable<any> {
     let body;
     console.log(edituser.cartId, edituser, edituser.Role);

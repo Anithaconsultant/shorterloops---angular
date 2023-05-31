@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { LoginserviceService } from "./../services/loginservice.service";
 import { Router } from "@angular/router";
+
 @Component({
   selector: "app-home",
   templateUrl: "./home.component.html",
@@ -21,19 +22,27 @@ export class HomeComponent implements OnInit {
     facilityCityId: 0,
     Ownerid: "",
   };
-  user:any;
+  user: any;
   userobj = {
     'cityid': 0,
     'Role': '',
-    'cartId': ''
+    'cartId': '',
+    'avatar': '',
+    'gender': ''
   }
+
+
   constructor(private logser: LoginserviceService, private router: Router) {
     this.currentuser = { ...this.logser.currentuser };
     this.setusername = this.currentuser.Username;
+    this.userobj.gender = this.currentuser.gender;
     this.logser.getAllCities().subscribe((data) => {
       this.city = data;
       this.getcityList();
     });
+
+    
+
   }
   ngOnInit(): void {
     if (this.logser.currentuser.Username == '') {
@@ -42,24 +51,25 @@ export class HomeComponent implements OnInit {
     this.logser.getAllUsers().subscribe((data) => {
       this.user = data;
       console.log(this.user);
-    
-  
+
+
     })
   }
   setList: any[] = [];
-  choosefacility(){
+  selectedcityid = '';
+  choosefacility() {
     console.log(this.user);
-    let selectedcityid = parseInt(this.getCityId());
-    console.log(selectedcityid);
+    this.selectedcityid = this.getCityId();
+    console.log(this.selectedcityid);
     for (var t = 0; t < this.user.length; t++) {
-      if (this.user[t].Role !== '' &&  this.user[t].User_cityid==selectedcityid) {
+      if (this.user[t].Role !== '' && this.user[t].User_cityid == this.selectedcityid) {
         console.log(this.user[t].Role)
-        let that=this;
-        $('#role').find('option').each(function(){
-           if($(this).attr('value')==that.user[t].Role){
-            $(this).attr('disabled','true');
-           }
-      });
+        let that = this;
+        $('#role').find('option').each(function () {
+          if ($(this).attr('value') == that.user[t].Role) {
+            $(this).attr('disabled', 'true');
+          }
+        });
       }
     }
   }
@@ -72,8 +82,8 @@ export class HomeComponent implements OnInit {
       newdata = [this.dataList[key].CityName, this.dataList[key].CityId];
       this.setList.push(newdata);
     }
-   
-     console.log(this.setList, this.selectedCity);
+
+    console.log(this.setList, this.selectedCity);
   }
   getCityId() {
     for (var i = 0; i < this.setList.length; i++) {
@@ -85,15 +95,14 @@ export class HomeComponent implements OnInit {
   }
   canUpdate = false;
   checkindata() {
-    let selectedcityid = parseInt(this.getCityId());
-    console.log(selectedcityid, this.selectedfacility, this.selectedCity);
-    this.logser.getallfacility(selectedcityid).subscribe((data) => {
+    console.log(this.selectedcityid, this.selectedfacility, this.selectedCity);
+    this.logser.getallfacility(this.selectedcityid).subscribe((data) => {
       this.facility = data;
       console.log(this.facility);
 
       for (let key in this.facility) {
         if (
-          this.facility[key].Facility_cityid == selectedcityid &&
+          this.facility[key].Facility_cityid == this.selectedcityid &&
           this.facility[key].Owner_id != "" &&
           this.facility[key].facilityName == this.selectedfacility
         ) {
@@ -106,15 +115,15 @@ export class HomeComponent implements OnInit {
           if (this.facility[key].Facilityname == this.selectedfacility) {
             currentcartId = this.facility[key].cartId;
             console.log('currentcartId' + currentcartId);
-            this.facilityobj.facilityCityId = selectedcityid;
+            this.facilityobj.facilityCityId = parseInt(this.selectedcityid);
             this.facilityobj.facilityname = this.selectedfacility;
             this.facilityobj.Ownerid = this.logser.currentuser.UserId;
-            this.userobj.cityid = selectedcityid;
+            this.userobj.cityid = parseInt(this.selectedcityid);
             this.userobj.Role = this.selectedfacility;
             this.userobj.cartId = currentcartId;
             this.logser.currentuser.Role = this.selectedfacility;
             this.logser.currentuser.cartId = currentcartId;
-            this.logser.currentuser.CityId = selectedcityid.toString();
+            this.logser.currentuser.CityId = this.selectedcityid.toString();
           }
 
         }
@@ -146,4 +155,6 @@ export class HomeComponent implements OnInit {
       );
     }
   }
+
+
 }

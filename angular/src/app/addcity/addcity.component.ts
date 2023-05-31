@@ -69,12 +69,11 @@ export class AddcityComponent implements OnInit {
       setTimeout(() => {
         this.logser.getAllCities().subscribe((data) => {
           this.allcity = data;
-          console.log(this.allcity)
           let length=this.allcity.length;
           this.userobj['cityid']=length.toString();
           this.firstfacility['CityId']=length.toString();
           this.logser.currentuser.Role='Mayor';
-          console.log(this.logser.currentuser);
+          this.logser.currentuser.CityId=length.toString();
           this.logser.updateuser(this.userobj).subscribe(
             data => {
               this.userobj = data;
@@ -94,7 +93,7 @@ export class AddcityComponent implements OnInit {
             }
           );
         })
-      }, 200)
+      },200)
       
       
     }
