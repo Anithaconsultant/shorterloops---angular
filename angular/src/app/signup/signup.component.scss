@@ -1,21 +1,4 @@
-.pics {
-    width: 150px;
-    height: 150px;
-    margin: 12px;
-    padding: 20px;
-    border-radius: 50%;
-    display: inline-block;
-    border: 4px solid #fff;
 
-    &:hover {
-        border: 4px solid gainsboro;
-        cursor: pointer;
-    }
-
-    &:user-select {
-        border: 4px solid gray;
-    }
-}
 
 .landingpage {
     width: 100%;
@@ -63,7 +46,3 @@
 
 
 
-::ng-deep .modal-dialog {
-    max-width: 80%;
-    width: 80%;
-}
