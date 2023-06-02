@@ -41,7 +41,7 @@ export class HomeComponent implements OnInit {
       this.getcityList();
     });
 
-    
+
 
   }
   ngOnInit(): void {
@@ -58,12 +58,9 @@ export class HomeComponent implements OnInit {
   setList: any[] = [];
   selectedcityid = '';
   choosefacility() {
-    console.log(this.user);
     this.selectedcityid = this.getCityId();
-    console.log(this.selectedcityid);
     for (var t = 0; t < this.user.length; t++) {
       if (this.user[t].Role !== '' && this.user[t].User_cityid == this.selectedcityid) {
-        console.log(this.user[t].Role)
         let that = this;
         $('#role').find('option').each(function () {
           if ($(this).attr('value') == that.user[t].Role) {
@@ -82,8 +79,6 @@ export class HomeComponent implements OnInit {
       newdata = [this.dataList[key].CityName, this.dataList[key].CityId];
       this.setList.push(newdata);
     }
-
-    console.log(this.setList, this.selectedCity);
   }
   getCityId() {
     for (var i = 0; i < this.setList.length; i++) {
@@ -114,7 +109,6 @@ export class HomeComponent implements OnInit {
           let currentcartId;
           if (this.facility[key].Facilityname == this.selectedfacility) {
             currentcartId = this.facility[key].cartId;
-            console.log('currentcartId' + currentcartId);
             this.facilityobj.facilityCityId = parseInt(this.selectedcityid);
             this.facilityobj.facilityname = this.selectedfacility;
             this.facilityobj.Ownerid = this.logser.currentuser.UserId;
@@ -133,7 +127,6 @@ export class HomeComponent implements OnInit {
     });
   }
   dochanges() {
-    console.log("updating")
     if (this.canUpdate == false && this.selectrole) {
       console.log(this.facilityobj);
       this.logser.updatefacility(this.facilityobj).subscribe(

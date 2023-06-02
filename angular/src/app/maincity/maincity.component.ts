@@ -33,9 +33,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     'House5': [[-1282, -3154], [2061, 3584], [2009, 3472], [1962, 3382]],
     'Recycling': [[-5641, -3623], [5930, 4010], [5898, 3898], [6009, 3806]],
     'Supermarket': [[-5651, -3616], [6268, 4010], [6235, 3898], [6346, 3806]],
-    'Grocery': [[-6011, -3608], [6602, 4010], [6576, 3898], [6683, 3806]],
-    'Ubottle': [[-6360, -3606], [6945, 4010], [6910, 3898], [7020, 3806]],
-    'Making': [[-6613, -3622], [7282, 4010], [7246, 3898], [7357, 3806]],
+    'Universal': [[-6360, -3606], [6945, 4010], [6910, 3898], [7020, 3806]],
     'Reverse': [[-6635, -3154], [7295, 3584], [7246, 3473], [7357, 3382]],
     'Plastic': [[-6254, -3154], [6958, 3584], [6910, 3473], [7020, 3382]],
     'Refilling': [[-6158, -3154], [6617, 3584], [6576, 3473], [6683, 3382]],
@@ -93,10 +91,17 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   }
 
   ngOnInit(): void {
-
-
-    if (this.logser.currentuser.Username == '') {
-      this.router.navigate(["login"])
+    
+    if(this.logser.currentuser.Username!=''){
+      sessionStorage.setItem('currentUser', JSON.stringify(this.logser.currentuser));  
+    }else{
+      let current=JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+      this.logser.currentuser = JSON.parse(JSON.stringify(current))
+      console.log(this.logser.currentuser)
+      this.currentUserRole = this.logser.currentuser.Role;
+      this.currentUserCartId = this.logser.currentuser.cartId;
+      this.currentusername = this.logser.currentuser.Username;
+      this.currentusergender = this.logser.currentuser.gender;
     }
     this.logser.getcitynames().subscribe((data) => {
       setTimeout(() => {
@@ -112,8 +117,10 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     this.logser.getAllUsers().subscribe((data) => {
       this.user = data;
       for (var t = 0; t < this.user.length; t++) {
-        console.log(this.user[t])
-        if (this.user[t].login == 1 && this.user[t].CityId == this.logser.currentuser.CityId) {
+        console.log(this.user[t]);
+        console.log(this.user[t].login,this.user[t].User_cityid, this.logser.currentuser.CityId)
+        if (this.user[t].login == 1 && this.user[t].User_cityid == this.logser.currentuser.CityId) {
+          console.log(this.user[t].Role.split(" ")[0])
           $("." + this.user[t].Role.split(" ")[0]).show();
         }
         if (this.user[t].Role !== '') {
@@ -121,7 +128,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
           let xpos = this.positionObject[word as keyof typeof this.positionObject][3][0];
           let ypos = this.positionObject[word as keyof typeof this.positionObject][3][1];
           $(".displaypanel." + word).css({ 'left': xpos + 'px', 'top': ypos + 'px' }).html(this.user[t].Role);
-          if (word == 'Supermarket' || word == 'Recycling' || word == 'Ubottle' || word == 'Making' || word == 'Reverse' || word == 'Refilling') {
+          if (word == 'Supermarket' || word == 'Recycling' || word == 'Ubottle' || word == 'Reverse' || word == 'Refilling') {
             $(".commoncls." + word).html('OPEN');
           }
           else {
@@ -131,15 +138,12 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         if (this.user[t].User_cityid == this.logser.currentuser.CityId) {
           let avatarnumber = this.user[t].avatar;
           for (var j = 0; j < this.maleset.length; j++) {
-            console.log(this.maleset[j].toString(), avatarnumber)
-            if (this.maleset[j].toString() == avatarnumber) {
+           if (this.maleset[j].toString() == avatarnumber) {
               this.maleset.splice(j, 1);
             }
           }
 
-          console.log(this.maleset);
-          for (var j = 0; j < this.femaleset.length; j++) {
-            console.log(this.femaleset[j].toString(), avatarnumber)
+         for (var j = 0; j < this.femaleset.length; j++) {
             if (this.femaleset[j].toString() == avatarnumber) {
               this.femaleset.splice(j, 1);
             }
@@ -149,7 +153,6 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       }
       this.newmale = this.maleset.slice(0);
       this.newfemale = this.femaleset.slice(0);
-      console.log(this.newmale);
 
     });
   }
@@ -184,7 +187,6 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     $(".cart").css({ 'left': x1 + 'px', 'top': y1 + 'px' });
     $(".housedisplay").css({ 'left': x2 + 'px', 'top': y2 + 'px' });
     $(".houselite").hide();
-    $(".displayrole").html(this.logser.currentuser.Role);
     $(".displaypic,.cartavatar").addClass('pic_' + this.logser.currentuser.avatar);
     $(".cartid").html(this.currentUserCartId)
     if (this.logser.currentuser.avatar == '') {
