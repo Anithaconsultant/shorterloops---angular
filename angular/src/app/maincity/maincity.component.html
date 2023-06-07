@@ -1,19 +1,23 @@
 <div class="maincity_container">
     <div class="maincity" #maincity id="maincity">
-       
+
         <div class="cart">
             <div class="cartavatar"></div>
             <div class="cartid"></div>
         </div>
         <div class="housedisplay">{{currentusername | titlecase}}</div>
         <div class="boardholder">
-            <div class="Supermarket commoncls"></div>
-            <div class="Recycling commoncls"></div>
-            <div class="Ubottle commoncls"></div>
-            <div class="Making commoncls"></div>
-            <div class="Refilling commoncls"></div>
+            <div class="Supermarket commoncls">CLOSE</div>
+            <div class="Plastic commoncls">CLOSE</div>
+            <div class="Ubottle commoncls">CLOSE</div>
+            <div class="Making commoncls">CLOSE</div>
+            <!-- <div class="Refilling commoncls">CLOSE</div> -->
         </div>
-        <div class="mayorflag" ></div>
+        <div class="supermarketentry"></div>
+        <div class="mayorflag"></div>
+        <div class="mayorofzboard">{{cityname | uppercase}} MUNICIPAL OFFICE</div>
+        <div class="leftcolony">{{cityname | uppercase}} HOUSING COLONY</div>
+        <div class="rightcolony">{{cityname | uppercase}} HOUSING COLONY</div>
         <div class="houselitewrapper">
             <div *ngFor='let key of objkey(positionObject);let i = index' class="houselite {{key}}">
             </div>
@@ -22,19 +26,18 @@
             <div *ngFor='let key of objkey(positionObject);let i = index' class="displaypanel {{key}}">
             </div>
         </div>
-    
+
     </div>
     <div class="topbar">
         <div class="logo"></div>
-        <div class="cityname">{{cityname | titlecase}}</div>
         <div class="displayrole">{{currentusername | titlecase}}</div>
         <div ngbDropdown class="picholder">
-			<div type="button" class="displaypic" id="dropdown" ngbDropdownToggle>
+            <div type="button" class="displaypic" id="dropdown" ngbDropdownToggle>
             </div>
-			<div ngbDropdownMenu aria-labelledby="dropdown">
-				<button ngbDropdownItem (click)='logout()' id="logout">Logout</button>
-			</div>
-		</div>
+            <div ngbDropdownMenu aria-labelledby="dropdown">
+                <button ngbDropdownItem (click)='logout()' id="logout">Logout</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -56,6 +59,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click');saveavatar();">Save</button>
+        <button type="button" class="btn btn-outline-dark"
+            (click)="modal.close('Save click');saveavatar();">Save</button>
     </div>
 </ng-template>

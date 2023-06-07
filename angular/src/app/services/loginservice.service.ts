@@ -21,7 +21,7 @@ export class LoginserviceService {
     'cityname': ''
 
   };
-  //  baseurl = "https://dbl.iihs.in/api/";
+ // baseurl = "https://dbl.iihs.in/api/";
   baseurl = "http://127.0.0.1:8000/api/";
   authorizationData = 'Basic ' + btoa(this.username + ':' + this.password);
   httpHeaders = new HttpHeaders({

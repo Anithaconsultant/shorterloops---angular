@@ -123,18 +123,21 @@ export class MaincityComponent implements AfterViewInit, OnInit {
           console.log(this.user[t].Role.split(" ")[0])
           $("." + this.user[t].Role.split(" ")[0]).show();
         }
+        if(this.user[t].Username==this.logser.currentuser.Username && this.user[t].avatar==''){
+          this.noavatar=true;
+        }
         if (this.user[t].Role !== '') {
           let word = this.user[t].Role.split(" ")[0];
           let xpos = this.positionObject[word as keyof typeof this.positionObject][3][0];
           let ypos = this.positionObject[word as keyof typeof this.positionObject][3][1];
           $(".displaypanel." + word).css({ 'left': xpos + 'px', 'top': ypos + 'px' }).html(this.user[t].Role);
-          if (word == 'Supermarket' || word == 'Recycling' || word == 'Ubottle' || word == 'Reverse' || word == 'Refilling') {
-            $(".commoncls." + word).html('OPEN');
+          console.log(word)
+          if (word == 'Supermarket' || word == 'Plastic' || word == 'Ubottle' || word == 'Reverse' || word == 'Refilling') {
+            $(".commoncls." + word).html('').addClass('openlight');
           }
-          else {
-            $(".commoncls." + word).html('CLOSE');
-          }
+         
         }
+        
         if (this.user[t].User_cityid == this.logser.currentuser.CityId) {
           let avatarnumber = this.user[t].avatar;
           for (var j = 0; j < this.maleset.length; j++) {
@@ -189,11 +192,12 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     $(".houselite").hide();
     $(".displaypic,.cartavatar").addClass('pic_' + this.logser.currentuser.avatar);
     $(".cartid").html(this.currentUserCartId)
-    if (this.logser.currentuser.avatar == '') {
+    if (this.noavatar==true) {
       this.open(this.content)
     }
 
   }
+  noavatar=false;
   userobj = {
     'login': '1'
   }

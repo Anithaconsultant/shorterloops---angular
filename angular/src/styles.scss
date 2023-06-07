@@ -128,60 +128,79 @@ app-home {
 .pic_21 {
     background-image: url('./assets/img/female2.svg');
 }
+
 .pic_22 {
     background-image: url('./assets/img/female3.svg');
 }
+
 .pic_23 {
     background-image: url('./assets/img/female4.svg');
 }
+
 .pic_24 {
     background-image: url('./assets/img/female5.svg');
 }
+
 .pic_25 {
     background-image: url('./assets/img/female6.svg');
 }
+
 .pic_26 {
     background-image: url('./assets/img/female7.svg');
 }
+
 .pic_27 {
     background-image: url('./assets/img/female8.svg');
 }
+
 .pic_28 {
     background-image: url('./assets/img/female9.svg');
 }
+
 .pic_29 {
     background-image: url('./assets/img/female10.svg');
 }
+
 .pic_30 {
     background-image: url('./assets/img/female11.svg');
 }
+
 .pic_31 {
     background-image: url('./assets/img/female12.svg');
 }
+
 .pic_32 {
     background-image: url('./assets/img/female13.svg');
 }
+
 .pic_33 {
     background-image: url('./assets/img/female14.svg');
 }
+
 .pic_34 {
     background-image: url('./assets/img/female15.svg');
 }
+
 .pic_35 {
     background-image: url('./assets/img/female16.svg');
 }
+
 .pic_36 {
     background-image: url('./assets/img/female17.svg');
 }
+
 .pic_37 {
     background-image: url('./assets/img/female18.svg');
 }
+
 .pic_38 {
     background-image: url('./assets/img/female19.svg');
 }
+
 .pic_39 {
     background-image: url('./assets/img/female20.svg');
 }
+
 .pics {
     width: 150px;
     height: 150px;
@@ -200,6 +219,7 @@ app-home {
         border: 4px solid gray;
     }
 }
+
 input::placeholder {
     opacity: 0.5 !important;
 }
@@ -291,20 +311,47 @@ app-signup {
         .logo {
             position: absolute;
             left: 0px;
-            width: 80px;
-            height: 80px;
+            width: 250px;
+            height: 49px;
             background-image: url('./assets/img/logo.png');
             background-size: cover;
-            background-color: rgb(255, 255, 255);
-            background-position: -159px -152px;
 
         }
 
     }
+
     .maincity {
         .House1 {
             top: 3429px;
             left: 705px;
+        }
+
+        .common {
+            position: absolute;
+            width: 271px;
+            height: 78px;
+            color: #fff;
+            font-size: 27px;
+            text-align: center;
+            @extend .commmoncenter;
+        }
+
+        .mayorofzboard {
+            @extend .common;
+            top: 2853px;
+            left: 3518px;
+        }
+
+        .rightcolony {
+            @extend .common;
+            top: 3285px;
+            left: 5457px;
+        }
+
+        .leftcolony {
+            @extend .common;
+            top: 3285px;
+            left: 2301px;
         }
 
         .House2 {
@@ -406,25 +453,25 @@ app-signup {
     .boardholder {
         .commoncls {
             position: absolute;
-            width: 95px;
-            height: 37px;
             background-size: cover;
             color: #fff;
             font-size: 20px;
+            width: 100px;
+            height: 38px;
             @extend .commmoncenter;
 
         }
 
         .Supermarket {
             @extend .commoncls;
-            left: 1910px;
-            top: 2466px;
+            left: 1909px;
+            top: 2457px;
         }
 
-        .Recycling {
+        .Plastic {
             @extend .commoncls;
-            left: 1985px;
-            top: 877px;
+            left: 1982px;
+            top: 871px;
         }
 
         .Making {
@@ -477,5 +524,5 @@ app-signup {
         }
     }
 
-    
+
 }

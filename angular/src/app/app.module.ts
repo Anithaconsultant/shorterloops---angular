@@ -12,6 +12,7 @@ import { SignupComponent } from './signup/signup.component';
 import { MaincityComponent } from './maincity/maincity.component';
 import { HomeComponent } from './home/home.component';
 import { AddcityComponent } from './addcity/addcity.component';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,7 +31,7 @@ import { AddcityComponent } from './addcity/addcity.component';
     NgbModule,
     NgbDropdownModule
   ],
-  providers: [
+  providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy },
     DatePipe],
   bootstrap: [AppComponent]
 })
