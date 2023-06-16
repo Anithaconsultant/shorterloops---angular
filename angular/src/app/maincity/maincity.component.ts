@@ -1,10 +1,10 @@
 import { Component, HostListener, ViewChild, AfterViewInit, ElementRef, OnInit } from '@angular/core';
-import * as $ from 'jquery';
 import panzoom from "panzoom";
 import { LoginserviceService } from '../services/loginservice.service';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
+import * as $ from 'jquery';
+import { CdkDragDrop, moveItemInArray, transferArrayItem, CdkDrag } from '@angular/cdk/drag-drop';
 @Component({
   selector: 'app-maincity',
   templateUrl: './maincity.component.html',
@@ -14,6 +14,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class MaincityComponent implements AfterViewInit, OnInit {
 
   public instance: any;
+  public instance1: any;
   currentUserRole: string = '';
   currentUserCartId = '';
   currentusername = '';
@@ -54,48 +55,73 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     this.currentusergender = this.logser.currentuser.gender;
 
   }
+
   topval = 0;
   @HostListener('document:keydown.arrowdown', ['$event'])
   movedown($event: any) {
     $event.stopPropagation();
-    let leftval = $(".cart").css('top');
-    this.topval = parseInt(leftval);
-    console.log(leftval);
-    leftval = parseInt(leftval) + 5 + "px";
+    if (this.opensuperflag == false) {
+      let leftval = $(".cart").css('top');
+      leftval = parseInt(leftval) + 5 + "px";
+      $(".cart").css({ 'top': leftval })
+    }
+    else {
+      let leftval = $(".supermarketcart").css('top');
+      leftval = parseInt(leftval) + 5 + "px";
+      $(".supermarketcart").css({ 'top': leftval })
+    }
 
-    $(".cart").css({ 'top': leftval })
+
   }
   @HostListener('document:keydown.arrowup', ['$event'])
   moveup($event: any) {
     $event.stopPropagation();
-    let leftval = $(".cart").css('top');
-    console.log(leftval);
-    leftval = parseInt(leftval) - 5 + "px";
-    $(".cart").css({ 'top': leftval })
+    if (this.opensuperflag == false) {
+      let leftval = $(".cart").css('top');
+      leftval = parseInt(leftval) - 5 + "px";
+      $(".cart").css({ 'top': leftval })
+    }
+    else {
+      let leftval = $(".supermarketcart").css('top');
+      leftval = parseInt(leftval) - 5 + "px";
+      $(".supermarketcart").css({ 'top': leftval })
+    }
   }
   @HostListener('document:keydown.arrowleft', ['$event'])
   moveleft($event: any) {
     $event.stopPropagation();
-    let leftval = $(".cart").css('left');
-    console.log(leftval);
-    leftval = parseInt(leftval) - 5 + "px";
-    $(".cart").css({ 'left': leftval })
+    if (this.opensuperflag == false) {
+      let leftval = $(".cart").css('left');
+      leftval = parseInt(leftval) - 5 + "px";
+      $(".cart").css({ 'left': leftval })
+    }
+    else {
+      let leftval = $(".supermarketcart").css('left');
+      leftval = parseInt(leftval) - 5 + "px";
+      $(".supermarketcart").css({ 'left': leftval })
+    }
   }
   @HostListener('document:keydown.arrowright', ['$event'])
   moveright($event: any) {
     $event.stopPropagation();
-    let leftval = $(".cart").css('left');
-    console.log(leftval);
-    leftval = parseInt(leftval) + 5 + "px";
-    $(".cart").css({ 'left': leftval })
+    if (this.opensuperflag == false) {
+      let leftval = $(".cart").css('left');
+      leftval = parseInt(leftval) + 5 + "px";
+      $(".cart").css({ 'left': leftval })
+    }
+    else {
+      let leftval = $(".supermarketcart").css('left');
+      leftval = parseInt(leftval) + 5 + "px";
+      $(".supermarketcart").css({ 'left': leftval })
+    }
   }
 
   ngOnInit(): void {
-    
-    if(this.logser.currentuser.Username!=''){
-      sessionStorage.setItem('currentUser', JSON.stringify(this.logser.currentuser));  
-    }else{
-      let current=JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+
+    if (this.logser.currentuser.Username != '') {
+      sessionStorage.setItem('currentUser', JSON.stringify(this.logser.currentuser));
+    } else {
+      let current = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
       this.logser.currentuser = JSON.parse(JSON.stringify(current))
       console.log(this.logser.currentuser)
       this.currentUserRole = this.logser.currentuser.Role;
@@ -117,36 +143,32 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     this.logser.getAllUsers().subscribe((data) => {
       this.user = data;
       for (var t = 0; t < this.user.length; t++) {
-        console.log(this.user[t]);
-        console.log(this.user[t].login,this.user[t].User_cityid, this.logser.currentuser.CityId)
         if (this.user[t].login == 1 && this.user[t].User_cityid == this.logser.currentuser.CityId) {
-          console.log(this.user[t].Role.split(" ")[0])
           $("." + this.user[t].Role.split(" ")[0]).show();
         }
-        if(this.user[t].Username==this.logser.currentuser.Username && this.user[t].avatar==''){
-          this.noavatar=true;
+        if (this.user[t].Username == this.logser.currentuser.Username && this.user[t].avatar == '') {
+          this.noavatar = true;
         }
         if (this.user[t].Role !== '') {
           let word = this.user[t].Role.split(" ")[0];
           let xpos = this.positionObject[word as keyof typeof this.positionObject][3][0];
           let ypos = this.positionObject[word as keyof typeof this.positionObject][3][1];
           $(".displaypanel." + word).css({ 'left': xpos + 'px', 'top': ypos + 'px' }).html(this.user[t].Role);
-          console.log(word)
           if (word == 'Supermarket' || word == 'Plastic' || word == 'Ubottle' || word == 'Reverse' || word == 'Refilling') {
             $(".commoncls." + word).html('').addClass('openlight');
           }
-         
+
         }
-        
+
         if (this.user[t].User_cityid == this.logser.currentuser.CityId) {
           let avatarnumber = this.user[t].avatar;
           for (var j = 0; j < this.maleset.length; j++) {
-           if (this.maleset[j].toString() == avatarnumber) {
+            if (this.maleset[j].toString() == avatarnumber) {
               this.maleset.splice(j, 1);
             }
           }
 
-         for (var j = 0; j < this.femaleset.length; j++) {
+          for (var j = 0; j < this.femaleset.length; j++) {
             if (this.femaleset[j].toString() == avatarnumber) {
               this.femaleset.splice(j, 1);
             }
@@ -163,6 +185,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   private scene!: ElementRef;
   @ViewChild('content', { static: false })
   private content!: ElementRef;
+
   ngAfterViewInit(): void {
     this.instance = panzoom(this.scene.nativeElement, {
       maxZoom: 3,
@@ -177,8 +200,15 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         // allow wheel-zoom only if altKey is down. Otherwise - ignore
         var shouldIgnore = !e.altKey;
         return shouldIgnore;
-      }
+      },
+      // beforeMouseDown: function (e) {
+      //   // allow mouse-down panning only if altKey is down. Otherwise - ignore
+      //   var shouldIgnore = !e.altKey;
+      //   return shouldIgnore;
+      // }
     });
+
+
     let a = this.currentUserRole.split(" ")[0];
     let x = this.positionObject[a as keyof typeof this.positionObject][0][0];
     let y = this.positionObject[a as keyof typeof this.positionObject][0][1];
@@ -192,19 +222,47 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     $(".houselite").hide();
     $(".displaypic,.cartavatar").addClass('pic_' + this.logser.currentuser.avatar);
     $(".cartid").html(this.currentUserCartId)
-    if (this.noavatar==true) {
+    if (this.noavatar == true) {
       this.open(this.content)
     }
 
   }
-  noavatar=false;
+  noavatar = false;
   userobj = {
     'login': '1'
   }
   dopanzoom(x: number, y: number, zoomlevel: string) {
-    //console.log(this.instance)
     this.instance.zoomTo(x, y, parseFloat(zoomlevel));
     this.instance.smoothMoveTo(x, y);
+  }
+  bottles = ['silky', 'wavy', 'shiny', 'bouncy']
+  bottledropped: string[] = [];
+
+
+  drop(event: CdkDragDrop<string[]>) {
+    console.log(event.previousContainer, event.container)
+    if (event.previousContainer === event.container) {
+      console.log('inga', event.container.data, event.previousIndex, event.currentIndex);
+      moveItemInArray(
+        event.container.data, event.previousIndex, event.currentIndex,);
+    } else {
+      console.log(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+      transferArrayItem(event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex);
+    }
+  }
+  exit() { }
+  leavecity() { }
+  /** Predicate function that only allows even numbers to be dropped into a list. */
+  evenPredicate(item: CdkDrag<number>) {
+    return item.data % 2 === 0;
+  }
+
+  /** Predicate function that doesn't allow items to be dropped into a list. */
+  noReturnPredicate() {
+    return false;
   }
   logout() {
     this.userobj.login = '0';
@@ -231,7 +289,11 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     'junction_8': [],
 
   }
-
+  dopanzoomsupermarket(x: number, y: number, zoomlevel: string) {
+    console.log(this.instance1);
+    this.instance1.zoomTo(x, y, 0.2);
+    this.instance1.smoothMoveTo(x, y);
+  }
   open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
 
@@ -260,5 +322,31 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       );
     }
   }
+
+  opensuperflag = false;
+  @ViewChild('supermarket', { static: false })
+  private supermarket!: ElementRef;
+  opensupermarket() {
+    this.instance1 = panzoom(this.supermarket.nativeElement, {
+      maxZoom: 2,
+      minZoom: 0.4,
+      initialZoom: 0.4,
+      bounds: true,
+      boundsPadding: 1,
+      smoothScroll: false,
+      filterKey: function () {
+        return true;
+      },
+      beforeMouseDown: function (e) {
+        // allow mouse-down panning only if altKey is down. Otherwise - ignore
+        var shouldIgnore = !e.altKey;
+        return shouldIgnore;
+      }
+    });
+    this.dopanzoomsupermarket(-57, -1077, '0.4');
+    $(".supermarketcart.cart").css({ 'left': '932px', 'top': '3413px' })
+  }
+
 }
+
 

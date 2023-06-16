@@ -13,10 +13,11 @@
 
         .supermarketentry {
             position: absolute;
-            width: 40px;
-            height: 20px;
-            left: 1909px;
-            top: 2457px;
+            width: 65px;
+            height: 29px;
+            left: 1757px;
+            top: 2644px;
+            cursor: pointer;
         }
 
         .houselite {
@@ -59,11 +60,28 @@
     }
 
     .supermarketlocation {
-
         top: 3854px;
         left: 6275px;
-
     }
+}
+
+.supermarketstage {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    overflow: hidden;
+
+    .loadimg {
+        position: absolute;
+        background-image: url('./../../assets/img/supermarket.jpg');
+        background-repeat: no-repeat;
+        background-size: cover;
+        width: 12000px;
+        height: 4501px;
+    }
+
 }
 
 .openlight {
@@ -81,3 +99,24 @@
     max-width: 80%;
     width: 80%;
 }
+
+.cdk-drag-preview {
+    box-sizing: border-box;
+    border-radius: 4px;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+    opacity: 0;
+}
+
+.cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+.bottle_list{
+    border: solid 1px #ccc;
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    width: 100%;
+  }

@@ -333,6 +333,7 @@ app-signup {
             color: #fff;
             font-size: 27px;
             text-align: center;
+            line-height:34px;
             @extend .commmoncenter;
         }
 
@@ -499,30 +500,142 @@ app-signup {
         align-items: center;
     }
 
-    .cart {
+    .cartimg {
         background-image: url('./assets/img/shoppingcart.svg');
-        width: 67px;
         background-repeat: no-repeat;
         position: absolute;
-        height: 99px;
         background-size: contain;
+    }
 
-        .cartavatar {
-            width: 30px;
-            height: 30px;
-            position: absolute;
-            left: -30px;
-            border-radius: 50%;
-        }
+    .maincity {
+        .cart {
+            @extend .cartimg;
+            height: 99px;
+            width: 67px;
 
-        .cartid {
-            position: absolute;
-            color: #fff;
-            left: 12px;
-            font-size: 7px;
-            top: 2px;
+
+
+            .cartavatar {
+                width: 30px;
+                height: 30px;
+                position: absolute;
+                left: -30px;
+                border-radius: 50%;
+            }
+
+            .cartid {
+                position: absolute;
+                color: #fff;
+                left: 12px;
+                font-size: 7px;
+                top: -3px;
+            }
         }
     }
 
+    .supermarketstage {
+        .cart {
+            @extend .cartimg;
+            height: 399px;
+            width: 367px;
 
+            .cartavatar {
+                width: 90px;
+                height: 90px;
+                position: absolute;
+                left: -90px;
+                border-radius: 50%;
+            }
+
+            .cartid {
+                position: absolute;
+                color: #fff;
+                left: 43px;
+                font-size: 30px;
+                top: 12px;
+            }
+        }
+    }
+
+    .bottleholder {
+        width: 205px;
+        position: absolute;
+        left: 60px;
+        top: 200px;
+        border: 1px solid;
+        height: 93px;
+        display: flex;
+
+        .bottle {
+            position: relative;
+            background-size: cover;
+            display: flex;
+            cursor: move;
+            z-index: 1;
+            transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
+        }
+
+    }    
+     .bottle {
+            position: relative;
+            background-size: cover;
+            display: flex;
+            cursor: move;
+            z-index: 1;
+            transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
+        }
+
+    .bottledropper {
+        width: 205px;
+        position: absolute;
+        left: 1660px;
+        top: 2579px;
+        border: 1px solid red;
+        height: 93px;
+        display: flex;
+   }
+    .bottledropper2 {
+        width: 205px;
+        position: absolute;
+        left: 1660px;
+        top: 2579px;
+        border: 1px solid red;
+        height: 93px;
+        display: flex;
+   }
 }
+
+.silky {
+    background-image: url('./assets/img/silky.svg');
+    width: 30px;
+    height: 84px;
+}
+
+.wavy {
+    background-image: url('./assets/img/wavy.svg');
+    width: 31px;
+    height: 77px;
+}
+
+.bouncy {
+    background-image: url('./assets/img/bouncy.svg');
+    width: 35px;
+    height: 77px;
+}
+
+.shiny {
+    background-image: url('./assets/img/shiny.svg');
+    width: 35px;
+    height: 77px;
+}
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

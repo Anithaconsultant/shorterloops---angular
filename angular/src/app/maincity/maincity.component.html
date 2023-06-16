@@ -1,5 +1,5 @@
 <div class="maincity_container">
-    <div class="maincity" #maincity id="maincity">
+    <div class="maincity" #maincity id="maincity" [hidden]="opensuperflag">
 
         <div class="cart">
             <div class="cartavatar"></div>
@@ -13,7 +13,7 @@
             <div class="Making commoncls">CLOSE</div>
             <!-- <div class="Refilling commoncls">CLOSE</div> -->
         </div>
-        <div class="supermarketentry"></div>
+
         <div class="mayorflag"></div>
         <div class="mayorofzboard">{{cityname | uppercase}} MUNICIPAL OFFICE</div>
         <div class="leftcolony">{{cityname | uppercase}} HOUSING COLONY</div>
@@ -26,40 +26,86 @@
             <div *ngFor='let key of objkey(positionObject);let i = index' class="displaypanel {{key}}">
             </div>
         </div>
+        <div class="supermarketentry" (click)="opensuperflag=true;opensupermarket()"></div>
+
 
     </div>
-    <div class="topbar">
-        <div class="logo"></div>
-        <div class="displayrole">{{currentusername | titlecase}}</div>
-        <div ngbDropdown class="picholder">
-            <div type="button" class="displaypic" id="dropdown" ngbDropdownToggle>
+    <div class="supermarketstage" [hidden]="!opensuperflag">
+        <div class="loadimg" #supermarket>
+            <div class="cart supermarketcart">
+                <div class="cartavatar"></div>
+
+                <div class="cartid"></div>
+                <!-- <div class="bottleholder" id="bottle_list" cdkDropList (cdkDropListDropped)="drop($event)">
+                    <div class="bottle {{bottle}}" *ngFor="let bottle of bottles" cdkDrag></div>
+                </div> -->
+                <div class="bottleholder">
+
+                    <div cdkDropList #bottleList="cdkDropList" [cdkDropListConnectedTo]="[droppedList]"
+                        [cdkDropListData]="bottles" (cdkDropListDropped)="drop($event)" class="bottle_list">
+                        <div *ngFor="let item of bottles" class="bottle {{item}}" cdkDrag></div>
+                    </div>
+
+
+                </div>
             </div>
-            <div ngbDropdownMenu aria-labelledby="dropdown">
-                <button ngbDropdownItem (click)='logout()' id="logout">Logout</button>
+            <div class="bottledropper">
+                <div cdkDropList #droppedList="cdkDropList" [cdkDropListConnectedTo]="[bottleList]"
+                    [cdkDropListData]="bottledropped" (cdkDropListDropped)="drop($event)"  class="bottle_list">
+                    <div *ngFor="let item of bottledropped" class="bottle {{item}}" cdkDrag></div>
+                </div>
+            </div>
+            <div class="bottledropper2">
+                <div cdkDropList #droppedList="cdkDropList" [cdkDropListConnectedTo]="[bottleList]"
+                    [cdkDropListData]="bottledropped" (cdkDropListDropped)="drop($event)"  class="bottle_list">
+                    <div *ngFor="let item of bottledropped" class="bottle {{item}}" cdkDrag></div>
+                </div>
+            </div>
+        </div>
+        <div class="topbar">
+            <div class="logo"></div>
+            <div class="displayrole">{{currentusername | titlecase}}</div>
+            <div ngbDropdown class="picholder">
+                <div type="button" class="displaypic" id="dropdown" ngbDropdownToggle>
+                </div>
+                <div ngbDropdownMenu aria-labelledby="dropdown">
+                    <!-- <li><a class="dropdown-item" href="/cityrule">View/Update City Rule Book</a></li>
+				<li><a class="dropdown-item" href="/editcity">Set Clock Tick Rate</a></li>
+				<li><a class="dropdown-item" href="#">Check Cash Box</a></li>
+				<li><a class="dropdown-item" href="#">Check Transaction Ledger</a></li>
+				<li><a class="dropdown-item" href="#">Manage Announcements</a></li>
+				<li><a class="dropdown-item" href="#">Generate Reports</a></li>
+				<li><a class="dropdown-item" href="#">Audit Bottle Plant</a></li>
+				<li><a class="dropdown-item" href="#">Audit Refill Station</a></li> -->
+                    <div ngbDropdownItem ngbDropdownToggle id="exitways">
+                        <button ngbDropdownItem aria-labelledby="exitways" (click)="logout()" id="logout"></button>
+                        <button ngbDropdownItem aria-labelledby="exitways" (click)="exit()" id="logout"></button>
+                        <button ngbDropdownItem aria-labelledby="exitways" (click)="leavecity()" id="logout"></button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Modal -->
-<ng-template #content let-modal>
-    <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Select Your Avatar</h4>
-        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-    </div>
-    <div class="modal-body">
-        <div *ngIf="currentusergender=='male'">
-            <div *ngFor='let in of newmale' class="male pics pic_{{in}}" (click)="selectphoto(in)">
+    <!-- Modal -->
+    <ng-template #content let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Select Your Avatar</h4>
+            <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+        </div>
+        <div class="modal-body">
+            <div *ngIf="currentusergender=='male'">
+                <div *ngFor='let in of newmale' class="male pics pic_{{in}}" (click)="selectphoto(in)">
 
+                </div>
+            </div>
+            <div *ngIf="currentusergender=='female'">
+                <div *ngFor='let in of newfemale' class="female pics pic_{{in}}" (click)="selectphoto(in)">
+                </div>
             </div>
         </div>
-        <div *ngIf="currentusergender=='female'">
-            <div *ngFor='let in of newfemale' class="female pics pic_{{in}}" (click)="selectphoto(in)">
-            </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-dark"
+                (click)="modal.close('Save click');saveavatar();">Save</button>
         </div>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark"
-            (click)="modal.close('Save click');saveavatar();">Save</button>
-    </div>
-</ng-template>
+    </ng-template>
