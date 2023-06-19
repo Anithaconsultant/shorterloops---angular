@@ -333,7 +333,7 @@ app-signup {
             color: #fff;
             font-size: 27px;
             text-align: center;
-            line-height:34px;
+            line-height: 34px;
             @extend .commmoncenter;
         }
 
@@ -534,6 +534,17 @@ app-signup {
     }
 
     .supermarketstage {
+        .newrak {
+            background-image: url('./assets/img/rak.png');
+            background-size: cover;
+            width: 1500px;
+            height: 691px;
+            position: absolute;
+            left: 6967px;
+            top: 2308px;
+
+        }
+
         .cart {
             @extend .cartimg;
             height: 399px;
@@ -575,15 +586,16 @@ app-signup {
             transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
         }
 
-    }    
-     .bottle {
-            position: relative;
-            background-size: cover;
-            display: flex;
-            cursor: move;
-            z-index: 1;
-            transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
-        }
+    }
+
+    .bottle {
+        position: relative;
+        background-size: cover;
+        display: flex;
+        cursor: move;
+        z-index: 1;
+        transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
+    }
 
     .bottledropper {
         width: 205px;
@@ -593,7 +605,8 @@ app-signup {
         border: 1px solid red;
         height: 93px;
         display: flex;
-   }
+    }
+
     .bottledropper2 {
         width: 205px;
         position: absolute;
@@ -602,7 +615,7 @@ app-signup {
         border: 1px solid red;
         height: 93px;
         display: flex;
-   }
+    }
 }
 
 .silky {
@@ -628,6 +641,7 @@ app-signup {
     width: 35px;
     height: 77px;
 }
+
 html,
 body {
     height: 100%;
@@ -637,5 +651,13 @@ body {
     margin: 0;
     font-family: Roboto, "Helvetica Neue", sans-serif;
 }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}

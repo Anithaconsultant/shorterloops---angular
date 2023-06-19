@@ -51,14 +51,16 @@
             </div>
             <div class="bottledropper">
                 <div cdkDropList #droppedList="cdkDropList" [cdkDropListConnectedTo]="[bottleList]"
-                    [cdkDropListData]="bottledropped" (cdkDropListDropped)="drop($event)"  class="bottle_list">
+                    [cdkDropListData]="bottledropped" (cdkDropListDropped)="drop($event)" class="bottle_list">
                     <div *ngFor="let item of bottledropped" class="bottle {{item}}" cdkDrag></div>
                 </div>
             </div>
-            <div class="bottledropper2">
-                <div cdkDropList #droppedList="cdkDropList" [cdkDropListConnectedTo]="[bottleList]"
-                    [cdkDropListData]="bottledropped" (cdkDropListDropped)="drop($event)"  class="bottle_list">
-                    <div *ngFor="let item of bottledropped" class="bottle {{item}}" cdkDrag></div>
+            <div class="newrak">
+                <div class="bottledropper2">
+                    <div cdkDropList #droppedList="cdkDropList" [cdkDropListConnectedTo]="[bottleList]"
+                        [cdkDropListData]="bottledropped" (cdkDropListDropped)="drop($event)" class="bottle_list">
+                        <div *ngFor="let item of bottledropped" class="bottle {{item}}" cdkDrag></div>
+                    </div>
                 </div>
             </div>
         </div>
