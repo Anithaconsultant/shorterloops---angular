@@ -55,33 +55,37 @@ class Facility(models.Model):
 
 class Asset(models.Model):
     class Meta:
-        db_table = "Assets"
-    Asset_cityid = models.ForeignKey("city", on_delete=models.CASCADE)
-    BatchId = models.IntegerField(default=1, blank=True)
-    BatchSize = models.IntegerField(default=1, blank=True)
-    AssetId = models.AutoField(primary_key=True)
-    Description = models.CharField(max_length=1000, blank=True)
-    TransactionID = models.CharField(max_length=70, blank=True, unique=True)
-    Branding = models.CharField(max_length=70, blank=True)
-    sellingPrice = models.IntegerField(default=0, blank=True)
-    costPrice = models.IntegerField(default=0, blank=True)
-    Bottle_Status = models.CharField(max_length=70, blank=True)
-    Bottle_content = models.CharField(max_length=70, blank=True)
-    Date_manufactured = models.DateField(
-        default=datetime.date.today, blank=True)
-    First_refill = models.DateField(default=datetime.date.today, blank=True)
-    Second_refill = models.DateField(default=datetime.date.today, blank=True)
-    Third_refill = models.DateField(default=datetime.date.today, blank=True)
-    Fourth_refill = models.DateField(default=datetime.date.today, blank=True)
-    Fifth_refill = models.DateField(default=datetime.date.today, blank=True)
-    expire_date = models.DateField(default=datetime.date.today, blank=True)
-    asset_tran_date = models.DateField(default=datetime.date.today, blank=True)
-    Fromfacility = models.CharField(max_length=70, blank=True)
-    Tofacility = models.CharField(max_length=70, blank=True)
-    Moneyfrom = models.CharField(max_length=70, blank=True)
-    MoneyTo = models.CharField(max_length=70, blank=True)
+        db_table = "Asset"
+    AssetDbId = models.AutoField(primary_key=True)
+    AssetId =models.CharField(max_length=1000, blank=True)
+    Asset_CityId = models.ForeignKey("city", on_delete=models.CASCADE)
+    CategoryCode= models.CharField(max_length=1000, blank=True)
+    Bottle_Code= models.CharField(max_length=1000, blank=True)
+    Content_Code= models.CharField(max_length=1000, blank=True)
     Quantity = models.CharField(max_length=70, blank=True)
     Units = models.CharField(max_length=70, blank=True)
+    Bottle_loc= models.CharField(max_length=1000, blank=True)
+    Bottle_Status= models.CharField(max_length=1000, blank=True)
+    DOM=models.CharField(max_length=70, blank=True)
+    Max_Refill_Count=models.IntegerField(default=5, blank=True)
+    Current_Refill_Count=models.IntegerField(default=5, blank=True)
+    Latest_Refill_Date=models.CharField(max_length=70, blank=True)
+    Retirement_Date=models.CharField(max_length=70, blank=True)
+    Retire_Reason=models.CharField(max_length=70, blank=True)
+    Content_Price = models.CharField(max_length=70, blank=True)
+    Bottle_Price=models.CharField(max_length=70, blank=True)
+    Redeem_Good=models.CharField(max_length=70, blank=True)
+    Redeem_Damaged=models.CharField(max_length=70, blank=True)
+    Discount_RefillB=models.CharField(max_length=70, blank=True)
+    Env_Tax=models.CharField(max_length=70, blank=True)
+    Discard_fine=models.CharField(max_length=70, blank=True)
+    Transaction_Id = models.CharField(max_length=70, blank=True)
+    Transaction_Date= models.CharField(max_length=70, blank=True)
+    Fromfacility = models.CharField(max_length=70, blank=True)
+    Tofacility = models.CharField(max_length=70, blank=True)
+    
+    
+   
 
 
 class Cityrule(models.Model):

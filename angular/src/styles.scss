@@ -467,6 +467,9 @@ app-signup {
             @extend .commoncls;
             left: 1909px;
             top: 2457px;
+            height: 49px;
+            border-radius: 11%;
+            background: #555;
         }
 
         .Plastic {
@@ -536,12 +539,38 @@ app-signup {
     .supermarketstage {
         .newrak {
             background-image: url('./assets/img/rak.png');
-            background-size: cover;
-            width: 1500px;
-            height: 691px;
+            width: 1516px;
+            height: 671px;
             position: absolute;
-            left: 6967px;
-            top: 2308px;
+            left: 6925px;
+            top: 2335px;
+
+            .dropper {
+                width: 133px;
+                position: absolute;
+                height: 93px;
+                display: flex;
+            }
+
+            .shinyshelf {
+                left: 25px;
+                top: 528px;
+            }
+
+            .wavyshelf {
+                left: 902px;
+                top: 528px;
+            }
+
+            .silkyshelf {
+                left: 1207px;
+                top: 528px;
+            }
+
+            .bouncyshelf {
+                left: 609px;
+                top: 528px;
+            }
 
         }
 
@@ -566,6 +595,15 @@ app-signup {
                 top: 12px;
             }
         }
+    }
+
+    .newbottleholder {
+        width: 205px;
+        position: absolute;
+        left: 48px;
+        top: 51px;
+        height: 93px;
+        display: flex;
     }
 
     .bottleholder {
@@ -607,41 +645,420 @@ app-signup {
         display: flex;
     }
 
-    .bottledropper2 {
-        width: 205px;
-        position: absolute;
-        left: 1660px;
-        top: 2579px;
-        border: 1px solid red;
-        height: 93px;
-        display: flex;
-    }
+
 }
 
-.silky {
+.silky_vpn_17,
+.silky_vpn_18,
+.silky_vpn_19,
+.silky_vpn_20 {
     background-image: url('./assets/img/silky.svg');
     width: 30px;
     height: 84px;
+    position: absolute;
+    top: 99px;
+    background-size: contain;
+}
+
+.silky_vpn_17_big,
+.silky_vpn_18_big,
+.silky_vpn_19_big,
+.silky_vpn_20_big {
+    background-image: url('./assets/img/silky.svg');
+    width: 275px;
+    height: 768px;
+    position: absolute;
+    top: 26px;
+    left: 178px;
+    background-size: contain;
+
+}
+
+.silky_vpn_17 {
+    left: 1220px;
+}
+
+.silky_vpn_18 {
+    left: 1250px;
+}
+
+.silky_vpn_19 {
+    left: 1280px;
+}
+
+.silky_vpn_20 {
+    left: 1310px;
 }
 
 .wavy {
-    background-image: url('./assets/img/wavy.svg');
+    background-image: url('./assets/img/wavy.png');
     width: 31px;
     height: 77px;
 }
 
 .bouncy {
-    background-image: url('./assets/img/bouncy.svg');
+    background-image: url('./assets/img/bouncy.png');
     width: 35px;
     height: 77px;
 }
 
 .shiny {
-    background-image: url('./assets/img/shiny.svg');
+    background-image: url('./assets/img/shiny.png');
     width: 35px;
     height: 77px;
 }
 
+.shiny_vpn_1,
+.shiny_vpn_2 {
+    background-image: url('./assets/img/shiny.png');
+    width: 41px;
+    height: 90px;
+    position: absolute;
+    top: 99px;
+    background-size: contain;
+}
+
+.shiny_vpn_1_big,
+.shiny_vpn_2_big {
+    background-image: url('./assets/img/shiny.png');
+    width: 361px;
+    height: 768px;
+    position: absolute;
+    top: 26px;
+    left: 178px;
+    background-size: contain;
+}
+
+.labelholder {
+    position: relative;
+    top: 476px;
+  
+    font-size: 11px;
+    left: 224px;
+
+    .Quantity {
+        position: relative;
+        left: -37px;
+        top: -2px;
+    }
+
+    .Current_Refill_Count {
+        position: relative;
+        top: -5px;
+        left: -16px;
+    }
+
+    .Latest_Refill_Date {
+        position: relative;
+        top: -8px;
+    }
+
+    .Shampoo_Price {
+        position: relative;
+        top: 6px;
+        left: 17px;
+    }
+
+    .Content_Price {
+        position: relative;
+        top: 3px;
+    }
+
+    .Bottle_Price {
+
+        position: relative;
+        left: 22px;
+
+    }
+
+    .Discount_RefillB {
+        position: relative;
+        left: 47px;
+        top: -3px;
+    }
+
+    .Total_Price {
+        position: relative;
+        top: -15px;
+        left: -20px;
+    }
+
+    .Redeem_Good {
+        position: relative;
+        left: 47px;
+        top: -5px;
+    }
+
+    .AssetId {
+        position: relative;
+        left: -128px;
+        top: -50px;
+        transform: rotate(-90deg);
+        color: #000;
+        width: 60px;
+        height: 30px;
+        font-size: 9px;
+    }
+
+    .Discard_fine {
+        position: relative;
+        left: 54px;
+        top: -9px;
+    }
+
+    .Env_Tax {
+        position: relative;
+        top: -12px;
+        left: 5px;
+    }
+}
+
+.shiny_uvpn_3_big,
+.shiny_uvpn_4_big,
+.bouncy_urpn_11_big,
+.bouncy_urpn_12_big,
+.wavy_urpn_13_big,
+.wavy_urpn_14_big,
+.wavy_urpr_15_big,
+.wavy_urpr_16_big {
+    background-image: url('./assets/img/universal.png');
+    width: 300px;
+    height: 768px;
+    position: absolute;
+    top: 26px;
+    left: 178px;
+    background-size: contain;
+}
+
+.shiny_uvpn_3,
+.shiny_uvpn_4,
+.bouncy_urpn_11,
+.bouncy_urpn_12,
+.wavy_urpn_13,
+.wavy_urpn_14,
+.wavy_urpr_15,
+.wavy_urpr_16 {
+    background-image: url('./assets/img/universal.png');
+    width: 35px;
+    height: 90px;
+    position: absolute;
+    top: 379px;
+    background-size: contain;
+}
+
+.spike_rpn_5,
+.spike_rpn_6,
+.spike_rpr_7,
+.spike_rpr_8 {
+    background-image: url('./assets/img/spiky.png');
+    width: 34px;
+    height: 90px;
+    position: absolute;
+    top: 235px;
+    background-size: contain;
+}
+
+.spike_rpn_5_big,
+.spike_rpn_6_big,
+.spike_rpr_7_big,
+.spike_rpr_8_big {
+    background-image: url('./assets/img/spiky.png');
+    width: 288px;
+    height: 751px;
+    position: absolute;
+    top: 26px;
+    left: 178px;
+    background-size: cover;
+}
+
+.bouncy_rpn_9,
+.bouncy_rpn_10 {
+    background-image: url('./assets/img/bouncy.png');
+    width: 41px;
+    height: 90px;
+    position: absolute;
+    top: 235px;
+    background-size: contain;
+}
+
+.bouncy_rpn_9_big,
+.bouncy_rpn_10_big {
+    background-image: url('./assets/img/bouncy.png');
+    width: 355px;
+    height: 768px;
+    position: absolute;
+    top: 26px;
+    left: 178px;
+    background-size: contain;
+}
+
+.spike_rpn_5 {
+    left: 341px;
+}
+
+.spike_rpn_6 {
+    left: 387px;
+}
+
+.bouncy_rpn_9,
+.bouncy_urpn_11 {
+    left: 633px;
+}
+
+.bouncy_rpn_10,
+.bouncy_urpn_12 {
+    left: 685px;
+}
+
+.bouncy_urpn_11,
+.bouncy_urpn_12,
+.wavy_urpn_13,
+.wavy_urpn_14,
+.wavy_urpr_15,
+.wavy_urpr_16 {
+    top: 510px;
+}
+
+.wavy_urpn_13 {
+    left: 926px;
+}
+
+.wavy_urpn_14 {
+    left: 980px;
+}
+
+.wavy_urpr_15 {
+    left: 1055px;
+}
+
+.wavy_urpr_16 {
+    left: 1104px;
+}
+
+.spike_rpr_7 {
+    left: 482px;
+}
+
+.spike_rpr_8 {
+    left: 528px;
+}
+
+.shiny_vpn_1,
+.shiny_uvpn_3 {
+    left: 32px;
+
+}
+
+.shiny_vpn_2,
+.shiny_uvpn_4 {
+    left: 80px
+}
+
+.spiky_vpn {
+    background-image: url('./assets/img/spiky.png');
+    width: 30px;
+    height: 84px;
+}
+
+.wavy {
+    background-image: url('./assets/img/wavy.png');
+    width: 31px;
+    height: 77px;
+}
+
+.bouncy {
+    background-image: url('./assets/img/bouncy.png');
+    width: 35px;
+    height: 77px;
+}
+
+.newheader {
+    border-bottom: 0px solid !important;
+}
+
+.shiny {
+    background-image: url('./assets/img/shiny.png');
+    width: 35px;
+    height: 77px;
+}
+
+.shinyback {
+    background-image: url('./assets/img/shiny_backside.png');
+    width: 362px;
+    height: 770px;
+    background-size: contain;
+    margin-left: 541px;
+    .labelholder {
+        color: #dddd6b;
+    }
+}
+
+.silkyback {
+    background-image: url('./assets/img/silky_back.png');
+    width: 276px;
+    height: 770px;
+    background-size: contain;
+    margin-left: 541px;
+    .labelholder {
+        color: #fff;
+        top: 482px;
+        left: 183px;
+    
+    }
+}
+
+.spikyback {
+    background-image: url('./assets/img/spiky_back.png');
+    width: 362px;
+    height: 770px;
+    background-size: contain;
+    margin-left: 541px;
+
+    .labelholder {
+        top:472px;  
+        color: #633cce;
+    }
+}
+
+.wavyback {
+    background-image: url('./assets/img/wavy_back.png');
+    width: 362px;
+    height: 770px;
+    background-size: contain;
+    margin-left: 541px;
+    .labelholder {
+
+        color: #633cce;
+    }
+}
+
+.bouncyback {
+    background-image: url('./assets/img/bouncy_back.png');
+    width: 355px;
+    height: 770px;
+    background-size: contain;
+    margin-left: 541px;
+    .labelholder {
+        color: #fff;
+        top: 466px;
+        left: 218px;
+    }
+}
+
+.universalback {
+    background-image: url('./assets/img/universal_back.png');
+    width: 299px;
+    height: 770px;
+    background-size: contain;
+    margin-left: 541px;
+    .labelholder {
+
+        color: #000;
+        top: 475px;
+        left: 192px;
+    }
+}
+
 html,
 body {
     height: 100%;
@@ -660,4 +1077,53 @@ body {
 body {
     margin: 0;
     font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+.recycle{
+background-image: url('./assets/img/recycledplasticbottle.png');
+width: 8px;
+height: 8px;
+position: absolute;
+left: 8px;
+top: 16px;
+background-size: contain;
+}
+.refill{
+    background-image: url('./assets/img/refilledbottle.png');
+    width: 8px;
+    height: 8px;
+    position: absolute;
+    left: 18px;
+    top: 16px;
+    background-size: contain;
+}
+.label{
+    position: absolute;
+    width: 23px;
+    height: 16px;
+    left: 6px;
+    top: 35px;
+    background-size: cover;
+}
+.labelbig{
+    position: absolute;
+    width: 203px;
+    height: 135px;
+    left: 49px;
+    top: 302px;
+    background-size: cover;
+}
+.shiny_label{
+    background-image: url('./assets/img/shiny_label.png');
+}
+.silky_label{
+    background-image: url('./assets/img/silky_label.png');
+}
+.spiky_label{
+    background-image: url('./assets/img/spiky_label.png');
+}
+.bouncy_label{
+    background-image: url('./assets/img/bouncy_label.png');
+}
+.wavy_label{
+    background-image: url('./assets/img/wavy_label.png');
 }

@@ -1,5 +1,5 @@
-from .models import City, CustomUser, Facility, FACILITY_CHOICES, Cityrule
-from .serializers import userSerializer, citySerializer, facilitySerializer, cityRuleSerializer
+from .models import City, CustomUser, Facility, FACILITY_CHOICES, Cityrule,Asset
+from .serializers import userSerializer, citySerializer, facilitySerializer, cityRuleSerializer,AssetSerializer
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from rest_framework import status
@@ -58,12 +58,34 @@ def addcity(request):
         serializer = citySerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
 
+@api_view(['GET', 'POST'])
+def createasset(request,cityid):
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = AssetSerializer(data=data)
+        print(data)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            print("invalid data")
+        return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+    if request.method == 'GET':
+        data = Asset.objects.filter(Asset_CityId=cityid)
+        serializer = AssetSerializer(data, many=True)
+        return JsonResponse(serializer.data, safe=False)
 
 @api_view(['GET', 'POST'])
 def getfacility(request, cityid):
     if request.method == 'GET':
         data = Facility.objects.filter(Facility_cityid_id=cityid)
         serializer = facilitySerializer(data, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    
+@api_view(['GET', 'POST'])
+def returnasset(request, itemid):
+    if request.method == 'GET':
+        data = Asset.objects.filter(AssetId=itemid)
+        serializer = AssetSerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
 
 

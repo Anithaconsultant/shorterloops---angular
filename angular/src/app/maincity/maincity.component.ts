@@ -12,7 +12,10 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem, CdkDrag } from '@angul
 })
 
 export class MaincityComponent implements AfterViewInit, OnInit {
-
+  noavatar = false;
+  userobj = {
+    'login': '1'
+  }
   public instance: any;
   public instance1: any;
   currentUserRole: string = '';
@@ -20,6 +23,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   currentusername = '';
   currentusergender = '';
   currentuseravatar = '';
+  currentusercityId = '';
   objkey = Object.keys;
   positionObject = {
     'House6': [[-199, -3525], [712, 4010], [665, 3898], [614, 3807]],
@@ -41,11 +45,14 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     'Bottle': [[-5762, -3154], [6279, 3584], [6235, 3473], [6346, 3382]],
     'Mayor': [[-5762, -3154], [5931, 3584], [5898, 3473], [6009, 3382]]
   }
+
+
   newmale: any[] = [];
   newfemale: any[] = [];
   maleset = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
   femaleset = [20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39];
   user: any;
+  assetdata:any;
   hasMayor = false;
   cityname: any;
   constructor(private logser: LoginserviceService, private router: Router, private modalService: NgbModal) {
@@ -53,6 +60,8 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     this.currentUserCartId = this.logser.currentuser.cartId;
     this.currentusername = this.logser.currentuser.Username;
     this.currentusergender = this.logser.currentuser.gender;
+    this.currentuseravatar = this.logser.currentuser.avatar;
+    this.currentusercityId = this.logser.currentuser.CityId;
 
   }
 
@@ -62,12 +71,12 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     $event.stopPropagation();
     if (this.opensuperflag == false) {
       let leftval = $(".cart").css('top');
-      leftval = parseInt(leftval) + 5 + "px";
+      leftval = parseInt(leftval) + 105 + "px";
       $(".cart").css({ 'top': leftval })
     }
     else {
       let leftval = $(".supermarketcart").css('top');
-      leftval = parseInt(leftval) + 5 + "px";
+      leftval = parseInt(leftval) + 105 + "px";
       $(".supermarketcart").css({ 'top': leftval })
     }
 
@@ -78,12 +87,12 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     $event.stopPropagation();
     if (this.opensuperflag == false) {
       let leftval = $(".cart").css('top');
-      leftval = parseInt(leftval) - 5 + "px";
+      leftval = parseInt(leftval) - 105 + "px";
       $(".cart").css({ 'top': leftval })
     }
     else {
       let leftval = $(".supermarketcart").css('top');
-      leftval = parseInt(leftval) - 5 + "px";
+      leftval = parseInt(leftval) - 105 + "px";
       $(".supermarketcart").css({ 'top': leftval })
     }
   }
@@ -92,12 +101,12 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     $event.stopPropagation();
     if (this.opensuperflag == false) {
       let leftval = $(".cart").css('left');
-      leftval = parseInt(leftval) - 5 + "px";
+      leftval = parseInt(leftval) - 105 + "px";
       $(".cart").css({ 'left': leftval })
     }
     else {
       let leftval = $(".supermarketcart").css('left');
-      leftval = parseInt(leftval) - 5 + "px";
+      leftval = parseInt(leftval) - 105 + "px";
       $(".supermarketcart").css({ 'left': leftval })
     }
   }
@@ -106,12 +115,12 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     $event.stopPropagation();
     if (this.opensuperflag == false) {
       let leftval = $(".cart").css('left');
-      leftval = parseInt(leftval) + 5 + "px";
+      leftval = parseInt(leftval) + 105 + "px";
       $(".cart").css({ 'left': leftval })
     }
     else {
       let leftval = $(".supermarketcart").css('left');
-      leftval = parseInt(leftval) + 5 + "px";
+      leftval = parseInt(leftval) + 105 + "px";
       $(".supermarketcart").css({ 'left': leftval })
     }
   }
@@ -128,6 +137,8 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       this.currentUserCartId = this.logser.currentuser.cartId;
       this.currentusername = this.logser.currentuser.Username;
       this.currentusergender = this.logser.currentuser.gender;
+      this.currentuseravatar = this.logser.currentuser.avatar;
+      this.currentusercityId = this.logser.currentuser.CityId;
     }
     this.logser.getcitynames().subscribe((data) => {
       setTimeout(() => {
@@ -146,14 +157,20 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         if (this.user[t].login == 1 && this.user[t].User_cityid == this.logser.currentuser.CityId) {
           $("." + this.user[t].Role.split(" ")[0]).show();
         }
-        if (this.user[t].Username == this.logser.currentuser.Username && this.user[t].avatar == '') {
+        if (this.user[t].Username == this.currentusername && this.user[t].avatar == '') {
           this.noavatar = true;
+          if (this.noavatar == true) {
+            this.open(this.content)
+          }
         }
         if (this.user[t].Role !== '') {
           let word = this.user[t].Role.split(" ")[0];
           let xpos = this.positionObject[word as keyof typeof this.positionObject][3][0];
           let ypos = this.positionObject[word as keyof typeof this.positionObject][3][1];
+          //let x2 = this.positionObject[word as keyof typeof this.positionObject][2][0];
+         // let y2 = this.positionObject[word as keyof typeof this.positionObject][2][1];  
           $(".displaypanel." + word).css({ 'left': xpos + 'px', 'top': ypos + 'px' }).html(this.user[t].Role);
+         // $(".housedisplay."+word).css({ 'left': x2 + 'px', 'top': y2 + 'px' }).html(this.user[t].Username);
           if (word == 'Supermarket' || word == 'Plastic' || word == 'Ubottle' || word == 'Reverse' || word == 'Refilling') {
             $(".commoncls." + word).html('').addClass('openlight');
           }
@@ -185,6 +202,8 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   private scene!: ElementRef;
   @ViewChild('content', { static: false })
   private content!: ElementRef;
+  @ViewChild('bottlesticker', { static: false })
+  private bottlesticker!: ElementRef;
 
   ngAfterViewInit(): void {
     this.instance = panzoom(this.scene.nativeElement, {
@@ -197,7 +216,6 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         return true;
       },
       beforeWheel: function (e) {
-        // allow wheel-zoom only if altKey is down. Otherwise - ignore
         var shouldIgnore = !e.altKey;
         return shouldIgnore;
       },
@@ -221,23 +239,23 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     $(".housedisplay").css({ 'left': x2 + 'px', 'top': y2 + 'px' });
     $(".houselite").hide();
     $(".displaypic,.cartavatar").addClass('pic_' + this.logser.currentuser.avatar);
-    $(".cartid").html(this.currentUserCartId)
-    if (this.noavatar == true) {
-      this.open(this.content)
-    }
+    $(".cartid").html(this.currentUserCartId);
+  }
 
-  }
-  noavatar = false;
-  userobj = {
-    'login': '1'
-  }
   dopanzoom(x: number, y: number, zoomlevel: string) {
     this.instance.zoomTo(x, y, parseFloat(zoomlevel));
     this.instance.smoothMoveTo(x, y);
   }
   bottles = ['silky', 'wavy', 'shiny', 'bouncy']
   bottledropped: string[] = [];
-
+  bottletaken: string[] = [];
+  newbottles: string[] = ['shiny', 'shiny', 'shiny', 'shiny'];
+  wavybottles: string[] = ['wavy', 'wavy', 'wavy', 'wavy'];
+  silkybottles: string[] = ['silky', 'silky', 'silky', 'silky'];
+  bouncybottles: string[] = ['bouncy', 'bouncy', 'bouncy', 'bouncy'];
+  clicked() {
+    alert("clicked");
+  }
 
   drop(event: CdkDragDrop<string[]>) {
     console.log(event.previousContainer, event.container)
@@ -253,17 +271,9 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         event.currentIndex);
     }
   }
+  bottleclass='';
   exit() { }
   leavecity() { }
-  /** Predicate function that only allows even numbers to be dropped into a list. */
-  evenPredicate(item: CdkDrag<number>) {
-    return item.data % 2 === 0;
-  }
-
-  /** Predicate function that doesn't allow items to be dropped into a list. */
-  noReturnPredicate() {
-    return false;
-  }
   logout() {
     this.userobj.login = '0';
     this.logser.updateloggeduser(this.userobj).subscribe(
@@ -296,6 +306,36 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   }
   open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
+
+  }
+  frontclass='';
+  leblfound=false;
+  frontlabel='';
+  opensticker(bottlesticker: any, event: any) {
+    let element = event.target || event.srcElement || event.currentTarget;
+    let elementId = element.id;
+    let elementClass=element.className;
+    this.logser.getthisAssets(elementId).subscribe((data) => {
+      this.assetdata=data;
+      this.frontclass=elementClass.split(" ")[1]+"_big";
+      console.log(this.assetdata);
+      let checkuniversal=this.assetdata[0]['Bottle_Code'].split(".")[0];
+      if(checkuniversal=='UB'){
+        this.leblfound=true;
+        this.bottleclass="universal";
+        this.frontlabel=this.assetdata[0]['Content_Code'].split(".")[1].toString().toLowerCase()+"_label";
+      }
+      else{
+        this.leblfound=false;
+        this.bottleclass=this.assetdata[0]['Content_Code'].split(".")[1];
+      }
+      
+      console.log(this.bottleclass);
+      this.modalService.open(bottlesticker);
+    });
+   
+    
+
 
   }
   selectphoto(ind: any) {
@@ -341,10 +381,17 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         // allow mouse-down panning only if altKey is down. Otherwise - ignore
         var shouldIgnore = !e.altKey;
         return shouldIgnore;
-      }
+      },
+      beforeWheel: function (e) {
+        var shouldIgnore = !e.altKey;
+        return shouldIgnore;
+      },
+
+
     });
     this.dopanzoomsupermarket(-57, -1077, '0.4');
-    $(".supermarketcart.cart").css({ 'left': '932px', 'top': '3413px' })
+    $(".supermarketcart.cart").css({ 'left': '932px', 'top': '3413px' });
+
   }
 
 }

@@ -21,6 +21,254 @@ export class AddcityComponent implements OnInit {
     this.currentTime = this.datepipe.transform((new Date), 'hh:mm:ss')
 
   }
+
+  assetData = {
+    'AssetId': [
+      'SB_B1.V_00001',
+      'SB_B1.V_00002',
+      'SB_B2.R_00001',
+      'SB_B2.R_00002',
+      'SB_B2.R_00003',
+      'SB_B2.R_00004',
+      'SB_B3.R_00001',
+      'SB_B3.R_00002',
+      'SB_B5.V_00001',
+      'SB_B5.V_00002',
+      'SB_B5.V_00003',
+      'SB_B5.V_00004',
+      'SB_UB.R_00001',
+      'SB_UB.R_00002',
+      'SB_UB.R_00005',
+      'SB_UB.R_00006',
+      'SB_UB.R_00011',
+      'SB_UB.R_00012',
+      'SB_UB.V_00007',
+      'SB_UB.V_00008'],
+
+    'Bottle_Code': ['B1.V',
+      'B1.V',
+      'B2.R',
+      'B2.R',
+      'B2.R',
+      'B2.R',
+      'B3.R',
+      'B3.R',
+      'B5.V',
+      'B5.V',
+      'B5.V',
+      'B5.V',
+      'UB.R',
+      'UB.R',
+      'UB.R',
+      'UB.R',
+      'UB.R',
+      'UB.R',
+      'UB.V',
+      'UB.V'],
+
+
+    'Content_Code': ['B1.Shiny',
+      'B1.Shiny',
+      'B2.Spiky',
+      'B2.Spiky',
+      'B2.Spiky',
+      'B2.Spiky',
+      'B3.Bouncy',
+      'B3.Bouncy',
+      'B5.Silky',
+      'B5.Silky',
+      'B5.Silky',
+      'B5.Silky',
+      'B4.Wavy',
+      'B4.Wavy',
+      'B3.Bouncy',
+      'B3.Bouncy',
+      'B4.Wavy',
+      'B4.Wavy',
+      'B1.Shiny',
+      'B1.Shiny',],
+    'Content_Price': ['300',
+      '300',
+      '200',
+      '200',
+      '200',
+      '200',
+      '250',
+      '250',
+      '350',
+      '350',
+      '350',
+      '350',
+      '275',
+      '275',
+      '250',
+      '250',
+      '275',
+      '275',
+      '300',
+      '300'],
+    'Bottle_Price': ['18',
+      '18',
+      '10',
+      '10',
+      '10',
+      '10',
+      '11',
+      '11',
+      '19',
+      '19',
+      '19',
+      '19',
+      '3',
+      '3',
+      '3',
+      '3',
+      '3',
+      '3',
+      '8',
+      '8'],
+    'Redeem_Good': ['1.8',
+      '1.8',
+      '1',
+      '1',
+      '1',
+      '1',
+      '1.32',
+      '1.32',
+      '2.28',
+      '2.28',
+      '2.28',
+      '2.28',
+      '0.21',
+      '0.21',
+      '0.21',
+      '0.21',
+      '0.21',
+      '0.21',
+      '0.56',
+      '0.56'],
+    'Redeem_Damaged': ['0.9',
+      '0.9',
+      '0.5',
+      '0.5',
+      '0.5',
+      '0.5',
+      '0.66',
+      '0.66',
+      '1.14',
+      '1.14',
+      '1.14',
+      '1.14',
+      '0.105',
+      '0.105',
+      '0.105',
+      '0.105',
+      '0.105',
+      '0.105',
+      '0.28',
+      '0.28'],
+    'Discount_RefillB': ['1.8',
+      '1.8',
+      '1',
+      '1',
+      '1',
+      '1',
+      '1.1',
+      '1.1',
+      '1.9',
+      '1.9',
+      '1.9',
+      '1.9',
+      '0.75',
+      '0.75',
+      '0.75',
+      '0.75',
+      '0.75',
+      '0.75',
+      '0.8',
+      '0.8'],
+    'Env_Tax': ['9',
+      '9',
+      '2.5',
+      '2.5',
+      '2',
+      '2',
+      '2.75',
+      '2.75',
+      '9.5',
+      '9.5',
+      '9.5',
+      '9.5',
+      '0.75',
+      '0.75',
+      '0.75',
+      '0.75',
+      '0.6',
+      '0.6',
+      '2',
+      '2'],
+    'Discard_fine': ['9',
+      '9',
+      '5',
+      '5',
+      '5',
+      '5',
+      '5.5',
+      '5.5',
+      '9.5',
+      '9.5',
+      '9.5',
+      '9.5',
+      '1.5',
+      '1.5',
+      '1.5',
+      '1.5',
+      '1.5',
+      '1.5',
+      '4',
+      '4'],
+
+  }
+  Asset_CityId = '';
+  CategoryCode = 'SB';
+  Quantity = '500';
+  Units = 'ml';
+  Bottle_loc = 'Supermarket Shelf';
+  Bottle_Status = 'Full';
+  DOM = '1/1/2023';
+  Max_Refill_Count = 5;
+  Current_Refill_Count = 1;
+  Latest_Refill_Date = '4/15/2023';
+
+  assettableobj = {
+    'AssetId': '',
+    'Asset_CityId': '',
+    'CategoryCode': '',
+    'Bottle_Code': '',
+    'Content_Code': '',
+    'Quantity': '',
+    'Units': '',
+    'Bottle_loc': '',
+    'Bottle_Status': '',
+    'DOM': '',
+    'Max_Refill_Count': 0,
+    'Current_Refill_Count': 0,
+    'Latest_Refill_Date': '',
+    'Retirement_Date': '',
+    'Retire_Reason': '',
+    'Content_Price': '',
+    'Bottle_Price': '',
+    'Redeem_Good': '',
+    'Redeem_Damaged': '',
+    'Discount_RefillB': '',
+    'Env_Tax': '',
+    'Discard_fine': '',
+    'Transaction_Id': '',
+    'Transaction_Date': '',
+    'Fromfacility': '',
+    'Tofacility': ''
+  }
+
   city = {
     'CityName': '',
     'MayorId': this.logser.currentuser.UserId,
@@ -29,13 +277,13 @@ export class AddcityComponent implements OnInit {
     'CityCreateTime': '',
     'Status': 'Yes'
   };
-  userobj={
-    'cityid':'',
-    'Role':'Mayor'
+  userobj = {
+    'cityid': '',
+    'Role': 'Mayor'
   }
-  
-  firstfacility={
-    'CityId':'',
+
+  firstfacility = {
+    'CityId': '',
   }
 
   ngOnInit(): void {
@@ -47,9 +295,9 @@ export class AddcityComponent implements OnInit {
     })
     this.city.CityCreateTime = this.currentTime
     this.city.Citystartdate = this.currentDate
-    if(this.logser.currentuser.Username==''){
+    if (this.logser.currentuser.Username == '') {
       this.router.navigate(["login"])
-     }
+    }
   }
   addcity() {
     this.submitted = true;
@@ -69,20 +317,57 @@ export class AddcityComponent implements OnInit {
       setTimeout(() => {
         this.logser.getAllCities().subscribe((data) => {
           this.allcity = data;
-          let length=this.allcity.length;
-          this.userobj['cityid']=length.toString();
-          this.firstfacility['CityId']=length.toString();
-          this.logser.currentuser.Role='Mayor';
-          this.logser.currentuser.CityId=length.toString();
+          let length = this.allcity.length;
+          this.userobj['cityid'] = length.toString();
+          this.firstfacility['CityId'] = length.toString();
+          this.logser.currentuser.Role = 'Mayor';
+          this.logser.currentuser.CityId = length.toString();
+          this.Asset_CityId = length.toString();
           this.logser.updateuser(this.userobj).subscribe(
             data => {
               this.userobj = data;
-              
+
             },
             error => {
               console.log(error);
             }
           );
+          let count = 0;
+          let numbers = Object.values(this.assetData);
+          numbers[0].forEach((number) => {
+            this.assettableobj['AssetId'] = this.Asset_CityId + "_" + number;
+            this.assettableobj['Asset_CityId'] = this.Asset_CityId;
+            this.assettableobj['CategoryCode'] = 'SB';
+            this.assettableobj['Bottle_Code'] = this.assetData['Bottle_Code'][count];
+            this.assettableobj['Content_Code'] = this.assetData['Content_Code'][count];
+            this.assettableobj['Quantity'] = '500';
+            this.assettableobj['Units'] = 'ml';
+            this.assettableobj['Bottle_loc'] = 'Supermarket shelf';
+            this.assettableobj['Bottle_Status'] = 'Full';
+            this.assettableobj['DOM'] = '1/1/2023';
+            this.assettableobj['Max_Refill_Count'] = 5;
+            this.assettableobj['Current_Refill_Count'] = 0;
+            this.assettableobj['Latest_Refill_Date'] = '1/15/2023';
+            this.assettableobj['Content_Price'] = this.assetData['Content_Price'][count];
+            this.assettableobj['Bottle_Price'] = this.assetData['Bottle_Price'][count];
+            this.assettableobj['Redeem_Good'] = this.assetData['Redeem_Good'][count];
+            this.assettableobj['Redeem_Damaged'] = this.assetData['Redeem_Damaged'][count];
+            this.assettableobj['Discount_RefillB'] = this.assetData['Discount_RefillB'][count];
+            this.assettableobj['Env_Tax'] = this.assetData['Env_Tax'][count];
+            this.assettableobj['Discard_fine'] = this.assetData['Discard_fine'][count];
+            count++;
+            console.log(this.assettableobj);
+            this.logser.createAsset(this.assettableobj).subscribe(
+              data => {
+                this.assettableobj = data;
+              },
+              error => {
+                console.log(error);
+              }
+            );
+
+          });
+
           this.logser.createfacility(this.firstfacility).subscribe(
             data => {
               this.firstfacility = data;
@@ -93,9 +378,9 @@ export class AddcityComponent implements OnInit {
             }
           );
         })
-      },200)
-      
-      
+      }, 200)
+
+
     }
   }
 }
