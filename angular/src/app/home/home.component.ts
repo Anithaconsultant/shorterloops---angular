@@ -21,6 +21,7 @@ export class HomeComponent implements OnInit {
     facilityname: "",
     facilityCityId: 0,
     Ownerid: "",
+    Owner_status:''
   };
   user: any;
   userobj = {
@@ -50,9 +51,7 @@ export class HomeComponent implements OnInit {
     }
     this.logser.getAllUsers().subscribe((data) => {
       this.user = data;
-      console.log(this.user);
-
-
+      
     })
   }
   setList: any[] = [];
@@ -83,7 +82,6 @@ export class HomeComponent implements OnInit {
   getCityId() {
     for (var i = 0; i < this.setList.length; i++) {
       if (this.setList[i][0] == this.selectedCity) {
-        console.log(this.setList[i][1]);
         return this.setList[i][1];
       }
     }
@@ -93,9 +91,8 @@ export class HomeComponent implements OnInit {
     console.log(this.selectedcityid, this.selectedfacility, this.selectedCity);
     this.logser.getallfacility(this.selectedcityid).subscribe((data) => {
       this.facility = data;
-      console.log(this.facility);
-
       for (let key in this.facility) {
+        console.log(key);
         if (
           this.facility[key].Facility_cityid == this.selectedcityid &&
           this.facility[key].Owner_id != "" &&
@@ -107,11 +104,14 @@ export class HomeComponent implements OnInit {
           this.canUpdate = true;
         } else {
           let currentcartId;
+          console.log("varia illaiya",this.facility[key].Facilityname,this.selectedfacility);
           if (this.facility[key].Facilityname == this.selectedfacility) {
             currentcartId = this.facility[key].cartId;
+            console.log(parseInt(this.selectedcityid), this.selectedfacility,this.logser.currentuser.UserId,currentcartId)
             this.facilityobj.facilityCityId = parseInt(this.selectedcityid);
             this.facilityobj.facilityname = this.selectedfacility;
             this.facilityobj.Ownerid = this.logser.currentuser.UserId;
+            this.facilityobj.Owner_status = 'Active';
             this.userobj.cityid = parseInt(this.selectedcityid);
             this.userobj.Role = this.selectedfacility;
             this.userobj.cartId = currentcartId;
@@ -128,7 +128,6 @@ export class HomeComponent implements OnInit {
   }
   dochanges() {
     if (this.canUpdate == false && this.selectrole) {
-      console.log(this.facilityobj);
       this.logser.updatefacility(this.facilityobj).subscribe(
         (data) => {
           this.facilityobj = data;

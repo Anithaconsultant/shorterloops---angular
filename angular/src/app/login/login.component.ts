@@ -38,7 +38,6 @@ export class LoginComponent implements OnInit {
 
         });
         if (user) {
-          console.log(this.logser.currentuser.CityId)
           this.logser.currentuser.Username=user.Username;
           this.logser.currentuser.UserId=user.UserId;
           this.logser.currentuser.CityId=user.User_cityid;

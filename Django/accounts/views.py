@@ -1,5 +1,5 @@
-from .models import City, CustomUser, Facility, FACILITY_CHOICES, Cityrule,Asset
-from .serializers import userSerializer, citySerializer, facilitySerializer, cityRuleSerializer,AssetSerializer
+from .models import City, CustomUser, Facility, FACILITY_CHOICES, Cityrule, Asset
+from .serializers import userSerializer, citySerializer, facilitySerializer, cityRuleSerializer, AssetSerializer
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from rest_framework import status
@@ -22,7 +22,6 @@ def login(request):
 def signup(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
-        print(data)
         serializer = userSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -58,12 +57,12 @@ def addcity(request):
         serializer = citySerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
 
+
 @api_view(['GET', 'POST'])
-def createasset(request,cityid):
+def createasset(request, cityid):
     if request.method == 'POST':
         data = JSONParser().parse(request)
         serializer = AssetSerializer(data=data)
-        print(data)
         if serializer.is_valid():
             serializer.save()
         else:
@@ -74,13 +73,15 @@ def createasset(request,cityid):
         serializer = AssetSerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
 
+
 @api_view(['GET', 'POST'])
 def getfacility(request, cityid):
     if request.method == 'GET':
-        data = Facility.objects.filter(Facility_cityid_id=cityid)
+        data = Facility.objects.filter(Facility_cityid=cityid)
         serializer = facilitySerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
-    
+
+
 @api_view(['GET', 'POST'])
 def returnasset(request, itemid):
     if request.method == 'GET':
@@ -98,17 +99,17 @@ def facility(request, mayorid):
             faciname = FACILITY_CHOICES[value][1]
             if (faciname == 'Municipality Office' or faciname == 'Clock Tower' or faciname == 'Public Dustbin' or faciname == 'Municipality Landfill' or faciname == 'Garbage Truck'):
                 if (faciname == 'Municipality Office'):
-                    cartIds = str(data['Facility_cityid_id']
+                    cartIds = str(data['Facility_cityid']
                                   )+'_'+str(cartcount)
-                    serval = {'Facilityname': faciname, 'Facility_cityid': data['Facility_cityid_id'],
+                    serval = {'Facilityname': faciname, 'Facility_cityid': data['Facility_cityid'],
                               'Owner_status': 'Active', 'Owner_id': mayorid, 'Cashbox': '', 'LedgerId': '0', 'cartId': cartIds}
                 else:
-                    serval = {'Facilityname': faciname, 'Facility_cityid': data['Facility_cityid_id'],
+                    serval = {'Facilityname': faciname, 'Facility_cityid': data['Facility_cityid'],
                               'Owner_status': 'Active', 'Owner_id': mayorid, 'Cashbox': '', 'LedgerId': '0', 'cartId': '0'}
             else:
                 cartcount = cartcount+1
-                cartIds = str(data['Facility_cityid_id'])+'_'+str(cartcount)
-                serval = {'Facilityname': faciname, 'Facility_cityid': data['Facility_cityid_id'],
+                cartIds = str(data['Facility_cityid'])+'_'+str(cartcount)
+                serval = {'Facilityname': faciname, 'Facility_cityid': data['Facility_cityid'],
                           'Owner_status': '', 'Owner_id': '', 'Cashbox': '', 'LedgerId': '0', 'cartId': cartIds}
             serializer = facilitySerializer(data=serval)
             if serializer.is_valid():
@@ -128,12 +129,27 @@ def updatefacility(request):
         data = JSONParser().parse(request)
         serval = {'Owner_id': data['Owner_id'], 'Owner_status': 'Active'}
         getfacility = Facility.objects.filter(
-            Facilityname=data['Facilityname'], Facility_cityid=data['Facility_cityid_id']).first()
+            Facilityname=data['Facilityname'], Facility_cityid=data['Facility_cityid']).first()
         serializer = facilitySerializer(getfacility, data=serval, partial=True)
         if serializer.is_valid():
             serializer.save()
         else:
             print("invalid data")
+        return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@api_view(['GET', 'POST', 'PUT'])
+def leavefacility(request, userid):
+    if request.method == 'PUT':
+        data = JSONParser().parse(request)
+        getfacility = Facility.objects.filter(Owner_id=userid)
+        for record in getfacility:
+            serializer = facilitySerializer(record, data=data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                print(serializer);
+            else:
+                print("invalid data")
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
 
 

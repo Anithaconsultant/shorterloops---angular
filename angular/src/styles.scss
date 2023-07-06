@@ -234,7 +234,13 @@ input::placeholder {
     border-bottom: 0;
     border-left: 0.4em solid transparent !important;
 }
+#dropdownBasic1{
+    font-size:14px;
+}
 
+#dropdownBasic1::after {
+    border-top: 0.4em solid #555 !important;
+}
 .dropdown-toggle:empty::after {
     margin-left: 0;
     position: absolute;
@@ -246,8 +252,20 @@ input::placeholder {
     display: block;
     background: rgba(255, 255, 255, 0.7);
     transform: translate(20px, 52px) !important;
+    width: 310px !important;
+    font-size:14px;
 }
-
+.mat-tree-node {
+    min-height: 30px !important;
+    padding-left: 20px;
+    cursor: pointer;
+    &:hover{
+        background:rgba(0,0,0,0.5);
+    }
+}
+.mat-tree{
+    background-color: rgba(255,255,255,0.2) !important;
+}
 app-login,
 app-signup {
     .form-control {
@@ -712,7 +730,7 @@ app-signup {
 .shiny_vpn_2 {
     background-image: url('./assets/img/shiny.png');
     width: 41px;
-    height: 90px;
+    height: 87px;
     position: absolute;
     top: 99px;
     background-size: contain;
@@ -777,7 +795,7 @@ app-signup {
         top: -3px;
     }
 
-    .Total_Price {
+    .Total_price {
         position: relative;
         top: -15px;
         left: -20px;
@@ -792,7 +810,7 @@ app-signup {
     .AssetId {
         position: relative;
         left: -128px;
-        top: -50px;
+        top: -73px;
         transform: rotate(-90deg);
         color: #000;
         width: 60px;
@@ -961,13 +979,13 @@ app-signup {
 }
 
 .wavy {
-    background-image: url('./assets/img/wavy.png');
+    background-image: url('./assets/img/wavy.svg');
     width: 31px;
     height: 77px;
 }
 
 .bouncy {
-    background-image: url('./assets/img/bouncy.png');
+    background-image: url('./assets/img/bouncy.svg');
     width: 35px;
     height: 77px;
 }
@@ -977,7 +995,7 @@ app-signup {
 }
 
 .shiny {
-    background-image: url('./assets/img/shiny.png');
+    background-image: url('./assets/img/shiny.svg');
     width: 35px;
     height: 77px;
 }
@@ -1006,11 +1024,19 @@ app-signup {
     
     }
 }
-
+.exit{
+    position: absolute;
+    width: 322px;
+    height: 167px;
+    border: 1px solid;
+    cursor: pointer;
+    left: 983px;
+    top: 500px;
+}
 .spikyback {
     background-image: url('./assets/img/spiky_back.png');
     width: 362px;
-    height: 770px;
+    height: 764px;
     background-size: contain;
     margin-left: 541px;
 

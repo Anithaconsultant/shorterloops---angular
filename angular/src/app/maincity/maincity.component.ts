@@ -5,21 +5,31 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import * as $ from 'jquery';
 import { CdkDragDrop, moveItemInArray, transferArrayItem, CdkDrag } from '@angular/cdk/drag-drop';
+import { left } from '@popperjs/core';
+
+
+
+
+
 @Component({
   selector: 'app-maincity',
   templateUrl: './maincity.component.html',
   styleUrls: ['./maincity.component.scss']
 })
-
 export class MaincityComponent implements AfterViewInit, OnInit {
+
+
   noavatar = false;
   userobj = {
     'login': '1'
   }
+  currentrole = "Customer";
+
   public instance: any;
   public instance1: any;
   currentUserRole: string = '';
   currentUserCartId = '';
+  currentUserId = 0;
   currentusername = '';
   currentusergender = '';
   currentuseravatar = '';
@@ -52,7 +62,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   maleset = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
   femaleset = [20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39];
   user: any;
-  assetdata:any;
+  assetdata: any;
   hasMayor = false;
   cityname: any;
   constructor(private logser: LoginserviceService, private router: Router, private modalService: NgbModal) {
@@ -62,37 +72,314 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     this.currentusergender = this.logser.currentuser.gender;
     this.currentuseravatar = this.logser.currentuser.avatar;
     this.currentusercityId = this.logser.currentuser.CityId;
-
   }
 
+  leftroad = 2727;
+  canmovetop = false;
+  canmoveleft = false;
+  canmoveright = false;
+  canmovebottom = false;
+  onhorizontallane = false;
+  checkcartposition() {
+    let topvalue = parseInt($(".cart").css('top').split("px")[0]);
+    let leftvalue = parseInt($(".cart").css('left').split("px")[0]);
+    console.log(topvalue, leftvalue);
+    if (topvalue > 0 && topvalue < 4395 && leftvalue > 5200 && leftvalue < 5300) {
+      console.log("ithu main road");
+      this.canmovetop = true;
+      this.canmovebottom = true;
+      this.canmoveright = true;
+      this.canmoveleft = true;
+      if (leftvalue <= 5200) {
+        this.canmovebottom = true;
+        this.canmovetop = true;
+        this.canmoveleft = false;
+        this.canmoveright = true;
+      }
+      if (leftvalue >= 5300) {
+        this.canmovetop = true;
+        this.canmovebottom = true;
+        this.canmoveleft = true;
+        this.canmoveright = false;
+      }
+      if (topvalue <= 0) {
+        this.canmoveright = true;
+        this.canmoveleft = true;
+        this.canmovetop = false;
+        this.canmovebottom = true;
+      }
+      if (topvalue >= 4395) {
+        this.canmoveright = true;
+        this.canmoveleft = true;
+        this.canmovetop = true;
+        this.canmovebottom = false;
+      }
+    }
+    else if (topvalue > 3524 && topvalue < 3640 && leftvalue > 5300 && leftvalue < 7390) {
+      console.log("ithu mayor veedu");
+      if (topvalue <= 3524) {
+        this.canmovebottom = true;
+        this.canmovetop = false;
+        this.canmoveleft = true;
+        this.canmoveright = true;
+      }
+      if (topvalue >= 3640) {
+        this.canmovetop = true;
+        this.canmovebottom = false;
+        this.canmoveleft = true;
+        this.canmoveright = true;
+      }
+      if (leftvalue <= 5300) {
+        this.canmoveright = true;
+        this.canmoveleft = false;
+        this.canmovetop = true;
+        this.canmovebottom = true;
+      }
+      if (leftvalue >= 7390) {
+        this.canmoveright = false;
+        this.canmoveleft = true;
+        this.canmovetop = true;
+        this.canmovebottom = true;
+      }
+      this.canmoveleft = true;
+      this.canmoveright = true;
+      this.canmovetop = true;
+      this.canmovebottom = true;
+
+    }
+    else if (topvalue > 2640 && topvalue < 3000 && leftvalue > 1500 && leftvalue < 1700) {
+      console.log("ithu super markt");
+      if (topvalue <= 2300) {
+        this.canmovebottom = true;
+        this.canmovetop = false;
+        this.canmoveleft = true;
+        this.canmoveright = true;
+      }
+      if (topvalue >= 3000) {
+        this.canmovetop = true;
+        this.canmovebottom = false;
+        this.canmoveleft = true;
+        this.canmoveright = true;
+      }
+      if (leftvalue <= 1500) {
+        this.canmoveright = true;
+        this.canmoveleft = false;
+        this.canmovetop = true;
+        this.canmovebottom = true;
+      }
+      if (leftvalue >= 1700) {
+        this.canmoveright = false;
+        this.canmoveleft = true;
+        this.canmovetop = true;
+        this.canmovebottom = true;
+      }
+      this.canmoveleft = true;
+      this.canmoveright = true;
+      this.canmovetop = true;
+      this.canmovebottom = true;
+
+    }
+    else if (topvalue > 4010 && topvalue < 4065 && leftvalue > 5300 && leftvalue < 7390) {
+      console.log("ithu lower");
+      if (topvalue <= 4010) {
+        this.canmovebottom = true;
+        this.canmovetop = false;
+        this.canmoveleft = true;
+        this.canmoveright = true;
+      }
+      if (topvalue >= 4065) {
+        this.canmovetop = true;
+        this.canmovebottom = false;
+        this.canmoveleft = true;
+        this.canmoveright = true;
+      }
+      if (leftvalue <= 5300) {
+        this.canmoveright = true;
+        this.canmoveleft = false;
+        this.canmovetop = true;
+        this.canmovebottom = true;
+      }
+      if (leftvalue >= 7390) {
+        this.canmoveright = false;
+        this.canmoveleft = true;
+        this.canmovetop = true;
+        this.canmovebottom = true;
+      }
+      this.canmoveleft = true;
+      this.canmoveright = true;
+      this.canmovetop = true;
+      this.canmovebottom = true;
+
+    }
+    else if (topvalue > 0 && topvalue < 4395 && leftvalue > 2700 && leftvalue < 2800) {
+      console.log("ithu left side horizontal road");
+      if (topvalue <= 4010) {
+        this.canmovebottom = true;
+        this.canmovetop = false;
+        this.canmoveleft = true;
+        this.canmoveright = true;
+      }
+      if (topvalue >= 4065) {
+        this.canmovetop = true;
+        this.canmovebottom = false;
+        this.canmoveleft = true;
+        this.canmoveright = true;
+      }
+      if (leftvalue <= 5300) {
+        this.canmoveright = true;
+        this.canmoveleft = false;
+        this.canmovetop = true;
+        this.canmovebottom = true;
+      }
+      if (leftvalue >= 7390) {
+        this.canmoveright = false;
+        this.canmoveleft = true;
+        this.canmovetop = true;
+        this.canmovebottom = true;
+      }
+      this.canmoveleft = true;
+      this.canmoveright = true;
+      this.canmovetop = true;
+      this.canmovebottom = true;
+
+    }
+    else if (topvalue > 3524  && topvalue < 3640 && leftvalue > 300 && leftvalue < 2800) {
+      console.log("ithu left side colony top");
+      if (topvalue <= 3524) {
+        this.canmovebottom = true;
+        this.canmovetop = false;
+        this.canmoveleft = true;
+        this.canmoveright = true;
+      }
+      if (topvalue >= 3640) {
+        this.canmovetop = true;
+        this.canmovebottom = false;
+        this.canmoveleft = true;
+        this.canmoveright = true;
+      }
+      if (leftvalue <= 300) {
+        this.canmoveright = true;
+        this.canmoveleft = false;
+        this.canmovetop = true;
+        this.canmovebottom = true;
+      }
+      if (leftvalue >= 2800) {
+        this.canmoveright = false;
+        this.canmoveleft = true;
+        this.canmovetop = true;
+        this.canmovebottom = true;
+      }
+      this.canmoveleft = true;
+      this.canmoveright = true;
+      this.canmovetop = true;
+      this.canmovebottom = true;
+
+    }
+    else if (topvalue > 4010  && topvalue < 4065 && leftvalue > 300 && leftvalue < 2800) {
+      console.log("ithu left side colony bottom");
+      if (topvalue <= 4010) {
+        this.canmovebottom = true;
+        this.canmovetop = false;
+        this.canmoveleft = true;
+        this.canmoveright = true;
+      }
+      if (topvalue >= 4065) {
+        this.canmovetop = true;
+        this.canmovebottom = false;
+        this.canmoveleft = true;
+        this.canmoveright = true;
+      }
+      if (leftvalue <= 300) {
+        this.canmoveright = true;
+        this.canmoveleft = false;
+        this.canmovetop = true;
+        this.canmovebottom = true;
+      }
+      if (leftvalue >= 2800) {
+        this.canmoveright = false;
+        this.canmoveleft = true;
+        this.canmovetop = true;
+        this.canmovebottom = true;
+      }
+      this.canmoveleft = true;
+      this.canmoveright = true;
+      this.canmovetop = true;
+      this.canmovebottom = true;
+
+    }
+    else if (topvalue > 2950 && topvalue < 3050 && leftvalue > 0 && leftvalue < 7390) {
+      console.log("ithu municipality office road");
+      this.canmovetop = true;
+      this.canmovebottom = true;
+      this.canmoveright = true;
+      this.canmoveleft = true;
+      if (leftvalue <= 0) {
+        this.canmovebottom = true;
+        this.canmovetop = true;
+        this.canmoveleft = false;
+        this.canmoveright = true;
+      }
+      if (leftvalue >= 7390) {
+        this.canmovetop = true;
+        this.canmovebottom = true;
+        this.canmoveleft = true;
+        this.canmoveright = false;
+      }
+      if (topvalue <= 2950) {
+        this.canmoveright = true;
+        this.canmoveleft = true;
+        this.canmovetop = false;
+        this.canmovebottom = true;
+      }
+      if (topvalue >= 3050) {
+        this.canmoveright = true;
+        this.canmoveleft = true;
+        this.canmovetop = true;
+        this.canmovebottom = false;
+      }
+    }
+    else {
+      this.canmoveleft = false;
+      this.canmovetop = false;
+      this.canmovebottom = false;
+      this.canmoveright = false;
+    }
+
+  }
   topval = 0;
   @HostListener('document:keydown.arrowdown', ['$event'])
   movedown($event: any) {
     $event.stopPropagation();
     if (this.opensuperflag == false) {
-      let leftval = $(".cart").css('top');
-      leftval = parseInt(leftval) + 105 + "px";
-      $(".cart").css({ 'top': leftval })
+      this.checkcartposition();
+      if (this.canmovebottom) {
+        console.log('this.canmovebottom', this.canmovebottom)
+        let leftval = $(".cart").css('top');
+        leftval = parseInt(leftval) + 10 + "px";
+        $(".cart").css({ 'top': leftval })
+      }
     }
     else {
       let leftval = $(".supermarketcart").css('top');
-      leftval = parseInt(leftval) + 105 + "px";
+      leftval = parseInt(leftval) + 10 + "px";
       $(".supermarketcart").css({ 'top': leftval })
     }
-
-
   }
   @HostListener('document:keydown.arrowup', ['$event'])
   moveup($event: any) {
     $event.stopPropagation();
     if (this.opensuperflag == false) {
-      let leftval = $(".cart").css('top');
-      leftval = parseInt(leftval) - 105 + "px";
-      $(".cart").css({ 'top': leftval })
+      this.checkcartposition();
+      console.log('this.canmovetop', this.canmovetop)
+      if (this.canmovetop) {
+        let leftval = $(".cart").css('top');
+        leftval = parseInt(leftval) - 10 + "px";
+        $(".cart").css({ 'top': leftval })
+      }
     }
     else {
       let leftval = $(".supermarketcart").css('top');
-      leftval = parseInt(leftval) - 105 + "px";
+      leftval = parseInt(leftval) - 10 + "px";
       $(".supermarketcart").css({ 'top': leftval })
     }
   }
@@ -100,31 +387,49 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   moveleft($event: any) {
     $event.stopPropagation();
     if (this.opensuperflag == false) {
-      let leftval = $(".cart").css('left');
-      leftval = parseInt(leftval) - 105 + "px";
-      $(".cart").css({ 'left': leftval })
+      this.checkcartposition();
+      console.log('this.canmoveleft', this.canmoveleft)
+      if (this.canmoveleft == true) {
+        let leftval = $(".cart").css('left');
+        leftval = parseInt(leftval) - 10 + "px";
+        $(".cart").css({ 'left': leftval })
+      }
     }
     else {
       let leftval = $(".supermarketcart").css('left');
-      leftval = parseInt(leftval) - 105 + "px";
+      leftval = parseInt(leftval) - 10 + "px";
       $(".supermarketcart").css({ 'left': leftval })
     }
   }
   @HostListener('document:keydown.arrowright', ['$event'])
   moveright($event: any) {
+
     $event.stopPropagation();
+    this.checkcartposition();
     if (this.opensuperflag == false) {
-      let leftval = $(".cart").css('left');
-      leftval = parseInt(leftval) + 105 + "px";
-      $(".cart").css({ 'left': leftval })
+      console.log('this.canmoveleft', this.canmoveleft)
+      if (this.canmoveleft == true) {
+        let leftval = $(".cart").css('left');
+        leftval = parseInt(leftval) + 10 + "px";
+        $(".cart").css({ 'left': leftval })
+      }
     }
     else {
       let leftval = $(".supermarketcart").css('left');
-      leftval = parseInt(leftval) + 105 + "px";
+      leftval = parseInt(leftval) + 10 + "px";
       $(".supermarketcart").css({ 'left': leftval })
     }
   }
-
+  switchrole() {
+    this.currentrole = this.currentUserRole;
+    this.dopanzoom(-3341, -2150, '1');
+    $(".cart").hide();
+  }
+  switchcustomerrole() {
+    this.currentrole = 'Customer';
+    this.loadinginitialState();
+    $(".cart").show();
+  }
   ngOnInit(): void {
 
     if (this.logser.currentuser.Username != '') {
@@ -132,7 +437,6 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     } else {
       let current = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
       this.logser.currentuser = JSON.parse(JSON.stringify(current))
-      console.log(this.logser.currentuser)
       this.currentUserRole = this.logser.currentuser.Role;
       this.currentUserCartId = this.logser.currentuser.cartId;
       this.currentusername = this.logser.currentuser.Username;
@@ -156,6 +460,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       for (var t = 0; t < this.user.length; t++) {
         if (this.user[t].login == 1 && this.user[t].User_cityid == this.logser.currentuser.CityId) {
           $("." + this.user[t].Role.split(" ")[0]).show();
+          this.currentUserId = this.user[t].UserId;
         }
         if (this.user[t].Username == this.currentusername && this.user[t].avatar == '') {
           this.noavatar = true;
@@ -163,14 +468,15 @@ export class MaincityComponent implements AfterViewInit, OnInit {
             this.open(this.content)
           }
         }
+
         if (this.user[t].Role !== '') {
           let word = this.user[t].Role.split(" ")[0];
           let xpos = this.positionObject[word as keyof typeof this.positionObject][3][0];
           let ypos = this.positionObject[word as keyof typeof this.positionObject][3][1];
           //let x2 = this.positionObject[word as keyof typeof this.positionObject][2][0];
-         // let y2 = this.positionObject[word as keyof typeof this.positionObject][2][1];  
+          // let y2 = this.positionObject[word as keyof typeof this.positionObject][2][1];  
           $(".displaypanel." + word).css({ 'left': xpos + 'px', 'top': ypos + 'px' }).html(this.user[t].Role);
-         // $(".housedisplay."+word).css({ 'left': x2 + 'px', 'top': y2 + 'px' }).html(this.user[t].Username);
+          // $(".housedisplay."+word).css({ 'left': x2 + 'px', 'top': y2 + 'px' }).html(this.user[t].Username);
           if (word == 'Supermarket' || word == 'Plastic' || word == 'Ubottle' || word == 'Reverse' || word == 'Refilling') {
             $(".commoncls." + word).html('').addClass('openlight');
           }
@@ -226,7 +532,10 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       // }
     });
 
+    this.loadinginitialState();
 
+  }
+  loadinginitialState() {
     let a = this.currentUserRole.split(" ")[0];
     let x = this.positionObject[a as keyof typeof this.positionObject][0][0];
     let y = this.positionObject[a as keyof typeof this.positionObject][0][1];
@@ -243,8 +552,8 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   }
 
   dopanzoom(x: number, y: number, zoomlevel: string) {
-    this.instance.zoomTo(x, y, parseFloat(zoomlevel));
     this.instance.smoothMoveTo(x, y);
+    this.instance.zoomTo(x, y, parseFloat(zoomlevel));
   }
   bottles = ['silky', 'wavy', 'shiny', 'bouncy']
   bottledropped: string[] = [];
@@ -253,27 +562,46 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   wavybottles: string[] = ['wavy', 'wavy', 'wavy', 'wavy'];
   silkybottles: string[] = ['silky', 'silky', 'silky', 'silky'];
   bouncybottles: string[] = ['bouncy', 'bouncy', 'bouncy', 'bouncy'];
+
+
   clicked() {
     alert("clicked");
   }
 
+
   drop(event: CdkDragDrop<string[]>) {
-    console.log(event.previousContainer, event.container)
     if (event.previousContainer === event.container) {
-      console.log('inga', event.container.data, event.previousIndex, event.currentIndex);
       moveItemInArray(
         event.container.data, event.previousIndex, event.currentIndex,);
     } else {
-      console.log(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
       transferArrayItem(event.previousContainer.data,
         event.container.data,
         event.previousIndex,
         event.currentIndex);
     }
   }
-  bottleclass='';
-  exit() { }
-  leavecity() { }
+  bottleclass = '';
+  exit() {
+    this.router.navigate(["login"]);
+  }
+  leavecity() {
+    this.logser.leavefacility().subscribe(
+      (data) => {
+        this.logser.leavescity().subscribe(
+          (data) => {
+            this.router.navigate(["home"]);
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+
+  }
   logout() {
     this.userobj.login = '0';
     this.logser.updateloggeduser(this.userobj).subscribe(
@@ -300,7 +628,6 @@ export class MaincityComponent implements AfterViewInit, OnInit {
 
   }
   dopanzoomsupermarket(x: number, y: number, zoomlevel: string) {
-    console.log(this.instance1);
     this.instance1.zoomTo(x, y, 0.2);
     this.instance1.smoothMoveTo(x, y);
   }
@@ -308,33 +635,35 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
 
   }
-  frontclass='';
-  leblfound=false;
-  frontlabel='';
+  frontclass = '';
+  leblfound = false;
+  frontlabel = '';
+  shapooprice = 0.0;
+  totalamount = 0.0;
   opensticker(bottlesticker: any, event: any) {
     let element = event.target || event.srcElement || event.currentTarget;
     let elementId = element.id;
-    let elementClass=element.className;
+    let elementClass = element.className;
     this.logser.getthisAssets(elementId).subscribe((data) => {
-      this.assetdata=data;
-      this.frontclass=elementClass.split(" ")[1]+"_big";
-      console.log(this.assetdata);
-      let checkuniversal=this.assetdata[0]['Bottle_Code'].split(".")[0];
-      if(checkuniversal=='UB'){
-        this.leblfound=true;
-        this.bottleclass="universal";
-        this.frontlabel=this.assetdata[0]['Content_Code'].split(".")[1].toString().toLowerCase()+"_label";
+      this.assetdata = data;
+      this.frontclass = elementClass.split(" ")[1] + "_big";
+      let checkuniversal = this.assetdata[0]['Bottle_Code'].split(".")[0];
+      this.shapooprice = parseFloat(this.assetdata[0]['Content_Price']) / parseFloat(this.assetdata[0]['Quantity']);
+      this.totalamount = parseFloat(this.assetdata[0]['Bottle_Price']) + parseFloat(this.assetdata[0]['Content_Price']) + parseFloat(this.assetdata[0]['Env_Tax'])
+      if (checkuniversal == 'UB') {
+        this.leblfound = true;
+        this.bottleclass = "universal";
+        this.frontlabel = this.assetdata[0]['Content_Code'].split(".")[1].toString().toLowerCase() + "_label";
       }
-      else{
-        this.leblfound=false;
-        this.bottleclass=this.assetdata[0]['Content_Code'].split(".")[1];
+      else {
+        this.leblfound = false;
+        this.bottleclass = this.assetdata[0]['Content_Code'].split(".")[1];
       }
-      
-      console.log(this.bottleclass);
+
       this.modalService.open(bottlesticker);
     });
-   
-    
+
+
 
 
   }

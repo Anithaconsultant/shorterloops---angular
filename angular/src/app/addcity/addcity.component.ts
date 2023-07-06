@@ -356,7 +356,6 @@ export class AddcityComponent implements OnInit {
             this.assettableobj['Env_Tax'] = this.assetData['Env_Tax'][count];
             this.assettableobj['Discard_fine'] = this.assetData['Discard_fine'][count];
             count++;
-            console.log(this.assettableobj);
             this.logser.createAsset(this.assettableobj).subscribe(
               data => {
                 this.assettableobj = data;

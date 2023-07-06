@@ -43,7 +43,7 @@ class City(models.Model):
 class Facility(models.Model):
     class Meta:
         db_table = "facility"
-    Facility_cityid = models.ForeignKey("city", on_delete=models.CASCADE)
+    Facility_cityid =models.CharField(max_length=60)
     FacilityId = models.AutoField(primary_key=True)
     Facilityname = models.CharField(max_length=60)
     Owner_status = models.CharField(max_length=70, blank=True, default='')

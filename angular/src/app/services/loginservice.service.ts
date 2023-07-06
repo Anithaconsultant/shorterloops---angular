@@ -7,7 +7,6 @@ import { Observable } from 'rxjs';
 export class LoginserviceService {
   username = "anitha";
   password = "anitha";
-
   currentuser = {
     'Username': '',
     'UserId': '',
@@ -19,10 +18,9 @@ export class LoginserviceService {
     'avatar': '',
     'login': '',
     'cityname': ''
-
   };
-//  baseurl = "https://dbl.iihs.in/api/";
-baseurl = "http://127.0.0.1:8000/api/";
+  //baseurl = "https://dbl.iihs.in/api/";
+  baseurl = "http://127.0.0.1:8000/api/";
   authorizationData = 'Basic ' + btoa(this.username + ':' + this.password);
   httpHeaders = new HttpHeaders({
     'Content-Type': 'application/json',
@@ -30,7 +28,6 @@ baseurl = "http://127.0.0.1:8000/api/";
   })
   constructor(private http: HttpClient) { }
   getAllUsers(): Observable<any> {
-    console.log(this.baseurl);
     return this.http.get(this.baseurl,
       { headers: this.httpHeaders });
   }
@@ -40,9 +37,8 @@ baseurl = "http://127.0.0.1:8000/api/";
       { headers: this.httpHeaders });
   }
   createAsset(asset: any): Observable<any> {
-    const body = { AssetId: asset.AssetId, Asset_CityId: asset.Asset_CityId, CategoryCode: asset.CategoryCode, Bottle_Code: asset.Bottle_Code, Content_Code: asset.Content_Code, Quantity: asset.Quantity, Units: asset.Units, Bottle_loc: asset.Bottle_loc, Bottle_Status: asset.Bottle_Status, DOM: asset.DOM, Max_Refill_Count: asset.Max_Refill_Count,Current_Refill_Count:asset.Current_Refill_Count,Latest_Refill_Date:asset.Latest_Refill_Date,Retirement_Date:asset.Retirement_Date, Retire_Reason:asset.Retire_Reason,Content_Price:asset.Content_Price,Bottle_Price:asset.Bottle_Price,Redeem_Good:asset.Redeem_Good,Redeem_Damaged:asset.Redeem_Damaged,Discount_RefillB:asset.Discount_RefillB,Env_Tax:asset.Env_Tax,Discard_fine:asset.Discard_fine,Transaction_Id:asset.Transaction_Id,Transaction_Date:asset.Transaction_Date,Fromfacility:asset.Fromfacility,Tofacility:asset.Tofacility};
-    console.log(body);
-    return this.http.post(this.baseurl + 'asset/'+this.currentuser.CityId, body,
+    const body = { AssetId: asset.AssetId, Asset_CityId: asset.Asset_CityId, CategoryCode: asset.CategoryCode, Bottle_Code: asset.Bottle_Code, Content_Code: asset.Content_Code, Quantity: asset.Quantity, Units: asset.Units, Bottle_loc: asset.Bottle_loc, Bottle_Status: asset.Bottle_Status, DOM: asset.DOM, Max_Refill_Count: asset.Max_Refill_Count, Current_Refill_Count: asset.Current_Refill_Count, Latest_Refill_Date: asset.Latest_Refill_Date, Retirement_Date: asset.Retirement_Date, Retire_Reason: asset.Retire_Reason, Content_Price: asset.Content_Price, Bottle_Price: asset.Bottle_Price, Redeem_Good: asset.Redeem_Good, Redeem_Damaged: asset.Redeem_Damaged, Discount_RefillB: asset.Discount_RefillB, Env_Tax: asset.Env_Tax, Discard_fine: asset.Discard_fine, Transaction_Id: asset.Transaction_Id, Transaction_Date: asset.Transaction_Date, Fromfacility: asset.Fromfacility, Tofacility: asset.Tofacility };
+    return this.http.post(this.baseurl + 'asset/' + this.currentuser.CityId, body,
       { headers: this.httpHeaders });
   }
   createcity(city: any): Observable<any> {
@@ -55,11 +51,11 @@ baseurl = "http://127.0.0.1:8000/api/";
       { headers: this.httpHeaders });
   }
   getAllAssets(): Observable<any> {
-    return this.http.get(this.baseurl + 'asset/'+this.currentuser.CityId,
+    return this.http.get(this.baseurl + 'asset/' + this.currentuser.CityId,
       { headers: this.httpHeaders });
   }
-  getthisAssets(currentitem:any): Observable<any> {
-    return this.http.get(this.baseurl + 'assets/'+currentitem,
+  getthisAssets(currentitem: any): Observable<any> {
+    return this.http.get(this.baseurl + 'assets/' + currentitem,
       { headers: this.httpHeaders });
   }
   getcitynames(): Observable<any> {
@@ -68,23 +64,29 @@ baseurl = "http://127.0.0.1:8000/api/";
       { headers: this.httpHeaders });
   }
   updateloggeduser(loguser: any): Observable<any> {
+    console.log("updateloggeduser nana 1");
     let body;
-    console.log(loguser.login)
     body = { login: loguser.login };
-    console.log(body)
     return this.http.put(this.baseurl + 'updateusercity/' + this.currentuser.UserId, body,
       { headers: this.httpHeaders });
   }
   updateuseravatar(avatar: any): Observable<any> {
+    console.log("updateuseravatar nana 2");
     let body;
     body = { avatar: avatar };
-    console.log(body)
+    return this.http.put(this.baseurl + 'updateusercity/' + this.currentuser.UserId, body,
+      { headers: this.httpHeaders });
+  }
+  leavescity(): Observable<any> {
+    console.log("leavescity 3");
+    let body;
+    body = { User_cityid: '', Role: '', cartId: '', avatar: '' };
     return this.http.put(this.baseurl + 'updateusercity/' + this.currentuser.UserId, body,
       { headers: this.httpHeaders });
   }
   updateuser(edituser: any): Observable<any> {
+    console.log("updateuser 4");
     let body;
-    console.log(edituser.cartId, edituser, edituser.Role);
     if (edituser.cartId == undefined && edituser.Role == "Mayor") {
       this.currentuser.cartId = edituser.cityid + '_100';
       body = { User_cityid: edituser.cityid, Role: edituser.Role, cartId: edituser.cityid + '_100' };
@@ -92,7 +94,6 @@ baseurl = "http://127.0.0.1:8000/api/";
     else {
       body = { User_cityid: edituser.cityid, Role: edituser.Role, cartId: edituser.cartId };
     }
-    console.log(body)
     return this.http.put(this.baseurl + 'updateusercity/' + this.currentuser.UserId, body,
       { headers: this.httpHeaders });
   }
@@ -101,17 +102,20 @@ baseurl = "http://127.0.0.1:8000/api/";
       { headers: this.httpHeaders });
   }
   updatefacility(facilityobj: any): Observable<any> {
-    const body = { Facilityname: facilityobj.facilityname, Owner_id: facilityobj.Ownerid, Facility_cityid_id: facilityobj.facilityCityId }
+    const body = { Facilityname: facilityobj.facilityname, Owner_id: facilityobj.Ownerid, Facility_cityid: facilityobj.facilityCityId, Owner_status: facilityobj.Owner_status }
 
+    console.log(body);
     return this.http.put(this.baseurl + 'updatefacility/', body,
       { headers: this.httpHeaders });
   }
+  leavefacility(): Observable<any> {
+    const body = { Owner_id: '',Owner_status: 'Inactive' }
+    return this.http.put(this.baseurl + 'leavefacility/' + this.currentuser.UserId, body,
+      { headers: this.httpHeaders });
+  }
   createfacility(firstfacility: any): Observable<any> {
-    const body = { Facility_cityid_id: firstfacility.CityId };
+    const body = { Facility_cityid: firstfacility.CityId };
     return this.http.post(this.baseurl + 'facility/' + this.currentuser.UserId, body,
       { headers: this.httpHeaders });
   }
-  
-
 }
- 

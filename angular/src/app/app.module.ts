@@ -15,6 +15,10 @@ import { AddcityComponent } from './addcity/addcity.component';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatTreeModule} from '@angular/material/tree';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -33,7 +37,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     NgbModule,
     NgbDropdownModule,
     BrowserAnimationsModule,
-    DragDropModule 
+    DragDropModule,MatTreeModule, MatButtonModule, MatIconModule
   ],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy },
     DatePipe],
