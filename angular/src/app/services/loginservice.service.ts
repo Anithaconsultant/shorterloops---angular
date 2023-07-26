@@ -17,10 +17,12 @@ export class LoginserviceService {
     'gender': '',
     'avatar': '',
     'login': '',
-    'cityname': ''
+    'cityname': '',
+    'currentdate':0,
+    'currentday':0
   };
-  //baseurl = "https://dbl.iihs.in/api/";
-  baseurl = "http://127.0.0.1:8000/api/";
+ // baseurl = "https://dbl.iihs.in/api/";
+ baseurl = "http://127.0.0.1:8000/api/";
   authorizationData = 'Basic ' + btoa(this.username + ':' + this.password);
   httpHeaders = new HttpHeaders({
     'Content-Type': 'application/json',
@@ -44,6 +46,12 @@ export class LoginserviceService {
   createcity(city: any): Observable<any> {
     const body = { CityName: city.CityName, MayorId: city.MayorId, Clocktickrate: city.Clocktickrate, Status: city.Status };
     return this.http.post(this.baseurl + 'addcity/', body,
+      { headers: this.httpHeaders });
+  }
+  updatecurrenttime(city: any): Observable<any> {
+    const body = { CurrentDate: city.CurrentDate, CurrentDay: city.CurrentDay};
+    console.log(body);
+    return this.http.put(this.baseurl + 'updatetime/'+ this.currentuser.CityId, body,
       { headers: this.httpHeaders });
   }
   getAllCities(): Observable<any> {

@@ -11,8 +11,7 @@ class userSerializer(serializers.ModelSerializer):
 class citySerializer(serializers.ModelSerializer):
     class Meta:
         model= City
-        fields = [ 'CityId','CityName', 'MayorId', 'Clocktickrate', 'Citystartdate',
-                  'CityCreateTime', 'Status']
+        fields = '__all__'
 
 class facilitySerializer(serializers.ModelSerializer):
     class Meta:

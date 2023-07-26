@@ -84,22 +84,22 @@ WSGI_APPLICATION = 'shorterloops.wsgi.application'
 
 DATABASES = {
     'default':
-    #  {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'fresh',
-    #     'USER': 'root',
-    #     'PASSWORD': 'Admin@123',
-    #     'HOST': '127.0.0.1',
-    #     'PORT': '3306',
-    # }
-    {
+     {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'shorterloop',
-        'USER': 'dbluser',
-        'PASSWORD': 'Dbladmin@123',
+        'NAME': 'fresh',
+        'USER': 'root',
+        'PASSWORD': 'Admin@123',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
+    # {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'shorterloop',
+    #     'USER': 'dbluser',
+    #     'PASSWORD': 'Dbladmin@123',
+    #     'HOST': '127.0.0.1',
+    #     'PORT': '3306',
+    # }
 }
 
 # Password validation
@@ -151,20 +151,20 @@ LOGIN_REDIRECT_URL = '/'
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_REPLACE_HTTPS_REFERER = True
-CORS_ALLOWED_ORIGINS = [
-    "https://dbl.iihs.in",
-    "https://10.10.4.129"
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "https://dbl.iihs.in",
+#     "https://10.10.4.129"
+# ]
 
-CSRF_TRUSTED_ORIGINS = [
-    'https://dbl.iihs.in',
-    'https://10.10.4.129',
-]
+# CSRF_TRUSTED_ORIGINS = [
+#     'https://dbl.iihs.in',
+#     'https://10.10.4.129',
+# ]
 
-CORS_ORIGIN_WHITELIST = (
-    'https://dbl.iihs.in',
-    'https://10.10.4.129',
-)
+# CORS_ORIGIN_WHITELIST = (
+#     'https://dbl.iihs.in',
+#     'https://10.10.4.129',
+# )
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [

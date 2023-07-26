@@ -1,6 +1,6 @@
 <div class="maincity_container">
     <div class="maincity" #maincity id="maincity" [hidden]="opensuperflag">
-
+        <div class="truck side"></div>
         <div class="cart">
             <div class="cartavatar"></div>
             <div class="cartid"></div>
@@ -15,6 +15,8 @@
         </div>
 
         <div class="mayorflag"></div>
+        <div id="clock"></div>
+        <div id="day"></div>
         <div class="mayorofzboard">{{cityname | uppercase}} MUNICIPAL OFFICE</div>
         <div class="leftcolony">{{cityname | uppercase}} HOUSING COLONY</div>
         <div class="rightcolony">{{cityname | uppercase}} HOUSING COLONY</div>
@@ -26,7 +28,7 @@
             <div *ngFor='let key of objkey(positionObject);let i = index' class="displaypanel {{key}}">
             </div>
         </div>
-        <div class="supermarketentry" (click)="opensuperflag=true;opensupermarket()"></div>
+        <div class="supermarketentry"></div>
 
 
     </div>
@@ -34,7 +36,11 @@
 
         <div class="loadimg" #supermarket>
             <div class="exit" (click)="opensuperflag=false;dopanzoom( -911.801, -2188.2,'1')"></div>
+            <div id="innerdoor"></div>
             <div class="cart supermarketcart">
+                <audio #welcome loop [volume]="0.8" muted="muted">
+                    <source src="assets/audio/birds.mp3" type="audio/mp3">
+                  </audio>
                 <div class="cartavatar"></div>
                 <div class="cartid"></div>
                 <div class="newbottleholder">
@@ -45,7 +51,7 @@
                 </div>
                 <div class="bottleholder">
                     <div cdkDropList #bottleList="cdkDropList" [cdkDropListConnectedTo]="[droppedList]"
-                        [cdkDropListData]="bottles" (cdkDropListDropped)="drop($event)" class="bottle_list">
+                        [cdkDropListData]="bottles" (cdkDropListDropped)="drop($event)" class="cart_bottle_list">
                         <div *ngFor="let item of bottles" class="bottle {{item}}" cdkDrag></div>
                     </div>
                 </div>

@@ -30,11 +30,12 @@ FACILITY_CHOICES = (('mun', 'Municipality Office'),
 class City(models.Model):
     class Meta:
         db_table = "city"
-
     CityId = models.AutoField(primary_key=True)
     CityName = models.CharField(max_length=70, unique=True)
     MayorId = models.IntegerField(null=True, unique=True)
     Clocktickrate = models.IntegerField(default=100)
+    CurrentDate = models.IntegerField(null=True)
+    CurrentDay= models.IntegerField(null=True)
     Citystartdate = models.DateField(default=datetime.date.today)
     CityCreateTime = models.TimeField(auto_now=True)
     Status = models.CharField(max_length=70, null=True)

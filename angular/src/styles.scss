@@ -234,13 +234,15 @@ input::placeholder {
     border-bottom: 0;
     border-left: 0.4em solid transparent !important;
 }
-#dropdownBasic1{
-    font-size:14px;
+
+#dropdownBasic1 {
+    font-size: 14px;
 }
 
 #dropdownBasic1::after {
     border-top: 0.4em solid #555 !important;
 }
+
 .dropdown-toggle:empty::after {
     margin-left: 0;
     position: absolute;
@@ -253,19 +255,23 @@ input::placeholder {
     background: rgba(255, 255, 255, 0.7);
     transform: translate(20px, 52px) !important;
     width: 310px !important;
-    font-size:14px;
+    font-size: 14px;
 }
+
 .mat-tree-node {
     min-height: 30px !important;
     padding-left: 20px;
     cursor: pointer;
-    &:hover{
-        background:rgba(0,0,0,0.5);
+
+    &:hover {
+        background: rgba(0, 0, 0, 0.5);
     }
 }
-.mat-tree{
-    background-color: rgba(255,255,255,0.2) !important;
+
+.mat-tree {
+    background-color: rgba(255, 255, 255, 0.2) !important;
 }
+
 app-login,
 app-signup {
     .form-control {
@@ -522,7 +528,7 @@ app-signup {
     }
 
     .cartimg {
-        background-image: url('./assets/img/shoppingcart.svg');
+        background-image: url('./assets/img/neoncart.svg');
         background-repeat: no-repeat;
         position: absolute;
         background-size: contain;
@@ -546,10 +552,10 @@ app-signup {
 
             .cartid {
                 position: absolute;
-                color: #fff;
-                left: 12px;
+                color: #000;
+                left: 11px;
                 font-size: 7px;
-                top: -3px;
+                top: -4px;
             }
         }
     }
@@ -607,7 +613,7 @@ app-signup {
 
             .cartid {
                 position: absolute;
-                color: #fff;
+                color: #000;
                 left: 43px;
                 font-size: 30px;
                 top: 12px;
@@ -713,6 +719,11 @@ app-signup {
     width: 31px;
     height: 77px;
 }
+.silky {
+    background-image: url('./assets/img/silky.png');
+    width: 31px;
+    height: 77px;
+}
 
 .bouncy {
     background-image: url('./assets/img/bouncy.png');
@@ -750,7 +761,7 @@ app-signup {
 .labelholder {
     position: relative;
     top: 476px;
-  
+
     font-size: 11px;
     left: 224px;
 
@@ -1006,6 +1017,7 @@ app-signup {
     height: 770px;
     background-size: contain;
     margin-left: 541px;
+
     .labelholder {
         color: #dddd6b;
     }
@@ -1017,14 +1029,16 @@ app-signup {
     height: 770px;
     background-size: contain;
     margin-left: 541px;
+
     .labelholder {
         color: #fff;
         top: 482px;
         left: 183px;
-    
+
     }
 }
-.exit{
+
+.exit {
     position: absolute;
     width: 322px;
     height: 167px;
@@ -1033,6 +1047,7 @@ app-signup {
     left: 983px;
     top: 500px;
 }
+
 .spikyback {
     background-image: url('./assets/img/spiky_back.png');
     width: 362px;
@@ -1041,7 +1056,7 @@ app-signup {
     margin-left: 541px;
 
     .labelholder {
-        top:472px;  
+        top: 472px;
         color: #633cce;
     }
 }
@@ -1052,6 +1067,7 @@ app-signup {
     height: 770px;
     background-size: contain;
     margin-left: 541px;
+
     .labelholder {
 
         color: #633cce;
@@ -1064,6 +1080,7 @@ app-signup {
     height: 770px;
     background-size: contain;
     margin-left: 541px;
+
     .labelholder {
         color: #fff;
         top: 466px;
@@ -1077,6 +1094,7 @@ app-signup {
     height: 770px;
     background-size: contain;
     margin-left: 541px;
+
     .labelholder {
 
         color: #000;
@@ -1104,16 +1122,18 @@ body {
     margin: 0;
     font-family: Roboto, "Helvetica Neue", sans-serif;
 }
-.recycle{
-background-image: url('./assets/img/recycledplasticbottle.png');
-width: 8px;
-height: 8px;
-position: absolute;
-left: 8px;
-top: 16px;
-background-size: contain;
+
+.recycle {
+    background-image: url('./assets/img/recycledplasticbottle.png');
+    width: 8px;
+    height: 8px;
+    position: absolute;
+    left: 8px;
+    top: 16px;
+    background-size: contain;
 }
-.refill{
+
+.refill {
     background-image: url('./assets/img/refilledbottle.png');
     width: 8px;
     height: 8px;
@@ -1122,7 +1142,8 @@ background-size: contain;
     top: 16px;
     background-size: contain;
 }
-.label{
+
+.label {
     position: absolute;
     width: 23px;
     height: 16px;
@@ -1130,7 +1151,8 @@ background-size: contain;
     top: 35px;
     background-size: cover;
 }
-.labelbig{
+
+.labelbig {
     position: absolute;
     width: 203px;
     height: 135px;
@@ -1138,18 +1160,23 @@ background-size: contain;
     top: 302px;
     background-size: cover;
 }
-.shiny_label{
+
+.shiny_label {
     background-image: url('./assets/img/shiny_label.png');
 }
-.silky_label{
+
+.silky_label {
     background-image: url('./assets/img/silky_label.png');
 }
-.spiky_label{
+
+.spiky_label {
     background-image: url('./assets/img/spiky_label.png');
 }
-.bouncy_label{
+
+.bouncy_label {
     background-image: url('./assets/img/bouncy_label.png');
 }
-.wavy_label{
+
+.wavy_label {
     background-image: url('./assets/img/wavy_label.png');
 }

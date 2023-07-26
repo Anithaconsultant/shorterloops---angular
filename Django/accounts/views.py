@@ -57,6 +57,22 @@ def addcity(request):
         serializer = citySerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
 
+@api_view(['GET', 'POST','PUT'])
+def updatecurrent(request,cityid):
+    if request.method == 'PUT':
+        data = JSONParser().parse(request)
+        getcity = City.objects.filter(pk=cityid).first()
+        serializer = citySerializer(getcity, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            print("invalid data")
+        return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+    if request.method == 'GET':
+        getcity = City.objects.filter(pk=cityid).first()
+        serializer = citySerializer(getcity, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
 
 @api_view(['GET', 'POST'])
 def createasset(request, cityid):

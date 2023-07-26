@@ -74,277 +74,281 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     this.currentusercityId = this.logser.currentuser.CityId;
   }
 
-  leftroad = 2727;
+
   canmovetop = false;
   canmoveleft = false;
   canmoveright = false;
   canmovebottom = false;
   onhorizontallane = false;
+  whichroad = '';
+  settrue() {
+    this.canmovetop = true;
+    this.canmovebottom = true;
+    this.canmoveright = true;
+    this.canmoveleft = true;
+  }
   checkcartposition() {
     let topvalue = parseInt($(".cart").css('top').split("px")[0]);
     let leftvalue = parseInt($(".cart").css('left').split("px")[0]);
     console.log(topvalue, leftvalue);
-    if (topvalue > 0 && topvalue < 4395 && leftvalue > 5200 && leftvalue < 5300) {
-      console.log("ithu main road");
-      this.canmovetop = true;
-      this.canmovebottom = true;
-      this.canmoveright = true;
-      this.canmoveleft = true;
-      if (leftvalue <= 5200) {
-        this.canmovebottom = true;
-        this.canmovetop = true;
-        this.canmoveleft = false;
-        this.canmoveright = true;
-      }
-      if (leftvalue >= 5300) {
-        this.canmovetop = true;
-        this.canmovebottom = true;
-        this.canmoveleft = true;
-        this.canmoveright = false;
-      }
-      if (topvalue <= 0) {
-        this.canmoveright = true;
-        this.canmoveleft = true;
-        this.canmovetop = false;
-        this.canmovebottom = true;
-      }
-      if (topvalue >= 4395) {
-        this.canmoveright = true;
-        this.canmoveleft = true;
-        this.canmovetop = true;
-        this.canmovebottom = false;
-      }
+    if (topvalue > 0 && topvalue < 4395 && leftvalue > 5190 && leftvalue < 5300) {
+      this.whichroad = "rightroad";
+      this.settrue();
+
     }
     else if (topvalue > 3524 && topvalue < 3640 && leftvalue > 5300 && leftvalue < 7390) {
-      console.log("ithu mayor veedu");
-      if (topvalue <= 3524) {
-        this.canmovebottom = true;
-        this.canmovetop = false;
-        this.canmoveleft = true;
-        this.canmoveright = true;
-      }
-      if (topvalue >= 3640) {
-        this.canmovetop = true;
-        this.canmovebottom = false;
-        this.canmoveleft = true;
-        this.canmoveright = true;
-      }
-      if (leftvalue <= 5300) {
-        this.canmoveright = true;
-        this.canmoveleft = false;
-        this.canmovetop = true;
-        this.canmovebottom = true;
-      }
-      if (leftvalue >= 7390) {
-        this.canmoveright = false;
-        this.canmoveleft = true;
-        this.canmovetop = true;
-        this.canmovebottom = true;
-      }
-      this.canmoveleft = true;
-      this.canmoveright = true;
-      this.canmovetop = true;
-      this.canmovebottom = true;
+      this.whichroad = "mayorhouseroad";
+      this.settrue();
 
     }
     else if (topvalue > 2640 && topvalue < 3000 && leftvalue > 1500 && leftvalue < 1700) {
-      console.log("ithu super markt");
-      if (topvalue <= 2300) {
-        this.canmovebottom = true;
-        this.canmovetop = false;
-        this.canmoveleft = true;
-        this.canmoveright = true;
+      if (topvalue < 2720) {
+        this.opensuperflag = true; this.opensupermarket();
       }
-      if (topvalue >= 3000) {
-        this.canmovetop = true;
-        this.canmovebottom = false;
-        this.canmoveleft = true;
-        this.canmoveright = true;
-      }
-      if (leftvalue <= 1500) {
-        this.canmoveright = true;
-        this.canmoveleft = false;
-        this.canmovetop = true;
-        this.canmovebottom = true;
-      }
-      if (leftvalue >= 1700) {
-        this.canmoveright = false;
-        this.canmoveleft = true;
-        this.canmovetop = true;
-        this.canmovebottom = true;
-      }
-      this.canmoveleft = true;
-      this.canmoveright = true;
-      this.canmovetop = true;
-      this.canmovebottom = true;
+      this.whichroad = "Supermarketroad";
+      this.settrue();;
 
     }
     else if (topvalue > 4010 && topvalue < 4065 && leftvalue > 5300 && leftvalue < 7390) {
-      console.log("ithu lower");
-      if (topvalue <= 4010) {
-        this.canmovebottom = true;
-        this.canmovetop = false;
-        this.canmoveleft = true;
-        this.canmoveright = true;
-      }
-      if (topvalue >= 4065) {
-        this.canmovetop = true;
-        this.canmovebottom = false;
-        this.canmoveleft = true;
-        this.canmoveright = true;
-      }
-      if (leftvalue <= 5300) {
-        this.canmoveright = true;
-        this.canmoveleft = false;
-        this.canmovetop = true;
-        this.canmovebottom = true;
-      }
-      if (leftvalue >= 7390) {
-        this.canmoveright = false;
-        this.canmoveleft = true;
-        this.canmovetop = true;
-        this.canmovebottom = true;
-      }
-      this.canmoveleft = true;
-      this.canmoveright = true;
-      this.canmovetop = true;
-      this.canmovebottom = true;
+      this.whichroad = "lowercolonyrightroad";
+      this.settrue();
 
     }
     else if (topvalue > 0 && topvalue < 4395 && leftvalue > 2700 && leftvalue < 2800) {
-      console.log("ithu left side horizontal road");
-      if (topvalue <= 4010) {
-        this.canmovebottom = true;
-        this.canmovetop = false;
-        this.canmoveleft = true;
-        this.canmoveright = true;
-      }
-      if (topvalue >= 4065) {
-        this.canmovetop = true;
-        this.canmovebottom = false;
-        this.canmoveleft = true;
-        this.canmoveright = true;
-      }
-      if (leftvalue <= 5300) {
-        this.canmoveright = true;
-        this.canmoveleft = false;
-        this.canmovetop = true;
-        this.canmovebottom = true;
-      }
-      if (leftvalue >= 7390) {
-        this.canmoveright = false;
-        this.canmoveleft = true;
-        this.canmovetop = true;
-        this.canmovebottom = true;
-      }
-      this.canmoveleft = true;
-      this.canmoveright = true;
-      this.canmovetop = true;
-      this.canmovebottom = true;
+      this.whichroad = "lefthorizontalroad";
+      this.settrue();
 
     }
-    else if (topvalue > 3524  && topvalue < 3640 && leftvalue > 300 && leftvalue < 2800) {
-      console.log("ithu left side colony top");
-      if (topvalue <= 3524) {
-        this.canmovebottom = true;
-        this.canmovetop = false;
-        this.canmoveleft = true;
-        this.canmoveright = true;
-      }
-      if (topvalue >= 3640) {
-        this.canmovetop = true;
-        this.canmovebottom = false;
-        this.canmoveleft = true;
-        this.canmoveright = true;
-      }
-      if (leftvalue <= 300) {
-        this.canmoveright = true;
-        this.canmoveleft = false;
-        this.canmovetop = true;
-        this.canmovebottom = true;
-      }
-      if (leftvalue >= 2800) {
-        this.canmoveright = false;
-        this.canmoveleft = true;
-        this.canmovetop = true;
-        this.canmovebottom = true;
-      }
-      this.canmoveleft = true;
-      this.canmoveright = true;
-      this.canmovetop = true;
-      this.canmovebottom = true;
+    else if (topvalue > 3524 && topvalue < 3640 && leftvalue > 300 && leftvalue < 2800) {
+      this.whichroad = "leftcolonytop";
+      this.settrue();
 
     }
-    else if (topvalue > 4010  && topvalue < 4065 && leftvalue > 300 && leftvalue < 2800) {
-      console.log("ithu left side colony bottom");
-      if (topvalue <= 4010) {
-        this.canmovebottom = true;
-        this.canmovetop = false;
-        this.canmoveleft = true;
-        this.canmoveright = true;
-      }
-      if (topvalue >= 4065) {
-        this.canmovetop = true;
-        this.canmovebottom = false;
-        this.canmoveleft = true;
-        this.canmoveright = true;
-      }
-      if (leftvalue <= 300) {
-        this.canmoveright = true;
-        this.canmoveleft = false;
-        this.canmovetop = true;
-        this.canmovebottom = true;
-      }
-      if (leftvalue >= 2800) {
-        this.canmoveright = false;
-        this.canmoveleft = true;
-        this.canmovetop = true;
-        this.canmovebottom = true;
-      }
-      this.canmoveleft = true;
-      this.canmoveright = true;
-      this.canmovetop = true;
-      this.canmovebottom = true;
+    else if (topvalue > 4010 && topvalue < 4065 && leftvalue > 300 && leftvalue < 2800) {
+      this.whichroad = "leftcolonybottom";
+      this.settrue();
 
     }
     else if (topvalue > 2950 && topvalue < 3050 && leftvalue > 0 && leftvalue < 7390) {
-      console.log("ithu municipality office road");
-      this.canmovetop = true;
-      this.canmovebottom = true;
-      this.canmoveright = true;
-      this.canmoveleft = true;
-      if (leftvalue <= 0) {
-        this.canmovebottom = true;
-        this.canmovetop = true;
-        this.canmoveleft = false;
-        this.canmoveright = true;
-      }
-      if (leftvalue >= 7390) {
-        this.canmovetop = true;
-        this.canmovebottom = true;
-        this.canmoveleft = true;
-        this.canmoveright = false;
-      }
-      if (topvalue <= 2950) {
-        this.canmoveright = true;
-        this.canmoveleft = true;
-        this.canmovetop = false;
-        this.canmovebottom = true;
-      }
-      if (topvalue >= 3050) {
-        this.canmoveright = true;
-        this.canmoveleft = true;
-        this.canmovetop = true;
-        this.canmovebottom = false;
-      }
+      this.whichroad = "municipalityroad";
+      this.settrue();
     }
     else {
       this.canmoveleft = false;
       this.canmovetop = false;
       this.canmovebottom = false;
       this.canmoveright = false;
-    }
+      if (this.whichroad == 'rightroad') {
 
+        if (leftvalue <= 5190) {
+          this.canmovebottom = true;
+          this.canmovetop = true;
+          this.canmoveleft = false;
+          this.canmoveright = true;
+        }
+        if (leftvalue >= 5300) {
+          this.canmovetop = true;
+          this.canmovebottom = true;
+          this.canmoveleft = true;
+          this.canmoveright = false;
+        }
+        if (topvalue <= 0) {
+          this.canmoveright = true;
+          this.canmoveleft = true;
+          this.canmovetop = false;
+          this.canmovebottom = true;
+        }
+        if (topvalue >= 4395) {
+          this.canmoveright = true;
+          this.canmoveleft = true;
+          this.canmovetop = true;
+          this.canmovebottom = false;
+        }
+      }
+      else if (this.whichroad == 'mayorhouseroad') {
+        if (topvalue <= 3524) {
+          this.canmovebottom = true;
+          this.canmovetop = false;
+          this.canmoveleft = true;
+          this.canmoveright = true;
+        }
+        if (topvalue >= 3640) {
+          this.canmovetop = true;
+          this.canmovebottom = false;
+          this.canmoveleft = true;
+          this.canmoveright = true;
+        }
+        if (leftvalue <= 5300) {
+          this.canmoveright = true;
+          this.canmoveleft = false;
+          this.canmovetop = true;
+          this.canmovebottom = true;
+        }
+        if (leftvalue >= 7390) {
+          this.canmoveright = false;
+          this.canmoveleft = true;
+          this.canmovetop = true;
+          this.canmovebottom = true;
+        }
+      }
+      else if (this.whichroad == "Supermarketroad") {
+        if (topvalue <= 2640) {
+          this.canmovebottom = true;
+          this.canmovetop = false;
+          this.canmoveleft = true;
+          this.canmoveright = true;
+        }
+        if (topvalue >= 3000) {
+          this.canmovetop = true;
+          this.canmovebottom = false;
+          this.canmoveleft = true;
+          this.canmoveright = true;
+        }
+        if (leftvalue <= 1500) {
+          this.canmoveright = true;
+          this.canmoveleft = false;
+          this.canmovetop = true;
+          this.canmovebottom = true;
+        }
+        if (leftvalue >= 1700) {
+          this.canmoveright = false;
+          this.canmoveleft = true;
+          this.canmovetop = true;
+          this.canmovebottom = true;
+        }
+      }
+      else if (this.whichroad == "lowercolonyrightroad") {
+        if (topvalue <= 4010) {
+          this.canmovebottom = true;
+          this.canmovetop = false;
+          this.canmoveleft = true;
+          this.canmoveright = true;
+        }
+        if (topvalue >= 4065) {
+          this.canmovetop = true;
+          this.canmovebottom = false;
+          this.canmoveleft = true;
+          this.canmoveright = true;
+        }
+        if (leftvalue <= 5300) {
+          this.canmoveright = true;
+          this.canmoveleft = false;
+          this.canmovetop = true;
+          this.canmovebottom = true;
+        }
+        if (leftvalue >= 7390) {
+          this.canmoveright = false;
+          this.canmoveleft = true;
+          this.canmovetop = true;
+          this.canmovebottom = true;
+        }
+      }
+      else if (this.whichroad == "lefthorizontalroad") {
+        if (topvalue <= 4010) {
+          this.canmovebottom = true;
+          this.canmovetop = false;
+          this.canmoveleft = true;
+          this.canmoveright = true;
+        }
+        if (topvalue >= 4065) {
+          this.canmovetop = true;
+          this.canmovebottom = false;
+          this.canmoveleft = true;
+          this.canmoveright = true;
+        }
+        if (leftvalue <= 5300) {
+          this.canmoveright = true;
+          this.canmoveleft = false;
+          this.canmovetop = true;
+          this.canmovebottom = true;
+        }
+        if (leftvalue >= 7390) {
+          this.canmoveright = false;
+          this.canmoveleft = true;
+          this.canmovetop = true;
+          this.canmovebottom = true;
+        }
+      }
+      else if (this.whichroad == "leftcolonytop") {
+        if (topvalue <= 3524) {
+          this.canmovebottom = true;
+          this.canmovetop = false;
+          this.canmoveleft = true;
+          this.canmoveright = true;
+        }
+        if (topvalue >= 3640) {
+          this.canmovetop = true;
+          this.canmovebottom = false;
+          this.canmoveleft = true;
+          this.canmoveright = true;
+        }
+        if (leftvalue <= 300) {
+          this.canmoveright = true;
+          this.canmoveleft = false;
+          this.canmovetop = true;
+          this.canmovebottom = true;
+        }
+        if (leftvalue >= 2800) {
+          this.canmoveright = false;
+          this.canmoveleft = true;
+          this.canmovetop = true;
+          this.canmovebottom = true;
+        }
+      }
+      else if (this.whichroad == "leftcolonybottom") {
+        if (topvalue <= 4010) {
+          this.canmovebottom = true;
+          this.canmovetop = false;
+          this.canmoveleft = true;
+          this.canmoveright = true;
+        }
+        if (topvalue >= 4065) {
+          this.canmovetop = true;
+          this.canmovebottom = false;
+          this.canmoveleft = true;
+          this.canmoveright = true;
+        }
+        if (leftvalue <= 300) {
+          this.canmoveright = true;
+          this.canmoveleft = false;
+          this.canmovetop = true;
+          this.canmovebottom = true;
+        }
+        if (leftvalue >= 2800) {
+          this.canmoveright = false;
+          this.canmoveleft = true;
+          this.canmovetop = true;
+          this.canmovebottom = true;
+        }
+      }
+      else if (this.whichroad == "municipalityroad") {
+        if (leftvalue <= 0) {
+          this.canmovebottom = true;
+          this.canmovetop = true;
+          this.canmoveleft = false;
+          this.canmoveright = true;
+        }
+        if (leftvalue >= 7390) {
+          this.canmovetop = true;
+          this.canmovebottom = true;
+          this.canmoveleft = true;
+          this.canmoveright = false;
+        }
+        if (topvalue <= 2950) {
+          this.canmoveright = true;
+          this.canmoveleft = true;
+          this.canmovetop = false;
+          this.canmovebottom = true;
+        }
+        if (topvalue >= 3050) {
+          this.canmoveright = true;
+          this.canmoveleft = true;
+          this.canmovetop = true;
+          this.canmovebottom = false;
+        }
+      }
+    }
+    console.log('entha road', this.whichroad);
   }
   topval = 0;
   @HostListener('document:keydown.arrowdown', ['$event'])
@@ -360,6 +364,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       }
     }
     else {
+      this.supercartposition();
       let leftval = $(".supermarketcart").css('top');
       leftval = parseInt(leftval) + 10 + "px";
       $(".supermarketcart").css({ 'top': leftval })
@@ -378,6 +383,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       }
     }
     else {
+      this.supercartposition();
       let leftval = $(".supermarketcart").css('top');
       leftval = parseInt(leftval) - 10 + "px";
       $(".supermarketcart").css({ 'top': leftval })
@@ -396,6 +402,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       }
     }
     else {
+      this.supercartposition();
       let leftval = $(".supermarketcart").css('left');
       leftval = parseInt(leftval) - 10 + "px";
       $(".supermarketcart").css({ 'left': leftval })
@@ -405,21 +412,63 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   moveright($event: any) {
 
     $event.stopPropagation();
-    this.checkcartposition();
+
     if (this.opensuperflag == false) {
-      console.log('this.canmoveleft', this.canmoveleft)
-      if (this.canmoveleft == true) {
+      this.checkcartposition();
+      console.log('this.canmoveright', this.canmoveright)
+      if (this.canmoveright == true) {
         let leftval = $(".cart").css('left');
         leftval = parseInt(leftval) + 10 + "px";
         $(".cart").css({ 'left': leftval })
       }
     }
     else {
+      this.supercartposition();
       let leftval = $(".supermarketcart").css('left');
       leftval = parseInt(leftval) + 10 + "px";
       $(".supermarketcart").css({ 'left': leftval })
     }
+  }  setflag = 0;
+  supercartposition() {
+   
+    let topvalue = parseInt($(".supermarketcart").css('top').split("px")[0]);
+    let leftvalue = parseInt($(".supermarketcart").css('left').split("px")[0]);
+    if (topvalue < 3533 && topvalue > 3090 && leftvalue > 4972 && leftvalue < 4980) {
+
+      if ($(".cart_bottle_list").children('div').length > 0) {
+        alert("Please place all items you intend to return at the mouth of the conveyor")
+        this.setflag = 1;
+
+      }
+    }
+    if (leftvalue > 4980) {
+      if (this.setflag == 0) {
+        var $elem = $('#innerdoor');
+        $({ deg: 0 }).animate({ deg: 90 }, {
+            duration: 600,
+            step: function (now) {
+                $elem.css({
+                    transform: 'rotate(' + now + 'deg) '
+                });
+            }
+        });
+        this.setflag=2;
+      }
+    }
+    if(leftvalue>6532 && leftvalue<6552 && this.setflag==2){
+      var $elem = $('#innerdoor');
+        $({ deg: 90 }).animate({ deg: 1 }, {
+            duration: 600,
+            step: function () {
+              this.deg=this.deg-1;
+                $elem.css({
+                    transform: 'rotate(' + this.deg + 'deg) '
+                });
+            }
+        });
+    }
   }
+  deg=90;
   switchrole() {
     this.currentrole = this.currentUserRole;
     this.dopanzoom(-3341, -2150, '1');
@@ -430,6 +479,8 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     this.loadinginitialState();
     $(".cart").show();
   }
+  citycurrentdate = 0;
+  citycurrentday = 0;
   ngOnInit(): void {
 
     if (this.logser.currentuser.Username != '') {
@@ -443,15 +494,26 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       this.currentusergender = this.logser.currentuser.gender;
       this.currentuseravatar = this.logser.currentuser.avatar;
       this.currentusercityId = this.logser.currentuser.CityId;
+      this.citycurrentdate = this.logser.currentuser.currentdate;
+      this.citycurrentday = this.logser.currentuser.currentday;
+
     }
     this.logser.getcitynames().subscribe((data) => {
       setTimeout(() => {
         if (data[0].MayorId != 0) {
           $(".mayorflag").show();
         }
+        this.currentTime();
       }, 500)
       this.logser.currentuser.cityname = data[0].CityName;
+      this.logser.currentuser.currentdate = data[0].CurrentDate;
+      this.logser.currentuser.currentday = data[0].CurrentDay;
       this.cityname = this.logser.currentuser.cityname;
+      this.citycurrentdate = this.logser.currentuser.currentdate;
+      this.citycurrentday = this.logser.currentuser.currentday;
+      (this.citycurrentday > 0) ? this.sec = (this.citycurrentdate * 3600) + (3600 * 24 * this.citycurrentday) : this.sec = this.citycurrentdate * 3600;
+      console.log(this.sec);
+
 
     });
 
@@ -503,6 +565,114 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       this.newfemale = this.femaleset.slice(0);
 
     });
+
+  }
+  @ViewChild('welcome', { static: true }) public welcome!: ElementRef;
+  timeupdate = 0;
+  citytiming = {
+    'CurrentDate': 0,
+    'CurrentDay': 0
+  }
+  canupdatedb = false;
+  sec = 0;
+  currentTime() {
+    let hour = 0;
+    let min = 0;
+    let day = 0;
+    let totalMinutes = 0;
+    let totalhour = 0;
+    const hR = 3600;
+    setInterval(() => {
+      this.sec++;
+      totalMinutes = Math.floor(this.sec / 60);
+      min = totalMinutes % 60;
+      totalhour = this.sec / hR;
+      hour = totalhour % 24;
+      $("#clock").html(Math.floor(hour) + " : " + Math.floor(min));
+      day = totalhour / 24
+      $("#day").html('Day ' + Math.floor(day));
+      if (totalhour % 1 == 0) {
+        this.citytiming['CurrentDate'] = Math.round(hour);
+        this.citytiming['CurrentDay'] = Math.round(day);
+        this.logser.updatecurrenttime(this.citytiming).subscribe(
+          data => {
+            this.citytiming = data;
+            this.timeupdate == hour
+          },
+          error => {
+            console.log(error);
+          }
+        );
+        if (hour == 6 || hour == 19) {
+          $(".truck").animate({ left: '5210px' }, 1000, () => {
+            $(".truck").css({ transform: 'rotate(-90deg)' }).addClass('top').removeClass('side');
+            $(".truck").animate({ top: '3680px' }, 5500, () => {
+              $(".truck").css({ transform: 'scaleX(-1)' }).addClass('side').removeClass('top');
+              $(".truck").animate({ left: '7390px' }, 5500, () => {
+                $(".truck").css({ transform: 'rotate(0deg)' });
+                $(".truck").animate({ left: '5210px' }, 5500, () => {
+                  $(".truck").css({ transform: 'rotate(-90deg)' }).addClass('top').removeClass('side');;
+                  $(".truck").animate({ top: '4070px' }, 2500, () => {
+                    $(".truck").css({ transform: 'scaleX(-1)' }).addClass('side').removeClass('top');;
+                    $(".truck").animate({ left: '7390px' }, 5500, () => {
+                      $(".truck").css({ transform: 'rotate(0deg)' });
+                      $(".truck").animate({ left: '5210px' }, 5500, () => {
+                        $(".truck").css({ transform: 'rotate(90deg)' }).addClass('top').removeClass('side');;
+                        $(".truck").animate({ top: '3060px' }, 5500, () => {
+                          $(".truck").css({ transform: 'rotate(0deg)' }).addClass('side').removeClass('top');;
+                          $(".truck").animate({ left: '2730px' }, 5500, () => {
+                            $(".truck").css({ transform: 'rotate(-90deg)' }).addClass('top').removeClass('side');;
+                            $(".truck").animate({ top: '3680px' }, 2500, () => {
+                              $(".truck").css({ transform: 'rotate(0deg)' }).addClass('side').removeClass('top');;
+                              $(".truck").animate({ left: '300px' }, 5500, () => {
+                                $(".truck").css({ transform: 'scaleX(-1)' });
+                                $(".truck").animate({ left: '2730px' }, 5500, () => {
+                                  $(".truck").css({ transform: 'rotate(-90deg)' }).addClass('top').removeClass('side');;
+                                  $(".truck").animate({ top: '4070px' }, 2500, () => {
+                                    $(".truck").css({ transform: 'rotate(0deg)' }).addClass('side').removeClass('top');;
+                                    $(".truck").animate({ left: '300px' }, 5500, () => {
+                                      $(".truck").css({ transform: 'scaleX(-1)' });
+                                      $(".truck").animate({ left: '2730px' }, 5500, () => {
+                                        $(".truck").css({ transform: 'rotate(90deg)' }).addClass('top').removeClass('side');;
+                                        $(".truck").animate({ top: '3060px' }, 5500, () => {
+                                          $(".truck").css({ transform: 'scaleX(-1)' }).addClass('side').removeClass('top');;
+                                          $(".truck").animate({ left: '5210px' }, 5500, () => {
+                                            $(".truck").css({ transform: 'rotate(90deg)' }).addClass('top').removeClass('side');;
+                                            $(".truck").animate({ top: '1025px' }, 5500, () => {
+                                              $(".truck").css({ transform: 'scaleX(-1)' }).addClass('side').removeClass('top');;
+                                              $(".truck").animate({ left: '5933px' }, 5500);
+                                              $(".truck").css({ transform: 'rotate(0deg)' });
+                                            });
+                                          });
+                                        });
+                                      });
+                                    });
+                                  });
+                                });
+                              });
+                            });
+                          });
+                        });
+                      });
+                    });
+                  });
+                });
+              });
+            });
+          })
+        }
+      }
+    }, 1);
+
+  }
+
+  updateTime(k: any) {
+    if (k < 10) {
+      return "0" + k;
+    }
+    else {
+      return k;
+    }
   }
   @ViewChild('maincity', { static: false })
   private scene!: ElementRef;
@@ -696,6 +866,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   @ViewChild('supermarket', { static: false })
   private supermarket!: ElementRef;
   opensupermarket() {
+    this.welcome.nativeElement.play();
     this.instance1 = panzoom(this.supermarket.nativeElement, {
       maxZoom: 2,
       minZoom: 0.4,
