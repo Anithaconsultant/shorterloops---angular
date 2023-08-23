@@ -1,7 +1,8 @@
 from django.contrib import admin
-from django.urls import path
+
+from django.urls import include, path
 from accounts import views
-from django.conf.urls import include
+
 urlpatterns = [
   
     path('api/api-auth/', include('rest_framework.urls', namespace='rest_framework')),

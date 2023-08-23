@@ -4,8 +4,7 @@ import { LoginserviceService } from '../services/loginservice.service';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import * as $ from 'jquery';
-import { CdkDragDrop, moveItemInArray, transferArrayItem, CdkDrag } from '@angular/cdk/drag-drop';
-import { left } from '@popperjs/core';
+import { CdkDragDrop, moveItemInArray, transferArrayItem, CdkDrag, CdkDragEnd } from '@angular/cdk/drag-drop';
 
 
 
@@ -58,13 +57,12 @@ export class MaincityComponent implements AfterViewInit, OnInit {
 
 
   newmale: any[] = [];
-  newfemale: any[] = [];
-  maleset = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
-  femaleset = [20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39];
+  maleset = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39];
   user: any;
   assetdata: any;
   hasMayor = false;
   cityname: any;
+  cityrate: any;
   constructor(private logser: LoginserviceService, private router: Router, private modalService: NgbModal) {
     this.currentUserRole = this.logser.currentuser.Role;
     this.currentUserCartId = this.logser.currentuser.cartId;
@@ -90,12 +88,13 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   checkcartposition() {
     let topvalue = parseInt($(".cart").css('top').split("px")[0]);
     let leftvalue = parseInt($(".cart").css('left').split("px")[0]);
-    console.log(topvalue, leftvalue);
-    if (topvalue > 0 && topvalue < 4395 && leftvalue > 5190 && leftvalue < 5300) {
-      this.whichroad = "rightroad";
+    if (topvalue > 2723 && topvalue < 2789 && leftvalue > 5300 && leftvalue < 5891) {
+      this.whichroad = "refillingstation";
+      this.opensuperflag = 2; this.openrefillingstation();
       this.settrue();
 
     }
+
     else if (topvalue > 3524 && topvalue < 3640 && leftvalue > 5300 && leftvalue < 7390) {
       this.whichroad = "mayorhouseroad";
       this.settrue();
@@ -103,7 +102,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     }
     else if (topvalue > 2640 && topvalue < 3000 && leftvalue > 1500 && leftvalue < 1700) {
       if (topvalue < 2720) {
-        this.opensuperflag = true; this.opensupermarket();
+        this.opensuperflag = 1; this.opensupermarket();
       }
       this.whichroad = "Supermarketroad";
       this.settrue();;
@@ -116,6 +115,11 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     }
     else if (topvalue > 0 && topvalue < 4395 && leftvalue > 2700 && leftvalue < 2800) {
       this.whichroad = "lefthorizontalroad";
+      this.settrue();
+
+    }
+    else if (topvalue > 0 && topvalue < 4395 && leftvalue > 5190 && leftvalue < 5300) {
+      this.whichroad = "rightroad";
       this.settrue();
 
     }
@@ -138,6 +142,8 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       this.canmovetop = false;
       this.canmovebottom = false;
       this.canmoveright = false;
+      console.log(this.whichroad);
+
       if (this.whichroad == 'rightroad') {
 
         if (leftvalue <= 5190) {
@@ -159,6 +165,32 @@ export class MaincityComponent implements AfterViewInit, OnInit {
           this.canmovebottom = true;
         }
         if (topvalue >= 4395) {
+          this.canmoveright = true;
+          this.canmoveleft = true;
+          this.canmovetop = true;
+          this.canmovebottom = false;
+        }
+      }
+      else if (this.whichroad == 'refillingstation') {
+        if (leftvalue <= 5700) {
+          this.canmovebottom = true;
+          this.canmovetop = true;
+          this.canmoveleft = false;
+          this.canmoveright = true;
+        }
+        if (leftvalue >= 5790) {
+          this.canmovetop = true;
+          this.canmovebottom = true;
+          this.canmoveleft = true;
+          this.canmoveright = false;
+        }
+        if (topvalue <= 2789) {
+          this.canmoveright = true;
+          this.canmoveleft = true;
+          this.canmovetop = false;
+          this.canmovebottom = true;
+        }
+        if (topvalue >= 2723) {
           this.canmoveright = true;
           this.canmoveleft = true;
           this.canmovetop = true;
@@ -348,64 +380,78 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         }
       }
     }
-    console.log('entha road', this.whichroad);
+
   }
   topval = 0;
   @HostListener('document:keydown.arrowdown', ['$event'])
   movedown($event: any) {
+    console.log(this.opensuperflag)
     $event.stopPropagation();
-    if (this.opensuperflag == false) {
+    if (this.opensuperflag == 0) {
       this.checkcartposition();
       if (this.canmovebottom) {
-        console.log('this.canmovebottom', this.canmovebottom)
+
         let leftval = $(".cart").css('top');
         leftval = parseInt(leftval) + 10 + "px";
         $(".cart").css({ 'top': leftval })
       }
     }
-    else {
+    else if (this.opensuperflag == 1) {
       this.supercartposition();
       let leftval = $(".supermarketcart").css('top');
       leftval = parseInt(leftval) + 10 + "px";
       $(".supermarketcart").css({ 'top': leftval })
     }
+    else if (this.opensuperflag == 2) {
+      let leftval = $("#refillcart").css('top');
+      leftval = parseInt(leftval) + 10 + "px";
+      $("#refillcart").css({ 'top': leftval })
+    }
   }
   @HostListener('document:keydown.arrowup', ['$event'])
   moveup($event: any) {
     $event.stopPropagation();
-    if (this.opensuperflag == false) {
+    if (this.opensuperflag == 0) {
       this.checkcartposition();
-      console.log('this.canmovetop', this.canmovetop)
       if (this.canmovetop) {
         let leftval = $(".cart").css('top');
         leftval = parseInt(leftval) - 10 + "px";
         $(".cart").css({ 'top': leftval })
       }
     }
-    else {
+    else if (this.opensuperflag == 1) {
       this.supercartposition();
       let leftval = $(".supermarketcart").css('top');
       leftval = parseInt(leftval) - 10 + "px";
       $(".supermarketcart").css({ 'top': leftval })
     }
+    else if (this.opensuperflag == 2) {
+      let leftval = $("#refillcart").css('top');
+      leftval = parseInt(leftval) - 10 + "px";
+      $("#refillcart").css({ 'top': leftval })
+    }
   }
   @HostListener('document:keydown.arrowleft', ['$event'])
   moveleft($event: any) {
     $event.stopPropagation();
-    if (this.opensuperflag == false) {
+    if (this.opensuperflag == 0) {
       this.checkcartposition();
-      console.log('this.canmoveleft', this.canmoveleft)
       if (this.canmoveleft == true) {
         let leftval = $(".cart").css('left');
         leftval = parseInt(leftval) - 10 + "px";
         $(".cart").css({ 'left': leftval })
       }
     }
-    else {
+    else if (this.opensuperflag == 1) {
       this.supercartposition();
       let leftval = $(".supermarketcart").css('left');
       leftval = parseInt(leftval) - 10 + "px";
       $(".supermarketcart").css({ 'left': leftval })
+    }
+    else if (this.opensuperflag == 2) {
+      let leftval = $("#refillcart").css('left');
+      leftval = parseInt(leftval) - 10 + "px";
+      $("#refillcart").css({ 'left': leftval })
     }
   }
   @HostListener('document:keydown.arrowright', ['$event'])
@@ -413,62 +459,77 @@ export class MaincityComponent implements AfterViewInit, OnInit {
 
     $event.stopPropagation();
 
-    if (this.opensuperflag == false) {
+    if (this.opensuperflag == 0) {
       this.checkcartposition();
-      console.log('this.canmoveright', this.canmoveright)
       if (this.canmoveright == true) {
         let leftval = $(".cart").css('left');
         leftval = parseInt(leftval) + 10 + "px";
         $(".cart").css({ 'left': leftval })
       }
     }
-    else {
+    else if (this.opensuperflag == 1) {
       this.supercartposition();
       let leftval = $(".supermarketcart").css('left');
-      leftval = parseInt(leftval) + 10 + "px";
+      leftval = parseInt(leftval) + 100 + "px";
       $(".supermarketcart").css({ 'left': leftval })
     }
-  }  setflag = 0;
-  supercartposition() {
-   
-    let topvalue = parseInt($(".supermarketcart").css('top').split("px")[0]);
-    let leftvalue = parseInt($(".supermarketcart").css('left').split("px")[0]);
-    if (topvalue < 3533 && topvalue > 3090 && leftvalue > 4972 && leftvalue < 4980) {
-
-      if ($(".cart_bottle_list").children('div').length > 0) {
-        alert("Please place all items you intend to return at the mouth of the conveyor")
-        this.setflag = 1;
-
-      }
-    }
-    if (leftvalue > 4980) {
-      if (this.setflag == 0) {
-        var $elem = $('#innerdoor');
-        $({ deg: 0 }).animate({ deg: 90 }, {
-            duration: 600,
-            step: function (now) {
-                $elem.css({
-                    transform: 'rotate(' + now + 'deg) '
-                });
-            }
-        });
-        this.setflag=2;
-      }
-    }
-    if(leftvalue>6532 && leftvalue<6552 && this.setflag==2){
-      var $elem = $('#innerdoor');
-        $({ deg: 90 }).animate({ deg: 1 }, {
-            duration: 600,
-            step: function () {
-              this.deg=this.deg-1;
-                $elem.css({
-                    transform: 'rotate(' + this.deg + 'deg) '
-                });
-            }
-        });
+    else if (this.opensuperflag == 2) {
+      let leftval = $("#refillcart").css('left');
+      leftval = parseInt(leftval) + 10 + "px";
+      $("#refillcart").css({ 'left': leftval })
     }
   }
-  deg=90;
+  setflag = 0;
+  supercartposition() {
+    let topvalue = parseInt($(".supermarketcart").css('top').split("px")[0]);
+    let leftvalue = parseInt($(".supermarketcart").css('left').split("px")[0]);
+    if (this.setflag == 0 || this.setflag == 1) {
+      if (topvalue < 3533 && topvalue > 3090 && leftvalue > 4900 && leftvalue < 5000) {
+        if ($(".cart_bottle_list").children('div').length > 0) {
+          this.canmoveright = false;
+          $("#checklight").removeClass('green').addClass('red');
+          if (this.setflag == 0) {
+            alert("Please place all items you intend to return at the mouth of the conveyor")
+            this.setflag = 1;
+          }
+        }
+        else {
+          this.setflag = 2
+        }
+      }
+    }
+    if (this.setflag == 2) {
+      if (leftvalue > 4980 && leftvalue < 5100 && topvalue < 3533 && topvalue > 3090) {
+        $("#checklight").removeClass('red').addClass('green');
+        var $elem = $('#innerdoor');
+        $({ deg: 0 }).animate({ deg: 90 }, {
+          duration: 600,
+          step: function (now) {
+            $elem.css({
+              transform: 'rotate(' + now + 'deg) '
+            });
+          }
+        });
+        this.setflag = 3;
+      }
+    }
+    if (this.setflag == 3) {
+      if (leftvalue > 6600 && leftvalue < 6800 && topvalue < 3533 && topvalue > 3090) {
+        this.setflag = 4;
+        var $elem = $('#innerdoor');
+        $({ deg: 90 }).animate({ deg: 1 }, {
+          duration: 600,
+          step: function () {
+            this.deg = this.deg - 1;
+            $elem.css({
+              transform: 'rotate(' + this.deg + 'deg) '
+            });
+          }
+        });
+      }
+    }
+  }
+  deg = 90;
   switchrole() {
     this.currentrole = this.currentUserRole;
     this.dopanzoom(-3341, -2150, '1');
@@ -479,8 +540,9 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     this.loadinginitialState();
     $(".cart").show();
   }
-  citycurrentdate = 0;
+  cityCurrentTime = 0;
   citycurrentday = 0;
+  cityavatar = '';
   ngOnInit(): void {
 
     if (this.logser.currentuser.Username != '') {
@@ -494,8 +556,12 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       this.currentusergender = this.logser.currentuser.gender;
       this.currentuseravatar = this.logser.currentuser.avatar;
       this.currentusercityId = this.logser.currentuser.CityId;
-      this.citycurrentdate = this.logser.currentuser.currentdate;
+      this.cityCurrentTime = this.logser.currentuser.CurrentTime;
       this.citycurrentday = this.logser.currentuser.currentday;
+      this.cityrate = this.logser.currentuser.cityrate;
+      this.cityavatar = this.logser.currentuser.cityavatar;
+      $(".maincity").addClass("city_" + this.cityavatar)
+      console.log("curent" + this.cityCurrentTime, this.citycurrentday)
 
     }
     this.logser.getcitynames().subscribe((data) => {
@@ -506,15 +572,18 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         this.currentTime();
       }, 500)
       this.logser.currentuser.cityname = data[0].CityName;
-      this.logser.currentuser.currentdate = data[0].CurrentDate;
+      this.logser.currentuser.CurrentTime = data[0].CurrentTime;
       this.logser.currentuser.currentday = data[0].CurrentDay;
+      this.logser.currentuser.cityrate = data[0].cityrate;
+      this.logser.currentuser.cityavatar = data[0].cityavatar;
+      this.cityrate = data[0].cityrate;
+      this.cityavatar = data[0].cityavatar;
       this.cityname = this.logser.currentuser.cityname;
-      this.citycurrentdate = this.logser.currentuser.currentdate;
-      this.citycurrentday = this.logser.currentuser.currentday;
-      (this.citycurrentday > 0) ? this.sec = (this.citycurrentdate * 3600) + (3600 * 24 * this.citycurrentday) : this.sec = this.citycurrentdate * 3600;
-      console.log(this.sec);
-
-
+      this.cityCurrentTime = data[0].CurrentTime;
+      this.citycurrentday = data[0].CurrentDay;
+      console.log(this.cityCurrentTime, this.citycurrentday)
+      //(this.citycurrentday > 0) ? this.sec = (this.cityCurrentTime * 3600) + (3600 * 24 * this.citycurrentday) : this.sec = this.cityCurrentTime * 3600;
+      $(".maincity").addClass("city_" + this.cityavatar)
     });
 
     this.logser.getAllUsers().subscribe((data) => {
@@ -535,10 +604,10 @@ export class MaincityComponent implements AfterViewInit, OnInit {
           let word = this.user[t].Role.split(" ")[0];
           let xpos = this.positionObject[word as keyof typeof this.positionObject][3][0];
           let ypos = this.positionObject[word as keyof typeof this.positionObject][3][1];
-          //let x2 = this.positionObject[word as keyof typeof this.positionObject][2][0];
-          // let y2 = this.positionObject[word as keyof typeof this.positionObject][2][1];  
+          let x2 = this.positionObject[word as keyof typeof this.positionObject][2][0];
+          let y2 = this.positionObject[word as keyof typeof this.positionObject][2][1];
           $(".displaypanel." + word).css({ 'left': xpos + 'px', 'top': ypos + 'px' }).html(this.user[t].Role);
-          // $(".housedisplay."+word).css({ 'left': x2 + 'px', 'top': y2 + 'px' }).html(this.user[t].Username);
+          $(".housedisplay." + word).css({ 'left': x2 + 'px', 'top': y2 + 'px' }).html(this.user[t].Username).show();
           if (word == 'Supermarket' || word == 'Plastic' || word == 'Ubottle' || word == 'Reverse' || word == 'Refilling') {
             $(".commoncls." + word).html('').addClass('openlight');
           }
@@ -553,29 +622,26 @@ export class MaincityComponent implements AfterViewInit, OnInit {
             }
           }
 
-          for (var j = 0; j < this.femaleset.length; j++) {
-            if (this.femaleset[j].toString() == avatarnumber) {
-              this.femaleset.splice(j, 1);
-            }
-          }
+
         }
 
       }
+
       this.newmale = this.maleset.slice(0);
-      this.newfemale = this.femaleset.slice(0);
 
     });
 
   }
-  @ViewChild('welcome', { static: true }) public welcome!: ElementRef;
+
   timeupdate = 0;
   citytiming = {
-    'CurrentDate': 0,
+    'CurrentTime': 0,
     'CurrentDay': 0
   }
   canupdatedb = false;
   sec = 0;
   currentTime() {
+    console.log("When calling");
     let hour = 0;
     let min = 0;
     let day = 0;
@@ -592,12 +658,12 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       day = totalhour / 24
       $("#day").html('Day ' + Math.floor(day));
       if (totalhour % 1 == 0) {
-        this.citytiming['CurrentDate'] = Math.round(hour);
+        this.citytiming['CurrentTime'] = Math.round(hour);
         this.citytiming['CurrentDay'] = Math.round(day);
         this.logser.updatecurrenttime(this.citytiming).subscribe(
           data => {
             this.citytiming = data;
-            this.timeupdate == hour
+            this.timeupdate = hour
           },
           error => {
             console.log(error);
@@ -662,7 +728,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
           })
         }
       }
-    }, 1);
+    }, this.cityrate);
 
   }
 
@@ -696,7 +762,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         return shouldIgnore;
       },
       // beforeMouseDown: function (e) {
-      //   // allow mouse-down panning only if altKey is down. Otherwise - ignore
+      //   // allow mouse-down panning only if altKey is down. Otherwavyfillerdropwise - ignore
       //   var shouldIgnore = !e.altKey;
       //   return shouldIgnore;
       // }
@@ -725,30 +791,129 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     this.instance.smoothMoveTo(x, y);
     this.instance.zoomTo(x, y, parseFloat(zoomlevel));
   }
-  bottles = ['silky', 'wavy', 'shiny', 'bouncy']
+  // bottles = ['silky_vpn', 'wavy_vpn', 'shiny_vpn', 'bouncy_vpn']
+  bottles: string[] = [];
   bottledropped: string[] = [];
   bottletaken: string[] = [];
-  newbottles: string[] = ['shiny', 'shiny', 'shiny', 'shiny'];
-  wavybottles: string[] = ['wavy', 'wavy', 'wavy', 'wavy'];
-  silkybottles: string[] = ['silky', 'silky', 'silky', 'silky'];
-  bouncybottles: string[] = ['bouncy', 'bouncy', 'bouncy', 'bouncy'];
-
-
+  shinyvpn = ['_SB_B1.V_00001', '_SB_B1.V_00002', '_SB_B1.V_00003', '_SB_B1.V_00004', '_SB_B1.V_00005'];
+  shinyuvpn = ['_SB_UB1.V_00007', '_SB_UB1.V_00008', '_SB_UB1.V_00009', '_SB_UB1.V_00010', '_SB_UB1.V_00011'];
+  spikyrpn = ['_SB_B2.R_00001', '_SB_B2.R_00002', '_SB_B2.R_00003', '_SB_B2.R_00004', '_SB_B2.R_00005'];
+  spikyrpr = ['_SB_B2.R_00006', '_SB_B2.R_00007', '_SB_B2.R_00008', '_SB_B2.R_00009', '_SB_B2.R_00010'];
+  bouncyrpn = ['_SB_B3.R_00001', '_SB_B3.R_00002', '_SB_B3.R_00003', '_SB_B3.R_00004', '_SB_B3.R_00005'];
+  bouncyurpn = ['_SB_UB3.R_00001', '_SB_UB3.R_00002', '_SB_UB3.R_00003', '_SB_UB3.R_00004', '_SB_UB3.R_00005'];
+  wavyurpn = ['_SB_UB4.R_00001', '_SB_UB4.R_00002', '_SB_UB4.R_00003', '_SB_UB4.R_00004', '_SB_UB4.R_00005'];
+  wavyurpr = ['_SB_UB4.R_00011', '_SB_UB4.R_00012', '_SB_UB4.R_00013', '_SB_UB4.R_00014', '_SB_UB4.R_00015'];
+  silkyvpn = ['_SB_B5.V_00001', '_SB_B5.V_00002', '_SB_B5.V_00003', '_SB_B5.V_00004', '_SB_B5.V_00005']
+  refillbottles = ['_SB_UB1.V_00007', '_SB_B2.R_00001', '_SB_UB3.R_00001', '_SB_UB4.R_00001']
+  shinyrefilling: string[] = [];
+  spikyrefilling: string[] = [];
+  silkyrefilling: string[] = [];
+  bouncyrefilling: string[] = [];
+  wavyrefilling: string[] = [];
+  frontclass = '';
+  leblfound = false;
+  frontlabel = '';
+  shapooprice = 0.0;
+  totalamount = 0.0;
+  droppedbottle = false;
+  brandselected = false;
+  quantityselected = false;
+  confirmpressed = false;
   clicked() {
     alert("clicked");
   }
 
 
-  drop(event: CdkDragDrop<string[]>) {
-    if (event.previousContainer === event.container) {
-      moveItemInArray(
-        event.container.data, event.previousIndex, event.currentIndex,);
-    } else {
-      transferArrayItem(event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex);
+
+  checkcondition(item: CdkDrag<string>) {
+    if (item.element.nativeElement.classList[2] == '_SB_B1') {
+
+      return true;
     }
+    else {
+      return false;
+    }
+
+  }
+  checkshinyuniver(item: CdkDrag<string>) {
+    if (item.element.nativeElement.classList[2] == '_SB_UB1') {
+
+      return true;
+    }
+    else {
+      return false;
+    }
+
+  }
+  checkconditionrefill(item: CdkDrag<string>) {
+    if (item.element.nativeElement.classList[2] == '_SB_UB1' || item.element.nativeElement.classList[2] == '_SB_B1') {
+
+      return true;
+    }
+    else {
+      return false;
+    }
+
+  }
+  checkspikyrpn(item: CdkDrag<string>) {
+    if (item.element.nativeElement.classList[2] == '_SB_B2') {
+
+      return true;
+    }
+    else {
+      return false;
+    }
+
+  }
+  checkbouncyrpn(item: CdkDrag<string>) {
+    if (item.element.nativeElement.classList[2] == '_SB_B3') {
+
+      return true;
+    }
+    else {
+      return false;
+    }
+
+  }
+  checkbouncyrpnrefill(item: CdkDrag<string>) {
+    if (item.element.nativeElement.classList[2] == '_SB_B3' || item.element.nativeElement.classList[2] == '_SB_UB3') {
+
+      return true;
+    }
+    else {
+      return false;
+    }
+
+  }
+  checkbouncyurpn(item: CdkDrag<string>) {
+    if (item.element.nativeElement.classList[2] == '_SB_UB3') {
+
+      return true;
+    }
+    else {
+      return false;
+    }
+
+  }
+  checkwavyurpn(item: CdkDrag<string>) {
+    if (item.element.nativeElement.classList[2] == '_SB_UB4') {
+
+      return true;
+    }
+    else {
+      return false;
+    }
+
+  }
+  checksilkyvpn(item: CdkDrag<string>) {
+    if (item.element.nativeElement.classList[2] == '_SB_B5') {
+
+      return true;
+    }
+    else {
+      return false;
+    }
+
   }
   bottleclass = '';
   exit() {
@@ -805,11 +970,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
 
   }
-  frontclass = '';
-  leblfound = false;
-  frontlabel = '';
-  shapooprice = 0.0;
-  totalamount = 0.0;
+
   opensticker(bottlesticker: any, event: any) {
     let element = event.target || event.srcElement || event.currentTarget;
     let elementId = element.id;
@@ -861,12 +1022,225 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       );
     }
   }
+  @ViewChild('cityrail', { static: true }) public cityrail!: ElementRef;
+  @ViewChild('welcome', { static: true }) public welcome!: ElementRef;
+  @ViewChild('bottledroppeded', { static: true }) public bottledroppeded!: ElementRef;
+  @ViewChild('placebottle', { static: true }) public placebottle!: ElementRef;
+  @ViewChild('selectbrand', { static: true }) public selectbrand!: ElementRef;
+  @ViewChild('bottledifferent', { static: true }) public bottledifferent!: ElementRef;
+  @ViewChild('checkprice', { static: true }) public checkprice!: ElementRef;
+  @ViewChild('useplusminus', { static: true }) public useplusminus!: ElementRef;
+  @ViewChild('collectbottle', { static: true }) public collectbottle!: ElementRef;
+  @ViewChild('thankyou', { static: true }) public thankyou!: ElementRef;
+  openrefillingstation() {
+    this.cityrail.nativeElement.play();
+    $("#refillcart").css({ 'left': '50px', 'top': '262px' });
+    setTimeout(function () {
+       that.welcome.nativeElement.play();
+       }, 2000)
+    let that = this;
+    setTimeout(function () {
+      that.placebottle.nativeElement.play();
+    }, 5000)
+  }
+  getcurrentplacedbrand = '';
+  refillbrandselected = '';
+  initiateanimation() {
+    if ($(".refilllist").children('div').length > 0) {
+      this.selectbrand.nativeElement.play();
+      $(".displaylight").removeClass('off').addClass('on');
+      let getbrand = $(".refilllist").children('div')[0].classList[1].split("_")[2];
+      if (getbrand == 'UB1' || getbrand == 'B1') {
+        this.getcurrentplacedbrand = 'shiny';
+      }
+      else if (getbrand == 'UB2' || getbrand == 'B2') {
+        this.getcurrentplacedbrand = 'spiky';
+      }
+      else if (getbrand == 'UB3' || getbrand == 'B3') {
+        this.getcurrentplacedbrand = 'bouncy';
+      }
+      else if (getbrand == 'UB4' || getbrand == 'B4') {
+        this.getcurrentplacedbrand = 'wavy';
+      }
+      else if (getbrand == 'UB5' || getbrand == 'B5') {
+        this.getcurrentplacedbrand = 'silky';
+      }
 
-  opensuperflag = false;
+      $(".displayboard").html("Your bottle's brand =" + this.getcurrentplacedbrand + "<br/>Select shampoo brand for refill.")
+      this.brandselected = true;
+
+    }
+  }
+  selectquantity = 0;
+  timeout: any;
+  resetanimation = false;
+  increament() {
+
+    if (this.selectquantity < 500) {
+      this.selectquantity += 100;
+    }
+    $(".displayboard").html("Selected Quantity :" + this.selectquantity);
+    let that = this;
+    clearTimeout(this.timeout);
+    this.timeout = setTimeout(function () { $(".displaylight").removeClass('off').addClass('on'); that.checkprice.nativeElement.play(); that.quantityselected = true; $(".displayboard").html("Brand =" + that.refillbrandselected + "<br/>Quantity = " + that.selectquantity + "ml<br/>Price/ml = ₹…..<br/>Discount = x%<br/>Net Amount = ₹…........<br/> Please confirm the order."); }, 6000);
+  }
+  decrement() {
+    if (this.selectquantity > 100) {
+      this.selectquantity -= 100;
+    }
+    $(".displayboard").html("Selected Quantity :" + this.selectquantity);
+    let that = this;
+    clearTimeout(this.timeout);
+    this.timeout = setTimeout(function () { $(".displaylight").removeClass('off').addClass('on'); that.checkprice.nativeElement.play(); that.quantityselected = true; $(".displayboard").html("Brand =" + that.refillbrandselected + "<br/>Quantity = " + that.selectquantity + "ml<br/>Price/ml = ₹…..<br/>Discount = x%<br/>Net Amount = ₹…........<br/> Please confirm the order."); }, 6000);
+  }
+  checkrefillselect() {
+    console.log(this.refillbrandselected, this.getcurrentplacedbrand)
+    if (this.refillbrandselected == this.getcurrentplacedbrand) {
+      this.useplusminus.nativeElement.play();
+      $(".displaylight").removeClass('off').addClass('on');
+      $(".displayboard").html("Bottle's brand = " + this.getcurrentplacedbrand + " <br/> Shampoo brand = " + this.refillbrandselected + "<br/>Use +/- keys to specify quantity.")
+    }
+    else {
+      this.bottledifferent.nativeElement.play();
+      $(".displaylight").removeClass('off').addClass('on');
+      $(".displayboard").html("Bottle's brand = " + this.getcurrentplacedbrand + " <br/> Shampoo brand = " + this.refillbrandselected + "<br/> Bottle and shampoo are of different brands. If OK,  specify quantity using  +/- keys. Else,  re-select sampoo brand.")
+    }
+  }
+  startanimation() {
+    $(".displaylight").removeClass('on').addClass('off');
+    $(".displayboard").html("Brand =" + this.refillbrandselected + "<br/>Quantity = " + this.selectquantity + "ml<br/>Price/ml = ₹…..<br/>Discount = x%<br/>Net Amount = ₹…........<br/> Order Confirmed. Please wait till we refill your bottle.");
+    $("#pressor").animate({ 'top': '1px' }, 2000, () => {
+      $("#pressor").animate({ 'top': '-10px' });
+      $(".gear").addClass('icon');
+      let getbrand = $(".refilllist").children('div')[0].classList[1];
+      $("." + getbrand).addClass('removedcap');
+      if (this.refillbrandselected == 'shiny') {
+        $(".refilldropper").animate({ 'left': '44px' }, 2000, () => {
+          $(".shinyfiller").show();
+          $(".gear").removeClass('icon');
+          let that = this; setTimeout(function () {
+            $(".gear").addClass('icon');
+            $(".shinyfiller").hide(); that.closecap();
+          }, 2000);
+        });
+      }
+      if (this.refillbrandselected == 'spiky') {
+        $(".refilldropper").animate({ 'left': '94px' }, 2000, () => {
+          $(".spikyfiller").show(); $(".gear").removeClass('icon');
+          let that = this;
+          setTimeout(function () {
+            $(".gear").addClass('icon');
+            $(".spikyfiller").hide();
+            that.closecap();
+          }, 2000);
+        });
+      }
+      if (this.refillbrandselected == 'wavy') {
+        $(".refilldropper").animate({ 'left': '196px' }, 2000, () => {
+          $(".wavyfiller").show();
+          $(".gear").removeClass('icon');
+          let that = this;
+          setTimeout(function () {
+            $(".gear").addClass('icon');
+            $(".wavyfiller").hide();
+            that.closecap();
+          }, 2000);
+        });
+      }
+      if (this.refillbrandselected == 'silky') {
+        $(".refilldropper").animate({ 'left': '247px' }, 2000, () => {
+          $(".silkyfiller").show();
+          $(".gear").removeClass('icon');
+          let that = this;
+          setTimeout(function () {
+            $(".gear").addClass('icon');
+            $(".silkyfiller").hide();
+            that.closecap();
+          }, 2000);
+        });
+      }
+      if (this.refillbrandselected == 'bouncy') {
+        $(".refilldropper").animate({ 'left': '145px' }, 2000, () => {
+          $(".bouncyfiller").show();
+          $(".gear").removeClass('icon');
+          let that = this;
+          setTimeout(function () {
+            $(".gear").addClass('icon');
+            $(".bouncyfiller").hide();
+            that.closecap();
+          }, 2000);
+        });
+      }
+
+    })
+  }
+  resetrefilling() {
+    this.droppedbottle = false;
+    this.brandselected = false;
+    this.quantityselected = false;
+    this.confirmpressed = false;
+    this.selectquantity = 0;
+    $(".refilldropper").css({ 'left': '8px' });
+    this.placebottle.nativeElement.play();
+    $(".displaylight").removeClass('off').addClass('on');
+    $(".displayboard").html(' Please place your empty bottle on the conveyor.');
+  }
+  closecap() {
+    let that = this;
+    setTimeout(function () {
+      $(".refilldropper").animate({ 'left': '333px' }, 3000, () => {
+        $(".gear").removeClass('icon');
+        $("#cappressor ").animate({ 'top': '1px' }, 2000, () => {
+          $("#cappressor ").animate({ 'top': '-10px' }, 1000, () => {
+            $(".displaylight").removeClass('off').addClass('on');
+            $(".displayboard").html('Please collect your bottle.');
+            that.collectbottle.nativeElement.play();
+          });
+
+          let getbrand = $(".refilllist").children('div')[0].classList[1];
+          $("." + getbrand).removeClass('removedcap');
+
+        });
+      });
+    }, 1000);
+
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(
+        event.container.data, event.previousIndex, event.currentIndex,);
+    } else {
+
+      transferArrayItem(event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex);
+      let that = this;
+      setTimeout(function () {
+        if (($(".refilllist").children('div').length) > 0) {
+          that.droppedbottle = true;
+          that.initiateanimation();
+          that.bottledroppeded.nativeElement.play();
+        }
+      }, 100);
+      setTimeout(function () {
+        if (($(".refilllist").children('div').length) == 0) {
+          $(".displayboard").html('Thank you. Visit again.');
+          that.thankyou.nativeElement.play();
+          that.resetanimation = true;
+          $(".continue").show();
+        }
+      }, 150);
+    }
+
+
+  }
+  opensuperflag = 0;
   @ViewChild('supermarket', { static: false })
   private supermarket!: ElementRef;
   opensupermarket() {
-    this.welcome.nativeElement.play();
+    //this.welcome.nativeElement.play();
     this.instance1 = panzoom(this.supermarket.nativeElement, {
       maxZoom: 2,
       minZoom: 0.4,
@@ -889,8 +1263,9 @@ export class MaincityComponent implements AfterViewInit, OnInit {
 
 
     });
-    this.dopanzoomsupermarket(-57, -1077, '0.4');
-    $(".supermarketcart.cart").css({ 'left': '932px', 'top': '3413px' });
+    // this.dopanzoomsupermarket(-57, -1077, '0.4');
+    this.dopanzoomsupermarket(-2349, -859, '0.4');
+    $(".supermarketcart.cart").css({ 'left': '7052px', 'top': '3083px' });
 
   }
 

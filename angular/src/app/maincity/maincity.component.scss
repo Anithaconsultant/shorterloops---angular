@@ -3,13 +3,20 @@
     height: 100vh;
 
     .maincity {
-        background-image: url('./../../assets/img/city.png');
         background-repeat: no-repeat;
         background-size: cover;
         width: 8001px;
         background-position: center;
         height: 4501px;
         margin: auto;
+        &.city_1{
+            background-image: url('./../../assets/img/city_1.png');
+
+        }
+        &.city_2{
+            background-image: url('./../../assets/img/city_2.png');
+
+        }
 
         .supermarketentry {
             position: absolute;
@@ -34,6 +41,8 @@
             color: #fff;
             font-size: 12px;
             position: absolute;
+            display: none;
+            ;
         }
 
         .displaypanel {
@@ -56,6 +65,7 @@
             top: 2041px;
             display: none;
         }
+
         #clock {
             font-family: sans-serif;
             color: #fff;
@@ -66,7 +76,8 @@
             left: 3954px;
             top: 2289px;
             text-align: center;
-          }
+        }
+
         #day {
             font-family: sans-serif;
             color: #fff;
@@ -77,7 +88,7 @@
             left: 3954px;
             top: 2237px;
             text-align: center;
-          }
+        }
 
     }
 
@@ -85,49 +96,25 @@
         top: 3854px;
         left: 6275px;
     }
-    .truck{
-        width:168px;
-        height:80px;
-        background-size:cover;
-        left:5933px;
-        top:1025px;
-        position:absolute;
+
+    .truck {
+        width: 168px;
+        height: 80px;
+        background-size: cover;
+        left: 5933px;
+        top: 1025px;
+        position: absolute;
     }
-    .side{
+
+    .side {
         background-image: url('./../../assets/img/garbagevanside.png');
     }
-    .top{
+
+    .top {
         background-image: url('./../../assets/img/garbagevantop.png');
     }
 }
 
-.supermarketstage {
-    position: absolute;
-    width: 100vw;
-    height: 100vh;
-    left: 0;
-    top: 0;
-    overflow: hidden;
-    #innerdoor{
-        position: absolute;
-        width: 29px;
-        height: 1076px;
-        top: 2998px;
-        left: 5415px;
-        background:#666666;
-        transform-origin: bottom;
-    }
- 
-    .loadimg {
-        position: absolute;
-        background-image: url('./../../assets/img/supermarket.jpg');
-        background-repeat: no-repeat;
-        background-size: cover;
-        width: 12000px;
-        height: 4501px;
-    }
-
-}
 
 .openlight {
     background: url('./../../assets/img/openlight.png');
@@ -158,19 +145,84 @@
 .cdk-drag-animating {
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
-.cart_bottle_list,.newbottle_list,.bottle_list{
-    
-    border-radius: 4px;
-    overflow: hidden;
+
+.cart_bottle_list,
+.newbottle_list,
+.bottle_list,
+.refill_list,.refilllist {
     display: flex;
-    width: 100%;
-  }
-.innerdrop{
+    justify-content: center;
+    width: 165px;
+}
+
+.innerdrop {
     width: 310px !important;
     border: 0px solid !important;
-    background: rgba(255,255,255,0.4)!important;
+    background: rgba(255, 255, 255, 0.4) !important;
     margin-top: -11px !important;
     color: #fff;
     margin-left: -21px !important;
-    border-radius: 0px;    
+    border-radius: 0px;
+}
+
+.animationpanel {
+    position: absolute;
+    width: 300px;
+    height: 72px;
+    left: 466px;
+    top: 170px;
+
+    .capremover {
+        position: absolute;
+        left: 19px;
+        top: 5px;
+        #pressor {
+            background-image: url(./../../assets/img/pressor.png);
+            width: 16px;
+            height: 73px;
+            background-size: cover;
+            position: absolute;
+            top: -10px;
+            z-index:1;
+    
+        }
+    
+        .middlepart {
+            background-image: url(./../../assets/img/middlepart.png);
+            width: 27px;
+            height: 32px;
+            background-size: cover;
+            z-index: 2;
+            position: absolute;
+            left: -7px;
+            top: 12px;
+        }
+    }
+    .capadder {
+        position: absolute;
+        left: 344px;
+        top: 5px;
+        #cappressor {
+            background-image: url(./../../assets/img/pressor.png);
+            width: 16px;
+            height: 73px;
+            background-size: cover;
+            position: absolute;
+            top: -10px;
+            z-index:1;
+    
+        }
+    
+        .capmiddlepart {
+            background-image: url(./../../assets/img/middlepart.png);
+            width: 27px;
+            height: 32px;
+            background-size: cover;
+            z-index: 2;
+            position: absolute;
+            left: -7px;
+            top: 12px;
+        }
+    }
+ 
 }

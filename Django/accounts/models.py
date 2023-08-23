@@ -27,6 +27,35 @@ FACILITY_CHOICES = (('mun', 'Municipality Office'),
                     ('hs10', 'House10 Owner'))
 
 
+class Shampooprice(models.Model):
+    class Meta:
+        db_table = "shampooprice"
+    BottleContent = models.CharField(max_length=70)
+    UnitPrice=models.FloatField(default=0.0)
+    Discount=models.IntegerField(default=0)
+    
+class Bottleprice(models.Model):
+    class Meta:
+        db_table = "bottleprice"
+    BottleType = models.CharField(max_length=70)
+    OriginalPrice=models.FloatField(default=0.0)
+    ReturnGood=models.FloatField(default=0.0)
+    ReturnDamage=models.FloatField(default=0.0)
+    Purchasediscount_refill=models.FloatField(default=0.0)
+    EnvTax_newbottle=models.FloatField(default=0.0)
+    EnvTax_refillbottle=models.FloatField(default=0.0)
+    Fine_Discard=models.FloatField(default=0.0)
+   
+class Cashflow(models.Model):
+     class Meta:
+        db_table = "Cashflow"
+     TransactionId = models.CharField(max_length=70, unique=True)
+     Amount= models.CharField(max_length=70)
+     DebitFacility=models.CharField(max_length=70)
+     CreditFacility=models.CharField(max_length=70)
+     Purpose=models.CharField(max_length=70)
+    
+    
 class City(models.Model):
     class Meta:
         db_table = "city"
@@ -34,11 +63,12 @@ class City(models.Model):
     CityName = models.CharField(max_length=70, unique=True)
     MayorId = models.IntegerField(null=True, unique=True)
     Clocktickrate = models.IntegerField(default=100)
-    CurrentDate = models.IntegerField(null=True)
-    CurrentDay= models.IntegerField(null=True)
+    CurrentTime = models.PositiveIntegerField(default=0)
+    CurrentDay= models.PositiveIntegerField(default=0)
     Citystartdate = models.DateField(default=datetime.date.today)
     CityCreateTime = models.TimeField(auto_now=True)
     Status = models.CharField(max_length=70, null=True)
+    cityavatar = models.CharField(max_length=70, null=True)
 
 
 class Facility(models.Model):

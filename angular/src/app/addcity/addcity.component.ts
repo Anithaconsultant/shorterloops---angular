@@ -4,7 +4,7 @@ import { LoginserviceService } from './../services/loginservice.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
-
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'app-addcity',
   templateUrl: './addcity.component.html',
@@ -16,7 +16,7 @@ export class AddcityComponent implements OnInit {
   currentDate: any;
   currentTime: any;
   allcity = [];
-  constructor(private formbuilder: FormBuilder, private http: HttpClientModule, private router: Router, private logser: LoginserviceService, public datepipe: DatePipe) {
+  constructor(private formbuilder: FormBuilder,private modalService: NgbModal, private http: HttpClientModule, private router: Router, private logser: LoginserviceService, public datepipe: DatePipe) {
     this.currentDate = this.datepipe.transform((new Date), 'MM/dd/yyyy');
     this.currentTime = this.datepipe.transform((new Date), 'hh:mm:ss')
 
@@ -275,7 +275,10 @@ export class AddcityComponent implements OnInit {
     'Clocktickrate': '',
     'Citystartdate': '',
     'CityCreateTime': '',
-    'Status': 'Yes'
+    'Status': 'Yes',
+    'cityavatar':'',
+    'CurrentDay':0,
+    'CurrentTime':0
   };
   userobj = {
     'cityid': '',
@@ -299,6 +302,24 @@ export class AddcityComponent implements OnInit {
       this.router.navigate(["login"])
     }
   }
+  selectcity(ind:any){
+    $(".city").css('border', '4px solid #fff');
+    $(".city_" + ind).css('border', '4px solid #333');
+  }
+  selectedavatar = 0;
+  opencityavatar(cityavatar: any) {
+    this.modalService.open(cityavatar, { ariaLabelledBy: 'modal-basic-title' });
+
+  }
+  savecityavatar(): void {
+    if (this.selectedavatar == 0) {
+      alert("kindly select your Avatar")
+    }
+    else{
+      this.city.cityavatar=String(this.selectedavatar);
+    }
+
+  }
   addcity() {
     this.submitted = true;
     if (this.addcityForm.invalid) {
@@ -306,6 +327,7 @@ export class AddcityComponent implements OnInit {
       return;
     }
     if (this.submitted) {
+      console.log(this.city)
       this.logser.createcity(this.city).subscribe(
         data => {
           this.city = data;

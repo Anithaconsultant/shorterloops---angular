@@ -1,11 +1,20 @@
 from rest_framework import serializers
-from accounts.models import City,CustomUser,Facility,Cityrule,Asset
+from accounts.models import City,CustomUser,Facility,Cityrule,Asset,Shampooprice,Bottleprice
 
 
 
 class userSerializer(serializers.ModelSerializer):
     class Meta:
         model= CustomUser
+        fields = '__all__'
+        
+class shampooSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= Shampooprice
+        fields = '__all__'
+class BottleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= Bottleprice
         fields = '__all__'
 
 class citySerializer(serializers.ModelSerializer):

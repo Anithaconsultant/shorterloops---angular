@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'accounts',
     'rest_framework',
     'corsheaders',
-    'bootstrap4',
+    'bootstrap4'
 
 ]
 
