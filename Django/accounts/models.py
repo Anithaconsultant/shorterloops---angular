@@ -39,11 +39,11 @@ class Bottleprice(models.Model):
         db_table = "bottleprice"
     BottleType = models.CharField(max_length=70)
     OriginalPrice=models.FloatField(default=0.0)
-    ReturnGood=models.FloatField(default=0.0)
-    ReturnDamage=models.FloatField(default=0.0)
-    Purchasediscount_refill=models.FloatField(default=0.0)
-    EnvTax_newbottle=models.FloatField(default=0.0)
-    EnvTax_refillbottle=models.FloatField(default=0.0)
+    percentReturnGood=models.FloatField(default=0.0)
+    percentReturnDamage=models.FloatField(default=0.0)
+    percentPurchasediscount_refill=models.FloatField(default=0.0)
+    percentEnvTax_newbottle=models.FloatField(default=0.0)
+    percentEnvTax_refillbottle=models.FloatField(default=0.0)
     Fine_Discard=models.FloatField(default=0.0)
    
 class Cashflow(models.Model):

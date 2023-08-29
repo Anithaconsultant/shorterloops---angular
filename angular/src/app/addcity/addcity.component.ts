@@ -16,217 +16,92 @@ export class AddcityComponent implements OnInit {
   currentDate: any;
   currentTime: any;
   allcity = [];
-  constructor(private formbuilder: FormBuilder,private modalService: NgbModal, private http: HttpClientModule, private router: Router, private logser: LoginserviceService, public datepipe: DatePipe) {
+  constructor(private formbuilder: FormBuilder, private modalService: NgbModal, private http: HttpClientModule, private router: Router, private logser: LoginserviceService, public datepipe: DatePipe) {
     this.currentDate = this.datepipe.transform((new Date), 'MM/dd/yyyy');
     this.currentTime = this.datepipe.transform((new Date), 'hh:mm:ss')
 
   }
-
+  // shinyvpn = ['SB_B1.V_00001', 'SB_B1.V_00002', 'SB_B1.V_00003', 'SB_B1.V_00004', 'SB_B1.V_00005'];
+  // shinyuvpn = ['SB_UB.V_00001', 'SB_UB.V_00002', 'SB_UB.V_00003', 'SB_UB.V_00004', 'SB_UB.V_00005'];
+  // spikyrpn = ['SB_B2.R_00001', 'SB_B2.R_00002', 'SB_B2.R_00003', 'SB_B2.R_00004', 'SB_B2.R_00005'];
+  // spikyrpr = ['SB_B2.R_00006', 'SB_B2.R_00007', 'SB_B2.R_00008', 'SB_B2.R_00009', 'SB_B2.R_00010'];
+  // bouncyrpn = ['SB_B3.R_00001', 'SB_B3.R_00002', 'SB_B3.R_00003', 'SB_B3.R_00004', 'SB_B3.R_00005'];
+  // bouncyurpn = ['SB_UB.R_00001', 'SB_UB.R_00002', 'SB_UB.R_00003', 'SB_UB.R_00004', 'SB_UB.R_00005'];
+  // wavyurpn = ['SB_UB.R_00006', 'SB_UB.R_00007', 'SB_UB.R_00008', 'SB_UB.R_00009', 'SB_UB.R_00010'];
+  // wavyurpr = ['SB_UB.R_00011', 'SB_UB.R_00012', 'SB_UB.R_00013', 'SB_UB.R_00014', 'SB_UB.R_00015'];
+  // silkyvpn = ['SB_B5.V_00001', 'SB_B5.V_00002', 'SB_B5.V_00003', 'SB_B5.V_00004', 'SB_B5.V_00005']
+  // refillbottles = ['_SB_UB1.V_00007', '_SB_B2.R_00001', '_SB_UB3.R_00001', '_SB_UB4.R_00001']
   assetData = {
     'AssetId': [
-      'SB_B1.V_00001',
-      'SB_B1.V_00002',
-      'SB_B2.R_00001',
-      'SB_B2.R_00002',
-      'SB_B2.R_00003',
-      'SB_B2.R_00004',
-      'SB_B3.R_00001',
-      'SB_B3.R_00002',
-      'SB_B5.V_00001',
-      'SB_B5.V_00002',
-      'SB_B5.V_00003',
-      'SB_B5.V_00004',
-      'SB_UB.R_00001',
-      'SB_UB.R_00002',
-      'SB_UB.R_00005',
-      'SB_UB.R_00006',
-      'SB_UB.R_00011',
-      'SB_UB.R_00012',
-      'SB_UB.V_00007',
-      'SB_UB.V_00008'],
+      'SB_B1.V_00001', 'SB_B1.V_00002', 'SB_B1.V_00003', 'SB_B1.V_00004', 'SB_B1.V_00005',
+      'SB_UB.V_00001', 'SB_UB.V_00002', 'SB_UB.V_00003', 'SB_UB.V_00004', 'SB_UB.V_00005',
+      'SB_B2.R_00001', 'SB_B2.R_00002', 'SB_B2.R_00003', 'SB_B2.R_00004', 'SB_B2.R_00005',
+      'SB_B2.R_00006', 'SB_B2.R_00007', 'SB_B2.R_00008', 'SB_B2.R_00009', 'SB_B2.R_00010',
+      'SB_B3.R_00001', 'SB_B3.R_00002', 'SB_B3.R_00003', 'SB_B3.R_00004', 'SB_B3.R_00005',
+      'SB_UB.R_00001', 'SB_UB.R_00002', 'SB_UB.R_00003', 'SB_UB.R_00004', 'SB_UB.R_00005',
+      'SB_UB.R_00006', 'SB_UB.R_00007', 'SB_UB.R_00008', 'SB_UB.R_00009', 'SB_UB.R_00010',
+      'SB_UB.R_00011', 'SB_UB.R_00012', 'SB_UB.R_00013', 'SB_UB.R_00014', 'SB_UB.R_00015',
+      'SB_B5.V_00001', 'SB_B5.V_00002', 'SB_B5.V_00003', 'SB_B5.V_00004', 'SB_B5.V_00005',
+    ],
 
-    'Bottle_Code': ['B1.V',
-      'B1.V',
-      'B2.R',
-      'B2.R',
-      'B2.R',
-      'B2.R',
-      'B3.R',
-      'B3.R',
-      'B5.V',
-      'B5.V',
-      'B5.V',
-      'B5.V',
-      'UB.R',
-      'UB.R',
-      'UB.R',
-      'UB.R',
-      'UB.R',
-      'UB.R',
-      'UB.V',
-      'UB.V'],
-
-
-    'Content_Code': ['B1.Shiny',
-      'B1.Shiny',
-      'B2.Spiky',
-      'B2.Spiky',
-      'B2.Spiky',
-      'B2.Spiky',
-      'B3.Bouncy',
-      'B3.Bouncy',
-      'B5.Silky',
-      'B5.Silky',
-      'B5.Silky',
-      'B5.Silky',
-      'B4.Wavy',
-      'B4.Wavy',
-      'B3.Bouncy',
-      'B3.Bouncy',
-      'B4.Wavy',
-      'B4.Wavy',
-      'B1.Shiny',
-      'B1.Shiny',],
-    'Content_Price': ['300',
-      '300',
-      '200',
-      '200',
-      '200',
-      '200',
-      '250',
-      '250',
-      '350',
-      '350',
-      '350',
-      '350',
-      '275',
-      '275',
-      '250',
-      '250',
-      '275',
-      '275',
-      '300',
-      '300'],
-    'Bottle_Price': ['18',
-      '18',
-      '10',
-      '10',
-      '10',
-      '10',
-      '11',
-      '11',
-      '19',
-      '19',
-      '19',
-      '19',
-      '3',
-      '3',
-      '3',
-      '3',
-      '3',
-      '3',
-      '8',
-      '8'],
-    'Redeem_Good': ['1.8',
-      '1.8',
-      '1',
-      '1',
-      '1',
-      '1',
-      '1.32',
-      '1.32',
-      '2.28',
-      '2.28',
-      '2.28',
-      '2.28',
-      '0.21',
-      '0.21',
-      '0.21',
-      '0.21',
-      '0.21',
-      '0.21',
-      '0.56',
-      '0.56'],
-    'Redeem_Damaged': ['0.9',
-      '0.9',
-      '0.5',
-      '0.5',
-      '0.5',
-      '0.5',
-      '0.66',
-      '0.66',
-      '1.14',
-      '1.14',
-      '1.14',
-      '1.14',
-      '0.105',
-      '0.105',
-      '0.105',
-      '0.105',
-      '0.105',
-      '0.105',
-      '0.28',
-      '0.28'],
-    'Discount_RefillB': ['1.8',
-      '1.8',
-      '1',
-      '1',
-      '1',
-      '1',
-      '1.1',
-      '1.1',
-      '1.9',
-      '1.9',
-      '1.9',
-      '1.9',
-      '0.75',
-      '0.75',
-      '0.75',
-      '0.75',
-      '0.75',
-      '0.75',
-      '0.8',
-      '0.8'],
-    'Env_Tax': ['9',
-      '9',
-      '2.5',
-      '2.5',
-      '2',
-      '2',
-      '2.75',
-      '2.75',
-      '9.5',
-      '9.5',
-      '9.5',
-      '9.5',
-      '0.75',
-      '0.75',
-      '0.75',
-      '0.75',
-      '0.6',
-      '0.6',
-      '2',
-      '2'],
-    'Discard_fine': ['9',
-      '9',
-      '5',
-      '5',
-      '5',
-      '5',
-      '5.5',
-      '5.5',
-      '9.5',
-      '9.5',
-      '9.5',
-      '9.5',
-      '1.5',
-      '1.5',
-      '1.5',
-      '1.5',
-      '1.5',
-      '1.5',
-      '4',
-      '4'],
+    'Bottle_Code': ['B1.V', 'B1.V', 'B1.V', 'B1.V', 'B1.V', 'UB.V', 'UB.V', 'UB.V', 'UB.V', 'UB.V',
+      'B2.R', 'B2.R', 'B2.R', 'B2.R', 'B2.R', 'B2.R', 'B2.R', 'B2.R', 'B2.R', 'B2.R',
+      'B3.R', 'B3.R', 'B3.R', 'B3.R', 'B3.R',
+      'UB.R', 'UB.R', 'UB.R', 'UB.R', 'UB.R', 'UB.R', 'UB.R', 'UB.R', 'UB.R', 'UB.R', 'UB.R', 'UB.R', 'UB.R', 'UB.R', 'UB.R',
+      'B5.V', 'B5.V', 'B5.V', 'B5.V', 'B5.V'
+    ],
+    'Content_Code': ['B1.Shiny', 'B1.Shiny', 'B1.Shiny', 'B1.Shiny', 'B1.Shiny', 'B1.Shiny', 'B1.Shiny', 'B1.Shiny', 'B1.Shiny', 'B1.Shiny',
+      'B2.Spiky', 'B2.Spiky', 'B2.Spiky', 'B2.Spiky', 'B2.Spiky', 'B2.Spiky', 'B2.Spiky', 'B2.Spiky', 'B2.Spiky', 'B2.Spiky',
+      'B3.Bouncy', 'B3.Bouncy', 'B3.Bouncy', 'B3.Bouncy', 'B3.Bouncy', 'B3.Bouncy', 'B3.Bouncy', 'B3.Bouncy', 'B3.Bouncy', 'B3.Bouncy',
+      'B4.Wavy', 'B4.Wavy', 'B4.Wavy', 'B4.Wavy', 'B4.Wavy', 'B4.Wavy', 'B4.Wavy', 'B4.Wavy', 'B4.Wavy', 'B4.Wavy',
+      'B5.Silky', 'B5.Silky', 'B5.Silky', 'B5.Silky', 'B5.Silky',
+    ],
+    'Content_Price': ['300', '300', '300', '300', '300', '300', '300', '300', '300', '300',
+      '200', '200', '200', '200', '200', '200', '200', '200', '200', '200',
+      '250', '250', '250', '250', '250', '250', '250', '250', '250', '250',
+      '275', '275', '275', '275', '275', '275', '275', '275', '275', '275',
+      '350', '350', '350', '350', '350'],
+    'Bottle_Price': ['18', '18', '18', '18', '18', '8', '8', '8', '8', '8',
+      '10', '10', '10', '10', '10', '10', '10', '10', '10', '10',
+      '11', '11', '11', '11', '11', '3', '3', '3', '3', '3',
+      '3', '3', '3', '3', '3', '3', '3', '3', '3', '3',
+      '19', '19', '19', '19', '19'],
+    'Redeem_Good': ['1.8', '1.8', '1.8', '1.8', '1.8', '0.56', '0.56', '0.56', '0.56', '0.56',
+      '1', '1', '1', '1', '1', '1', '1', '1', '1', '1',
+      '1.32', '1.32', '1.32', '1.32', '1.32', '0.21', '0.21', '0.21', '0.21', '0.21',
+      '0.21', '0.21', '0.21', '0.21', '0.21', '0.21', '0.21', '0.21', '0.21', '0.21',
+      '2.28', '2.28', '2.28', '2.28', '2.28'],
+    'Redeem_Damaged': ['0.9', '.9', '0.9', '0.9', '0.9', '0.28', '0.28', '0.28', '0.28', '0.28',
+      '0.5', '0.5', '0.5', '0.5', '0.5', '0.5', '0.5', '0.5', '0.5', '0.5',
+      '0.66', '0.66', '0.66', '0.66', '0.66', '0.105', '0.105', '0.105', '0.105', '0.105',
+      '0.105', '0.105', '0.105', '0.105', '0.105', '0.105', '0.105', '0.105', '0.105', '0.105',
+      '1.14', '1.14', '1.14', '1.14', '1.14'],
+    'Discount_RefillB': ['1.8', '1.8', '1.8', '1.8', '1.8', '0.8', '0.8', '0.8', '0.8', '0.8',
+      '1', '1', '1', '1', '1', '1', '1', '1', '1', '1',
+      '1.1', '1.1', '1.1', '1.1', '1.1', '0.75', '0.75', '0.75', '0.75', '0.75',
+      '0.75', '0.75', '0.75', '0.75', '0.75', '0.75', '0.75', '0.75', '0.75', '0.75',
+      '1.9', '1.9', '1.9', '1.9', '1.9'],
+    'Env_Tax': ['9', '9', '9', '9', '9', '2', '2', '2', '2', '2',
+      '2.5', '2.5', '2.5', '2.5', '2.5', '2', '2', '2', '2', '2',
+      '2.75', '2.75', '2.75', '2.75', '2.75', '0.75', '0.75', '0.75', '0.75', '0.75',
+      '0.75', '0.75', '0.75', '0.75', '0.75', '0.6', '0.6', '0.6', '0.6', '0.6',
+      '9.5', '9.5', '9.5', '9.5', '9.5'],
+    'Discard_fine': ['9', '9', '9', '9', '9', '4', '4', '4', '4', '4',
+      '5', '5', '5', '5', '5', '5', '5', '5', '5', '5',
+      '5.5', '5.5', '5.5', '5.5', '5.5', '1.5', '1.5', '1.5', '1.5', '1.5',
+      '1.5', '1.5', '1.5', '1.5', '1.5', '1.5', '1.5', '1.5', '1.5', '1.5',
+      '9.5', '9.5', '9.5', '9.5', '9.5'],
+    'Current_Refill_Count': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 1, 1, 1, 1, 1,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 1, 1, 1, 1, 1,
+      0, 0, 0, 0, 0],
+    'Latest_Refill_Date': [
+      '1/15/2023', '1/15/2023', '1/15/2023', '1/15/2023', '1/15/2023', '1/15/2023', '1/15/2023', '1/15/2023', '1/15/2023', '1/15/2023',
+      '1/15/2023', '1/15/2023', '1/15/2023', '1/15/2023', '1/15/2023', '4/15/2023', '4/15/2023', '4/15/2023', '4/15/2023', '4/15/2023',
+      '1/15/2023', '1/15/2023', '1/15/2023', '1/15/2023', '1/15/2023', '1/15/2023', '1/15/2023', '1/15/2023', '1/15/2023', '1/15/2023',
+      '1/15/2023', '1/15/2023', '1/15/2023', '1/15/2023', '1/15/2023', '4/15/2023', '4/15/2023', '4/15/2023', '4/15/2023', '4/15/2023',
+      '1/15/2023', '1/15/2023', '1/15/2023', '1/15/2023', '1/15/2023'],
 
   }
   Asset_CityId = '';
@@ -237,8 +112,6 @@ export class AddcityComponent implements OnInit {
   Bottle_Status = 'Full';
   DOM = '1/1/2023';
   Max_Refill_Count = 5;
-  Current_Refill_Count = 1;
-  Latest_Refill_Date = '4/15/2023';
 
   assettableobj = {
     'AssetId': '',
@@ -276,9 +149,9 @@ export class AddcityComponent implements OnInit {
     'Citystartdate': '',
     'CityCreateTime': '',
     'Status': 'Yes',
-    'cityavatar':'',
-    'CurrentDay':0,
-    'CurrentTime':0
+    'cityavatar': '',
+    'CurrentDay': 0,
+    'CurrentTime': 0
   };
   userobj = {
     'cityid': '',
@@ -302,7 +175,7 @@ export class AddcityComponent implements OnInit {
       this.router.navigate(["login"])
     }
   }
-  selectcity(ind:any){
+  selectcity(ind: any) {
     $(".city").css('border', '4px solid #fff');
     $(".city_" + ind).css('border', '4px solid #333');
   }
@@ -315,8 +188,8 @@ export class AddcityComponent implements OnInit {
     if (this.selectedavatar == 0) {
       alert("kindly select your Avatar")
     }
-    else{
-      this.city.cityavatar=String(this.selectedavatar);
+    else {
+      this.city.cityavatar = String(this.selectedavatar);
     }
 
   }
@@ -368,8 +241,8 @@ export class AddcityComponent implements OnInit {
             this.assettableobj['Bottle_Status'] = 'Full';
             this.assettableobj['DOM'] = '1/1/2023';
             this.assettableobj['Max_Refill_Count'] = 5;
-            this.assettableobj['Current_Refill_Count'] = 0;
-            this.assettableobj['Latest_Refill_Date'] = '1/15/2023';
+            this.assettableobj['Current_Refill_Count'] = this.assetData['Current_Refill_Count'][count];
+            this.assettableobj['Latest_Refill_Date'] = this.assetData['Latest_Refill_Date'][count];
             this.assettableobj['Content_Price'] = this.assetData['Content_Price'][count];
             this.assettableobj['Bottle_Price'] = this.assetData['Bottle_Price'][count];
             this.assettableobj['Redeem_Good'] = this.assetData['Redeem_Good'][count];

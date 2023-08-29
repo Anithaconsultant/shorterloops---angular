@@ -71,13 +71,10 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     this.currentuseravatar = this.logser.currentuser.avatar;
     this.currentusercityId = this.logser.currentuser.CityId;
   }
-
-
   canmovetop = false;
   canmoveleft = false;
   canmoveright = false;
   canmovebottom = false;
-  onhorizontallane = false;
   whichroad = '';
   settrue() {
     this.canmovetop = true;
@@ -398,9 +395,11 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     }
     else if (this.opensuperflag == 1) {
       this.supercartposition();
-      let leftval = $(".supermarketcart").css('top');
-      leftval = parseInt(leftval) + 10 + "px";
-      $(".supermarketcart").css({ 'top': leftval })
+      if (this.marketbottom) {
+        let leftval = $(".supermarketcart").css('top');
+        leftval = parseInt(leftval) + 10 + "px";
+        $(".supermarketcart").css({ 'top': leftval })
+      }
     }
     else if (this.opensuperflag == 2) {
       let leftval = $("#refillcart").css('top');
@@ -421,9 +420,11 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     }
     else if (this.opensuperflag == 1) {
       this.supercartposition();
-      let leftval = $(".supermarketcart").css('top');
-      leftval = parseInt(leftval) - 10 + "px";
-      $(".supermarketcart").css({ 'top': leftval })
+      if (this.markettop) {
+        let leftval = $(".supermarketcart").css('top');
+        leftval = parseInt(leftval) - 10 + "px";
+        $(".supermarketcart").css({ 'top': leftval })
+      }
     }
     else if (this.opensuperflag == 2) {
       let leftval = $("#refillcart").css('top');
@@ -444,9 +445,11 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     }
     else if (this.opensuperflag == 1) {
       this.supercartposition();
-      let leftval = $(".supermarketcart").css('left');
-      leftval = parseInt(leftval) - 10 + "px";
-      $(".supermarketcart").css({ 'left': leftval })
+      if (this.marketleft) {
+        let leftval = $(".supermarketcart").css('left');
+        leftval = parseInt(leftval) - 10 + "px";
+        $(".supermarketcart").css({ 'left': leftval })
+      }
     }
     else if (this.opensuperflag == 2) {
       let leftval = $("#refillcart").css('left');
@@ -469,9 +472,11 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     }
     else if (this.opensuperflag == 1) {
       this.supercartposition();
-      let leftval = $(".supermarketcart").css('left');
-      leftval = parseInt(leftval) + 100 + "px";
-      $(".supermarketcart").css({ 'left': leftval })
+      if (this.marketleft) {
+        let leftval = $(".supermarketcart").css('left');
+        leftval = parseInt(leftval) + 100 + "px";
+        $(".supermarketcart").css({ 'left': leftval })
+      }
     }
     else if (this.opensuperflag == 2) {
       let leftval = $("#refillcart").css('left');
@@ -480,6 +485,17 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     }
   }
   setflag = 0;
+  markettop = false;
+  marketleft = false;
+  marketright = false;
+  marketbottom = false;
+  setmarkettrue() {
+    this.markettop = true;
+    this.marketleft = true;
+    this.marketright = true;
+    this.marketbottom = true;
+  }
+  cartlocmarket = '';
   supercartposition() {
     let topvalue = parseInt($(".supermarketcart").css('top').split("px")[0]);
     let leftvalue = parseInt($(".supermarketcart").css('left').split("px")[0]);
@@ -528,6 +544,74 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         });
       }
     }
+    if (topvalue > 3030 && topvalue < 3400 && leftvalue > 6800 && leftvalue < 11450) {
+      this.cartlocmarket = "maincorider";
+      this.setmarkettrue();
+    }
+    else if (topvalue > 1020 && topvalue < 3240 && leftvalue > 11250 && leftvalue < 11400) {
+      this.cartlocmarket = "turningcorider";
+      this.setmarkettrue();
+    }
+    else {
+      this.markettop = false;
+      this.marketleft = false;
+      this.marketright = false;
+      this.marketbottom = false;
+      if (this.cartlocmarket == 'maincorider') {
+        if (topvalue < 3030) {
+          this.marketbottom = true;
+          this.markettop = false;
+          this.marketleft = false;
+          this.marketright = false;
+        }
+        else if (topvalue > 3400) {
+          this.markettop = true;
+          this.marketbottom = true;
+          this.marketleft = false;
+          this.marketright = false;
+        }
+        else if (leftvalue < 6800) {
+          this.marketright = true;
+          this.marketbottom = true;
+          this.markettop = false;
+          this.marketleft = false;
+        }
+        else if (leftvalue > 11450) {
+          this.marketleft = true;
+          this.marketbottom = true;
+          this.markettop = false;
+          this.marketright = false;
+        }
+      }
+      else if (this.cartlocmarket == 'turningcorider') {
+        if (topvalue < 1020) {
+          this.marketbottom = true;
+          this.markettop = false;
+          this.marketleft = false;
+          this.marketright = false;
+        }
+        else if (topvalue > 3240) {
+          this.markettop = true;
+          this.marketbottom = false;
+          this.marketleft = false;
+          this.marketright = false;
+        }
+        else if (leftvalue < 11250) {
+          this.marketright = true;
+          this.markettop = false;
+          this.marketbottom = false;
+          this.marketleft = false;
+        }
+        else if (leftvalue > 11400) {
+          this.marketleft = true;
+          this.marketright = false;
+          this.markettop = false;
+          this.marketbottom = false;
+        }
+      }
+    }
+    console.log(this.cartlocmarket);
+
   }
   deg = 90;
   switchrole() {
@@ -564,6 +648,41 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       console.log("curent" + this.cityCurrentTime, this.citycurrentday)
 
     }
+
+
+    this.logser.getAllAssets().subscribe((data) => {
+      for (let y = 0; y < data.length; y++) {
+        this.assetdataset.push(data[y]);
+        if (data[y]['Content_Code'] == "B1.Shiny" && data[y]['Bottle_Code'] == "UB.V") {
+          this.shinyuvpn.push(data[y]['AssetId'] + '@U' + data[y]['Content_Code'].split('.')[0])
+        }
+        else if (data[y]['Content_Code'] == "B1.Shiny" && data[y]['Bottle_Code'] == "B1.V") {
+          this.shinyvpn.push(data[y]['AssetId'] + '@' + data[y]['Content_Code'].split('.')[0])
+        }
+        else if (data[y]['Content_Code'] == "B2.Spiky" && data[y]['Bottle_Code'] == "B2.R" && data[y]['Current_Refill_Count'] == 1) {
+          this.spikyrpr.push(data[y]['AssetId'] + '@' + data[y]['Content_Code'].split('.')[0])
+        }
+        else if (data[y]['Content_Code'] == "B2.Spiky" && data[y]['Bottle_Code'] == "B2.R" && data[y]['Current_Refill_Count'] == 0) {
+          this.spikyrpn.push(data[y]['AssetId'] + '@' + data[y]['Content_Code'].split('.')[0])
+        }
+        else if (data[y]['Content_Code'] == "B3.Bouncy" && data[y]['Bottle_Code'] == "B3.R") {
+          this.bouncyrpn.push(data[y]['AssetId'] + '@' + data[y]['Content_Code'].split('.')[0])
+        }
+        else if (data[y]['Content_Code'] == "B3.Bouncy" && data[y]['Bottle_Code'] == "UB.R") {
+          this.bouncyurpn.push(data[y]['AssetId'] + '@U' + data[y]['Content_Code'].split('.')[0])
+        }
+        else if (data[y]['Content_Code'] == "B4.Wavy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Current_Refill_Count'] == 1) {
+          this.wavyurpr.push(data[y]['AssetId'] + '@U' + data[y]['Content_Code'].split('.')[0])
+        }
+        else if (data[y]['Content_Code'] == "B4.Wavy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Current_Refill_Count'] == 0) {
+          this.wavyurpn.push(data[y]['AssetId'] + '@U' + data[y]['Content_Code'].split('.')[0])
+        }
+        else if (data[y]['Content_Code'] == "B5.Silky" && data[y]['Bottle_Code'] == "B5.V") {
+          this.silkyvpn.push(data[y]['AssetId'] + '@' + data[y]['Content_Code'].split('.')[0])
+        }
+
+      }
+    });
     this.logser.getcitynames().subscribe((data) => {
       setTimeout(() => {
         if (data[0].MayorId != 0) {
@@ -632,7 +751,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     });
 
   }
-
+  assetdataset: string[] = [];
   timeupdate = 0;
   citytiming = {
     'CurrentTime': 0,
@@ -761,11 +880,12 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         var shouldIgnore = !e.altKey;
         return shouldIgnore;
       },
-      // beforeMouseDown: function (e) {
-      //   // allow mouse-down panning only if altKey is down. Otherwavyfillerdropwise - ignore
-      //   var shouldIgnore = !e.altKey;
-      //   return shouldIgnore;
-      // }
+      beforeMouseDown: function (e) {
+        var shouldIgnore = !e.altKey;
+        return shouldIgnore;
+      }
+
+
     });
 
     this.loadinginitialState();
@@ -795,15 +915,15 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   bottles: string[] = [];
   bottledropped: string[] = [];
   bottletaken: string[] = [];
-  shinyvpn = ['_SB_B1.V_00001', '_SB_B1.V_00002', '_SB_B1.V_00003', '_SB_B1.V_00004', '_SB_B1.V_00005'];
-  shinyuvpn = ['_SB_UB1.V_00007', '_SB_UB1.V_00008', '_SB_UB1.V_00009', '_SB_UB1.V_00010', '_SB_UB1.V_00011'];
-  spikyrpn = ['_SB_B2.R_00001', '_SB_B2.R_00002', '_SB_B2.R_00003', '_SB_B2.R_00004', '_SB_B2.R_00005'];
-  spikyrpr = ['_SB_B2.R_00006', '_SB_B2.R_00007', '_SB_B2.R_00008', '_SB_B2.R_00009', '_SB_B2.R_00010'];
-  bouncyrpn = ['_SB_B3.R_00001', '_SB_B3.R_00002', '_SB_B3.R_00003', '_SB_B3.R_00004', '_SB_B3.R_00005'];
-  bouncyurpn = ['_SB_UB3.R_00001', '_SB_UB3.R_00002', '_SB_UB3.R_00003', '_SB_UB3.R_00004', '_SB_UB3.R_00005'];
-  wavyurpn = ['_SB_UB4.R_00001', '_SB_UB4.R_00002', '_SB_UB4.R_00003', '_SB_UB4.R_00004', '_SB_UB4.R_00005'];
-  wavyurpr = ['_SB_UB4.R_00011', '_SB_UB4.R_00012', '_SB_UB4.R_00013', '_SB_UB4.R_00014', '_SB_UB4.R_00015'];
-  silkyvpn = ['_SB_B5.V_00001', '_SB_B5.V_00002', '_SB_B5.V_00003', '_SB_B5.V_00004', '_SB_B5.V_00005']
+  shinyvpn: string[] = [];
+  shinyuvpn: string[] = [];
+  spikyrpn: string[] = [];
+  spikyrpr: string[] = [];
+  bouncyrpn: string[] = [];
+  bouncyurpn: string[] = [];
+  wavyurpn: string[] = [];
+  wavyurpr: string[] = [];
+  silkyvpn: string[] = [];
   refillbottles = ['_SB_UB1.V_00007', '_SB_B2.R_00001', '_SB_UB3.R_00001', '_SB_UB4.R_00001']
   shinyrefilling: string[] = [];
   spikyrefilling: string[] = [];
@@ -826,7 +946,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
 
 
   checkcondition(item: CdkDrag<string>) {
-    if (item.element.nativeElement.classList[2] == '_SB_B1') {
+    if (item.element.nativeElement.classList[2] == 'B1') {
 
       return true;
     }
@@ -836,7 +956,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
 
   }
   checkshinyuniver(item: CdkDrag<string>) {
-    if (item.element.nativeElement.classList[2] == '_SB_UB1') {
+    if (item.element.nativeElement.classList[2] == 'UB1') {
 
       return true;
     }
@@ -856,7 +976,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
 
   }
   checkspikyrpn(item: CdkDrag<string>) {
-    if (item.element.nativeElement.classList[2] == '_SB_B2') {
+    if (item.element.nativeElement.classList[2] == 'B2') {
 
       return true;
     }
@@ -866,7 +986,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
 
   }
   checkbouncyrpn(item: CdkDrag<string>) {
-    if (item.element.nativeElement.classList[2] == '_SB_B3') {
+    if (item.element.nativeElement.classList[2] == 'B3') {
 
       return true;
     }
@@ -886,7 +1006,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
 
   }
   checkbouncyurpn(item: CdkDrag<string>) {
-    if (item.element.nativeElement.classList[2] == '_SB_UB3') {
+    if (item.element.nativeElement.classList[2] == 'UB3') {
 
       return true;
     }
@@ -896,7 +1016,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
 
   }
   checkwavyurpn(item: CdkDrag<string>) {
-    if (item.element.nativeElement.classList[2] == '_SB_UB4') {
+    if (item.element.nativeElement.classList[2] == 'UB4') {
 
       return true;
     }
@@ -906,7 +1026,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
 
   }
   checksilkyvpn(item: CdkDrag<string>) {
-    if (item.element.nativeElement.classList[2] == '_SB_B5') {
+    if (item.element.nativeElement.classList[2] == 'B5') {
 
       return true;
     }
@@ -1036,8 +1156,8 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     this.cityrail.nativeElement.play();
     $("#refillcart").css({ 'left': '50px', 'top': '262px' });
     setTimeout(function () {
-       that.welcome.nativeElement.play();
-       }, 2000)
+      that.welcome.nativeElement.play();
+    }, 2000)
     let that = this;
     setTimeout(function () {
       that.placebottle.nativeElement.play();
@@ -1211,27 +1331,29 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       moveItemInArray(
         event.container.data, event.previousIndex, event.currentIndex,);
     } else {
-
+      console.log(event.previousContainer);
       transferArrayItem(event.previousContainer.data,
         event.container.data,
         event.previousIndex,
         event.currentIndex);
       let that = this;
-      setTimeout(function () {
-        if (($(".refilllist").children('div').length) > 0) {
-          that.droppedbottle = true;
-          that.initiateanimation();
-          that.bottledroppeded.nativeElement.play();
-        }
-      }, 100);
-      setTimeout(function () {
-        if (($(".refilllist").children('div').length) == 0) {
-          $(".displayboard").html('Thank you. Visit again.');
-          that.thankyou.nativeElement.play();
-          that.resetanimation = true;
-          $(".continue").show();
-        }
-      }, 150);
+      if (this.opensuperflag == 2) {
+        setTimeout(function () {
+          if (($(".refilllist").children('div').length) > 0) {
+            that.droppedbottle = true;
+            that.initiateanimation();
+            that.bottledroppeded.nativeElement.play();
+          }
+        }, 100);
+        setTimeout(function () {
+          if (($(".refilllist").children('div').length) == 0) {
+            $(".displayboard").html('Thank you. Visit again.');
+            that.thankyou.nativeElement.play();
+            that.resetanimation = true;
+            $(".continue").show();
+          }
+        }, 150);
+      }
     }
 
 
@@ -1260,8 +1382,6 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         var shouldIgnore = !e.altKey;
         return shouldIgnore;
       },
-
-
     });
     // this.dopanzoomsupermarket(-57, -1077, '0.4');
     this.dopanzoomsupermarket(-2349, -859, '0.4');
