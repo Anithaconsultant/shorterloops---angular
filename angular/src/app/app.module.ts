@@ -18,6 +18,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTreeModule} from '@angular/material/tree';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
+import { UserInterfaceComponent } from './user-interface/user-interface.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import {MatButtonModule} from '@angular/material/button';
     SignupComponent,
     MaincityComponent,
     HomeComponent,
-    AddcityComponent
+    AddcityComponent,
+    UserInterfaceComponent
   ],
   imports: [
     BrowserModule,

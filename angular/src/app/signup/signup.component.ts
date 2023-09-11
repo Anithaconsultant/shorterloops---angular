@@ -46,7 +46,15 @@ export class SignupComponent implements OnInit {
       password: ['', Validators.required],
       gender: ['', Validators.required]
     })
+    $("body").addClass('frontpage');
+  }
+  openwhyshorter(whyshorter: any) {
 
+    this.modalService.open(whyshorter);
+  }
+  openaboutshorter(aboutshorter: any) {
+
+    this.modalService.open(aboutshorter);
   }
   signup() {
     this.submitted = true;
@@ -64,12 +72,14 @@ export class SignupComponent implements OnInit {
           console.log(error);
         }
       );
-      this.router.navigate(["login"])
+      $(".success").show();
     }
 
   }
 
 
-
+  navigate() {
+    this.router.navigate(["login"])
+  }
 
 }

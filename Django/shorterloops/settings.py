@@ -81,10 +81,18 @@ WSGI_APPLICATION = 'shorterloops.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
+ # {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'fresh',
+    #     'USER': 'root',
+    #     'PASSWORD': 'Admin@123',
+    #     'HOST': '127.0.0.1',
+    #     'PORT': '3306',
+    # }
 DATABASES = {
+    
     'default':
-    {
+        {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'fresh',
         'USER': 'root',
@@ -92,7 +100,7 @@ DATABASES = {
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
-    # {
+    #   {
     #     'ENGINE': 'django.db.backends.mysql',
     #     'NAME': 'shorterloop',
     #     'USER': 'dbluser',

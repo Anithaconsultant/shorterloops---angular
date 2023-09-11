@@ -3,6 +3,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { LoginserviceService } from './../services/loginservice.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -11,7 +12,7 @@ import { Router } from '@angular/router';
 export class LoginComponent implements OnInit {
   public loginForm!: FormGroup;
   submitted = false;
-  constructor(private formbuilder: FormBuilder, private http: HttpClientModule, private router: Router, private logser: LoginserviceService) {
+  constructor(private modalService: NgbModal,private formbuilder: FormBuilder, private http: HttpClientModule, private router: Router, private logser: LoginserviceService) {
 
   }
   userobj={
@@ -22,6 +23,7 @@ export class LoginComponent implements OnInit {
       username: [''],
       password: ['']
     })
+    $("body").addClass('frontpage');
   }
   login() {
     this.submitted = true;
@@ -71,5 +73,13 @@ export class LoginComponent implements OnInit {
         alert("Something went wrong")
       })
     }
+  }
+  openwhyshorter(whyshorter:any){
+  
+    this.modalService.open(whyshorter);
+  }
+  openaboutshorter(aboutshorter:any){
+  
+    this.modalService.open(aboutshorter);
   }
 }

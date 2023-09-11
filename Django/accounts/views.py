@@ -1,5 +1,5 @@
-from .models import City, CustomUser, Facility, FACILITY_CHOICES, Cityrule, Asset
-from .serializers import userSerializer, citySerializer, facilitySerializer, cityRuleSerializer, AssetSerializer
+from .models import City, CustomUser, Facility, FACILITY_CHOICES, Cityrule, Asset, Cashflow
+from .serializers import userSerializer, citySerializer, facilitySerializer, cityRuleSerializer, AssetSerializer, cashflowSerializer
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from rest_framework import status
@@ -57,8 +57,9 @@ def addcity(request):
         serializer = citySerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
 
-@api_view(['GET', 'POST','PUT'])
-def updatecurrent(request,cityid):
+
+@api_view(['GET', 'POST', 'PUT'])
+def updatecurrent(request, cityid):
     if request.method == 'PUT':
         data = JSONParser().parse(request)
         getcity = City.objects.filter(pk=cityid).first()
@@ -91,6 +92,23 @@ def createasset(request, cityid):
 
 
 @api_view(['GET', 'POST'])
+def createtransaction(request):
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        print(data);
+        serializer = cashflowSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            print("invalid data")
+        return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+    if request.method == 'GET':
+        data = Cashflow.objects.all()
+        serializer = cashflowSerializer(data, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+
+@api_view(['GET', 'POST'])
 def getfacility(request, cityid):
     if request.method == 'GET':
         data = Facility.objects.filter(Facility_cityid=cityid)
@@ -98,14 +116,22 @@ def getfacility(request, cityid):
         return JsonResponse(serializer.data, safe=False)
 
 
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'PUT'])
 def returnasset(request, itemid):
     if request.method == 'GET':
         data = Asset.objects.filter(AssetId=itemid)
         serializer = AssetSerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
-
-
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        getasset = Asset.objects.filter(AssetId=itemid).first()
+        print(data)
+        serializer = AssetSerializer(getasset, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            print("invalid data")
+        return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
 @api_view(['GET', 'POST'])
 def facility(request, mayorid):
     if request.method == 'POST':
@@ -155,6 +181,64 @@ def updatefacility(request):
 
 
 @api_view(['GET', 'POST', 'PUT'])
+def updatetransactionfacility(request, cityid):
+    if request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serval = {'Owner_id': data['Owner_id'], 'Owner_status': 'Active'}
+        getfacility = Facility.objects.filter(
+            Facilityname=data['Facilityname'], Facility_cityid=data['Facility_cityid']).first()
+        serializer = facilitySerializer(getfacility, data=serval, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            print("invalid data")
+        return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@api_view(['GET', 'PUT'])
+def getsupermarketcash(request, cityid):
+    if request.method == 'GET':
+        data = Facility.objects.filter(
+            Facilityname='Supermarket Owner', Facility_cityid=cityid)
+        serializer = facilitySerializer(data, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    if request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serval = {'Cashbox': data['Cashbox']}
+        print(data)
+        print(serval)
+        getfacility = Facility.objects.filter(
+            Facilityname='Supermarket Owner', Facility_cityid=cityid).first()
+        serializer = facilitySerializer(getfacility, data=serval, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            print("invalid data")
+        return JsonResponse(serializer.data, safe=False)
+
+
+@api_view(['GET', 'PUT'])
+def getmunicipalitycash(request, cityid):
+    if request.method == 'GET':
+        data = Facility.objects.filter(
+            Facilityname='Municipality Office', Facility_cityid=cityid)
+        serializer = facilitySerializer(data, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    if request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serval = {'Cashbox': data['Cashbox']}
+        print(serval)
+        getfacility = Facility.objects.filter(
+            Facilityname='Municipality Office', Facility_cityid=cityid).first()
+        serializer = facilitySerializer(getfacility, data=serval, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            print("invalid data")
+        return JsonResponse(serializer.data, safe=False)
+
+
+@api_view(['GET', 'POST', 'PUT'])
 def leavefacility(request, userid):
     if request.method == 'PUT':
         data = JSONParser().parse(request)
@@ -163,7 +247,7 @@ def leavefacility(request, userid):
             serializer = facilitySerializer(record, data=data, partial=True)
             if serializer.is_valid():
                 serializer.save()
-                print(serializer);
+                print(serializer)
             else:
                 print("invalid data")
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
@@ -202,6 +286,7 @@ def editcity(request, cityid):
 def updateusercity(request, userid):
     if request.method == 'PUT':
         data = JSONParser().parse(request)
+        print(data)
         getuser = CustomUser.objects.filter(pk=userid).first()
         serializer = userSerializer(getuser, data=data, partial=True)
         if serializer.is_valid():

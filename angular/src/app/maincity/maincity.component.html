@@ -1,4 +1,52 @@
 <div class="maincity_container">
+    <audio #welcomemarket [volume]="0.8" muted="muted">
+        <source src="assets/audio/welcomesupermarket.mp3" type="audio/mp3" />
+    </audio>
+    <audio #doneshopping [volume]="0.8" muted="muted">
+        <source src="assets/audio/Donewithyourshopping.mp3" type="audio/mp3" />
+    </audio>
+    <audio #pleasecheck [volume]="0.8" muted="muted">
+        <source src="assets/audio/Pleasecheck.mp3" type="audio/mp3" />
+    </audio>
+    <audio #paymentreceived [volume]="0.8" muted="muted">
+        <source src="assets/audio/PaymentReceived.mp3" type="audio/mp3" />
+    </audio>
+    <audio #transactioncomplete [volume]="0.8" muted="muted">
+        <source src="assets/audio/TransactionComplete.mp3" type="audio/mp3" />
+    </audio>
+    <audio #thankyousuper [volume]="0.8" muted="muted">
+        <source src="assets/audio/Thankyousupermarket.mp3" type="audio/mp3" />
+    </audio>
+    <audio #cityrail [volume]="0.3" muted="muted">
+        <source src="assets/audio/cityrail.mp3" type="audio/mp3" />
+    </audio>
+    <audio #welcome [volume]="0.8" muted="muted">
+        <source src="assets/audio/welcome.mp3" type="audio/mp3" />
+    </audio>
+    <audio #placebottle [volume]="0.8" muted="muted">
+        <source src="assets/audio/placebottle.mp3" type="audio/mp3" />
+    </audio>
+    <audio #bottledroppeded [volume]="0.8" muted="muted">
+        <source src="assets/audio/bottledropped.mp3" type="audio/mp3" />
+    </audio>
+    <audio #selectbrand [volume]="0.8" muted="muted">
+        <source src="assets/audio/selectbrand.mp3" type="audio/mp3" />
+    </audio>
+    <audio #bottledifferent [volume]="0.8" muted="muted">
+        <source src="assets/audio/bottledifferent.mp3" type="audio/mp3" />
+    </audio>
+    <audio #checkprice [volume]="0.8" muted="muted">
+        <source src="assets/audio/checkprice.mp3" type="audio/mp3" />
+    </audio>
+    <audio #useplusminus [volume]="0.8" muted="muted">
+        <source src="assets/audio/useplusminuskey.mp3" type="audio/mp3" />
+    </audio>
+    <audio #collectbottle [volume]="0.8" muted="muted">
+        <source src="assets/audio/collectyourbottle.mp3" type="audio/mp3" />
+    </audio>
+    <audio #thankyou [volume]="0.8" muted="muted">
+        <source src="assets/audio/thankyou.mp3" type="audio/mp3" />
+    </audio>
     <div class="maincity" #maincity id="maincity" [hidden]="opensuperflag!=0">
         <div class="truck side"></div>
         <div class="cart">
@@ -13,7 +61,6 @@
             <div class="Making commoncls">CLOSED</div>
             <!-- <div class="Refilling commoncls">CLOSE</div> -->
         </div>
-
         <div class="mayorflag"></div>
         <div id="clock"></div>
         <div id="day"></div>
@@ -21,25 +68,22 @@
         <div class="leftcolony">{{cityname | uppercase}} HOUSING COLONY</div>
         <div class="rightcolony">{{cityname | uppercase}} HOUSING COLONY</div>
         <div class="houselitewrapper">
-            <div *ngFor='let key of objkey(positionObject);let i = index' class="houselite {{key}}">
-            </div>
+            <div *ngFor="let key of objkey(positionObject);let i = index" class="houselite {{key}}"></div>
         </div>
         <div class="householder">
-            <div *ngFor='let key of objkey(positionObject);let i = index' class="displaypanel {{key}}">
-            </div>
-            <div *ngFor='let key of objkey(positionObject);let i = index' class="housedisplay {{key}}">
-            </div>
+            <div *ngFor="let key of objkey(positionObject);let i = index" class="displaypanel {{key}}"></div>
+            <div *ngFor="let key of objkey(positionObject);let i = index" class="housedisplay {{key}}"></div>
         </div>
         <div class="supermarketentry"></div>
-
-
     </div>
     <div class="supermarketstage" [hidden]="opensuperflag!=1">
-
         <div class="loadimg" #supermarket>
-            <div class="exit" (click)="opensuperflag=0;dopanzoom( -911.801, -2188.2,'1')"></div>
-            <div id="innerdoor"></div>
-            <div id="checklight"></div>
+            <div class="exit" (click)="closesupermarket()"></div>
+            <div class="countermark"></div>
+            <div id="innerdoor1"></div>
+            <div id="innerdoor2"></div>
+            <div id="checklight1"></div>
+            <div id="checklight2"></div>
             <div class="conveyorbottledropper">
                 <div cdkDropList #droppedList="cdkDropList" [cdkDropListConnectedTo]="[bottleList]"
                     [cdkDropListData]="bottledropped" (cdkDropListDropped)="drop($event)" class="bottle_list">
@@ -47,11 +91,9 @@
                 </div>
             </div>
             <div class="cart supermarketcart">
-                <!--audio #welcome loop [volume]="0.8" muted="muted">
-                    <source src="assets/audio/birds.mp3" type="audio/mp3">
-                </audio-->
                 <div class="cartavatar"></div>
-                <div class="cartid"></div>
+                <div class="cartid_highlight"></div>
+                <div class="cartid" (click)="opencart(cartcontent,$event)"></div>
                 <div class="bottleholder">
                     <div cdkDropList #bottleList="cdkDropList" [cdkDropListConnectedTo]="[droppedList]"
                         [cdkDropListData]="bottles" (cdkDropListDropped)="drop($event)" class="cart_bottle_list">
@@ -66,11 +108,9 @@
                         <div *ngFor="let item of bottletaken" class="{{item}} {{item.split('@')[1]}}" cdkDrag></div>
                     </div>
                 </div>
-
             </div>
 
             <div class="newrak">
-
                 <div class="shinyshelfvpn dropper">
                     <div cdkDropList #shinyvpnbottle="cdkDropList" [cdkDropListConnectedTo]="[bottlesshopped]"
                         [cdkDropListData]="shinyvpn" (cdkDropListDropped)="drop($event)" class="shinyvpn_list"
@@ -84,8 +124,7 @@
                         [cdkDropListData]="shinyuvpn" (cdkDropListDropped)="drop($event)" class="shinyuvpn_list"
                         [cdkDropListEnterPredicate]="checkshinyuniver">
                         <div *ngFor="let item of shinyuvpn" class="shiny_uvpn" id="{{item}}"
-                            (click)="opensticker(bottlesticker,$event)" cdkDrag>
-                        </div>
+                            (click)="opensticker(bottlesticker,$event)" cdkDrag></div>
                     </div>
                 </div>
                 <div class="spikeshelfrpn dropper">
@@ -93,8 +132,7 @@
                         [cdkDropListData]="spikyrpn" (cdkDropListDropped)="drop($event)" class="spikyrpn_list"
                         [cdkDropListEnterPredicate]="checkspikyrpn">
                         <div *ngFor="let item of spikyrpn" class="spikyrpn" id="{{item}}"
-                            (click)="opensticker(bottlesticker,$event)" cdkDrag>
-                        </div>
+                            (click)="opensticker(bottlesticker,$event)" cdkDrag></div>
                     </div>
                 </div>
                 <div class="spikeshelfrpr dropper">
@@ -102,8 +140,7 @@
                         [cdkDropListData]="spikyrpr" (cdkDropListDropped)="drop($event)" class="spikyrpr_list"
                         [cdkDropListEnterPredicate]="checkspikyrpn">
                         <div *ngFor="let item of spikyrpr" class="spikyrpr" id="{{item}}"
-                            (click)="opensticker(bottlesticker,$event)" cdkDrag>
-                        </div>
+                            (click)="opensticker(bottlesticker,$event)" cdkDrag></div>
                     </div>
                 </div>
                 <div class="bouncyshelfrpn dropper">
@@ -111,8 +148,7 @@
                         [cdkDropListData]="bouncyrpn" (cdkDropListDropped)="drop($event)" class="bouncyrpn_list"
                         [cdkDropListEnterPredicate]="checkbouncyrpn">
                         <div *ngFor="let item of bouncyrpn" class="bouncyrpn" id="{{item}}"
-                            (click)="opensticker(bottlesticker,$event)" cdkDrag>
-                        </div>
+                            (click)="opensticker(bottlesticker,$event)" cdkDrag></div>
                     </div>
                 </div>
                 <div class="bouncyshelfurpn dropper">
@@ -120,8 +156,7 @@
                         [cdkDropListData]="bouncyurpn" (cdkDropListDropped)="drop($event)" class="bouncyurpn_list"
                         [cdkDropListEnterPredicate]="checkbouncyurpn">
                         <div *ngFor="let item of bouncyurpn" class="bouncyurpn" id="{{item}}"
-                            (click)="opensticker(bottlesticker,$event)" cdkDrag>
-                        </div>
+                            (click)="opensticker(bottlesticker,$event)" cdkDrag></div>
                     </div>
                 </div>
                 <div class="wavyshelfurpn dropper">
@@ -129,8 +164,7 @@
                         [cdkDropListData]="wavyurpn" (cdkDropListDropped)="drop($event)" class="wavyurpn_list"
                         [cdkDropListEnterPredicate]="checkwavyurpn">
                         <div *ngFor="let item of wavyurpn" class="wavyurpn" id="{{item}}"
-                            (click)="opensticker(bottlesticker,$event)" cdkDrag>
-                        </div>
+                            (click)="opensticker(bottlesticker,$event)" cdkDrag></div>
                     </div>
                 </div>
                 <div class="wavyshelfurpr dropper">
@@ -138,8 +172,7 @@
                         [cdkDropListData]="wavyurpr" (cdkDropListDropped)="drop($event)" class="wavyurpr_list"
                         [cdkDropListEnterPredicate]="checkwavyurpn">
                         <div *ngFor="let item of wavyurpr" class="wavyurpr" id="{{item}}"
-                            (click)="opensticker(bottlesticker,$event)" cdkDrag>
-                        </div>
+                            (click)="opensticker(bottlesticker,$event)" cdkDrag></div>
                     </div>
                 </div>
                 <div class="silkyshelfvpn dropper">
@@ -147,8 +180,7 @@
                         [cdkDropListData]="silkyvpn" (cdkDropListDropped)="drop($event)" class="silkyvpn_list"
                         [cdkDropListEnterPredicate]="checksilkyvpn">
                         <div *ngFor="let item of silkyvpn" class="silkyvpn" id="{{item}}"
-                            (click)="opensticker(bottlesticker,$event)" cdkDrag>
-                        </div>
+                            (click)="opensticker(bottlesticker,$event)" cdkDrag></div>
                     </div>
                 </div>
             </div>
@@ -156,54 +188,22 @@
     </div>
     <div class="refillinstation" [hidden]="opensuperflag!=2">
         <div class="loadimgrefill" #refillingstation>
-            <audio #cityrail [volume]="0.3" muted="muted">
-                <source src="assets/audio/cityrail.mp3" type="audio/mp3">
-            </audio>
-            <audio #welcome [volume]="0.8" muted="muted">
-                <source src="assets/audio/welcome.mp3" type="audio/mp3">
-            </audio>
-            <audio #placebottle [volume]="0.8" muted="muted">
-                <source src="assets/audio/placebottle.mp3" type="audio/mp3">
-            </audio>
-            <audio #bottledroppeded [volume]="0.8" muted="muted">
-                <source src="assets/audio/bottledropped.mp3" type="audio/mp3">
-            </audio>
-            <audio #selectbrand [volume]="0.8" muted="muted">
-                <source src="assets/audio/selectbrand.mp3" type="audio/mp3">
-            </audio>
-            <audio #bottledifferent [volume]="0.8" muted="muted">
-                <source src="assets/audio/bottledifferent.mp3" type="audio/mp3">
-            </audio>
-            <audio #checkprice [volume]="0.8" muted="muted">
-                <source src="assets/audio/checkprice.mp3" type="audio/mp3">
-            </audio>
-            <audio #useplusminus [volume]="0.8" muted="muted">
-                <source src="assets/audio/useplusminuskey.mp3" type="audio/mp3">
-            </audio>
-            <audio #collectbottle [volume]="0.8" muted="muted">
-                <source src="assets/audio/collectyourbottle.mp3" type="audio/mp3">
-            </audio>
-            <audio #thankyou [volume]="0.8" muted="muted">
-                <source src="assets/audio/thankyou.mp3" type="audio/mp3">
-            </audio>
             <div id="refillcart">
                 <div class="cartavatar"></div>
                 <div class="cartid"></div>
                 <div class="refillbottleholder">
                     <div cdkDropList #bottlestoberefilled="cdkDropList" [cdkDropListConnectedTo]="[shinyrefill]"
-                        [cdkDropListData]="refillbottles" (cdkDropListDropped)="drop($event)" class="refill_list ">
+                        [cdkDropListData]="refillbottles" (cdkDropListDropped)="drop($event)" class="refill_list">
                         <div *ngFor="let item of refillbottles"
-                            class="{{currentusercityId}}{{item}} {{item.split('.')[0]}} refillbtl" cdkDrag></div>
+                            class="{{currentusercityId}}{{item}} {{item.split('.')[0].split('_')[2]}} refillbtl"
+                            cdkDrag></div>
                     </div>
-
                 </div>
-
-
             </div>
             <div class="panel">
                 <div class="displaylight on"></div>
-                <div class="displayboard">Welcome to the shampoo self refilling station!.
-                    Please place your empty bottle on the conveyor.</div>
+                <div class="displayboard">Welcome to the shampoo self refilling station!. Please place your empty bottle
+                    on the conveyor.</div>
                 <div class="brandsection">
                     <div class="shiny"
                         (click)="refillbrandselected='shiny';(droppedbottle==false)?  $event.stopPropagation():checkrefillselect();">
@@ -229,7 +229,7 @@
                 </div>
                 <div class="cancel" (click)="(quantityselected==false)?  $event.stopPropagation():increament();"></div>
                 <div class="continue" (click)="(resetanimation==false)?$event.stopPropagation():resetrefilling();">
-                    Continue</div>
+                </div>
             </div>
             <div class="animationpanel">
                 <div class="capremover">
@@ -256,16 +256,11 @@
                 <div class="refilldropper">
                     <div cdkDropList #shinyrefill="cdkDropList" [cdkDropListConnectedTo]="[bottlestoberefilled]"
                         [cdkDropListData]="shinyrefilling" (cdkDropListDropped)="drop($event)" class="refilllist">
-                        <div *ngFor="let item of shinyrefilling" class="{{item.split('.')[0]}} refillbtl" id="{{item}}"
-                            cdkDrag>
-                        </div>
+                        <div *ngFor="let item of shinyrefilling" class="{{item.split('.')[0].split('_')[2]}} refillbtl"
+                            id="{{item}}" cdkDrag></div>
                     </div>
-
-
                 </div>
-
             </div>
-
         </div>
     </div>
 
@@ -273,10 +268,8 @@
         <div class="logo"></div>
         <div class="displayrole">{{currentusername | titlecase}}</div>
 
-
         <div ngbDropdown class="picholder">
-            <div type="button" class="displaypic" id="dropdown" ngbDropdownToggle>
-            </div>
+            <div type="button" class="displaypic" id="dropdown" ngbDropdownToggle></div>
             <div ngbDropdownMenu aria-labelledby="dropdown">
                 <button ngbDropdownItem *ngIf="currentrole=='Customer'" (click)="switchrole()">Switch Role</button>
                 <button ngbDropdownItem *ngIf="currentrole=='Mayor'" (click)="switchcustomerrole()">Switch Role as
@@ -303,8 +296,6 @@
                         <button ngbDropdownItem (click)="exit()">Exit without Logout</button>
                     </div>
                 </div>
-
-
             </div>
         </div>
     </div>
@@ -317,11 +308,7 @@
         <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
-
-        <div *ngFor='let in of newmale' class="pics pic_{{in}}" (click)="selectphoto(in)">
-
-        </div>
-
+        <div *ngFor="let in of newmale" class="pics pic_{{in}}" (click)="selectphoto(in)"></div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-dark"
@@ -337,7 +324,7 @@
     <div class="modal-body">
         <div class="bottlelable">
             <div class="frontpart {{frontclass}}">
-                <div *ngIf='leblfound' class="labelbig {{frontlabel}}"></div>
+                <div *ngIf="leblfound" class="labelbig {{frontlabel}}"></div>
             </div>
             <div class="backside {{bottleclass | lowercase}}back">
                 <div class="labelholder">
@@ -354,10 +341,84 @@
                     <div class="Env_Tax">&#8377; {{assetdata[0].Env_Tax}}</div>
                     <div class="Total_price">&#8377; {{totalamount}}</div>
                     <div class="AssetId">{{assetdata[0].AssetId}}</div>
-
                 </div>
             </div>
         </div>
     </div>
-
 </ng-template>
+
+<!-- Modal -->
+<ng-template #cartcontent let-modal>
+    <div class="modal-header headpart">
+        <div class="topbar">
+            <div class="welcome">Welcome {{currentusername}}</div>
+            <div class="role">Role: {{currentUserRole}}</div>
+            <div class="cartId">Cart ID: {{currentUserCartId}}</div>
+        </div>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body billcss">
+
+        <div class="tablecontent" *ngIf="bottletaken.length>0">
+            <div class="daytime">Day : {{citycurrentday}} Time: {{cityCurrentTime}}</div>
+            <div class="net">Net Amount :&#x20B9; {{netamount | number : '1.2-2'}} <span class="tick">&#x2714;</span>
+            </div>
+            <div class="account">Amount in Wallet :&#x20B9; {{currentwallet | number : '1.2-2'}}</div>
+            <div class="content">
+                <div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>AssetId</th>
+                                <th>Bottle Type</th>
+                                <th>Bottle content</th>
+                                <th>Refill Count</th>
+                                <th>Content Price (&#x20B9;)</th>
+                                <th>Original Bottle Price(&#x20B9;)</th>
+                                <th>Discount on Refill bottle(%)</th>
+                                <th>Env Tax(%)</th>
+                                <th>Redeem Value for returned Bottle(%)</th>
+                                <th>Transaction Type</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of boughtbottledata">
+                                <td>{{ item.AssetId}}</td>
+                                <td>{{ item.Bottle_Code}}</td>
+                                <td>{{ item.Content_Code}}</td>
+                                <td>{{ item.Current_Refill_Count}}</td>
+                                <td>{{ item.Content_Price}}</td>
+                                <td>{{ item.Bottle_Price}}</td>
+                                <td>{{ item.Discount_RefillB}}</td>
+                                <td>{{ item.Env_Tax}}</td>
+                                <td>{{ item.Redeem_Good}}</td>
+                                <td>Purchase</td>
+                                <td>{{ item.Totalvalue}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="emptycontent" *ngIf="bottletaken.length==0">There is no item added to cart</div>
+
+    </div>
+    <div class="modal-footer">
+        <div class="icon_container">
+            <div class="wallet"></div>
+            <div class="ledger"></div>
+            <div class="bottle"></div>
+            <div class="recyclebtn"></div>
+            <div class="btn btn-outline-dark pay" *ngIf="billpaid==false"
+                (click)="payamount();">Pay</div>
+            <div class="btn btn-outline-dark close" *ngIf="billpaid==true"
+                (click)="modal.close('Save click');">Close</div>
+            <div class="btn btn-outline-dark" (click)="modal.close('Save click');">cancel</div>
+        </div>
+    </div>
+</ng-template>
+
+
+
+<!-- Modal -->

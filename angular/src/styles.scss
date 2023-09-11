@@ -20,7 +20,7 @@ body {
 
 body {
     margin: 0;
-    font-family: 'poppin';
+    font-family: 'poppin' !important;
 }
 
 
@@ -39,6 +39,7 @@ app-home {
     max-width: 80%;
     width: 80%;
 }
+
 
 .pic_0 {
     background-image: url('./assets/img/male1.svg');
@@ -275,7 +276,7 @@ input::placeholder {
 app-login,
 app-signup {
     .form-control {
-        width: 83% !important;
+        width: 92% !important;
         margin: 0 auto !important;
     }
 }
@@ -619,6 +620,26 @@ app-signup {
                 font-size: 30px;
                 top: 12px;
             }
+
+            .cartid_highlight {
+                position: absolute;
+                color: #000;
+                left: 34px;
+                font-size: 30px;
+                top: 1px;
+                width: 103px;
+                height: 44px;
+            }
+        }
+
+        .countermark {
+            position: absolute;
+            width: 324px;
+            height: 359px;
+            border: 10px dashed#01a89e;
+            left: 6023px;
+            top: 1115px;
+
         }
     }
 
@@ -735,6 +756,7 @@ app-signup {
                 }
             }
         }
+
         .displaylight {
             &.off {
                 position: absolute;
@@ -838,16 +860,10 @@ app-signup {
                 position: absolute;
                 width: 78px;
                 height: 18px;
-                cursor: pointer;
-                text-align: center;
                 display: block;
                 left: 142px;
-                /* border: 1px solid #555; */
                 top: 135px;
-                font-size: 10px;
-                line-height: 15px;
                 cursor: pointer;
-                background: #cdb2b2;
             }
 
             .adjustment {
@@ -932,7 +948,7 @@ app-signup {
             .bdrop {
                 width: 13px;
                 position: absolute;
-                border-bottom: 2px solid;
+                border: 1px dotted #00ffbd;
                 height: 27px;
                 display: flex;
             }
@@ -950,16 +966,7 @@ app-signup {
 }
 
 
-.silkyvpn_big {
-    background-image: url('./assets/img/silky.svg');
-    width: 275px;
-    height: 768px;
-    position: absolute;
-    top: 26px;
-    left: 178px;
-    background-size: contain;
 
-}
 
 
 .shinyvpn_list,
@@ -1159,15 +1166,6 @@ app-signup {
     }
 }
 
-.shiny_vpn_big {
-    background-image: url('./assets/img/shiny.png');
-    width: 361px;
-    height: 768px;
-    position: absolute;
-    top: 26px;
-    left: 178px;
-    background-size: contain;
-}
 
 .labelholder {
     position: relative;
@@ -1254,47 +1252,70 @@ app-signup {
 }
 
 .shiny_uvpn_big,
-.bouncy_urpn_11_big,
-.bouncy_urpn_12_big,
-.wavy_urpn_13_big,
-.wavy_urpn_14_big,
-.wavy_urpr_15_big,
-.wavy_urpr_16_big {
+.bouncyurpn_big,
+.bouncyurpn_big,
+.wavyurpn_big,
+.wavyurpn_big,
+.wavyurpr_big,
+.wavyurpr_big {
     background-image: url('./assets/img/universal.png');
     width: 300px;
-    height: 768px;
-    position: absolute;
-    top: 26px;
-    left: 178px;
-    background-size: contain;
+    @extend .bigcss;
+
 }
-
-
-
-
 
 .bouncyrpn_big {
     background-image: url('./assets/img/bouncy.png');
     width: 355px;
+    @extend .bigcss;
+
+}
+
+.spikyrpn_big,
+.spikyrpr_big {
+    background-image: url('./assets/img/spiky.png');
+    width: 296px;
+    @extend .bigcss;
+
+}
+
+.shiny_vpn_big {
+    background-image: url('./assets/img/shiny.png');
+    width: 361px;
+    @extend .bigcss;
+
+}
+
+.silkyvpn_big {
+    background-image: url('./assets/img/silky.svg');
+    width: 275px;
+    @extend .bigcss;
+
+}
+
+.bigcss {
     height: 768px;
     position: absolute;
     top: 26px;
     left: 178px;
     background-size: contain;
 }
-
 
 .newheader {
     border-bottom: 0px solid !important;
 }
 
+.bigback {
+
+    background-size: contain;
+    margin-left: 541px;
+}
 
 .shinyback {
     background-image: url('./assets/img/shiny_backside.png');
     width: 362px;
     height: 770px;
-    background-size: contain;
-    margin-left: 541px;
+    @extend .bigback;
 
     .labelholder {
         color: #dddd6b;
@@ -1305,8 +1326,7 @@ app-signup {
     background-image: url('./assets/img/silky_back.png');
     width: 276px;
     height: 770px;
-    background-size: contain;
-    margin-left: 541px;
+    @extend .bigback;
 
     .labelholder {
         color: #fff;
@@ -1330,8 +1350,7 @@ app-signup {
     background-image: url('./assets/img/spiky_back.png');
     width: 362px;
     height: 764px;
-    background-size: contain;
-    margin-left: 541px;
+    @extend .bigback;
 
     .labelholder {
         top: 472px;
@@ -1343,11 +1362,9 @@ app-signup {
     background-image: url('./assets/img/wavy_back.png');
     width: 362px;
     height: 770px;
-    background-size: contain;
-    margin-left: 541px;
+    @extend .bigback;
 
     .labelholder {
-
         color: #633cce;
     }
 }
@@ -1356,8 +1373,7 @@ app-signup {
     background-image: url('./assets/img/bouncy_back.png');
     width: 355px;
     height: 770px;
-    background-size: contain;
-    margin-left: 541px;
+    @extend .bigback;
 
     .labelholder {
         color: #fff;
@@ -1370,11 +1386,9 @@ app-signup {
     background-image: url('./assets/img/universal_back.png');
     width: 299px;
     height: 770px;
-    background-size: contain;
-    margin-left: 541px;
+    @extend .bigback;
 
     .labelholder {
-
         color: #000;
         top: 475px;
         left: 192px;
@@ -1439,87 +1453,67 @@ body {
     background-size: cover;
 }
 
-// .shiny_label {
-//     background-image: url('./assets/img/shiny_label.png');
-// }
 
-// .silky_label {
-//     background-image: url('./assets/img/silky_label.png');
-// }
 
-// .spiky_label {
-//     background-image: url('./assets/img/spiky_label.png');
-// }
-
-// .bouncy_label {
-//     background-image: url('./assets/img/bouncy_label.png');
-// }
-
-// .wavy_label {
-//     background-image: url('./assets/img/wavy_label.png');
-// }
-
-.spiky_vpn {
-    background-image: url('./assets/img/spiky.png');
-    width: 30px;
-    height: 84px;
-}
-
-.wavy_vpn {
-    background-image: url('./assets/img/wavy.png');
-    width: 31px;
-    height: 77px;
-}
-
-.silky_vpn {
-    background-image: url('./assets/img/silky.png');
-    width: 31px;
-    height: 77px;
-}
-
-.bouncy_vpn {
-    background-image: url('./assets/img/bouncy.png');
-    width: 35px;
-    height: 77px;
-}
-
-#checklight {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    top: 4090px;
-    background-color: #ff0;
-    left: 5379px;
+#checklight1 {
+    width: 50px;
+    height: 50px;
     position: absolute;
+    top: 2838px;
+    left: 5309px;
+    transform: rotate(-90deg);
+    background-image: url('./assets/img/red.png');
+    background-size: cover;
+
 }
+
+#checklight2 {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 2908px;
+    left: 5309px;
+    transform: rotate(-90deg);
+    background-image: url('./assets/img/green.png');
+    background-size: cover;
+
+}
+
 
 .green {
-    background-color: #0f0 !important;
-    animation: glowing 1s ease-in-out infinite alternate;
+    width: 213px  !important;
+    height: 213px  !important;
+    position: absolute;
+    top: 2825px !important;
+    left: 5221px !important;
+    transform: rotate(-90deg);
+    background-image: url('./assets/img/grenglow.png') !important;
+    background-size: cover;
 }
 
 .red {
-    background-color: #f00 !important;
+    width: 213px  !important;
+    height: 213px  !important;
+    position: absolute;
+    top: 2755px!important;
+    left: 5221px!important;
+    transform: rotate(-90deg)!important;
+    background-image: url('./assets/img/redglow.png') !important;
+    background-size: cover;
+}
+
+.highlight {
     animation: glowingred 1s ease-in-out infinite alternate;
 }
 
-@keyframes glowingred {
+
+@keyframes glowingorange {
     from {
-        box-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px rgba(255, 0, 0, 0.322), 0 0 40px rgb(255, 51, 0), 0 0 50px #fc3c3c, 0 0 60px #e92b2b, 0 0 70px #e92b2b;
+        box-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px rgba(236, 175, 43, 0.322), 0 0 40px rgb(240, 129, 38), 0 0 50px #ffad15, 0 0 60px #ffad15, 0 0 70px #ffad15;
     }
 
     to {
-        box-shadow: 0 0 20px #fff, 0 0 30px #f5542b, 0 0 40px #fa3b3b, 0 0 50px #f84242, 0 0 60px #f00, 0 0 70px #f00, 0 0 80px #f00;
-    }
-}
-
-@keyframes glowing {
-    from {
-        box-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px rgba(117, 235, 101, 0.322), 0 0 40px rgb(108, 233, 71), 0 0 50px #4cff15, 0 0 60px #4cff15, 0 0 70px #4cff15;
-    }
-
-    to {
-        box-shadow: 0 0 20px #fff, 0 0 30px #5ef14a, 0 0 40px #3dff23, 0 0 50px #64f720, 0 0 60px #0f0, 0 0 70px #0f0, 0 0 80px #0f0;
+        box-shadow: 0 0 20px #fff, 0 0 30px #f7aa37, 0 0 40px #ffa723, 0 0 50px #fc930b, 0 0 60px rgb(255, 187, 0), 0 0 70px rgb(255, 174, 0), 0 0 80px rgb(255, 174, 0);
     }
 }
 
@@ -1595,14 +1589,22 @@ body {
     top: 0;
     overflow: hidden;
 
-    #innerdoor {
+    #innerdoor1 {
         position: absolute;
         width: 29px;
         height: 1076px;
         top: 2998px;
-        left: 5415px;
-        background: #666666;
-        transform-origin: bottom;
+        left: 5447px;
+        background: #99d8cf;
+    }
+
+    #innerdoor2 {
+        position: absolute;
+        width: 29px;
+        height: 1030px;
+        top: 930px;
+        left: 5447px;
+        background: #99d8cf;
     }
 
     .loadimg {
@@ -1613,5 +1615,154 @@ body {
         width: 12000px;
         height: 4501px;
     }
+
+}
+
+.shiny_label {
+    background-image: url('./assets/img/shiny_label.png');
+}
+
+.silky_label {
+    background-image: url('./assets/img/silky_label.png');
+}
+
+.spiky_label {
+    background-image: url('./assets/img/spiky_label.png');
+}
+
+.bouncy_label {
+    background-image: url('./assets/img/bouncy_label.png');
+}
+
+.wavy_label {
+    background-image: url('./assets/img/wavy_label.png');
+}
+
+.spiky_vpn {
+    background-image: url('./assets/img/spiky.png');
+    width: 30px;
+    height: 84px;
+}
+
+.wavy_vpn {
+    background-image: url('./assets/img/wavy.png');
+    width: 31px;
+    height: 77px;
+}
+
+.silky_vpn {
+    background-image: url('./assets/img/silky.png');
+    width: 31px;
+    height: 77px;
+}
+
+.bouncy_vpn {
+    background-image: url('./assets/img/bouncy.png');
+    width: 35px;
+    height: 77px;
+}
+
+
+.cartcontent {
+    .modal.show {
+        .modal-dialog {
+            .modal-content {
+                background: #6b6868 !important;
+            }
+        }
+    }
+}
+
+.frontpage {
+    .modal.show {
+        overflow: hidden !important;
+
+        .modal-dialog {
+            width: 98% !important;
+            max-width: 98% !important;
+
+            .modal-header {
+                border: 0px !important;
+            }
+
+            .modal-content {
+                background-image: url('./assets/img/aboutpagebg.png') !important;
+                background-size: cover;
+                width: 100% !important;
+                max-width: 100%;
+
+            }
+        }
+    }
+}
+
+.innderdiv {
+    height: 530px !important;
+    width: 100%;
+    overflow-y: auto;
+
+
+    .loadcontent {
+        background-image: url('./assets/img/whyshorterloop.png');
+        background-size: cover;
+        width: 100%;
+        height: 3000px;
+
+    }
+
+    .loadcontent1 {
+        background-image: url('./assets/img/aboutshorterloop.png');
+        background-size: cover;
+        width: 100%;
+        height: 4600px;
+
+    }
+
+}
+
+.topright {
+    position: absolute;
+    width: 100px;
+    right: 10px;
+    top: 10px;
+    height: 30px;
+    display: flex;
+    justify-content: space-between;
+
+    .navigation {
+        background-image: url('./assets/img/navigation.png');
+        width: 30px;
+        height: 30px;
+        background-size: cover;
+    }
+
+    .information {
+        background-image: url('./assets/img/information.png');
+        width: 30px;
+        height: 30px;
+        background-size: cover;
+        cursor: pointer;
+    }
+}
+
+.iihslogo {
+    background-image: url('./assets/img/iihs.png');
+    width: 64px;
+    height: 50px;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    background-size: cover;
+}
+
+.shorterloopslogo {
+    background-image: url('./assets/img/shorteloopslogo.png');
+    width: 171px;
+    height: 55px;
+    position: absolute;
+    left: 100px;
+    top: 100px;
+    background-size: cover;
+    cursor: pointer;
 
 }

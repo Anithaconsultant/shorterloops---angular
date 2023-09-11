@@ -1,49 +1,86 @@
 <div class="container-fluid landingpage">
-    <h3>Welcome to Shorterloops, {{setusername | titlecase}}</h3>
-    <div class="container centeralign" *ngIf="selectrole==false">
-        <a class="btn btn-primary create" routerLink="/addcity" role="button">Create a City</a>
-        <button class="btn btn-primary join" (click)="selectrole=true">Join a Existing City</button>
+    <div class="row">
+        <div class="logocontainer">
+            <div class="iihslogo"></div>
+            <div class="shorterloopslogo" (click)="openwhyshorter(whyshorterloop)"></div>
+        </div>
+
+        <div class="topright">
+            <div class="navigation"></div>
+            <div class="information" (click)="openaboutshorter(aboutshorterloop)"></div>
+        </div>
     </div>
-    <div *ngIf="selectrole" class="selectrolecontent">
-
-        <div class="mb-3 col-xl-4 mx-auto">
-            <label for="City" class="form-label">Select your City</label>
-            <select name="Cityname" class="form-control" id="City" [(ngModel)]="selectedCity"
-                (change)="choosefacility()">
-                <option selected disabled=true>--Select your City--</option>
-                <option *ngFor="let item of setList; " [value]="item[0]">
-                    {{item[0]}}
-                </option>
-            </select>
-
-
+    <div class="row topalign">
+        <h3>Welcome to Shorter Loops, {{setusername | titlecase}}</h3>
+        <div class="container centeralign" *ngIf="selectrole==false">
+            <a class="btn btn-primary create" routerLink="/addcity" role="button">CREATE A NEW CITY</a>
+            <button class="btn btn-primary join" (click)="selectrole=true">JOIN EXISTING CITY</button>
         </div>
-        <div class="mb-3 col-xl-4  mx-auto">
-            <label for="facilityname" class="form-label">Select your Role</label>
-            <select name="facilityname" class="form-control" id="role" [(ngModel)]="selectedfacility"
-                (change)="checkindata()">
-                <option selected disabled=true>--Select your Role--</option>
-                <option value="Supermarket Owner"> Supermarket Owner </option>
-                <option value="Universal bottle Plant Owner"> Universal bottle Plant Owner </option>
-                <option value="Reverse Vending Machine Owner"> Reverse Vending Machine Owner</option>
-                <option value="Plastic Recycling plant Owner"> Plastic Recycling plant Owner </option>
-                <option value="Refilling Van Owner"> Refilling Van Owner </option>
-                <option value="House1 Owner"> House1 Owner </option>
-                <option value="House2 Owner"> House2 Owner </option>
-                <option value="House3 Owner"> House3 Owner </option>
-                <option value="House4 Owner"> House4 Owner </option>
-                <option value="House5 Owner"> House5 Owner </option>
-                <option value="House6 Owner"> House6 Owner </option>
-                <option value="House7 Owner"> House7 Owner </option>
-                <option value="House8 Owner"> House8 Owner </option>
-                <option value="House9 Owner"> House9 Owner </option>
-                <option value="House10 Owner"> House10 Owner </option>
-            </select>
-        </div>
-      
-        <div class="mb-3 col-xl-4  mx-auto">
-            <button type="submit" class="save btn btn-primary facilitysave" (click)="dochanges()">Save</button>
-            <a href="/home/">Back</a>
+
+        <div *ngIf="selectrole" class="selectrolecontent">
+
+            <div class="mb-3 col-xl-4 mx-auto">
+                <label for="City" class="form-label">Select your City</label>
+                <select name="Cityname" class="form-control" id="City" [(ngModel)]="selectedCity"
+                    (change)="choosefacility()">
+                    <option selected disabled=true>--Select your City--</option>
+                    <option *ngFor="let item of setList; " [value]="item[0]">
+                        {{item[0]}}
+                    </option>
+                </select>
+
+
+            </div>
+            <div class="mb-3 col-xl-4  mx-auto">
+                <label for="facilityname" class="form-label">Select your Role</label>
+                <select name="facilityname" class="form-control" id="role" [(ngModel)]="selectedfacility"
+                    (change)="checkindata()">
+                    <option selected disabled=true>--Select your Role--</option>
+                    <option value="Supermarket Owner"> Supermarket Owner </option>
+                    <option value="Universal bottle Plant Owner"> Universal bottle Plant Owner </option>
+                    <option value="Reverse Vending Machine Owner"> Reverse Vending Machine Owner</option>
+                    <option value="Plastic Recycling plant Owner"> Plastic Recycling plant Owner </option>
+                    <option value="Refilling Van Owner"> Refilling Van Owner </option>
+                    <option value="House1 Owner"> House1 Owner </option>
+                    <option value="House2 Owner"> House2 Owner </option>
+                    <option value="House3 Owner"> House3 Owner </option>
+                    <option value="House4 Owner"> House4 Owner </option>
+                    <option value="House5 Owner"> House5 Owner </option>
+                    <option value="House6 Owner"> House6 Owner </option>
+                    <option value="House7 Owner"> House7 Owner </option>
+                    <option value="House8 Owner"> House8 Owner </option>
+                    <option value="House9 Owner"> House9 Owner </option>
+                    <option value="House10 Owner"> House10 Owner </option>
+                </select>
+            </div>
+
+            <div class="mb-3 col-xl-4  mx-auto">
+                <button type="submit" class="save btn btn-primary facilitysave" (click)="dochanges()">Save</button>
+                <a href="/home/">Back</a>
+            </div>
         </div>
     </div>
 </div>
+<ng-template #whyshorterloop let-modal>
+    <div class="modal-header">
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+       <div class="innderdiv">
+        <div class="loadcontent"></div>
+       </div>
+    </div>
+
+</ng-template>
+
+<ng-template #aboutshorterloop let-modal>
+    <div class="modal-header">
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+       <div class="innderdiv">
+        <div class="loadcontent1"></div>
+       </div>
+    </div>
+
+</ng-template>

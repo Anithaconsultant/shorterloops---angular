@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { LoginserviceService } from "./../services/loginservice.service";
 import { Router } from "@angular/router";
-
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: "app-home",
   templateUrl: "./home.component.html",
@@ -33,7 +33,7 @@ export class HomeComponent implements OnInit {
   }
 
 
-  constructor(private logser: LoginserviceService, private router: Router) {
+  constructor(private logser: LoginserviceService, private router: Router,private modalService: NgbModal) {
     this.currentuser = { ...this.logser.currentuser };
     this.setusername = this.currentuser.Username;
     this.userobj.gender = this.currentuser.gender;
@@ -41,9 +41,6 @@ export class HomeComponent implements OnInit {
       this.city = data;
       this.getcityList();
     });
-
-
-
   }
   ngOnInit(): void {
     if (this.logser.currentuser.Username == '') {
@@ -53,6 +50,7 @@ export class HomeComponent implements OnInit {
       this.user = data;
       
     })
+    $("body").addClass('frontpage');
   }
   setList: any[] = [];
   selectedcityid = '';
@@ -125,7 +123,15 @@ export class HomeComponent implements OnInit {
 
 
     });
+  }  openwhyshorter(whyshorter:any){
+  
+    this.modalService.open(whyshorter);
   }
+  openaboutshorter(aboutshorter:any){
+  
+    this.modalService.open(aboutshorter);
+  }
+
   dochanges() {
     if (this.canUpdate == false && this.selectrole) {
       this.logser.updatefacility(this.facilityobj).subscribe(

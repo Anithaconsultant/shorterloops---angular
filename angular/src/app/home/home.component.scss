@@ -4,16 +4,23 @@
     justify-content: center;
     flex-direction: column;
 }
-#role{
-    option:not(:disabled){
+
+#role {
+    option:not(:disabled) {
         cursor: pointer;
     }
 }
+
 .landingpage {
+
     width: 100%;
     height: 100%;
     background-image: url('./../../assets/img/register.png');
     background-size: cover;
+
+    .topalign {
+        margin-top: 17% !important;
+    }
 
     .selectrolecontent {
         margin-top: 2%;
@@ -23,32 +30,43 @@
         font-size: 36px;
         color: #fff;
         text-align: center;
+        font-family: 'poppin' !important;
     }
 
     .create {
         margin-top: 30px;
+        @extend .common;
+    }
+
+    .common {
         margin-bottom: 40px;
-        background-color: #b6b3a5 !important;
-        border-color: #b6b3a5 !important;
+        background-color: #636569 !important;
+        border-color: #636569 !important;
+        width: 200px;
+        border-radius: 30px;
+        font-size: 14px;
+        padding: 2px;
+        font-family: poppin !important;
     }
 
     .join,
     .facilitysave {
-        background-color: #b6b3a5 !important;
-        border-color: #b6b3a5 !important;
+        margin-top: 0px;
+        @extend .common;
     }
 
     h3 {
-        font-size: 36px;
-        font-weight: 300;
+        font-size: 24px;
         color: #fff;
         text-align: center;
+        font-family: 'poppin' !important;
     }
 
     label {
         font-size: 20px;
         font-weight: 300;
         color: #fff;
+        font-family: 'poppin' !important;
     }
 
 }

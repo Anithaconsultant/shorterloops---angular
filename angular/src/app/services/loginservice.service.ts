@@ -12,19 +12,19 @@ export class LoginserviceService {
     'UserId': '',
     'CityId': '',
     'Role': '',
-    'wallet': '',
+    'wallet': 0,
     'cartId': '',
     'gender': '',
     'avatar': '',
     'login': '',
     'cityname': '',
-    'CurrentTime':0,
-    'currentday':0,
-    'cityrate':'',
-    'cityavatar':''
+    'CurrentTime': 0,
+    'currentday': 0,
+    'cityrate': '',
+    'cityavatar': ''
   };
- baseurl = "https://dbl.iihs.in/api/";
- //baseurl = "http://127.0.0.1:8000/api/";
+  //baseurl = "https://dbl.iihs.in/api/";
+  baseurl = "http://127.0.0.1:8000/api/";
   authorizationData = 'Basic ' + btoa(this.username + ':' + this.password);
   httpHeaders = new HttpHeaders({
     'Content-Type': 'application/json',
@@ -46,14 +46,14 @@ export class LoginserviceService {
       { headers: this.httpHeaders });
   }
   createcity(city: any): Observable<any> {
-    const body = { CityName: city.CityName, MayorId: city.MayorId, Clocktickrate: city.Clocktickrate, Status: city.Status,cityavatar:city.cityavatar };
+    const body = { CityName: city.CityName, MayorId: city.MayorId, Clocktickrate: city.Clocktickrate, Status: city.Status, cityavatar: city.cityavatar };
     return this.http.post(this.baseurl + 'addcity/', body,
       { headers: this.httpHeaders });
   }
   updatecurrenttime(city: any): Observable<any> {
-    const body = { CurrentTime: city.CurrentTime, CurrentDay: city.CurrentDay};
+    const body = { CurrentTime: city.CurrentTime, CurrentDay: city.CurrentDay };
     console.log(body);
-    return this.http.put(this.baseurl + 'updatetime/'+ this.currentuser.CityId, body,
+    return this.http.put(this.baseurl + 'updatetime/' + this.currentuser.CityId, body,
       { headers: this.httpHeaders });
   }
   getAllCities(): Observable<any> {
@@ -66,6 +66,17 @@ export class LoginserviceService {
   }
   getthisAssets(currentitem: any): Observable<any> {
     return this.http.get(this.baseurl + 'assets/' + currentitem,
+      { headers: this.httpHeaders });
+  }
+
+  updatethisAssets(currentitem: any): Observable<any> {
+    const body = {
+      Bottle_loc: currentitem.Bottleloc, Bottle_Status: currentitem.bottlestatus,
+      Transaction_Id: currentitem.transactionid, Transaction_Date: currentitem.transactiondate, 
+      Fromfacility: currentitem.fromfacility,
+      Tofacility: currentitem.tofacility
+    };
+    return this.http.put(this.baseurl + 'assets/' + currentitem.currentitem, body,
       { headers: this.httpHeaders });
   }
   getcitynames(): Observable<any> {
@@ -107,25 +118,67 @@ export class LoginserviceService {
     return this.http.put(this.baseurl + 'updateusercity/' + this.currentuser.UserId, body,
       { headers: this.httpHeaders });
   }
+  updatewallet(): Observable<any> {
+    let body = { wallet: this.currentuser.wallet };
+    console.log(body);
+    return this.http.put(this.baseurl + 'updateusercity/' + this.currentuser.UserId, body,
+      { headers: this.httpHeaders });
+  }
   getallfacility(cityid: any): Observable<any> {
     return this.http.get(this.baseurl + 'getfacility/' + cityid,
       { headers: this.httpHeaders });
   }
   updatefacility(facilityobj: any): Observable<any> {
     const body = { Facilityname: facilityobj.facilityname, Owner_id: facilityobj.Ownerid, Facility_cityid: facilityobj.facilityCityId, Owner_status: facilityobj.Owner_status }
-
-    console.log(body);
     return this.http.put(this.baseurl + 'updatefacility/', body,
       { headers: this.httpHeaders });
   }
   leavefacility(): Observable<any> {
-    const body = { Owner_id: '',Owner_status: 'Inactive' }
+    const body = { Owner_id: '', Owner_status: 'Inactive' }
     return this.http.put(this.baseurl + 'leavefacility/' + this.currentuser.UserId, body,
       { headers: this.httpHeaders });
   }
   createfacility(firstfacility: any): Observable<any> {
     const body = { Facility_cityid: firstfacility.CityId };
     return this.http.post(this.baseurl + 'facility/' + this.currentuser.UserId, body,
+      { headers: this.httpHeaders });
+  }
+
+  createtransaction(transaction: any): Observable<any> {
+    const body = {
+      TransactionId: transaction.TransactionId, 'Amount': transaction.Amount, 'DebitFacility': this.currentuser.Role,
+      'CreditFacility': transaction.CreditFacility, 'Purpose': transaction.Purpose
+    };
+    console.log(body);
+    return this.http.post(this.baseurl + 'cashflow/', body,
+      { headers: this.httpHeaders });
+  }
+  gettransactions(): Observable<any> {
+    return this.http.get(this.baseurl + 'cashflow/',
+      { headers: this.httpHeaders });
+  }
+  updatetransactioninfacility(transaction: any): Observable<any> {
+    const body = {};
+    return this.http.post(this.baseurl + 'cashflow/', body,
+      { headers: this.httpHeaders });
+  }
+  getsupermarketcashbox(): Observable<any> {
+    return this.http.get(this.baseurl + 'getsupermarketcash/' + this.currentuser.CityId,
+      { headers: this.httpHeaders });
+  }
+  getcashboxmunicipality(): Observable<any> {
+    return this.http.get(this.baseurl + 'getmunicipalitycash/' + this.currentuser.CityId,
+      { headers: this.httpHeaders });
+  }
+  updatesupermarketcashbox(cashbox: any): Observable<any> {
+    const body = { Cashbox: cashbox };
+    return this.http.put(this.baseurl + 'getsupermarketcash/' + this.currentuser.CityId, body,
+      { headers: this.httpHeaders });
+  }
+  updatecashboxmunicipality(cashbox: any): Observable<any> {
+    const body = { Cashbox: cashbox }
+    console.log(body);
+    return this.http.put(this.baseurl + 'getmunicipalitycash/' + this.currentuser.CityId, body,
       { headers: this.httpHeaders });
   }
 }

@@ -9,11 +9,13 @@
         background-position: center;
         height: 4501px;
         margin: auto;
-        &.city_1{
+
+        &.city_1 {
             background-image: url('./../../assets/img/city_1.png');
 
         }
-        &.city_2{
+
+        &.city_2 {
             background-image: url('./../../assets/img/city_2.png');
 
         }
@@ -144,12 +146,14 @@
 
 .cdk-drag-animating {
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+
 }
 
 .cart_bottle_list,
 .newbottle_list,
 .bottle_list,
-.refill_list,.refilllist {
+.refill_list,
+.refilllist {
     display: flex;
     justify-content: center;
     width: 100%;
@@ -176,6 +180,7 @@
         position: absolute;
         left: 19px;
         top: 5px;
+
         #pressor {
             background-image: url(./../../assets/img/pressor.png);
             width: 16px;
@@ -183,10 +188,10 @@
             background-size: cover;
             position: absolute;
             top: -10px;
-            z-index:1;
-    
+            z-index: 1;
+
         }
-    
+
         .middlepart {
             background-image: url(./../../assets/img/middlepart.png);
             width: 27px;
@@ -198,10 +203,12 @@
             top: 12px;
         }
     }
+
     .capadder {
         position: absolute;
         left: 344px;
         top: 5px;
+
         #cappressor {
             background-image: url(./../../assets/img/pressor.png);
             width: 16px;
@@ -209,10 +216,10 @@
             background-size: cover;
             position: absolute;
             top: -10px;
-            z-index:1;
-    
+            z-index: 1;
+
         }
-    
+
         .capmiddlepart {
             background-image: url(./../../assets/img/middlepart.png);
             width: 27px;
@@ -224,5 +231,107 @@
             top: 12px;
         }
     }
- 
+
+}
+
+.headpart {
+    .topbar {
+        width: 100%;
+        height: 40px;
+        display: flex;
+        font-size: 16px;
+        color: #fff;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+
+        .role,
+        .welcome,
+        .cartId {
+            font-family: 'poppin';
+            display: flex;
+        }
+    }
+}
+
+.billcss {
+    background: #fff;
+
+    .tick {
+        color: #0f0;
+        display: none;
+        font-size: 20px;
+    }
+
+    .content {
+        background-color: #fff;
+        margin-top: 5px;
+
+        td {
+            padding: 5px;
+        }
+
+        tr:nth-of-type(even),
+        th {
+            background: #e0e0e0;
+        }
+    }
+
+
+
+
+}
+
+.icon_container {
+    display: flex;
+    width: 40%;
+    justify-content: space-around;
+    align-items: center;
+
+    .wallet {
+        width: 53px;
+        height: 40px;
+        background-image: url('./../../assets/img/wallet.png');
+        background-size: cover;
+    }
+
+    .ledger {
+        width: 56px;
+        height: 40px;
+        background-image: url('./../../assets/img/ledgerbook.png');
+        background-size: cover;
+    }
+
+    .bottle {
+        width: 19px;
+        height: 40px;
+        background-image: url('./../../assets/img/bottleicon.png');
+        background-size: cover;
+    }
+
+    .recyclebtn {
+        width: 40px;
+        height: 40px;
+        background-image: url('./../../assets/img/recycle.png');
+        background-size: cover;
+    }
+
+    .pay,.close {
+        background: #76aa60;
+        border: 1px solid #76aa60;
+        color: #fff;
+        height: 30px;
+        display: flex;
+        align-items: center;
+    }
+
+    .close {
+        background: #76aa60;
+        border: 1px solid #76aa60;
+        color: #fff;
+        height: 30px;
+        display: flex;
+        /* justify-content: center; */
+        align-items: center;
+    }
 }

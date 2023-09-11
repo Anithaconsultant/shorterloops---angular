@@ -1,5 +1,17 @@
 <div class="container-fluid landingpage">
+    <div class="row">
+        <div class="logocontainer">
+            <div class="iihslogo"></div>
+            <div class="shorterloopslogo" (click)="openwhyshorter(whyshorterloop)"></div>
+        </div>
+
+        <div class="topright">
+            <div class="navigation"></div>
+            <div class="information" (click)="openaboutshorter(aboutshorterloop)"></div>
+        </div>
+    </div>
     <div class="row no-gutter">
+
         <!-- Demo content-->
         <div class="container loginblock">
             <div class="row">
@@ -21,10 +33,32 @@
                         <button type="submit"
                             class="btn btn-block text-uppercase mb-2 rounded-pill shadow-sm loginbtn">Login</button>
                     </form>
-                    <div class="signuptxt"><a routerLink="/signup">Create Account</a></div>
+                    <div class="signuptxt"><a routerLink="/signup">Register</a></div>
                 </div>
             </div>
-       </div><!-- End -->
+        </div><!-- End -->
 
     </div>
 </div>
+
+<ng-template #whyshorterloop let-modal>
+    <div class="modal-header">
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+       <div class="innderdiv">
+        <div class="loadcontent"></div>
+       </div>
+    </div>
+</ng-template>
+
+<ng-template #aboutshorterloop let-modal>
+    <div class="modal-header">
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+       <div class="innderdiv">
+        <div class="loadcontent1"></div>
+       </div>
+    </div>
+</ng-template>

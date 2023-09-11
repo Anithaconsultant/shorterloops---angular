@@ -169,14 +169,14 @@ export class AddcityComponent implements OnInit {
       Citystartdate: [this.currentDate],
       CityCreateTime: [this.currentTime]
     })
-    this.city.CityCreateTime = this.currentTime
-    this.city.Citystartdate = this.currentDate
+    this.city.CityCreateTime = this.currentTime;
+    this.city.Citystartdate = this.currentDate;
     if (this.logser.currentuser.Username == '') {
       this.router.navigate(["login"])
     }
   }
   selectcity(ind: any) {
-    $(".city").css('border', '4px solid #fff');
+    $(".city").css('border', '4px solid transparent');
     $(".city_" + ind).css('border', '4px solid #333');
   }
   selectedavatar = 0;
@@ -276,5 +276,13 @@ export class AddcityComponent implements OnInit {
 
 
     }
+  }
+  openwhyshorter(whyshorter:any){
+  
+    this.modalService.open(whyshorter);
+  }
+  openaboutshorter(aboutshorter:any){
+  
+    this.modalService.open(aboutshorter);
   }
 }
