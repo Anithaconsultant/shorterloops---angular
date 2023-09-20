@@ -46,7 +46,7 @@ export class SignupComponent implements OnInit {
       password: ['', Validators.required],
       gender: ['', Validators.required]
     })
-    $("body").addClass('frontpage');
+    $("body").addClass('frontpage').removeClass('cartcontent');
   }
   openwhyshorter(whyshorter: any) {
 
@@ -64,15 +64,17 @@ export class SignupComponent implements OnInit {
     }
 
     if (this.submitted) {
+      console.log(this.newuser)
       this.logser.createUser(this.newuser).subscribe(
         data => {
           this.newuser = data;
+          $(".success").show();
         },
         error => {
           console.log(error);
         }
       );
-      $(".success").show();
+      
     }
 
   }

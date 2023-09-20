@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit {
       username: [''],
       password: ['']
     })
-    $("body").addClass('frontpage');
+    $("body").addClass('frontpage').removeClass('cartcontent');
   }
   login() {
     this.submitted = true;

@@ -51,7 +51,7 @@
         <div class="truck side"></div>
         <div class="cart">
             <div class="cartavatar" (click)="opensuperflag=1;opensupermarket();"></div>
-            <div class="cartid"></div>
+            <div class="cartid" (click)="opencart(cartcontent,$event)"></div>
         </div>
         <div class="housedisplay">{{currentusername | titlecase}}</div>
         <div class="boardholder">
@@ -78,8 +78,12 @@
     </div>
     <div class="supermarketstage" [hidden]="opensuperflag!=1">
         <div class="loadimg" #supermarket>
-            <div class="exit" (click)="closesupermarket()"></div>
-            <div class="countermark"></div>
+            <div class="displaynetamount">&#x20B9; {{netamount | number : '1.2-2'}} </div>
+            <div class="displaymoniter"></div>
+            <div class="scanneranimation">
+                <div class="scanner"> </div>
+                <div class="beam"></div>
+            </div>
             <div id="innerdoor1"></div>
             <div id="innerdoor2"></div>
             <div id="checklight1"></div>
@@ -92,7 +96,6 @@
             </div>
             <div class="cart supermarketcart">
                 <div class="cartavatar"></div>
-                <div class="cartid_highlight"></div>
                 <div class="cartid" (click)="opencart(cartcontent,$event)"></div>
                 <div class="bottleholder">
                     <div cdkDropList #bottleList="cdkDropList" [cdkDropListConnectedTo]="[droppedList]"
@@ -191,9 +194,17 @@
             <div id="refillcart">
                 <div class="cartavatar"></div>
                 <div class="cartid"></div>
+                <div class="refilledholder">
+                    <div cdkDropList #bottlerefilled="cdkDropList" [cdkDropListConnectedTo]="[shinyrefill]"
+                        [cdkDropListData]="refilledbottles" (cdkDropListDropped)="drop($event)" class="refilled_list">
+                        <div *ngFor="let item of refilledbottles"
+                            class="{{item}} {{item.split('.')[0].split('_')[2]}} refillbtl refilldone" cdkDrag></div>
+                    </div>
+                </div>
                 <div class="refillbottleholder">
                     <div cdkDropList #bottlestoberefilled="cdkDropList" [cdkDropListConnectedTo]="[shinyrefill]"
-                        [cdkDropListData]="refillbottles" (cdkDropListDropped)="drop($event)" class="refill_list">
+                        [cdkDropListData]="refillbottles" (cdkDropListDropped)="drop($event)" class="refill_list"
+                        [cdkDropListEnterPredicate]="checkrefillcondition">
                         <div *ngFor="let item of refillbottles"
                             class="{{currentusercityId}}{{item}} {{item.split('.')[0].split('_')[2]}} refillbtl"
                             cdkDrag></div>
@@ -206,19 +217,19 @@
                     on the conveyor.</div>
                 <div class="brandsection">
                     <div class="shiny"
-                        (click)="refillbrandselected='shiny';(droppedbottle==false)?  $event.stopPropagation():checkrefillselect();">
+                        (click)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('shiny');">
                     </div>
                     <div class="bouncy"
-                        (click)="refillbrandselected='bouncy';(droppedbottle==false)?  $event.stopPropagation():checkrefillselect();">
+                        (click)="(droppedbottle==false )?  $event.stopPropagation():checkrefillselect('bouncy');">
                     </div>
                     <div class="spiky"
-                        (click)="refillbrandselected='spiky';(droppedbottle==false)?  $event.stopPropagation():checkrefillselect();">
+                        (click)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('spiky');">
                     </div>
                     <div class="silky"
-                        (click)="refillbrandselected='silky';(droppedbottle==false)?  $event.stopPropagation():checkrefillselect();">
+                        (click)="(droppedbottle==false )?  $event.stopPropagation():checkrefillselect('silky');">
                     </div>
                     <div class="wavy"
-                        (click)="refillbrandselected='wavy';(droppedbottle==false)?  $event.stopPropagation():checkrefillselect();">
+                        (click)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('wavy');">
                     </div>
                 </div>
                 <div class="adjustment">
@@ -228,7 +239,7 @@
                 <div class="start" (click)="(quantityselected==false)?  $event.stopPropagation():startanimation();">
                 </div>
                 <div class="cancel" (click)="(quantityselected==false)?  $event.stopPropagation():increament();"></div>
-                <div class="continue" (click)="(resetanimation==false)?$event.stopPropagation():resetrefilling();">
+                <div class="continue" (click)="(resetanimation==false)? resetrefilling(): $event.stopPropagation();">
                 </div>
             </div>
             <div class="animationpanel">
@@ -254,10 +265,12 @@
             </div>
             <div class="bdropper">
                 <div class="refilldropper">
-                    <div cdkDropList #shinyrefill="cdkDropList" [cdkDropListConnectedTo]="[bottlestoberefilled]"
-                        [cdkDropListData]="shinyrefilling" (cdkDropListDropped)="drop($event)" class="refilllist">
-                        <div *ngFor="let item of shinyrefilling" class="{{item.split('.')[0].split('_')[2]}} refillbtl"
-                            id="{{item}}" cdkDrag></div>
+                    <div cdkDropList #shinyrefill="cdkDropList"
+                        [cdkDropListConnectedTo]="[bottlestoberefilled,bottlerefilled]"
+                        [cdkDropListData]="shinyrefilling" (cdkDropListDropped)="drop($event)" class="refilllist"
+                        [cdkDropListEnterPredicate]="checkrefilledbottle">
+                        <div *ngFor="let item of shinyrefilling"
+                            class="{{item.split('.')[0].split('_')[2]}} refillbtl " id="{{item}}" cdkDrag></div>
                     </div>
                 </div>
             </div>
@@ -355,66 +368,156 @@
             <div class="role">Role: {{currentUserRole}}</div>
             <div class="cartId">Cart ID: {{currentUserCartId}}</div>
         </div>
-        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+        <button type="button" class="btn-close closebtn" aria-label="Close"
+            (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body billcss">
-
-        <div class="tablecontent" *ngIf="bottletaken.length>0">
-            <div class="daytime">Day : {{citycurrentday}} Time: {{cityCurrentTime}}</div>
-            <div class="net">Net Amount :&#x20B9; {{netamount | number : '1.2-2'}} <span class="tick">&#x2714;</span>
+        <div *ngIf="opensuperflag==1">
+            <div class="tablecontent" *ngIf="bottletaken.length>0">
+                <div class="daytime">Day : {{citycurrentday}} Time: {{cityCurrentTime}}</div>
+                <div class="net">Net Amount :&#x20B9; {{netamount | number : '1.2-2'}} <span
+                        class="tick">&#x2714;</span>
+                </div>
+                <div class="account">Amount in Wallet :&#x20B9; {{currentwallet | number : '1.2-2'}}</div>
+                <div class="content">
+                    <div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>AssetId</th>
+                                    <th>Bottle Type</th>
+                                    <th>Bottle content</th>
+                                    <th>Refill Count</th>
+                                    <th>Content Price (&#x20B9;)</th>
+                                    <th>Original Bottle Price(&#x20B9;)</th>
+                                    <th>Discount on Refill bottle(%)</th>
+                                    <th>Env Tax(%)</th>
+                                    <th>Redeem Value for returned Bottle(%)</th>
+                                    <th>Transaction Type</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of boughtbottledata">
+                                    <td>{{ item.AssetId}}</td>
+                                    <td>{{ item.Bottle_Code}}</td>
+                                    <td>{{ item.Content_Code}}</td>
+                                    <td>{{ item.Current_Refill_Count}}</td>
+                                    <td>{{ item.Content_Price}}</td>
+                                    <td>{{ item.Bottle_Price}}</td>
+                                    <td>{{ item.Discount_RefillB}}</td>
+                                    <td>{{ item.Env_Tax}}</td>
+                                    <td>{{ item.Redeem_Good}}</td>
+                                    <td>Purchase</td>
+                                    <td>{{ item.Totalvalue}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-            <div class="account">Amount in Wallet :&#x20B9; {{currentwallet | number : '1.2-2'}}</div>
-            <div class="content">
-                <div>
+            <div class="emptycontent" *ngIf="bottletaken.length==0">There is no item added to cart</div>
+        </div>
+        <div *ngIf="opensuperflag==0" class="overall">
+            <div *ngIf="altertab==0">
+                <div class="aligntable">
+                    <div style="margin-bottom: 15px;">Your Wallet Status (from the day you joined this city till date)
+                    </div>
                     <table>
-                        <thead>
-                            <tr>
-                                <th>AssetId</th>
-                                <th>Bottle Type</th>
-                                <th>Bottle content</th>
-                                <th>Refill Count</th>
-                                <th>Content Price (&#x20B9;)</th>
-                                <th>Original Bottle Price(&#x20B9;)</th>
-                                <th>Discount on Refill bottle(%)</th>
-                                <th>Env Tax(%)</th>
-                                <th>Redeem Value for returned Bottle(%)</th>
-                                <th>Transaction Type</th>
-                                <th>Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let item of boughtbottledata">
-                                <td>{{ item.AssetId}}</td>
-                                <td>{{ item.Bottle_Code}}</td>
-                                <td>{{ item.Content_Code}}</td>
-                                <td>{{ item.Current_Refill_Count}}</td>
-                                <td>{{ item.Content_Price}}</td>
-                                <td>{{ item.Bottle_Price}}</td>
-                                <td>{{ item.Discount_RefillB}}</td>
-                                <td>{{ item.Env_Tax}}</td>
-                                <td>{{ item.Redeem_Good}}</td>
-                                <td>Purchase</td>
-                                <td>{{ item.Totalvalue}}</td>
-                            </tr>
-                        </tbody>
+                        <tr>
+                            <td>Net Balance</td>
+                            <td>&#x20B9; {{currentwallet | number : '1.2-2'}}</td>
+                        </tr>
+                        <tr>
+                            <td>Allowances</td>
+                            <td>&#x20B9; 2000</td>
+                        </tr>
+                        <tr>
+                            <td>Purchases</td>
+                            <td>&#x20B9;</td>
+                        </tr>
+                        <tr>
+                            <td>Earning from Returns</td>
+                            <td>&#x20B9;</td>
+                        </tr>
+                        <tr>
+                            <td>Taxes</td>
+                            <td>&#x20B9;</td>
+                        </tr>
+                        <tr>
+                            <td>Fines</td>
+                            <td>&#x20B9;</td>
+                        </tr>
                     </table>
                 </div>
             </div>
-        </div>
-        <div class="emptycontent" *ngIf="bottletaken.length==0">There is no item added to cart</div>
+            <div *ngIf="altertab==1" class="ledgerpart">
+                <div class="content">
+                    <div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>AssetId</th>
+                                    <th>Transaction ID</th>
+                                    <th>Asset Moved From </th>
+                                    <th>Asset Moved To </th>
+                                    <th>Content Code</th>
+                                    <th>Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of currentusertransaction;">
+                                    <td>{{ item.AssetId}}</td>
+                                    <td>{{ item.Transaction_Id}}</td>
+                                    <td>{{ item.Fromfacility}}</td>
+                                    <td>{{ item.Bottle_loc}}</td>
+                                    <td>{{ item.Content_Code}}</td>
+                                    <td>{{ item.Quantity}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="altertab==2">
+                <label for="select">Select Your Bottle:</label>
+                <select [(ngModel)]="selectedbottle" class="form-control">
+                    <option>---Select---</option>
+                    <option *ngFor="let item of currentusertransaction" [value]="item.value">
+                        {{item.AssetId}}
+                    </option>
+                </select>
+                <div class="holder" *ngIf="selectedbottle!==''">
+                    <div class="{{selectedbottle.split('@')[1]}} imgclass"></div>
+                    <div class="btncont">
+                        <div class="use">Use</div>
+                        <div class="dent">Dent</div>
+                        <div class="empty">Empty</div>
+                    </div>
 
+                </div>
+            </div>
+            <div *ngIf="altertab==3">
+                <div class="quotientimg"></div>
+            </div>
+        </div>
     </div>
     <div class="modal-footer">
         <div class="icon_container">
-            <div class="wallet"></div>
-            <div class="ledger"></div>
-            <div class="bottle"></div>
-            <div class="recyclebtn"></div>
-            <div class="btn btn-outline-dark pay" *ngIf="billpaid==false"
-                (click)="payamount();">Pay</div>
-            <div class="btn btn-outline-dark close" *ngIf="billpaid==true"
-                (click)="modal.close('Save click');">Close</div>
-            <div class="btn btn-outline-dark" (click)="modal.close('Save click');">cancel</div>
+            <div class="icncon" [ngClass]="{'highlighttab': altertab == 0}">
+                <div class="wallet" (click)="altertab=0;"></div>
+            </div>
+            <div class="icncon" [ngClass]="{'highlighttab': altertab == 1}">
+                <div class="ledger" (click)="altertab=1;loadledgerdata();"></div>
+            </div>
+            <div class="icncon" [ngClass]="{'highlighttab': altertab == 2}">
+                <div class="bottle" (click)="altertab=2; loadbottledata();"></div>
+            </div>
+            <div class="icncon" [ngClass]="{'highlighttab': altertab == 3}">
+                <div class="recyclebtn" (click)="altertab=3;"></div>
+            </div>
+            <div class="btn btn-outline-dark pay" *ngIf="billpaid==false" (click)="payamount();">Pay</div>
+            <div class="btn btn-outline-dark cancel" (click)="modal.close('Save click');">Cancel</div>
         </div>
     </div>
 </ng-template>

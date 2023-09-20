@@ -62,6 +62,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   wavyurpr: string[] = [];
   silkyvpn: string[] = [];
   refillbottles = ['_SB_UB1.V_00007', '_SB_B2.R_00001', '_SB_UB3.R_00001', '_SB_UB4.R_00001']
+  refilledbottles: string[] = [];
   shinyrefilling: string[] = [];
   spikyrefilling: string[] = [];
   silkyrefilling: string[] = [];
@@ -135,7 +136,12 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   citycurrentday = 0;
   cityavatar = '';
   currentwallet = 0;
-  assetdataset: string[] = [];
+  showwallet = false;
+  showratings = false;
+  showbottles = false;
+  showtransactions = false;
+  altertab = 0;
+  assetdataset: any[] = [];
   timeupdate = 0;
   citytiming = {
     'CurrentTime': 0,
@@ -264,6 +270,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       }
       this.newmale = this.maleset.slice(0);
     });
+    $("body").removeClass('frontpage').removeClass('cartcontent');
   }
   settrue() {
     this.canmovetop = true;
@@ -694,6 +701,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     let leftvalue = parseInt($("#refillcart").css('left').split("px")[0]);
     if (topvalue > 242 && topvalue < 370 && leftvalue > 10 && leftvalue < 1060) {
       this.cartlocrefill = "enterpoint";
+
       this.setrefilltrue();
     }
     else if (topvalue > 370 && topvalue < 410 && leftvalue > 10 && leftvalue < 1060) {
@@ -819,8 +827,9 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       if (topvalue < 3533 && topvalue > 3090 && leftvalue > 4900 && leftvalue < 5000) {
         this.cartlocmarket = "nearconveyor";
         this.setmarkettrue();
-        if ($(".cart_bottle_list").children('div').length > 0) {
-          this.marketright = false; 
+        alert($(".newbottle_list").children('div').length);
+        if ($(".cart_bottle_list").children('div').length > 0 || $(".newbottle_list").children('div').length > 0) {
+          this.marketright = false;
           $("#checklight2").removeClass('green')
           $("#checklight1").addClass('red');
           if (this.setflag == 0) {
@@ -860,38 +869,39 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         this.cartlocmarket = "maincorider";
         this.setmarkettrue();
       }
-      else if (topvalue > 1020 && topvalue < 3240 && leftvalue > 11250 && leftvalue < 11450) {
+      else if (topvalue > 1005 && topvalue < 3240 && leftvalue > 11250 && leftvalue < 11450) {
         this.cartlocmarket = "turningcorider";
         this.setmarkettrue();
       }
-      else if (topvalue > 1020 && topvalue < 1270 && leftvalue > 6050 && leftvalue < 11450) {
+      else if (topvalue > 1005 && topvalue < 1270 && leftvalue > 6050 && leftvalue < 11450) {
         this.cartlocmarket = "othercorider";
         this.setmarkettrue();
-        if (topvalue > 1020 && topvalue < 1120 && leftvalue > 6000 && leftvalue < 6150 && this.billpaid == false) {
+        if (topvalue < 1150 && leftvalue > 6600 && leftvalue < 6800 && this.billpaid == false) {
           this.startbilling();
           this.cityrail.nativeElement.play();
         }
       }
-      else if (topvalue > 1020 && topvalue < 1270 && leftvalue > 5700 && leftvalue < 6050 && this.billpaid == true) {
+      else if (topvalue > 1005 && topvalue < 1270 && leftvalue > 5600 && leftvalue < 6050 && this.billpaid == true) {
         this.thankyousuper.nativeElement.play();
-        this.cartlocmarket = "movingout";
+        $(".displaymoniter").html("Thank you! Visit Again!");
+        this.cartlocmarket = "cameout";
         $(".cartid_highlight").removeClass('highlight');
         $("#innerdoor2").animate({ 'height': '100px' }, 200);
       }
-      else if (topvalue > 1020 && topvalue < 1270 && leftvalue <= 5700) {
+      else if (topvalue > 1005 && topvalue < 1270 && leftvalue <= 5700) {
         this.cartlocmarket = "cameout";
         if (leftvalue < 5200) {
           $("#innerdoor2").animate({ 'height': '1030px' }, 200);
         }
-
+        if (leftvalue < 1000) {
+          this.closesupermarket()
+        }
       }
-
       else {
         this.markettop = false;
         this.marketleft = false;
         this.marketright = false;
         this.marketbottom = false;
-        console.log(this.cartlocmarket);
         if (this.cartlocmarket == 'maincorider') {
           if (topvalue < 3090) {
             this.marketbottom = true;
@@ -920,7 +930,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
           }
         }
         else if (this.cartlocmarket == 'turningcorider') {
-          if (topvalue < 1020) {
+          if (topvalue < 1005) {
             this.marketbottom = true;
             this.markettop = false;
             this.marketleft = true;
@@ -971,11 +981,30 @@ export class MaincityComponent implements AfterViewInit, OnInit {
             this.marketbottom = true;
           }
         }
+        else if (this.cartlocmarket == 'cameout') {
+          if (topvalue < 1020) {
+            this.marketbottom = true;
+            this.markettop = false;
+            this.marketleft = true;
+            this.marketright = true;
+          }
+          else if (topvalue > 1270) {
+            this.markettop = true;
+            this.marketbottom = false;
+            this.marketleft = true;
+            this.marketright = true;
+          }
+          else if (leftvalue < 5700) {
+            this.marketright = false;
+            this.markettop = true;
+            this.marketbottom = true;
+            this.marketleft = true;
+          }
+
+        }
       }
 
     }
-
-
   }
 
   switchrole() {
@@ -1097,7 +1126,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   municipalcashbox = 0;
   supermarketcashbox = 0;
   transactioncount = '00000';
-  billpaid = false;
+  billpaid = true;
   transactionsubcount = '00';
   updatebottleasset = {
     'currentitem': '',
@@ -1120,11 +1149,10 @@ export class MaincityComponent implements AfterViewInit, OnInit {
           data => {
             data = this.currentwallet;
             this.paymentreceived.nativeElement.play();
+            $(".displaymoniter").html("Payment Received");
             $(".tick").show();
             this.logser.gettransactions().subscribe(data => {
-              console.log(data.length);
               this.transactioncount = '0000' + (data.length + 1);
-              console.log(this.transactioncount)
             });
 
             this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citycurrentday + '_' + this.cityCurrentTime + '_' + this.transactioncount + '_01';
@@ -1149,7 +1177,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
                     for (let i = 0; i < this.bottletaken.length; i++) {
                       this.updatebottleasset['currentitem'] = this.bottletaken[i].split("@")[0];
                       this.logser.updatethisAssets(this.updatebottleasset).subscribe((data) => {
-                        console.log(data);
+
                         for (let y = 0; y < this.shinyvpn.length; y++) {
                           if (this.shinyvpn[y] == this.bottletaken[i]) {
                             this.shinyvpn.splice(y, 1);
@@ -1190,14 +1218,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
                             this.spikyrpn.splice(y, 1);
                           }
                         }
-                        console.log(this.shinyvpn);
-                        console.log(this.shinyuvpn);
-                        console.log(this.spikyrpn);
-                        console.log(this.spikyrpr);
-                        console.log(this.bouncyurpn);
-                        console.log(this.bouncyurpn);
-                        console.log(this.wavyurpn);
-                        console.log(this.wavyurpr);
+
                         $(".pay").hide();
                         $(".close").show();
                         this.transactioncomplete.nativeElement.play();
@@ -1243,6 +1264,19 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   startbilling() {
     this.doneshopping.nativeElement.play();
     $(".cartid_highlight").addClass('highlight');
+    $(".beam").show();
+    $(".displaymoniter").html("Scanning");
+    $(".scanneranimation").animate({ 'left': '6918px' }, 2000, () => {
+      $(".scanneranimation").animate({ 'left': '6656px' }, 2000, () => {
+        $(".beam").hide();
+        let that = this;
+        if (this.billpaid == false) {
+          setTimeout(function () { that.docalculation(); }, 500);
+        }
+        $(".displaymoniter").html("Click on the Cart Id");
+      });
+    });
+
   }
   updateTime(k: any) {
     if (k < 10) {
@@ -1299,12 +1333,15 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     this.instance.zoomTo(x, y, parseFloat(zoomlevel));
   }
 
-  clicked() {
-    alert("clicked");
+  checkrefillcondition(item: CdkDrag<string>) {
+    if (item.element.nativeElement.classList.contains('refilled')) { return false; }
+    else { return true; }
+
   }
-
-
-
+  checkrefilledbottle(item: CdkDrag<string>) {
+    if (item.element.nativeElement.classList.contains('refilldone')) { return false; }
+    else { return true; }
+  }
   checkcondition(item: CdkDrag<string>) {
     if (item.element.nativeElement.classList[2] == 'B1') { return true; }
     else { return false; }
@@ -1403,6 +1440,12 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   totalenv = 0;
   totalsupermarketbill = 0;
   opencart(cartcontent: any, event: any) {
+
+    this.modalService.open(cartcontent);
+    $("body").removeClass('frontpage').addClass('cartcontent');
+
+  }
+  docalculation() {
     this.boughtbottledata = [];
     this.netamount = 0;
     this.totalenv = 0;
@@ -1429,9 +1472,6 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     else {
       this.billpaid = true;
     }
-    this.modalService.open(cartcontent);
-    $("body").addClass('cartcontent');
-
   }
   objectKeys(obj: any) {
     return Object.keys(obj)[0];
@@ -1490,6 +1530,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
 
   openrefillingstation() {
     this.cityrail.nativeElement.play();
+    this.resetanimation = true;
     $("#refillcart").css({ 'left': '50px', 'top': '262px' });
     setTimeout(function () {
       that.welcome.nativeElement.play();
@@ -1501,10 +1542,11 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   }
 
   initiateanimation() {
-    if ($(".refilllist").children('div').length > 0) {
+    if ($(".refilllist").children('div').length > 0 && this.droppedbottle == true) {
       this.selectbrand.nativeElement.play();
+      this.refillbrandselected = '';
       $(".displaylight").removeClass('off').addClass('on');
-      let getbrand = $(".refilllist").children('div')[0].classList[1].split("_")[2];
+      let getbrand = $(".refilllist").children('div')[0].classList[1];
       if (getbrand == 'UB1' || getbrand == 'B1') {
         this.getcurrentplacedbrand = 'shiny';
       }
@@ -1528,34 +1570,46 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   }
 
   increament() {
-
-    if (this.selectquantity < 500) {
-      this.selectquantity += 100;
-    }
-    $(".displayboard").html("Selected Quantity :" + this.selectquantity);
-    let that = this;
-    clearTimeout(this.timeout);
-    this.timeout = setTimeout(function () { $(".displaylight").removeClass('off').addClass('on'); that.checkprice.nativeElement.play(); that.quantityselected = true; $(".displayboard").html("Brand =" + that.refillbrandselected + "<br/>Quantity = " + that.selectquantity + "ml<br/>Price/ml = ₹…..<br/>Discount = x%<br/>Net Amount = ₹…........<br/> Please confirm the order."); }, 6000);
-  }
-  decrement() {
-    if (this.selectquantity > 100) {
-      this.selectquantity -= 100;
-    }
-    $(".displayboard").html("Selected Quantity :" + this.selectquantity);
-    let that = this;
-    clearTimeout(this.timeout);
-    this.timeout = setTimeout(function () { $(".displaylight").removeClass('off').addClass('on'); that.checkprice.nativeElement.play(); that.quantityselected = true; $(".displayboard").html("Brand =" + that.refillbrandselected + "<br/>Quantity = " + that.selectquantity + "ml<br/>Price/ml = ₹…..<br/>Discount = x%<br/>Net Amount = ₹…........<br/> Please confirm the order."); }, 6000);
-  }
-  checkrefillselect() {
-    if (this.refillbrandselected == this.getcurrentplacedbrand) {
-      this.useplusminus.nativeElement.play();
-      $(".displaylight").removeClass('off').addClass('on');
-      $(".displayboard").html("Bottle's brand = " + this.getcurrentplacedbrand + " <br/> Shampoo brand = " + this.refillbrandselected + "<br/>Use +/- keys to specify quantity.")
+    if (this.refillbrandselected != '') {
+      if (this.selectquantity < 500) {
+        this.selectquantity += 100;
+      }
+      $(".displayboard").html("Selected Quantity :" + this.selectquantity);
+      let that = this;
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(function () { $(".displaylight").removeClass('off').addClass('on'); that.checkprice.nativeElement.play(); that.quantityselected = true; $(".displayboard").html("Brand =" + that.refillbrandselected + "<br/>Quantity = " + that.selectquantity + "ml<br/>Price/ml = ₹…..<br/>Discount = x%<br/>Net Amount = ₹…........<br/> Please confirm the order."); }, 6000);
     }
     else {
-      this.bottledifferent.nativeElement.play();
-      $(".displaylight").removeClass('off').addClass('on');
-      $(".displayboard").html("Bottle's brand = " + this.getcurrentplacedbrand + " <br/> Shampoo brand = " + this.refillbrandselected + "<br/> Bottle and shampoo are of different brands. If OK,  specify quantity using  +/- keys. Else,  re-select sampoo brand.")
+      alert("please select the brand")
+    }
+  }
+  decrement() {
+    if (this.refillbrandselected != '') {
+      if (this.selectquantity > 100) {
+        this.selectquantity -= 100;
+      }
+      $(".displayboard").html("Selected Quantity :" + this.selectquantity);
+      let that = this;
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(function () { $(".displaylight").removeClass('off').addClass('on'); that.checkprice.nativeElement.play(); that.quantityselected = true; $(".displayboard").html("Brand =" + that.refillbrandselected + "<br/>Quantity = " + that.selectquantity + "ml<br/>Price/ml = ₹…..<br/>Discount = x%<br/>Net Amount = ₹…........<br/> Please confirm the order."); }, 6000);
+    }
+    else {
+      alert("please select the brand")
+    }
+  }
+  checkrefillselect(currentbrand: any) {
+    if (this.droppedbottle == true && this.resetanimation == true) {
+      this.refillbrandselected = currentbrand;
+      if (this.refillbrandselected == this.getcurrentplacedbrand) {
+        this.useplusminus.nativeElement.play();
+        $(".displaylight").removeClass('off').addClass('on');
+        $(".displayboard").html("Bottle's brand = " + this.getcurrentplacedbrand + " <br/> Shampoo brand = " + this.refillbrandselected + "<br/>Use +/- keys to specify quantity.")
+      }
+      else {
+        this.bottledifferent.nativeElement.play();
+        $(".displaylight").removeClass('off').addClass('on');
+        $(".displayboard").html("Bottle's brand = " + this.getcurrentplacedbrand + " <br/> Shampoo brand = " + this.refillbrandselected + "<br/> Bottle and shampoo are of different brands. If OK,  specify quantity using  +/- keys. Else,  re-select sampoo brand.")
+      }
     }
   }
   startanimation() {
@@ -1627,16 +1681,19 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     })
   }
   resetrefilling() {
+    this.resetanimation = true;
     this.droppedbottle = false;
     this.brandselected = false;
     this.quantityselected = false;
     this.confirmpressed = false;
     this.selectquantity = 0;
-    $(".refilldropper").css({ 'left': '8px' });
+    this.refillbrandselected='';
     this.placebottle.nativeElement.play();
+    $(".refilldropper").css({ 'left': '8px' }).show();
     $(".displaylight").removeClass('off').addClass('on');
     $(".displayboard").html(' Please place your empty bottle on the conveyor.');
   }
+ 
   closecap() {
     let that = this;
     setTimeout(function () {
@@ -1647,8 +1704,9 @@ export class MaincityComponent implements AfterViewInit, OnInit {
             $(".displaylight").removeClass('off').addClass('on');
             $(".displayboard").html('Please collect your bottle.');
             that.collectbottle.nativeElement.play();
+         
           });
-
+          $(".refilldropper .refillbtl").addClass('refilled');
           let getbrand = $(".refilllist").children('div')[0].classList[1];
           $("." + getbrand).removeClass('removedcap');
 
@@ -1668,19 +1726,28 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         event.previousIndex,
         event.currentIndex);
       let that = this;
+      if (this.opensuperflag == 1) {
+        if (this.bottletaken.length !== 0) {
+          this.billpaid = false;
+        }
+      }
       if (this.opensuperflag == 2) {
         setTimeout(function () {
           if (($(".refilllist").children('div').length) > 0) {
             that.droppedbottle = true;
-            that.initiateanimation();
-            that.bottledroppeded.nativeElement.play();
+            if (that.resetanimation == true) {
+              that.initiateanimation();
+              that.bottledroppeded.nativeElement.play();
+            }
           }
         }, 100);
         setTimeout(function () {
           if (($(".refilllist").children('div').length) == 0) {
-            $(".displayboard").html('Thank you. Visit again.');
+            $(".displayboard").html('Thank you. Visit again. Please press Continue button to refill another bottle');
             that.thankyou.nativeElement.play();
-            that.resetanimation = true;
+            that.refillbrandselected = '';
+            $(".refilldropper").css({ 'left': '8px' }).hide();
+            that.resetanimation = false;
             $(".continue").show();
           }
         }, 150);
@@ -1712,11 +1779,13 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         return shouldIgnore;
       },
     });
-    setTimeout(function () { $(".supermarketcart").css({ 'left': '927px', 'top': '3209px' }); }, 300);
-    this.dopanzoomsupermarket(-317, -835, '0.4');
-    //this.dopanzoomsupermarket(-2349, -859, '0.4');
-    console.log("changing");
-    //$(".supermarketcart.cart").css({ 'left': '7052px', 'top': '3083px' });
+    let that = this;
+    setTimeout(function () {
+      $(".supermarketcart").css({ 'left': '927px', 'top': '3209px' });
+      that.dopanzoomsupermarket(-317, -835, '0.4');
+      that.setflag = 0;
+    }, 300);
+    $(".displaymoniter").html("");
 
 
   }
@@ -1724,9 +1793,52 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     this.opensuperflag = 0;
     let w = this;
     setTimeout(function () {
-      w.dopanzoom(-911.801, -2188.2, '1');
+      w.dopanzoom(-885, -2343, '1');
       $(".maincity .cart").css({ 'top': '2740px', 'left': '1600px' });
-    }, 100);
+    }, 1000);
+
+  }
+  currentusertransaction: any[] = [];
+  loadledgerdata() {
+
+    for (let i = 0; i < this.assetdataset.length; i++) {
+      if (this.assetdataset[i]['Bottle_loc'] == this.currentUserCartId) {
+        this.currentusertransaction.push(this.assetdataset[i]);
+      }
+
+    }
+  }
+  selectedbottle = '';
+  loadbottledata() {
+    for (let i = 0; i < this.currentusertransaction.length; i++) {
+      if (this.currentusertransaction[i]['Content_Code'] == "B1.Shiny" && this.currentusertransaction[i]['Bottle_Code'] == "UB.V" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
+        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + '@U' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+      }
+      else if (this.currentusertransaction[i]['Content_Code'] == "B1.Shiny" && this.currentusertransaction[i]['Bottle_Code'] == "B1.V" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
+        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + '@' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+      }
+      else if (this.currentusertransaction[i]['Content_Code'] == "B2.Spiky" && this.currentusertransaction[i]['Bottle_Code'] == "B2.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
+        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + '@' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+      }
+      else if (this.currentusertransaction[i]['Content_Code'] == "B2.Spiky" && this.currentusertransaction[i]['Bottle_Code'] == "B2.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
+        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + '@' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+      }
+      else if (this.currentusertransaction[i]['Content_Code'] == "B3.Bouncy" && this.currentusertransaction[i]['Bottle_Code'] == "B3.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
+        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + '@' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+      }
+      else if (this.currentusertransaction[i]['Content_Code'] == "B3.Bouncy" && this.currentusertransaction[i]['Bottle_Code'] == "UB.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
+        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + '@U' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+      }
+      else if (this.currentusertransaction[i]['Content_Code'] == "B4.Wavy" && this.currentusertransaction[i]['Bottle_Code'] == "UB.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
+        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + '@U' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+      }
+      else if (this.currentusertransaction[i]['Content_Code'] == "B4.Wavy" && this.currentusertransaction[i]['Bottle_Code'] == "UB.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
+        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + '@U' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+      }
+      else if (this.currentusertransaction[i]['Content_Code'] == "B5.Silky" && this.currentusertransaction[i]['Bottle_Code'] == "B5.V" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
+        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + '@' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+      }
+    }
 
   }
 }

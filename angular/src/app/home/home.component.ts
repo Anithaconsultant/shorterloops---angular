@@ -50,7 +50,7 @@ export class HomeComponent implements OnInit {
       this.user = data;
       
     })
-    $("body").addClass('frontpage');
+    $("body").addClass('frontpage').removeClass('cartcontent');
   }
   setList: any[] = [];
   selectedcityid = '';

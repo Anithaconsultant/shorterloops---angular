@@ -46,6 +46,7 @@ def getcityname(request, cityid):
 def addcity(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
+        print(data)
         serializer = citySerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -79,6 +80,7 @@ def updatecurrent(request, cityid):
 def createasset(request, cityid):
     if request.method == 'POST':
         data = JSONParser().parse(request)
+        #print(data)
         serializer = AssetSerializer(data=data)
         if serializer.is_valid():
             serializer.save()

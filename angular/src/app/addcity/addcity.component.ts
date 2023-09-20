@@ -174,25 +174,14 @@ export class AddcityComponent implements OnInit {
     if (this.logser.currentuser.Username == '') {
       this.router.navigate(["login"])
     }
+    $("body").addClass('frontpage').removeClass('cartcontent');
   }
   selectcity(ind: any) {
     $(".city").css('border', '4px solid transparent');
     $(".city_" + ind).css('border', '4px solid #333');
   }
   selectedavatar = 0;
-  opencityavatar(cityavatar: any) {
-    this.modalService.open(cityavatar, { ariaLabelledBy: 'modal-basic-title' });
 
-  }
-  savecityavatar(): void {
-    if (this.selectedavatar == 0) {
-      alert("kindly select your Avatar")
-    }
-    else {
-      this.city.cityavatar = String(this.selectedavatar);
-    }
-
-  }
   addcity() {
     this.submitted = true;
     if (this.addcityForm.invalid) {
@@ -200,89 +189,94 @@ export class AddcityComponent implements OnInit {
       return;
     }
     if (this.submitted) {
-      console.log(this.city)
-      this.logser.createcity(this.city).subscribe(
-        data => {
-          this.city = data;
-        },
-        error => {
-          console.log(error);
-        }
-      );
-      setTimeout(() => {
-        this.logser.getAllCities().subscribe((data) => {
-          this.allcity = data;
-          let length = this.allcity.length;
-          this.userobj['cityid'] = length.toString();
-          this.firstfacility['CityId'] = length.toString();
-          this.logser.currentuser.Role = 'Mayor';
-          this.logser.currentuser.CityId = length.toString();
-          this.Asset_CityId = length.toString();
-          this.logser.updateuser(this.userobj).subscribe(
-            data => {
-              this.userobj = data;
-
-            },
-            error => {
-              console.log(error);
-            }
-          );
-          let count = 0;
-          let numbers = Object.values(this.assetData);
-          numbers[0].forEach((number) => {
-            this.assettableobj['AssetId'] = this.Asset_CityId + "_" + number;
-            this.assettableobj['Asset_CityId'] = this.Asset_CityId;
-            this.assettableobj['CategoryCode'] = 'SB';
-            this.assettableobj['Bottle_Code'] = this.assetData['Bottle_Code'][count];
-            this.assettableobj['Content_Code'] = this.assetData['Content_Code'][count];
-            this.assettableobj['Quantity'] = '500';
-            this.assettableobj['Units'] = 'ml';
-            this.assettableobj['Bottle_loc'] = 'Supermarket shelf';
-            this.assettableobj['Bottle_Status'] = 'Full';
-            this.assettableobj['DOM'] = '1/1/2023';
-            this.assettableobj['Max_Refill_Count'] = 5;
-            this.assettableobj['Current_Refill_Count'] = this.assetData['Current_Refill_Count'][count];
-            this.assettableobj['Latest_Refill_Date'] = this.assetData['Latest_Refill_Date'][count];
-            this.assettableobj['Content_Price'] = this.assetData['Content_Price'][count];
-            this.assettableobj['Bottle_Price'] = this.assetData['Bottle_Price'][count];
-            this.assettableobj['Redeem_Good'] = this.assetData['Redeem_Good'][count];
-            this.assettableobj['Redeem_Damaged'] = this.assetData['Redeem_Damaged'][count];
-            this.assettableobj['Discount_RefillB'] = this.assetData['Discount_RefillB'][count];
-            this.assettableobj['Env_Tax'] = this.assetData['Env_Tax'][count];
-            this.assettableobj['Discard_fine'] = this.assetData['Discard_fine'][count];
-            count++;
-            this.logser.createAsset(this.assettableobj).subscribe(
+      if (this.selectedavatar == 0) {
+        alert("kindly select your Avatar")
+      }
+      else {
+        this.city.cityavatar = String(this.selectedavatar);
+        console.log(this.city)
+        this.logser.createcity(this.city).subscribe(
+          data => {
+            this.city = data;
+          },
+          error => {
+            console.log(error);
+          }
+        );
+        setTimeout(() => {
+          this.logser.getAllCities().subscribe((data) => {
+            this.allcity = data;
+            let length = this.allcity.length;
+            this.userobj['cityid'] = length.toString();
+            this.firstfacility['CityId'] = length.toString();
+            this.logser.currentuser.Role = 'Mayor';
+            this.logser.currentuser.CityId = length.toString();
+            this.Asset_CityId = length.toString();
+            this.logser.updateuser(this.userobj).subscribe(
               data => {
-                this.assettableobj = data;
+                this.userobj = data;
+
               },
               error => {
                 console.log(error);
               }
             );
+            let count = 0;
+            let numbers = Object.values(this.assetData);
+            numbers[0].forEach((number) => {
+              this.assettableobj['AssetId'] = this.Asset_CityId + "_" + number;
+              this.assettableobj['Asset_CityId'] = this.Asset_CityId;
+              this.assettableobj['CategoryCode'] = 'SB';
+              this.assettableobj['Bottle_Code'] = this.assetData['Bottle_Code'][count];
+              this.assettableobj['Content_Code'] = this.assetData['Content_Code'][count];
+              this.assettableobj['Quantity'] = '500';
+              this.assettableobj['Units'] = 'ml';
+              this.assettableobj['Bottle_loc'] = 'Supermarket shelf';
+              this.assettableobj['Bottle_Status'] = 'Full';
+              this.assettableobj['DOM'] = '1/1/2023';
+              this.assettableobj['Max_Refill_Count'] = 5;
+              this.assettableobj['Current_Refill_Count'] = this.assetData['Current_Refill_Count'][count];
+              this.assettableobj['Latest_Refill_Date'] = this.assetData['Latest_Refill_Date'][count];
+              this.assettableobj['Content_Price'] = this.assetData['Content_Price'][count];
+              this.assettableobj['Bottle_Price'] = this.assetData['Bottle_Price'][count];
+              this.assettableobj['Redeem_Good'] = this.assetData['Redeem_Good'][count];
+              this.assettableobj['Redeem_Damaged'] = this.assetData['Redeem_Damaged'][count];
+              this.assettableobj['Discount_RefillB'] = this.assetData['Discount_RefillB'][count];
+              this.assettableobj['Env_Tax'] = this.assetData['Env_Tax'][count];
+              this.assettableobj['Discard_fine'] = this.assetData['Discard_fine'][count];
+              count++;
+              this.logser.createAsset(this.assettableobj).subscribe(
+                data => {
+                  this.assettableobj = data;
+                },
+                error => {
+                  console.log(error);
+                }
+              );
 
-          });
+            });
 
-          this.logser.createfacility(this.firstfacility).subscribe(
-            data => {
-              this.firstfacility = data;
-              this.router.navigate(["maincity"])
-            },
-            error => {
-              console.log(error);
-            }
-          );
-        })
-      }, 200)
-
+            this.logser.createfacility(this.firstfacility).subscribe(
+              data => {
+                this.firstfacility = data;
+                this.router.navigate(["maincity"])
+              },
+              error => {
+                console.log(error);
+              }
+            );
+          })
+        }, 200)
+      }
 
     }
   }
-  openwhyshorter(whyshorter:any){
-  
+  openwhyshorter(whyshorter: any) {
+
     this.modalService.open(whyshorter);
   }
-  openaboutshorter(aboutshorter:any){
-  
+  openaboutshorter(aboutshorter: any) {
+
     this.modalService.open(aboutshorter);
   }
 }
