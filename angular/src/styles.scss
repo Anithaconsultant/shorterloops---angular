@@ -333,12 +333,21 @@ app-signup {
             @extend .commmoncenter;
         }
 
-        .logo {
+        .iihslogo {
+            width: 45px !important;
+            height: 40px !important;
+            top: unset !important;
+        }
+
+        .shorterloopslogo {
             position: absolute;
             left: 0px;
-            width: 250px;
-            height: 49px;
-            background-image: url('./assets/img/logo.png');
+            right: 0;
+            top: unset !important;
+            margin: auto;
+            width: 104px !important;
+            height: 33px !important;
+            background-image: url('./assets/img/shorteloopslogo.png') !important;
             background-size: cover;
 
         }
@@ -473,6 +482,38 @@ app-signup {
         .Mayor {
             top: 3428px;
             left: 5938px;
+        }
+
+        .bottombasketholder {
+            width: 53px;
+            position: absolute;
+            left: 13px;
+            top: 49px;
+            height: 25px;
+            display: flex;
+            overflow: hidden;
+
+            .bottle {
+                width: 9px !important;
+                height: 23px !important;
+            }
+        }
+
+        .topbasketholder {
+            width: 41px;
+            position: absolute;
+            left: 10px;
+            top: 12px;
+            height: 25px;
+            display: flex;
+            overflow: hidden;
+
+            .newbottle_list {
+                div {
+                    width: 9px !important;
+                    height: 23px !important;
+                }
+            }
         }
     }
 
@@ -617,10 +658,16 @@ app-signup {
             .cartid {
                 position: absolute;
                 color: #000;
-                left: 43px;
+                left: 34px;
                 font-size: 30px;
-                top: 12px;
+                top: 1px;
                 cursor: pointer;
+                border: 6px solid transparent;
+                width: 106px;
+                height: 49px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }
 
         }
@@ -667,6 +714,18 @@ app-signup {
             height: 136px;
             left: 6295px;
             top: 432px;
+            line-height: 28px;
+        }
+
+        .displaycallout {
+            position: absolute;
+            width: 218px;
+            height: 135px;
+            left: -135px;
+            top: -134px;
+            background-size: cover;
+            display: none;
+            background-image: url('./assets/img/callout.png');
         }
 
         .commonds {
@@ -677,39 +736,41 @@ app-signup {
             font-size: 22px;
             position: absolute;
             text-align: center;
+
         }
     }
 
 
-
-    .newbottleholder {
-        width: 165px;
-        position: absolute;
-        left: 48px;
-        top: 51px;
-        height: 93px;
-        display: flex;
-        overflow: hidden;
-    }
-
-    .bottleholder {
-        width: 144px;
-        position: absolute;
-        left: 90px;
-        top: 200px;
-        height: 93px;
-        display: flex;
-        overflow: hidden;
-
-        .bottle {
-            position: relative;
-            background-size: cover;
+    .supermarketcart {
+        .newbottleholder {
+            width: 165px;
+            position: absolute;
+            left: 48px;
+            top: 51px;
+            height: 93px;
             display: flex;
-            cursor: move;
-            z-index: 1;
-            transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
+            overflow: hidden;
         }
 
+        .bottleholder {
+            width: 144px;
+            position: absolute;
+            left: 90px;
+            top: 200px;
+            height: 93px;
+            display: flex;
+            overflow: hidden;
+
+            .bottle {
+                position: relative;
+                background-size: cover;
+                display: flex;
+                cursor: move;
+                z-index: 1;
+                transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
+            }
+
+        }
     }
 
     .bottle {
@@ -722,13 +783,28 @@ app-signup {
     }
 
     .conveyorbottledropper {
-        width: 51px;
+        width: 171px;
         position: absolute;
-        left: 1692px;
+        left: 1694px;
         top: 2579px;
         border: 4px dashed #2eddb8;
         height: 93px;
         display: flex;
+    }
+
+    .displayconveyor {
+        width: 258px;
+        position: absolute;
+        left: 1515px;
+        top: 2476px;
+        height: 102px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #ff0;
+        font-size: 24px;
+        line-height: 28px;
+        text-align: center;
     }
 
     .loadimgrefill {
@@ -833,10 +909,10 @@ app-signup {
 
             .cartid {
                 position: absolute;
-                color: #000;
-                left: 8px;
-                font-size: 5px;
-                top: -6px;
+                color: #00f;
+                left: 12px;
+                font-size: 7px;
+                top: -4px;
             }
 
             .refillbottleholder {
@@ -1117,7 +1193,7 @@ app-signup {
 .spikyrpr,
 .B2 {
     background-image: url('./assets/img/spiky.png');
-    width: 34px;
+    width: 42px;
     height: 90px;
     background-size: cover;
     background-repeat: no-repeat;
@@ -1583,9 +1659,9 @@ body {
     .bouncyfiller {
         position: absolute;
         width: 2px;
-        height:24px;
+        height: 24px;
         display: none;
-        top:52px;
+        top: 52px;
     }
 
     .shinyfiller {
@@ -1638,6 +1714,24 @@ body {
         top: 930px;
         left: 5415px;
         background: #99d8cf;
+    }
+
+    #innerdoor3 {
+        position: absolute;
+        width: 29px;
+        height: 1030px;
+        top: 930px;
+        left: 715px;
+        background: #99d8cf;
+    }
+
+    #exit {
+        position: absolute;
+        width: 329px;
+        height: 165px;
+        top: 499px;
+        left: 980px;
+        cursor: pointer;
     }
 
     .loadimg {
@@ -1770,12 +1864,20 @@ body {
 
     }
 
+    .loadcontent2 {
+        background-image: url('./assets/img/Navigationpage.png');
+        background-size: cover;
+        width: 1281px;
+        height: 1662px;
+
+    }
+
 }
 
 .topright {
     position: absolute;
-    width: 100px;
-    right: 10px;
+    width: 75px;
+    left: 72px;
     top: 10px;
     height: 30px;
     display: flex;
@@ -1786,6 +1888,7 @@ body {
         width: 30px;
         height: 30px;
         background-size: cover;
+        cursor: pointer;
     }
 
     .information {

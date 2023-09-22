@@ -21,16 +21,7 @@ export class AddcityComponent implements OnInit {
     this.currentTime = this.datepipe.transform((new Date), 'hh:mm:ss')
 
   }
-  // shinyvpn = ['SB_B1.V_00001', 'SB_B1.V_00002', 'SB_B1.V_00003', 'SB_B1.V_00004', 'SB_B1.V_00005'];
-  // shinyuvpn = ['SB_UB.V_00001', 'SB_UB.V_00002', 'SB_UB.V_00003', 'SB_UB.V_00004', 'SB_UB.V_00005'];
-  // spikyrpn = ['SB_B2.R_00001', 'SB_B2.R_00002', 'SB_B2.R_00003', 'SB_B2.R_00004', 'SB_B2.R_00005'];
-  // spikyrpr = ['SB_B2.R_00006', 'SB_B2.R_00007', 'SB_B2.R_00008', 'SB_B2.R_00009', 'SB_B2.R_00010'];
-  // bouncyrpn = ['SB_B3.R_00001', 'SB_B3.R_00002', 'SB_B3.R_00003', 'SB_B3.R_00004', 'SB_B3.R_00005'];
-  // bouncyurpn = ['SB_UB.R_00001', 'SB_UB.R_00002', 'SB_UB.R_00003', 'SB_UB.R_00004', 'SB_UB.R_00005'];
-  // wavyurpn = ['SB_UB.R_00006', 'SB_UB.R_00007', 'SB_UB.R_00008', 'SB_UB.R_00009', 'SB_UB.R_00010'];
-  // wavyurpr = ['SB_UB.R_00011', 'SB_UB.R_00012', 'SB_UB.R_00013', 'SB_UB.R_00014', 'SB_UB.R_00015'];
-  // silkyvpn = ['SB_B5.V_00001', 'SB_B5.V_00002', 'SB_B5.V_00003', 'SB_B5.V_00004', 'SB_B5.V_00005']
-  // refillbottles = ['_SB_UB1.V_00007', '_SB_B2.R_00001', '_SB_UB3.R_00001', '_SB_UB4.R_00001']
+
   assetData = {
     'AssetId': [
       'SB_B1.V_00001', 'SB_B1.V_00002', 'SB_B1.V_00003', 'SB_B1.V_00004', 'SB_B1.V_00005',
@@ -272,11 +263,12 @@ export class AddcityComponent implements OnInit {
     }
   }
   openwhyshorter(whyshorter: any) {
-
     this.modalService.open(whyshorter);
   }
   openaboutshorter(aboutshorter: any) {
-
     this.modalService.open(aboutshorter);
+  }
+  opennavshorter(navigation: any) {
+    this.modalService.open(navigation);
   }
 }

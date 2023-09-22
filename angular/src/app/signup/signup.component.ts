@@ -56,6 +56,10 @@ export class SignupComponent implements OnInit {
 
     this.modalService.open(aboutshorter);
   }
+  opennavshorter(navigation: any) {
+
+    this.modalService.open(navigation);
+  }
   signup() {
     this.submitted = true;
     if (this.signupForm.invalid) {

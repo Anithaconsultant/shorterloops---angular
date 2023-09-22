@@ -40,6 +40,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   @ViewChild('bottlesticker', { static: false }) private bottlesticker!: ElementRef;
   @ViewChild('cartcontent', { static: false }) private cartcontent!: ElementRef;
   @ViewChild('supermarket', { static: false }) private supermarket!: ElementRef;
+  @ViewChild('cartdisplay', { static: false }) private cartdisplay!: ElementRef;
   netamount = 0;
   boughtbottledata: any[] = [];
   getcurrentplacedbrand = '';
@@ -48,7 +49,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   timeout: any;
   resetanimation = false;
   opensuperflag = 0;
-  bottles = ['silkyvpn', 'spikyrpn', 'shiny_vpn', 'bouncyrpn']
+
   //bottles: string[] = [];
   bottledropped: string[] = [];
   bottletaken: string[] = [];
@@ -61,6 +62,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   wavyurpn: string[] = [];
   wavyurpr: string[] = [];
   silkyvpn: string[] = [];
+  bottles = ['silkyvpn', 'spikyrpn', 'shiny_vpn', 'bouncyrpn']
   refillbottles = ['_SB_UB1.V_00007', '_SB_B2.R_00001', '_SB_UB3.R_00001', '_SB_UB4.R_00001']
   refilledbottles: string[] = [];
   shinyrefilling: string[] = [];
@@ -294,13 +296,14 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     else if (topvalue > 2640 && topvalue < 3000 && leftvalue > 1500 && leftvalue < 1700) {
       if (topvalue < 2720) {
         this.opensuperflag = 1;
+        console.log("opening");
         this.opensupermarket();
       }
       this.whichroad = "Supermarketroad";
       this.settrue();;
 
     }
-    else if (topvalue > 4010 && topvalue < 4065 && leftvalue > 5300 && leftvalue < 7390) {
+    else if (topvalue > 4000 && topvalue < 4065 && leftvalue > 5300 && leftvalue < 7390) {
       this.whichroad = "lowercolonyrightroad";
       this.settrue();
 
@@ -571,7 +574,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         }
       }
     }
-
+console.log(this.whichroad)
   }
 
   @HostListener('document:keydown.arrowdown', ['$event'])
@@ -580,7 +583,6 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     if (this.opensuperflag == 0) {
       this.checkcartposition();
       if (this.canmovebottom) {
-
         let leftval = $(".cart").css('top');
         leftval = parseInt(leftval) + 10 + "px";
         $(".cart").css({ 'top': leftval })
@@ -590,7 +592,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       this.supercartposition();
       if (this.marketbottom == true) {
         let leftval = $(".supermarketcart").css('top');
-        leftval = parseInt(leftval) + 100 + "px";
+        leftval = parseInt(leftval) + 50 + "px";
         $(".supermarketcart").css({ 'top': leftval })
       }
     }
@@ -618,7 +620,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       this.supercartposition();
       if (this.markettop == true) {
         let leftval = $(".supermarketcart").css('top');
-        leftval = parseInt(leftval) - 100 + "px";
+        leftval = parseInt(leftval) - 50 + "px";
         $(".supermarketcart").css({ 'top': leftval })
       }
     }
@@ -646,7 +648,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       this.supercartposition();
       if (this.marketleft == true) {
         let leftval = $(".supermarketcart").css('left');
-        leftval = parseInt(leftval) - 100 + "px";
+        leftval = parseInt(leftval) - 50 + "px";
         $(".supermarketcart").css({ 'left': leftval })
       }
     }
@@ -676,7 +678,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       this.supercartposition();
       if (this.marketright == true) {
         let leftval = $(".supermarketcart").css('left');
-        leftval = parseInt(leftval) + 100 + "px";
+        leftval = parseInt(leftval) + 50 + "px";
         $(".supermarketcart").css({ 'left': leftval })
       }
     }
@@ -827,7 +829,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       if (topvalue < 3533 && topvalue > 3090 && leftvalue > 4900 && leftvalue < 5000) {
         this.cartlocmarket = "nearconveyor";
         this.setmarkettrue();
-        alert($(".newbottle_list").children('div').length);
+
         if ($(".cart_bottle_list").children('div').length > 0 || $(".newbottle_list").children('div').length > 0) {
           this.marketright = false;
           $("#checklight2").removeClass('green')
@@ -876,7 +878,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       else if (topvalue > 1005 && topvalue < 1270 && leftvalue > 6050 && leftvalue < 11450) {
         this.cartlocmarket = "othercorider";
         this.setmarkettrue();
-        if (topvalue < 1150 && leftvalue > 6600 && leftvalue < 6800 && this.billpaid == false) {
+        if (topvalue < 1150 && leftvalue > 6600 && leftvalue < 6800 && this.billpaid == false && this.bottletaken.length !== 0) {
           this.startbilling();
           this.cityrail.nativeElement.play();
         }
@@ -888,15 +890,21 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         $(".cartid_highlight").removeClass('highlight');
         $("#innerdoor2").animate({ 'height': '100px' }, 200);
       }
-      else if (topvalue > 1005 && topvalue < 1270 && leftvalue <= 5700) {
+      else if (topvalue > 1005 && topvalue < 1270 && leftvalue <= 5700 && leftvalue > 1000) {
         this.cartlocmarket = "cameout";
         if (leftvalue < 5200) {
           $("#innerdoor2").animate({ 'height': '1030px' }, 200);
         }
-        if (leftvalue < 1000) {
-          this.closesupermarket()
-        }
       }
+
+      else if (topvalue > 1005 && topvalue < 1270 && leftvalue < 1000) {
+        this.cartlocmarket = "stopped";
+        this.markettop = false;
+        this.marketleft = false;
+        this.marketright = false;
+        this.marketbottom = false;
+      }
+
       else {
         this.markettop = false;
         this.marketleft = false;
@@ -994,16 +1002,22 @@ export class MaincityComponent implements AfterViewInit, OnInit {
             this.marketleft = true;
             this.marketright = true;
           }
-          else if (leftvalue < 5700) {
+          else if (leftvalue < 5700 && leftvalue > 1000) {
             this.marketright = false;
             this.markettop = true;
             this.marketbottom = true;
             this.marketleft = true;
           }
+          else if (leftvalue < 900) {
+            this.marketright = false;
+            this.markettop = false;
+            this.marketbottom = false;
+            this.marketleft = false;
+          }
 
         }
       }
-
+      console.log(this.cartlocmarket);
     }
   }
 
@@ -1256,7 +1270,10 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         );
       }
       else {
-        alert("You have insufficient balance");
+        this.billpaid = true;
+        alert("You have insufficient balance.Your cart is going to be empty");
+        this.bottletaken.length = 0;
+
       }
     }
 
@@ -1270,13 +1287,15 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       $(".scanneranimation").animate({ 'left': '6656px' }, 2000, () => {
         $(".beam").hide();
         let that = this;
+
         if (this.billpaid == false) {
           setTimeout(function () { that.docalculation(); }, 500);
         }
-        $(".displaymoniter").html("Click on the Cart Id");
+        this.cartdisplay.nativeElement.play();
+        $(".displaymoniter").html("Check and pay by clicking the cart display panel");
+        $(".displaycallout").show();
       });
     });
-
   }
   updateTime(k: any) {
     if (k < 10) {
@@ -1440,9 +1459,12 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   totalenv = 0;
   totalsupermarketbill = 0;
   opencart(cartcontent: any, event: any) {
-
-    this.modalService.open(cartcontent);
+    $(".displaycallout").hide();
     $("body").removeClass('frontpage').addClass('cartcontent');
+    if (this.opensuperflag == 1) {
+      this.altertab = 1;
+    }
+    this.modalService.open(cartcontent);
 
   }
   docalculation() {
@@ -1453,7 +1475,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     console.log(this.bottletaken);
     if (this.bottletaken.length > 0) {
       this.billpaid = false;
-      this.pleasecheck.nativeElement.play();
+      //this.pleasecheck.nativeElement.play();
       for (let i = 0; i < this.bottletaken.length; i++) {
         this.logser.getthisAssets(this.bottletaken[i].split("@")[0]).subscribe((data) => {
           let calc = parseInt(data[0]['Content_Price']) + parseInt(data[0]['Bottle_Price']);
@@ -1687,13 +1709,13 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     this.quantityselected = false;
     this.confirmpressed = false;
     this.selectquantity = 0;
-    this.refillbrandselected='';
+    this.refillbrandselected = '';
     this.placebottle.nativeElement.play();
     $(".refilldropper").css({ 'left': '8px' }).show();
     $(".displaylight").removeClass('off').addClass('on');
     $(".displayboard").html(' Please place your empty bottle on the conveyor.');
   }
- 
+
   closecap() {
     let that = this;
     setTimeout(function () {
@@ -1704,7 +1726,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
             $(".displaylight").removeClass('off').addClass('on');
             $(".displayboard").html('Please collect your bottle.');
             that.collectbottle.nativeElement.play();
-         
+
           });
           $(".refilldropper .refillbtl").addClass('refilled');
           let getbrand = $(".refilllist").children('div')[0].classList[1];
@@ -1790,17 +1812,26 @@ export class MaincityComponent implements AfterViewInit, OnInit {
 
   }
   closesupermarket() {
-    this.opensuperflag = 0;
-    let w = this;
+    $('#innerdoor3').animate({ 'height': '100px' }, 300);
+    let that = this;
     setTimeout(function () {
-      w.dopanzoom(-885, -2343, '1');
-      $(".maincity .cart").css({ 'top': '2740px', 'left': '1600px' });
-    }, 1000);
+      $(".supermarketcart").animate({ 'left': '400px' }, 1000, () => {
+        that.opensuperflag = 0;
+        let w = that;
+        setTimeout(function () {
+          w.dopanzoom(-885, -2343, '1');
+          $(".maincity .cart").css({ 'top': '2900px', 'left': '1499px' });
+        }, 1000);
+
+      });
+
+    }, 300);
+
 
   }
   currentusertransaction: any[] = [];
   loadledgerdata() {
-
+    this.currentusertransaction = [];
     for (let i = 0; i < this.assetdataset.length; i++) {
       if (this.assetdataset[i]['Bottle_loc'] == this.currentUserCartId) {
         this.currentusertransaction.push(this.assetdataset[i]);
@@ -1808,8 +1839,10 @@ export class MaincityComponent implements AfterViewInit, OnInit {
 
     }
   }
+  showbutton = false;
   selectedbottle = '';
   loadbottledata() {
+    this.loadledgerdata();
     for (let i = 0; i < this.currentusertransaction.length; i++) {
       if (this.currentusertransaction[i]['Content_Code'] == "B1.Shiny" && this.currentusertransaction[i]['Bottle_Code'] == "UB.V" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
         this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + '@U' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
@@ -1841,6 +1874,19 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     }
 
   }
+  openwhyshorter(whyshorter: any) {
+    $("body").removeClass('cartcontent').addClass('frontpage');
+    this.modalService.open(whyshorter);
+  }
+  openaboutshorter(aboutshorter: any) {
+    $("body").removeClass('cartcontent').addClass('frontpage');
+    this.modalService.open(aboutshorter);
+  }
+  opennavshorter(navigation: any) {
+    $("body").removeClass('cartcontent').addClass('frontpage');
+    this.modalService.open(navigation);
+  }
 }
+
 
 

@@ -119,7 +119,7 @@
 
 
 .openlight {
-    background: url('./../../assets/img/openlight.png');
+    background-image: url('./../../assets/img/openlight.png') !important;
     height: 48px !important;
 }
 
@@ -368,6 +368,8 @@
 
     .holder {
         display: flex;
+        width:100%;
+        overflow-x: auto;
     }
 
     .imgclass {
@@ -379,21 +381,36 @@
             width: 127px !important;
         }
 
-        &.B3 {
+        &.B3,&.B2 {
             width: 122px !important;
         }
+        
 
     }
 
     .btncont {
+        position: absolute;
+        bottom: 0px;
+        display: flex;
+        width: 279px;
+        justify-content: space-around;
+        align-items: end;
+        left: 0;
+        right: 0;
+        margin: auto;
+
+    }
+
+    .whole {
+        padding: 5px;
         display: flex;
         justify-content: center;
-        flex-direction: column;
     }
 
     .use,
     .dent,
-    .empty {
+    .empty,
+    .throw {
         background: #76aa60;
         border: 1px solid #76aa60;
         color: #fff;
@@ -480,6 +497,10 @@
         background: #76aa60;
         border: 1px solid #76aa60;
         @extend .btngeneral;
+    }
+
+    .paydummy {
+        cursor: default;
     }
 
     .cancel {

@@ -131,6 +131,10 @@ export class HomeComponent implements OnInit {
   
     this.modalService.open(aboutshorter);
   }
+  opennavshorter(navigation: any) {
+
+    this.modalService.open(navigation);
+  }
 
   dochanges() {
     if (this.canUpdate == false && this.selectrole) {
