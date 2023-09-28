@@ -1,6 +1,6 @@
 .cityavatars {
     width: 411px;
-    height: 266px;
+    height: 240px;
     margin: 12px;
     padding: 20px;
     display: inline-block;
@@ -10,24 +10,24 @@
 
 
     &:hover {
-        border: 4px solid gainsboro;
+        border: 2px solid gainsboro;
         cursor: pointer;
     }
 
     &:user-select {
-        border: 4px solid gray;
+        border: 2px solid gray;
     }
 }
 
 .landingpage {
 
     width: 100%;
-    height: 100vw;
+    height: 100%;
     background-image: url('./../../assets/img/register.png');
     background-size: cover;
 
     .topalign {
-        margin-top: 2%;
+        margin-top: -8%;
     }
 
     h3 {

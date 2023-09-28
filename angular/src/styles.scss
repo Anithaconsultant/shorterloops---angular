@@ -1821,14 +1821,18 @@ body {
 
 .frontpage {
     .modal.show {
-        overflow: hidden !important;
 
         .modal-dialog {
-            width: 98% !important;
-            max-width: 98% !important;
+            width: 60% !important;
+            max-width: 60% !important;
 
             .modal-header {
                 border: 0px !important;
+            }
+
+            .modal-body {
+                display: flex;
+                justify-content: center;
             }
 
             .modal-content {
@@ -1843,32 +1847,30 @@ body {
 }
 
 .innderdiv {
-    height: 530px !important;
-    width: 100%;
-    overflow-y: auto;
+    width: 90%;
 
 
     .loadcontent {
         background-image: url('./assets/img/whyshorterloop.png');
-        background-size: cover;
+        background-size: contain;
         width: 100%;
-        height: 3000px;
+        height: 1732px;
 
     }
 
     .loadcontent1 {
         background-image: url('./assets/img/aboutshorterloop.png');
-        background-size: cover;
+        background-size: contain;
         width: 100%;
-        height: 4600px;
+        height: 2493px;
 
     }
 
     .loadcontent2 {
         background-image: url('./assets/img/Navigationpage.png');
-        background-size: cover;
-        width: 1281px;
-        height: 1662px;
+        background-size: contain;
+        width: 100%;
+        height: 865px;
 
     }
 
@@ -1877,7 +1879,7 @@ body {
 .topright {
     position: absolute;
     width: 75px;
-    left: 72px;
+    left: 77px;
     top: 10px;
     height: 30px;
     display: flex;
@@ -1900,24 +1902,29 @@ body {
     }
 }
 
-.iihslogo {
-    background-image: url('./assets/img/iihs.png');
-    width: 64px;
-    height: 50px;
-    position: absolute;
-    left: 10px;
-    top: 10px;
-    background-size: cover;
-}
+.logocontainer {
+    width: 41%;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-.shorterloopslogo {
-    background-image: url('./assets/img/shorteloopslogo.png');
-    width: 171px;
-    height: 55px;
-    position: absolute;
-    left: 100px;
-    top: 100px;
-    background-size: cover;
-    cursor: pointer;
+    .iihslogo {
+        background-image: url('./assets/img/iihs.png');
+        width: 64px;
+        height: 50px;
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        background-size: cover;
+    }
 
+    .shorterloopslogo {
+        background-image: url('./assets/img/shorteloopslogo.png');
+        width: 171px;
+        height: 55px;
+        background-size: cover;
+        cursor: pointer;
+
+    }
 }

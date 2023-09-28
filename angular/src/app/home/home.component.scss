@@ -11,6 +11,7 @@
     }
 }
 
+
 .landingpage {
 
     width: 100%;
@@ -19,7 +20,7 @@
     background-size: cover;
 
     .topalign {
-        margin-top: 17% !important;
+        margin-top: 1% !important;
     }
 
     .selectrolecontent {
@@ -63,10 +64,18 @@
     }
 
     label {
-        font-size: 20px;
+        font-size:18px;
         font-weight: 300;
         color: #fff;
         font-family: 'poppin' !important;
     }
 
+
+
+}
+
+.alingbtnscenter {
+    display: flex;
+    justify-content: space-around;
+    margin-top:10px;
 }

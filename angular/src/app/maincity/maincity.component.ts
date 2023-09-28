@@ -1487,7 +1487,7 @@ console.log(this.whichroad)
           this.totalsupermarketbill += totalvalue - env;
           this.netamount += totalvalue;
           this.boughtbottledata.push(data[0]);
-          console.log(this.totalsupermarketbill, this.totalenv);
+          console.log(this.boughtbottledata);
         })
       }
     }
@@ -1831,6 +1831,7 @@ console.log(this.whichroad)
   }
   currentusertransaction: any[] = [];
   loadledgerdata() {
+    console.log(this.boughtbottledata);
     this.currentusertransaction = [];
     for (let i = 0; i < this.assetdataset.length; i++) {
       if (this.assetdataset[i]['Bottle_loc'] == this.currentUserCartId) {

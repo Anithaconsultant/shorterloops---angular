@@ -168,8 +168,8 @@ export class AddcityComponent implements OnInit {
     $("body").addClass('frontpage').removeClass('cartcontent');
   }
   selectcity(ind: any) {
-    $(".city").css('border', '4px solid transparent');
-    $(".city_" + ind).css('border', '4px solid #333');
+    $(".city").css('border', '2px solid transparent');
+    $(".city_" + ind).css('border', '2px solid #333');
   }
   selectedavatar = 0;
 
