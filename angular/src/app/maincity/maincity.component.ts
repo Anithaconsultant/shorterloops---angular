@@ -179,39 +179,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       $(".maincity").addClass("city_" + this.cityavatar)
 
     }
-    this.logser.getAllAssets().subscribe((data) => {
-      for (let y = 0; y < data.length; y++) {
-        this.assetdataset.push(data[y]);
-        if (data[y]['Content_Code'] == "B1.Shiny" && data[y]['Bottle_Code'] == "UB.V" && data[y]['Bottle_loc'] == 'Supermarket shelf') {
-          this.shinyuvpn.push(data[y]['AssetId'] + '@U' + data[y]['Content_Code'].split('.')[0])
-        }
-        else if (data[y]['Content_Code'] == "B1.Shiny" && data[y]['Bottle_Code'] == "B1.V" && data[y]['Bottle_loc'] == 'Supermarket shelf') {
-          this.shinyvpn.push(data[y]['AssetId'] + '@' + data[y]['Content_Code'].split('.')[0])
-        }
-        else if (data[y]['Content_Code'] == "B2.Spiky" && data[y]['Bottle_Code'] == "B2.R" && data[y]['Current_Refill_Count'] == 1 && data[y]['Bottle_loc'] == 'Supermarket shelf') {
-          this.spikyrpr.push(data[y]['AssetId'] + '@' + data[y]['Content_Code'].split('.')[0])
-        }
-        else if (data[y]['Content_Code'] == "B2.Spiky" && data[y]['Bottle_Code'] == "B2.R" && data[y]['Current_Refill_Count'] == 0 && data[y]['Bottle_loc'] == 'Supermarket shelf') {
-          this.spikyrpn.push(data[y]['AssetId'] + '@' + data[y]['Content_Code'].split('.')[0])
-        }
-        else if (data[y]['Content_Code'] == "B3.Bouncy" && data[y]['Bottle_Code'] == "B3.R" && data[y]['Bottle_loc'] == 'Supermarket shelf') {
-          this.bouncyrpn.push(data[y]['AssetId'] + '@' + data[y]['Content_Code'].split('.')[0])
-        }
-        else if (data[y]['Content_Code'] == "B3.Bouncy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Bottle_loc'] == 'Supermarket shelf') {
-          this.bouncyurpn.push(data[y]['AssetId'] + '@U' + data[y]['Content_Code'].split('.')[0])
-        }
-        else if (data[y]['Content_Code'] == "B4.Wavy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Current_Refill_Count'] == 1 && data[y]['Bottle_loc'] == 'Supermarket shelf') {
-          this.wavyurpr.push(data[y]['AssetId'] + '@U' + data[y]['Content_Code'].split('.')[0])
-        }
-        else if (data[y]['Content_Code'] == "B4.Wavy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Current_Refill_Count'] == 0 && data[y]['Bottle_loc'] == 'Supermarket shelf') {
-          this.wavyurpn.push(data[y]['AssetId'] + '@U' + data[y]['Content_Code'].split('.')[0])
-        }
-        else if (data[y]['Content_Code'] == "B5.Silky" && data[y]['Bottle_Code'] == "B5.V" && data[y]['Bottle_loc'] == 'Supermarket shelf') {
-          this.silkyvpn.push(data[y]['AssetId'] + '@' + data[y]['Content_Code'].split('.')[0])
-        }
-
-      }
-    });
+    this.loadavailableasset();
     this.logser.getcitynames().subscribe((data) => {
       setTimeout(() => {
         if (data[0].MayorId != 0) {
@@ -271,14 +239,95 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         }
       }
       this.newmale = this.maleset.slice(0);
+
     });
     $("body").removeClass('frontpage').removeClass('cartcontent');
+
+    setInterval(() => { this.loadavailableasset() }, 30000);
   }
   settrue() {
     this.canmovetop = true;
     this.canmovebottom = true;
     this.canmoveright = true;
     this.canmoveleft = true;
+  }
+  loadavailableasset() {
+    this.logser.getAllAssets().subscribe((data) => {
+      this.assetdataset = [];
+      this.shinyvpn = [];
+      this.shinyuvpn = [];
+      this.spikyrpn = [];
+      this.spikyrpr = [];
+      this.bouncyrpn = [];
+      this.bouncyurpn = [];
+      this.wavyurpn= [];
+      this.wavyurpr = [];
+      this.silkyvpn = [];
+      for (let y = 0; y < data.length; y++) {
+
+        this.assetdataset.push(data[y]);
+
+        if (data[y]['Content_Code'] == "B1.Shiny" && data[y]['Bottle_Code'] == "UB.V" && data[y]['Bottle_loc'] == 'Supermarket shelf') {
+          let cat = data[y]['AssetId'] + '@U' + data[y]['Content_Code'].split('.')[0];
+          console.log(cat, this.shinyuvpn.indexOf(cat))
+          if (this.shinyuvpn.indexOf(cat) == -1) {
+            this.shinyuvpn.push(cat)
+          }
+        }
+        else if (data[y]['Content_Code'] == "B1.Shiny" && data[y]['Bottle_Code'] == "B1.V" && data[y]['Bottle_loc'] == 'Supermarket shelf') {
+          let cat = data[y]['AssetId'] + '@' + data[y]['Content_Code'].split('.')[0];
+          if (!this.shinyvpn.includes(cat)) {
+            this.shinyvpn.push(cat)
+          }
+        }
+        else if (data[y]['Content_Code'] == "B2.Spiky" && data[y]['Bottle_Code'] == "B2.R" && data[y]['Current_Refill_Count'] == 1 && data[y]['Bottle_loc'] == 'Supermarket shelf') {
+          let cat = data[y]['AssetId'] + '@' + data[y]['Content_Code'].split('.')[0];
+          if (!this.spikyrpr.includes(cat)) {
+            this.spikyrpr.push(cat)
+          }
+        }
+        else if (data[y]['Content_Code'] == "B2.Spiky" && data[y]['Bottle_Code'] == "B2.R" && data[y]['Current_Refill_Count'] == 0 && data[y]['Bottle_loc'] == 'Supermarket shelf') {
+          let c = data[y]['AssetId'] + '@' + data[y]['Content_Code'].split('.')[0];
+          if (!this.spikyrpn.includes(c)) {
+            this.spikyrpn.push(c)
+          }
+        }
+        else if (data[y]['Content_Code'] == "B3.Bouncy" && data[y]['Bottle_Code'] == "B3.R" && data[y]['Bottle_loc'] == 'Supermarket shelf') {
+          let r = data[y]['AssetId'] + '@' + data[y]['Content_Code'].split('.')[0];
+          if (!this.bouncyrpn.includes(r)) {
+            this.bouncyrpn.push(r)
+          }
+        }
+        else if (data[y]['Content_Code'] == "B3.Bouncy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Bottle_loc'] == 'Supermarket shelf') {
+          let r = data[y]['AssetId'] + '@U' + data[y]['Content_Code'].split('.')[0];
+          if (!this.bouncyurpn.includes(r)) {
+            this.bouncyurpn.push(r)
+          }
+        }
+        else if (data[y]['Content_Code'] == "B4.Wavy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Current_Refill_Count'] == 1 && data[y]['Bottle_loc'] == 'Supermarket shelf') {
+          let r = data[y]['AssetId'] + '@U' + data[y]['Content_Code'].split('.')[0]
+          if (!this.wavyurpr.includes(r)) {
+            this.wavyurpr.push(r)
+          }
+        }
+        else if (data[y]['Content_Code'] == "B4.Wavy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Current_Refill_Count'] == 0 && data[y]['Bottle_loc'] == 'Supermarket shelf') {
+          let c = data[y]['AssetId'] + '@U' + data[y]['Content_Code'].split('.')[0];
+          if (!this.wavyurpn.includes(c)) {
+            this.wavyurpn.push(c)
+          }
+        }
+        else if (data[y]['Content_Code'] == "B5.Silky" && data[y]['Bottle_Code'] == "B5.V" && data[y]['Bottle_loc'] == 'Supermarket shelf') {
+          let x = data[y]['AssetId'] + '@' + data[y]['Content_Code'].split('.')[0];
+          if (!this.silkyvpn.includes(x)) {
+            this.silkyvpn.push(x)
+          }
+        }
+
+      }
+      console.log('work agum')
+      console.log(this.silkyvpn)
+      console.log(this.assetdataset)
+    });
   }
   checkcartposition() {
     let topvalue = parseInt($(".cart").css('top').split("px")[0]);
@@ -574,7 +623,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         }
       }
     }
-console.log(this.whichroad)
+    console.log(this.whichroad)
   }
 
   @HostListener('document:keydown.arrowdown', ['$event'])
@@ -1237,6 +1286,7 @@ console.log(this.whichroad)
                         $(".close").show();
                         this.transactioncomplete.nativeElement.play();
                         this.billpaid = true;
+                        this.bottletaken.length=0;
                       });
                     }
                   },

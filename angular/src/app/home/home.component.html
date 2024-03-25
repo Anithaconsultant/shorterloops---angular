@@ -19,7 +19,7 @@
 
         <div *ngIf="selectrole" class="selectrolecontent">
 
-            <div class="mb-3 col-xl-4 mx-auto">
+            <div class="mb-3 col-xl-4 col-md-4 col-lg-6 mx-auto">
                 <label for="City" class="form-label">Select your City</label>
                 <select name="Cityname" class="form-control" id="City" [(ngModel)]="selectedCity"
                     (change)="choosefacility()">
@@ -31,7 +31,7 @@
 
 
             </div>
-            <div class="mb-3 col-xl-4  mx-auto">
+            <div class="mb-3 col-xl-4  col-md-4 col-lg-6  mx-auto">
                 <label for="facilityname" class="form-label">Select your Role</label>
                 <select name="facilityname" class="form-control" id="role" [(ngModel)]="selectedfacility"
                     (change)="checkindata()">
@@ -54,7 +54,7 @@
                 </select>
             </div>
 
-            <div class="mb-3 col-xl-4 alingbtnscenter mx-auto">
+            <div class="mb-3 col-xl-4  col-md-4 col-lg-6  alingbtnscenter mx-auto">
                 <button type="submit" class="save btn btn-primary facilitysave" (click)="dochanges()">Save</button>
                 <button  class="save btn btn-primary facilitysave" (click)="selectrole=false">Back</button>
             </div>
