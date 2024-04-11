@@ -68,17 +68,22 @@ export class SignupComponent implements OnInit {
     }
 
     if (this.submitted) {
-      console.log(this.newuser)
       this.logser.createUser(this.newuser).subscribe(
         data => {
-          this.newuser = data;
-          $(".success").show();
+          if (data.message == 'Success') {
+            this.newuser = data;
+            $(".success").show();
+          }
+          else {
+            alert(data.message);
+          }
+
         },
         error => {
           console.log(error);
         }
       );
-      
+
     }
 
   }

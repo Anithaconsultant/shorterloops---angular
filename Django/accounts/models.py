@@ -114,6 +114,8 @@ class Asset(models.Model):
     Transaction_Date= models.CharField(max_length=70, blank=True)
     Fromfacility = models.CharField(max_length=70, blank=True)
     Tofacility = models.CharField(max_length=70, blank=True)
+    purchased=models.BooleanField(default=False)
+    dragged=models.BooleanField(default=False)
     
     
    

@@ -4,10 +4,72 @@ from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from rest_framework import status
 from django.http import JsonResponse
-
+from django.db import transaction
+from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
+from django.core.exceptions import ObjectDoesNotExist
 data1 = list()
 currentuser = ''
 cartcount = 100
+
+
+@transaction.atomic
+def confirm_payment(request, seat_number):
+    seat = get_object_or_404(Seat, seat_number=seat_number, is_reserved=True)
+
+    # Perform payment processing here...
+
+    seat.is_booked = True
+    seat.is_reserved = False
+    seat.save()
+
+    return JsonResponse({'message': 'Payment confirmed. Seat booked successfully'})
+
+
+def reserve_seat(request, seat_number):
+    seat = get_object_or_404(Seat, seat_number=seat_number, is_booked=False)
+
+    seat.is_reserved = True
+    seat.save()
+
+    return JsonResponse({'message': 'Seat reserved successfully'})
+
+
+@transaction.atomic
+@csrf_exempt
+def lockasset(request, itemid):
+    print('locking')
+    try:
+        asset = get_object_or_404(Asset, AssetId=itemid, purchased=False)
+        if asset.dragged == False:
+            asset.dragged = True
+            asset.save()
+            return JsonResponse({'success': True, 'message': 'item reserved successfully'})
+        else:
+            return JsonResponse({'success': False, 'message': 'Seat is not available for blocking.'})
+    except ObjectDoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Seat does not exist.'})
+    print(asset.dragged)
+        # asset = Asset.objects.select_for_update().get(AssetId=itemid)
+
+        # if asset.dragged == False:
+        #     asset.dragged = True
+        #     print(asset.dragged)
+        #     asset.save()
+        #     return JsonResponse({'success': True})
+
+
+@api_view(['POST'])
+@csrf_exempt
+def unlockasset(request, itemid):
+    if request.method == 'POST':
+        asset = Asset.objects.filter(AssetId=itemid).first()
+        serializer = AssetSerializer(asset, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            print("invalid data")
+        return JsonResponse('message', 'updated successfully')
 
 
 @api_view(['GET', 'POST'])
@@ -22,9 +84,11 @@ def login(request):
 def signup(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
+        print(data)
         serializer = userSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
+            return JsonResponse({'message': 'Success'})
         else:
             return JsonResponse({'message': 'Username or Email Id is already present!'})
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
@@ -80,7 +144,7 @@ def updatecurrent(request, cityid):
 def createasset(request, cityid):
     if request.method == 'POST':
         data = JSONParser().parse(request)
-        #print(data)
+        # print(data)
         serializer = AssetSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -97,7 +161,7 @@ def createasset(request, cityid):
 def createtransaction(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
-        print(data);
+        print(data)
         serializer = cashflowSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -127,13 +191,14 @@ def returnasset(request, itemid):
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
         getasset = Asset.objects.filter(AssetId=itemid).first()
-        print(data)
         serializer = AssetSerializer(getasset, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
         else:
             print("invalid data")
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+
+
 @api_view(['GET', 'POST'])
 def facility(request, mayorid):
     if request.method == 'POST':
