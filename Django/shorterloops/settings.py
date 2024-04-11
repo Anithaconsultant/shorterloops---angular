@@ -94,7 +94,7 @@ DATABASES = {
     'default':
         {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'fresh',
+        'NAME': 'newfresh',
         'USER': 'root',
         'PASSWORD': 'Admin@123',
         'HOST': '127.0.0.1',
