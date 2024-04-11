@@ -20,6 +20,7 @@
             "outputPath": "dist/angular",
             "index": "src/index.html",
             "main": "src/main.ts",
+            "allowedCommonJsDependencies": ["panzoom", "jquery"],
             "polyfills": [
               "zone.js"
             ],

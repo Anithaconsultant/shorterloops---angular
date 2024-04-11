@@ -32,13 +32,16 @@ export class LoginComponent implements OnInit {
       return;
     }
     if (this.submitted) {
+      let userfound = false;
       this.logser.getAllUsers().subscribe(res => {
+
         const user = res.find((a: any) => {
-
-
-          return a.Username === this.loginForm.value.username && a.Password === this.loginForm.value.password
-
+          if (a.Username === this.loginForm.value.username) {
+            userfound = true;
+          }
+          return a.Username === this.loginForm.value.username && a.Password === this.loginForm.value.password;
         });
+        console.log(user);
         if (user) {
           this.logser.currentuser.Username = user.Username;
           this.logser.currentuser.UserId = user.UserId;
@@ -67,11 +70,15 @@ export class LoginComponent implements OnInit {
           );
 
         } else {
-          alert("Kindly Check your Credentials")
-        }
-      }, err => {
-        alert("Something went wrong")
-      })
+          if (userfound) {
+            alert("Kindly Check your Credentials");
+          } else {
+            alert("User not Found. Kindly Register.");
+          } 
+          }
+        }, err => {
+          alert("Something went wrong")
+        })
     }
   }
   openwhyshorter(whyshorter: any) {

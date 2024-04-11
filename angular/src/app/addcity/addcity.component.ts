@@ -24,15 +24,15 @@ export class AddcityComponent implements OnInit {
 
   assetData = {
     'AssetId': [
-      'SB_B1.V_00001', 'SB_B1.V_00002', 'SB_B1.V_00003', 'SB_B1.V_00004', 'SB_B1.V_00005',
-      'SB_UB.V_00001', 'SB_UB.V_00002', 'SB_UB.V_00003', 'SB_UB.V_00004', 'SB_UB.V_00005',
-      'SB_B2.R_00001', 'SB_B2.R_00002', 'SB_B2.R_00003', 'SB_B2.R_00004', 'SB_B2.R_00005',
-      'SB_B2.R_00006', 'SB_B2.R_00007', 'SB_B2.R_00008', 'SB_B2.R_00009', 'SB_B2.R_00010',
-      'SB_B3.R_00001', 'SB_B3.R_00002', 'SB_B3.R_00003', 'SB_B3.R_00004', 'SB_B3.R_00005',
-      'SB_UB.R_00001', 'SB_UB.R_00002', 'SB_UB.R_00003', 'SB_UB.R_00004', 'SB_UB.R_00005',
-      'SB_UB.R_00006', 'SB_UB.R_00007', 'SB_UB.R_00008', 'SB_UB.R_00009', 'SB_UB.R_00010',
-      'SB_UB.R_00011', 'SB_UB.R_00012', 'SB_UB.R_00013', 'SB_UB.R_00014', 'SB_UB.R_00015',
-      'SB_B5.V_00001', 'SB_B5.V_00002', 'SB_B5.V_00003', 'SB_B5.V_00004', 'SB_B5.V_00005',
+      'SB_B1idV_00001', 'SB_B1idV_00002', 'SB_B1idV_00003', 'SB_B1idV_00004', 'SB_B1idV_00005',
+      'SB_UBidV_00001', 'SB_UBidV_00002', 'SB_UBidV_00003', 'SB_UBidV_00004', 'SB_UBidV_00005',
+      'SB_B2idR_00001', 'SB_B2idR_00002', 'SB_B2idR_00003', 'SB_B2idR_00004', 'SB_B2idR_00005',
+      'SB_B2idR_00006', 'SB_B2idR_00007', 'SB_B2idR_00008', 'SB_B2idR_00009', 'SB_B2idR_00010',
+      'SB_B3idR_00001', 'SB_B3idR_00002', 'SB_B3idR_00003', 'SB_B3idR_00004', 'SB_B3idR_00005',
+      'SB_UBidR_00001', 'SB_UBidR_00002', 'SB_UBidR_00003', 'SB_UBidR_00004', 'SB_UBidR_00005',
+      'SB_UBidR_00006', 'SB_UBidR_00007', 'SB_UBidR_00008', 'SB_UBidR_00009', 'SB_UBidR_00010',
+      'SB_UBidR_00011', 'SB_UBidR_00012', 'SB_UBidR_00013', 'SB_UBidR_00014', 'SB_UBidR_00015',
+      'SB_B5idV_00001', 'SB_B5idV_00002', 'SB_B5idV_00003', 'SB_B5idV_00004', 'SB_B5idV_00005',
     ],
 
     'Bottle_Code': ['B1.V', 'B1.V', 'B1.V', 'B1.V', 'B1.V', 'UB.V', 'UB.V', 'UB.V', 'UB.V', 'UB.V',

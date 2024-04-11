@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import * as $ from 'jquery';
 import { CdkDragDrop, moveItemInArray, transferArrayItem, CdkDrag, CdkDragEnd } from '@angular/cdk/drag-drop';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-maincity',
@@ -53,6 +54,8 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   //bottles: string[] = [];
   bottledropped: string[] = [];
   bottletaken: string[] = [];
+  commonobj: any[] = [];
+  silkyvpn: string[] = [];
   shinyvpn: string[] = [];
   shinyuvpn: string[] = [];
   spikyrpn: string[] = [];
@@ -61,7 +64,6 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   bouncyurpn: string[] = [];
   wavyurpn: string[] = [];
   wavyurpr: string[] = [];
-  silkyvpn: string[] = [];
   bottles = ['silkyvpn', 'spikyrpn', 'shiny_vpn', 'bouncyrpn']
   refillbottles = ['_SB_UB1.V_00007', '_SB_B2.R_00001', '_SB_UB3.R_00001', '_SB_UB4.R_00001']
   refilledbottles: string[] = [];
@@ -116,10 +118,10 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   hasMayor = false;
   cityname: any;
   cityrate: any;
-  canmovetop = false;
-  canmoveleft = false;
-  canmoveright = false;
-  canmovebottom = false;
+  canMoveTop = false;
+  canMoveLeft = false;
+  canMoveRight = false;
+  canMoveBottom = false;
   topval = 0;
   cartlocrefill = '';
   setflag = 0;
@@ -133,7 +135,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   refillbottom = false;
   cartlocmarket = '';
   deg = 90;
-  whichroad = '';
+  whichRoad = '';
   cityCurrentTime = 0;
   citycurrentday = 0;
   cityavatar = '';
@@ -151,6 +153,28 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   }
   canupdatedb = false;
   sec = 0;
+  transaction = {
+    'TransactionId': '',
+    'Amount': '',
+    'DebitFacility': this.currentUserRole,
+    'CreditFacility': '',
+    'Purpose': ''
+  }
+  municipalcashbox = 0;
+  supermarketcashbox = 0;
+  transactioncount = '00000';
+  billpaid = true;
+  transactionsubcount = '00';
+  updatebottleasset = {
+    'currentitem': '',
+    'Bottleloc': '',
+    'bottlestatus': '',
+    'transactionid': '',
+    'fromfacility': '',
+    'tofacility': '',
+    'transactiondate': '',
+    'purchased': false
+  }
   constructor(private logser: LoginserviceService, private router: Router, private modalService: NgbModal) {
     this.currentUserRole = this.logser.currentuser.Role;
     this.currentUserCartId = this.logser.currentuser.cartId;
@@ -160,6 +184,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     this.currentusercityId = this.logser.currentuser.CityId;
   }
   ngOnInit(): void {
+    console.log(this.logser.currentuser)
     if (this.logser.currentuser.Username != '') {
       sessionStorage.setItem('currentUser', JSON.stringify(this.logser.currentuser));
     } else {
@@ -179,27 +204,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       $(".maincity").addClass("city_" + this.cityavatar)
 
     }
-    this.loadavailableasset();
-    this.logser.getcitynames().subscribe((data) => {
-      setTimeout(() => {
-        if (data[0].MayorId != 0) {
-          $(".mayorflag").show();
-        }
-        this.currentTime();
-      }, 500)
-      this.logser.currentuser.cityname = data[0].CityName;
-      this.logser.currentuser.CurrentTime = data[0].CurrentTime;
-      this.logser.currentuser.currentday = data[0].CurrentDay;
-      this.logser.currentuser.cityrate = data[0].cityrate;
-      this.logser.currentuser.cityavatar = data[0].cityavatar;
-      this.cityrate = data[0].cityrate;
-      this.cityavatar = data[0].cityavatar;
-      this.cityname = this.logser.currentuser.cityname;
-      this.cityCurrentTime = data[0].CurrentTime;
-      this.citycurrentday = data[0].CurrentDay;
-      (this.citycurrentday > 0) ? this.sec = (this.cityCurrentTime * 3600) + (3600 * 24 * this.citycurrentday) : this.sec = this.cityCurrentTime * 3600;
-      $(".maincity").addClass("city_" + this.cityavatar)
-    });
+    this.loadAvailableAsset();
     this.logser.getAllUsers().subscribe((data) => {
       this.user = data;
       for (var t = 0; t < this.user.length; t++) {
@@ -216,6 +221,11 @@ export class MaincityComponent implements AfterViewInit, OnInit {
           if (this.noavatar == true) {
             this.open(this.content)
           }
+        }
+        else if (this.user[t].Username == this.currentusername && this.user[t].avatar !== '') {
+          this.logser.currentuser.avatar = this.user[t].avatar;
+          this.currentuseravatar = this.user[t].avatar
+          $(".displaypic,.cartavatar").addClass('pic_' + this.logser.currentuser.avatar);
         }
         if (this.user[t].Role !== '') {
           let word = this.user[t].Role.split(" ")[0];
@@ -241,17 +251,44 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       this.newmale = this.maleset.slice(0);
 
     });
+    this.logser.getcitynames().subscribe((data) => {
+      setTimeout(() => {
+        if (data[0].MayorId != 0) {
+          $(".mayorflag").show();
+        }
+        this.currentTime();
+      }, 500)
+      this.logser.currentuser.cityname = data[0].CityName;
+      this.logser.currentuser.CurrentTime = data[0].CurrentTime;
+      this.logser.currentuser.currentday = data[0].CurrentDay;
+      this.logser.currentuser.cityrate = data[0].cityrate;
+      this.logser.currentuser.cityavatar = data[0].cityavatar;
+      this.cityrate = data[0].cityrate;
+      this.cityavatar = data[0].cityavatar;
+      this.cityname = this.logser.currentuser.cityname;
+      this.cityCurrentTime = data[0].CurrentTime;
+      this.citycurrentday = data[0].CurrentDay;
+      (this.citycurrentday > 0) ? this.sec = (this.cityCurrentTime * 3600) + (3600 * 24 * this.citycurrentday) : this.sec = this.cityCurrentTime * 3600;
+      $(".maincity").addClass("city_" + this.cityavatar)
+    });
+
     $("body").removeClass('frontpage').removeClass('cartcontent');
 
-    setInterval(() => { this.loadavailableasset() }, 30000);
+    setInterval(() => { this.loadAvailableAsset() }, 10000);
+    // }
+    // else {
+    //   this.router.navigate(['/login']);
+    // }
   }
-  settrue() {
-    this.canmovetop = true;
-    this.canmovebottom = true;
-    this.canmoveright = true;
-    this.canmoveleft = true;
+  setTrue() {
+    this.canMoveTop = true;
+    this.canMoveBottom = true;
+    this.canMoveRight = true;
+    this.canMoveLeft = true;
   }
-  loadavailableasset() {
+
+  loadAvailableAsset() {
+
     this.logser.getAllAssets().subscribe((data) => {
       this.assetdataset = [];
       this.shinyvpn = [];
@@ -260,378 +297,161 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       this.spikyrpr = [];
       this.bouncyrpn = [];
       this.bouncyurpn = [];
-      this.wavyurpn= [];
+      this.wavyurpn = [];
       this.wavyurpr = [];
       this.silkyvpn = [];
       for (let y = 0; y < data.length; y++) {
-
         this.assetdataset.push(data[y]);
+        console.log(data[y])
+        let isDragged = data[y]['dragged'];
+        let isPurchased = data[y]['purchased'];
+        let bottleloc = data[y]['Bottle_loc'];
+        console.log('draaged,pur,loc' + isDragged, isPurchased, bottleloc);
 
-        if (data[y]['Content_Code'] == "B1.Shiny" && data[y]['Bottle_Code'] == "UB.V" && data[y]['Bottle_loc'] == 'Supermarket shelf') {
-          let cat = data[y]['AssetId'] + '@U' + data[y]['Content_Code'].split('.')[0];
-          console.log(cat, this.shinyuvpn.indexOf(cat))
-          if (this.shinyuvpn.indexOf(cat) == -1) {
-            this.shinyuvpn.push(cat)
-          }
-        }
-        else if (data[y]['Content_Code'] == "B1.Shiny" && data[y]['Bottle_Code'] == "B1.V" && data[y]['Bottle_loc'] == 'Supermarket shelf') {
-          let cat = data[y]['AssetId'] + '@' + data[y]['Content_Code'].split('.')[0];
-          if (!this.shinyvpn.includes(cat)) {
-            this.shinyvpn.push(cat)
-          }
-        }
-        else if (data[y]['Content_Code'] == "B2.Spiky" && data[y]['Bottle_Code'] == "B2.R" && data[y]['Current_Refill_Count'] == 1 && data[y]['Bottle_loc'] == 'Supermarket shelf') {
-          let cat = data[y]['AssetId'] + '@' + data[y]['Content_Code'].split('.')[0];
-          if (!this.spikyrpr.includes(cat)) {
-            this.spikyrpr.push(cat)
-          }
-        }
-        else if (data[y]['Content_Code'] == "B2.Spiky" && data[y]['Bottle_Code'] == "B2.R" && data[y]['Current_Refill_Count'] == 0 && data[y]['Bottle_loc'] == 'Supermarket shelf') {
-          let c = data[y]['AssetId'] + '@' + data[y]['Content_Code'].split('.')[0];
-          if (!this.spikyrpn.includes(c)) {
-            this.spikyrpn.push(c)
-          }
-        }
-        else if (data[y]['Content_Code'] == "B3.Bouncy" && data[y]['Bottle_Code'] == "B3.R" && data[y]['Bottle_loc'] == 'Supermarket shelf') {
-          let r = data[y]['AssetId'] + '@' + data[y]['Content_Code'].split('.')[0];
-          if (!this.bouncyrpn.includes(r)) {
-            this.bouncyrpn.push(r)
-          }
-        }
-        else if (data[y]['Content_Code'] == "B3.Bouncy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Bottle_loc'] == 'Supermarket shelf') {
-          let r = data[y]['AssetId'] + '@U' + data[y]['Content_Code'].split('.')[0];
-          if (!this.bouncyurpn.includes(r)) {
-            this.bouncyurpn.push(r)
-          }
-        }
-        else if (data[y]['Content_Code'] == "B4.Wavy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Current_Refill_Count'] == 1 && data[y]['Bottle_loc'] == 'Supermarket shelf') {
-          let r = data[y]['AssetId'] + '@U' + data[y]['Content_Code'].split('.')[0]
-          if (!this.wavyurpr.includes(r)) {
-            this.wavyurpr.push(r)
-          }
-        }
-        else if (data[y]['Content_Code'] == "B4.Wavy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Current_Refill_Count'] == 0 && data[y]['Bottle_loc'] == 'Supermarket shelf') {
-          let c = data[y]['AssetId'] + '@U' + data[y]['Content_Code'].split('.')[0];
-          if (!this.wavyurpn.includes(c)) {
-            this.wavyurpn.push(c)
-          }
-        }
-        else if (data[y]['Content_Code'] == "B5.Silky" && data[y]['Bottle_Code'] == "B5.V" && data[y]['Bottle_loc'] == 'Supermarket shelf') {
-          let x = data[y]['AssetId'] + '@' + data[y]['Content_Code'].split('.')[0];
-          if (!this.silkyvpn.includes(x)) {
-            this.silkyvpn.push(x)
-          }
-        }
+        switch (true) {
+          case data[y]['Content_Code'] == "B1.Shiny" && data[y]['Bottle_Code'] == "UB.V":
+            let cat1 = "City" + data[y]['AssetId'] + 'atU' + data[y]['Content_Code'].split('.')[0];
+            if (isDragged == false && bottleloc == 'Supermarket shelf') {
+              this.shinyuvpn.push(cat1);
+            }
+            this.updateobjects(cat1, isDragged, isPurchased, bottleloc);
+            break;
+          case data[y]['Content_Code'] == "B1.Shiny" && data[y]['Bottle_Code'] == "B1.V":
+            let cat2 = "City" + data[y]['AssetId'] + 'at' + data[y]['Content_Code'].split('.')[0];
+            if (isDragged == false && bottleloc == 'Supermarket shelf') {
+              this.shinyvpn.push(cat2);
+            }
+            this.updateobjects(cat2, isDragged, isPurchased, bottleloc);
 
+            break;
+          case data[y]['Content_Code'] == "B2.Spiky" && data[y]['Bottle_Code'] == "B2.R" && data[y]['Current_Refill_Count'] == 1:
+            let cat3 = "City" + data[y]['AssetId'] + 'at' + data[y]['Content_Code'].split('.')[0];
+            if (isDragged == false && bottleloc == 'Supermarket shelf') {
+              this.spikyrpr.push(cat3);
+            }
+            this.updateobjects(cat3, isDragged, isPurchased, bottleloc);
+            break;
+          case data[y]['Content_Code'] == "B2.Spiky" && data[y]['Bottle_Code'] == "B2.R" && data[y]['Current_Refill_Count'] == 0:
+            let cat4 = "City" + data[y]['AssetId'] + 'at' + data[y]['Content_Code'].split('.')[0];
+            if (isDragged == false && bottleloc == 'Supermarket shelf') {
+              this.spikyrpn.push(cat4);
+            }
+            this.updateobjects(cat4, isDragged, isPurchased, bottleloc);
+            break;
+          case data[y]['Content_Code'] == "B3.Bouncy" && data[y]['Bottle_Code'] == "B3.R":
+            let cat5 = "City" + data[y]['AssetId'] + 'at' + data[y]['Content_Code'].split('.')[0];
+            if (isDragged == false && bottleloc == 'Supermarket shelf') {
+              this.bouncyrpn.push(cat5);
+            }
+            this.updateobjects(cat5, isDragged, isPurchased, bottleloc);
+            break;
+          case data[y]['Content_Code'] == "B3.Bouncy" && data[y]['Bottle_Code'] == "UB.R":
+            let cat6 = "City" + data[y]['AssetId'] + 'atU' + data[y]['Content_Code'].split('.')[0];
+            if (isDragged == false && bottleloc == 'Supermarket shelf') {
+              this.bouncyurpn.push(cat6);
+            }
+            this.updateobjects(cat6, isDragged, isPurchased, bottleloc);
+            break;
+          case data[y]['Content_Code'] == "B4.Wavy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Current_Refill_Count'] == 1:
+            let cat7 = "City" + data[y]['AssetId'] + 'atU' + data[y]['Content_Code'].split('.')[0];
+            if (isDragged == false && bottleloc == 'Supermarket shelf') {
+              this.wavyurpr.push(cat7);
+            }
+            this.updateobjects(cat7, isDragged, isPurchased, bottleloc);
+            break;
+          case data[y]['Content_Code'] == "B4.Wavy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Current_Refill_Count'] == 0:
+            let cat8 = "City" + data[y]['AssetId'] + 'atU' + data[y]['Content_Code'].split('.')[0];
+            if (isDragged == false && bottleloc == 'Supermarket shelf') {
+              this.wavyurpn.push(cat8);
+            }
+            this.updateobjects(cat8, isDragged, isPurchased, bottleloc);
+            break;
+          case data[y]['Content_Code'] == "B5.Silky" && data[y]['Bottle_Code'] == "B5.V":
+            let cat9 = "City" + data[y]['AssetId'] + 'at' + data[y]['Content_Code'].split('.')[0];
+            if (isDragged == false && bottleloc == 'Supermarket shelf') {
+              this.silkyvpn.push(cat9);
+            }
+            this.updateobjects(cat9, isDragged, isPurchased, bottleloc);
+            break;
+        }
       }
-      console.log('work agum')
-      console.log(this.silkyvpn)
-      console.log(this.assetdataset)
+
     });
   }
-  checkcartposition() {
-    let topvalue = parseInt($(".cart").css('top').split("px")[0]);
-    let leftvalue = parseInt($(".cart").css('left').split("px")[0]);
-    if (topvalue > 2723 && topvalue < 2789 && leftvalue > 5300 && leftvalue < 5891) {
-      this.whichroad = "refillingstation";
-      this.opensuperflag = 2; this.openrefillingstation();
-      this.settrue();
+  updateobjects(cat: any, isDragged: any, isPurchased: any, bottleloc: any) {
+    let existingItem = this.commonobj.findIndex(item => item.id === cat);
+    if (existingItem == -1) {
+      this.commonobj.push({ 'id': cat, 'status': 'available', 'location': 'Supermarket shelf' });
     }
-    else if (topvalue > 3524 && topvalue < 3640 && leftvalue > 5300 && leftvalue < 7390) {
-      this.whichroad = "mayorhouseroad";
-      this.settrue();
+    let currentItem = this.commonobj.findIndex(item => item.id === cat);
+    if (isDragged == true && isPurchased == false && bottleloc !== 'Supermarket shelf') {
+      this.commonobj[currentItem]['status'] = 'blocked';
+      this.commonobj[currentItem]['location'] = bottleloc;
+    }
+    if (isDragged == true && isPurchased == true && bottleloc !== 'Supermarket shelf') {
+      this.commonobj[currentItem]['status'] = 'purchased';
+      this.commonobj[currentItem]['location'] = bottleloc;
+    }
+    console.log(this.commonobj);
 
-    }
-    else if (topvalue > 2640 && topvalue < 3000 && leftvalue > 1500 && leftvalue < 1700) {
-      if (topvalue < 2720) {
+
+  }
+
+  checkCartPosition() {
+    const topValue = parseInt($(".cart").css('top').split("px")[0]);
+    const leftValue = parseInt($(".cart").css('left').split("px")[0]);
+
+    const isWithinRange = (value: number, min: number, max: number) => value > min && value < max;
+
+    if (isWithinRange(topValue, 2723, 2789) && isWithinRange(leftValue, 5300, 5891)) {
+      this.whichRoad = "refillingstation";
+      this.opensuperflag = 2;
+      this.openrefillingstation();
+      this.setTrue();
+    } else if (isWithinRange(topValue, 3524, 3640) && isWithinRange(leftValue, 5300, 7390)) {
+      this.whichRoad = "mayorhouseroad";
+      this.setTrue();
+    } else if (isWithinRange(topValue, 2640, 3000) && isWithinRange(leftValue, 1500, 1700)) {
+      this.whichRoad = "Supermarketroad";
+      this.setTrue();
+      if (topValue < 2720) {
         this.opensuperflag = 1;
-        console.log("opening");
         this.opensupermarket();
       }
-      this.whichroad = "Supermarketroad";
-      this.settrue();;
-
+    } else if (isWithinRange(topValue, 4000, 4065) && isWithinRange(leftValue, 5300, 7390)) {
+      this.whichRoad = "lowercolonyrightroad";
+      this.setTrue();
+    } else if (isWithinRange(topValue, 0, 4395) && isWithinRange(leftValue, 2700, 2800)) {
+      this.whichRoad = "lefthorizontalroad";
+      this.setTrue();
+    } else if (isWithinRange(topValue, 0, 4395) && isWithinRange(leftValue, 5190, 5300)) {
+      this.whichRoad = "rightroad";
+      this.setTrue();
+    } else if (isWithinRange(topValue, 3524, 3640) && isWithinRange(leftValue, 300, 2800)) {
+      this.whichRoad = "leftcolonytop";
+      this.setTrue();
+    } else if (isWithinRange(topValue, 4010, 4065) && isWithinRange(leftValue, 300, 2800)) {
+      this.whichRoad = "leftcolonybottom";
+      this.setTrue();
+    } else if (isWithinRange(topValue, 2950, 3050) && isWithinRange(leftValue, 0, 7390)) {
+      this.whichRoad = "municipalityroad";
+      this.setTrue();
+    } else {
+      this.canMoveLeft = leftValue > 0;
+      this.canMoveRight = leftValue < 7390;
+      this.canMoveTop = topValue > 0;
+      this.canMoveBottom = topValue < 4395;
     }
-    else if (topvalue > 4000 && topvalue < 4065 && leftvalue > 5300 && leftvalue < 7390) {
-      this.whichroad = "lowercolonyrightroad";
-      this.settrue();
-
-    }
-    else if (topvalue > 0 && topvalue < 4395 && leftvalue > 2700 && leftvalue < 2800) {
-      this.whichroad = "lefthorizontalroad";
-      this.settrue();
-
-    }
-    else if (topvalue > 0 && topvalue < 4395 && leftvalue > 5190 && leftvalue < 5300) {
-      this.whichroad = "rightroad";
-      this.settrue();
-
-    }
-    else if (topvalue > 3524 && topvalue < 3640 && leftvalue > 300 && leftvalue < 2800) {
-      this.whichroad = "leftcolonytop";
-      this.settrue();
-
-    }
-    else if (topvalue > 4010 && topvalue < 4065 && leftvalue > 300 && leftvalue < 2800) {
-      this.whichroad = "leftcolonybottom";
-      this.settrue();
-
-    }
-    else if (topvalue > 2950 && topvalue < 3050 && leftvalue > 0 && leftvalue < 7390) {
-      this.whichroad = "municipalityroad";
-      this.settrue();
-    }
-    else {
-      this.canmoveleft = false;
-      this.canmovetop = false;
-      this.canmovebottom = false;
-      this.canmoveright = false;
-
-      if (this.whichroad == 'rightroad') {
-
-        if (leftvalue <= 5190) {
-          this.canmovebottom = true;
-          this.canmovetop = true;
-          this.canmoveleft = false;
-          this.canmoveright = true;
-        }
-        if (leftvalue >= 5300) {
-          this.canmovetop = true;
-          this.canmovebottom = true;
-          this.canmoveleft = true;
-          this.canmoveright = false;
-        }
-        if (topvalue <= 0) {
-          this.canmoveright = true;
-          this.canmoveleft = true;
-          this.canmovetop = false;
-          this.canmovebottom = true;
-        }
-        if (topvalue >= 4395) {
-          this.canmoveright = true;
-          this.canmoveleft = true;
-          this.canmovetop = true;
-          this.canmovebottom = false;
-        }
-      }
-      else if (this.whichroad == 'refillingstation') {
-        if (leftvalue <= 5700) {
-          this.canmovebottom = true;
-          this.canmovetop = true;
-          this.canmoveleft = false;
-          this.canmoveright = true;
-        }
-        if (leftvalue >= 5790) {
-          this.canmovetop = true;
-          this.canmovebottom = true;
-          this.canmoveleft = true;
-          this.canmoveright = false;
-        }
-        if (topvalue <= 2789) {
-          this.canmoveright = true;
-          this.canmoveleft = true;
-          this.canmovetop = false;
-          this.canmovebottom = true;
-        }
-        if (topvalue >= 2723) {
-          this.canmoveright = true;
-          this.canmoveleft = true;
-          this.canmovetop = true;
-          this.canmovebottom = false;
-        }
-      }
-      else if (this.whichroad == 'mayorhouseroad') {
-        if (topvalue <= 3524) {
-          this.canmovebottom = true;
-          this.canmovetop = false;
-          this.canmoveleft = true;
-          this.canmoveright = true;
-        }
-        if (topvalue >= 3640) {
-          this.canmovetop = true;
-          this.canmovebottom = false;
-          this.canmoveleft = true;
-          this.canmoveright = true;
-        }
-        if (leftvalue <= 5300) {
-          this.canmoveright = true;
-          this.canmoveleft = false;
-          this.canmovetop = true;
-          this.canmovebottom = true;
-        }
-        if (leftvalue >= 7390) {
-          this.canmoveright = false;
-          this.canmoveleft = true;
-          this.canmovetop = true;
-          this.canmovebottom = true;
-        }
-      }
-      else if (this.whichroad == "Supermarketroad") {
-        if (topvalue <= 2640) {
-          this.canmovebottom = true;
-          this.canmovetop = false;
-          this.canmoveleft = true;
-          this.canmoveright = true;
-        }
-        if (topvalue >= 3000) {
-          this.canmovetop = true;
-          this.canmovebottom = false;
-          this.canmoveleft = true;
-          this.canmoveright = true;
-        }
-        if (leftvalue <= 1500) {
-          this.canmoveright = true;
-          this.canmoveleft = false;
-          this.canmovetop = true;
-          this.canmovebottom = true;
-        }
-        if (leftvalue >= 1700) {
-          this.canmoveright = false;
-          this.canmoveleft = true;
-          this.canmovetop = true;
-          this.canmovebottom = true;
-        }
-      }
-      else if (this.whichroad == "lowercolonyrightroad") {
-        if (topvalue <= 4010) {
-          this.canmovebottom = true;
-          this.canmovetop = false;
-          this.canmoveleft = true;
-          this.canmoveright = true;
-        }
-        if (topvalue >= 4065) {
-          this.canmovetop = true;
-          this.canmovebottom = false;
-          this.canmoveleft = true;
-          this.canmoveright = true;
-        }
-        if (leftvalue <= 5300) {
-          this.canmoveright = true;
-          this.canmoveleft = false;
-          this.canmovetop = true;
-          this.canmovebottom = true;
-        }
-        if (leftvalue >= 7390) {
-          this.canmoveright = false;
-          this.canmoveleft = true;
-          this.canmovetop = true;
-          this.canmovebottom = true;
-        }
-      }
-      else if (this.whichroad == "lefthorizontalroad") {
-        if (topvalue <= 4010) {
-          this.canmovebottom = true;
-          this.canmovetop = false;
-          this.canmoveleft = true;
-          this.canmoveright = true;
-        }
-        if (topvalue >= 4065) {
-          this.canmovetop = true;
-          this.canmovebottom = false;
-          this.canmoveleft = true;
-          this.canmoveright = true;
-        }
-        if (leftvalue <= 5300) {
-          this.canmoveright = true;
-          this.canmoveleft = false;
-          this.canmovetop = true;
-          this.canmovebottom = true;
-        }
-        if (leftvalue >= 7390) {
-          this.canmoveright = false;
-          this.canmoveleft = true;
-          this.canmovetop = true;
-          this.canmovebottom = true;
-        }
-      }
-      else if (this.whichroad == "leftcolonytop") {
-        if (topvalue <= 3524) {
-          this.canmovebottom = true;
-          this.canmovetop = false;
-          this.canmoveleft = true;
-          this.canmoveright = true;
-        }
-        if (topvalue >= 3640) {
-          this.canmovetop = true;
-          this.canmovebottom = false;
-          this.canmoveleft = true;
-          this.canmoveright = true;
-        }
-        if (leftvalue <= 300) {
-          this.canmoveright = true;
-          this.canmoveleft = false;
-          this.canmovetop = true;
-          this.canmovebottom = true;
-        }
-        if (leftvalue >= 2800) {
-          this.canmoveright = false;
-          this.canmoveleft = true;
-          this.canmovetop = true;
-          this.canmovebottom = true;
-        }
-      }
-      else if (this.whichroad == "leftcolonybottom") {
-        if (topvalue <= 4010) {
-          this.canmovebottom = true;
-          this.canmovetop = false;
-          this.canmoveleft = true;
-          this.canmoveright = true;
-        }
-        if (topvalue >= 4065) {
-          this.canmovetop = true;
-          this.canmovebottom = false;
-          this.canmoveleft = true;
-          this.canmoveright = true;
-        }
-        if (leftvalue <= 300) {
-          this.canmoveright = true;
-          this.canmoveleft = false;
-          this.canmovetop = true;
-          this.canmovebottom = true;
-        }
-        if (leftvalue >= 2800) {
-          this.canmoveright = false;
-          this.canmoveleft = true;
-          this.canmovetop = true;
-          this.canmovebottom = true;
-        }
-      }
-      else if (this.whichroad == "municipalityroad") {
-        if (leftvalue <= 0) {
-          this.canmovebottom = true;
-          this.canmovetop = true;
-          this.canmoveleft = false;
-          this.canmoveright = true;
-        }
-        if (leftvalue >= 7390) {
-          this.canmovetop = true;
-          this.canmovebottom = true;
-          this.canmoveleft = true;
-          this.canmoveright = false;
-        }
-        if (topvalue <= 2950) {
-          this.canmoveright = true;
-          this.canmoveleft = true;
-          this.canmovetop = false;
-          this.canmovebottom = true;
-        }
-        if (topvalue >= 3050) {
-          this.canmoveright = true;
-          this.canmoveleft = true;
-          this.canmovetop = true;
-          this.canmovebottom = false;
-        }
-      }
-    }
-    console.log(this.whichroad)
+    console.log(this.whichRoad)
   }
+
 
   @HostListener('document:keydown.arrowdown', ['$event'])
   movedown($event: any) {
     $event.stopPropagation();
     if (this.opensuperflag == 0) {
-      this.checkcartposition();
-      if (this.canmovebottom) {
+      this.checkCartPosition();
+      if (this.canMoveBottom) {
         let leftval = $(".cart").css('top');
         leftval = parseInt(leftval) + 10 + "px";
         $(".cart").css({ 'top': leftval })
@@ -658,8 +478,8 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   moveup($event: any) {
     $event.stopPropagation();
     if (this.opensuperflag == 0) {
-      this.checkcartposition();
-      if (this.canmovetop) {
+      this.checkCartPosition();
+      if (this.canMoveTop) {
         let leftval = $(".cart").css('top');
         leftval = parseInt(leftval) - 10 + "px";
         $(".cart").css({ 'top': leftval })
@@ -686,8 +506,8 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   moveleft($event: any) {
     $event.stopPropagation();
     if (this.opensuperflag == 0) {
-      this.checkcartposition();
-      if (this.canmoveleft == true) {
+      this.checkCartPosition();
+      if (this.canMoveLeft == true) {
         let leftval = $(".cart").css('left');
         leftval = parseInt(leftval) - 10 + "px";
         $(".cart").css({ 'left': leftval })
@@ -716,8 +536,8 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     $event.stopPropagation();
 
     if (this.opensuperflag == 0) {
-      this.checkcartposition();
-      if (this.canmoveright == true) {
+      this.checkCartPosition();
+      if (this.canMoveRight == true) {
         let leftval = $(".cart").css('left');
         leftval = parseInt(leftval) + 10 + "px";
         $(".cart").css({ 'left': leftval })
@@ -1066,7 +886,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
 
         }
       }
-      console.log(this.cartlocmarket);
+      //console.log(this.cartlocmarket);
     }
   }
 
@@ -1114,7 +934,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
             this.timeupdate = hour
           },
           error => {
-            console.log(error);
+            //console.log(error);
           }
         );
         if (hour == 6 || hour == 19) {
@@ -1179,29 +999,16 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     }, this.cityrate);
 
   }
-  transaction = {
-    'TransactionId': '',
-    'Amount': '',
-    'DebitFacility': this.currentUserRole,
-    'CreditFacility': '',
-    'Purpose': ''
-  }
-  municipalcashbox = 0;
-  supermarketcashbox = 0;
-  transactioncount = '00000';
-  billpaid = true;
-  transactionsubcount = '00';
-  updatebottleasset = {
-    'currentitem': '',
-    'Bottleloc': '',
-    'bottlestatus': '',
-    'transactionid': '',
-    'fromfacility': '',
-    'tofacility': '',
-    'transactiondate': ''
-  }
+  updateDragged: any = {
+    'dragged': false,
+    'purchased': false,
+    'location': '',
+    'currentbottle': ''
+  };
   payamount() {
     if (this.billpaid == false) {
+
+
       if (this.currentwallet > this.netamount) {
         alert("User has Succifient amount for Payment");
         this.currentwallet = this.currentwallet - this.netamount;
@@ -1231,62 +1038,24 @@ export class MaincityComponent implements AfterViewInit, OnInit {
                 this.logser.createtransaction(this.transaction).subscribe(
                   data => {
                     data = this.transaction;
-                    this.updatebottleasset['Bottleloc'] = this.currentUserCartId;
+
                     this.updatebottleasset['bottlestatus'] = 'InUse';
                     this.updatebottleasset['transactionid'] = this.currentusercityId + '_' + this.citycurrentday + '_' + this.cityCurrentTime + '_' + this.transactioncount
                     this.updatebottleasset['fromfacility'] = 'Supermarket Owner'
                     this.updatebottleasset['tofacility'] = this.currentUserRole;
                     this.updatebottleasset['transactiondate'] = String(this.citycurrentday);
+                    this.updatebottleasset['purchased'] = true;
+                    this.updatebottleasset['Bottleloc'] = this.currentUserCartId;
                     for (let i = 0; i < this.bottletaken.length; i++) {
-                      this.updatebottleasset['currentitem'] = this.bottletaken[i].split("@")[0];
+                      this.updatebottleasset['currentitem'] = this.bottletaken[i].split("at")[0].split('City')[1];
                       this.logser.updatethisAssets(this.updatebottleasset).subscribe((data) => {
+                        console.log(data);
 
-                        for (let y = 0; y < this.shinyvpn.length; y++) {
-                          if (this.shinyvpn[y] == this.bottletaken[i]) {
-                            this.shinyvpn.splice(y, 1);
-                          }
-                        }
-                        for (let y = 0; y < this.shinyuvpn.length; y++) {
-                          if (this.shinyuvpn[y] == this.bottletaken[i]) {
-                            this.shinyuvpn.splice(y, 1);
-                          }
-                        }
-                        for (let y = 0; y < this.wavyurpr.length; y++) {
-                          if (this.wavyurpr[y] == this.bottletaken[i]) {
-                            this.wavyurpr.splice(y, 1);
-                          }
-                        }
-                        for (let y = 0; y < this.wavyurpn.length; y++) {
-                          if (this.wavyurpn[y] == this.bottletaken[i]) {
-                            this.wavyurpn.splice(y, 1);
-                          }
-                        }
-                        for (let y = 0; y < this.bouncyurpn.length; y++) {
-                          if (this.bouncyurpn[y] == this.bottletaken[i]) {
-                            this.bouncyurpn.splice(y, 1);
-                          }
-                        }
-                        for (let y = 0; y < this.bouncyrpn.length; y++) {
-                          if (this.bouncyrpn[y] == this.bottletaken[i]) {
-                            this.bouncyrpn.splice(y, 1);
-                          }
-                        }
-                        for (let y = 0; y < this.spikyrpr.length; y++) {
-                          if (this.spikyrpr[y] == this.bottletaken[i]) {
-                            this.spikyrpr.splice(y, 1);
-                          }
-                        }
-                        for (let y = 0; y < this.spikyrpn.length; y++) {
-                          if (this.spikyrpn[y] == this.bottletaken[i]) {
-                            this.spikyrpn.splice(y, 1);
-                          }
-                        }
 
                         $(".pay").hide();
                         $(".close").show();
                         this.transactioncomplete.nativeElement.play();
                         this.billpaid = true;
-                        this.bottletaken.length=0;
                       });
                     }
                   },
@@ -1322,12 +1091,26 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       else {
         this.billpaid = true;
         alert("You have insufficient balance.Your cart is going to be empty");
-        this.bottletaken.length = 0;
 
+        this.updateDragged['dragged'] = false;
+        this.updateDragged['purchased'] = false;
+        this.updateDragged['Bottleloc'] = 'Supermarket shelf';
+        for (let i = 0; i < this.bottletaken.length; i++) {
+          this.updateDragged['currentbottle'] = this.bottletaken[i].split("at")[0].split('City')[1];
+          this.logser.updatedragged(this.updateDragged).subscribe((data) => {
+            console.log(data);
+            $(".pay").hide();
+            $(".close").show();
+            this.bottletaken.length = 0;
+          });
+        }
       }
     }
 
   }
+
+
+
   startbilling() {
     this.doneshopping.nativeElement.play();
     $(".cartid_highlight").addClass('highlight');
@@ -1357,6 +1140,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   }
 
   ngAfterViewInit(): void {
+    // if (this.logser.currentuser.Username != '') {
     this.instance = panzoom(this.scene.nativeElement, {
       maxZoom: 3,
       minZoom: 0.3,
@@ -1379,7 +1163,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     });
 
     this.loadinginitialState();
-
+    //  }
   }
   loadinginitialState() {
     let a = this.currentUserRole.split(" ")[0];
@@ -1393,7 +1177,8 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     $(".cart").css({ 'left': x1 + 'px', 'top': y1 + 'px' });
     $(".housedisplay").css({ 'left': x2 + 'px', 'top': y2 + 'px' });
     $(".houselite").hide();
-    $(".displaypic,.cartavatar").addClass('pic_' + this.logser.currentuser.avatar);
+    //  alert(this.logser.currentuser.avatar+','+this.logser.currentuser.Username)
+    //$(".displaypic,.cartavatar").addClass('pic_' + this.logser.currentuser.avatar);
     $(".cartid").html(this.currentUserCartId);
   }
 
@@ -1412,43 +1197,43 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     else { return true; }
   }
   checkcondition(item: CdkDrag<string>) {
-    if (item.element.nativeElement.classList[2] == 'B1') { return true; }
+    if (item.element.nativeElement.classList.contains('B1')) { return true; }
     else { return false; }
 
   }
   checkshinyuniver(item: CdkDrag<string>) {
-    if (item.element.nativeElement.classList[2] == 'UB1') { return true; }
+    if (item.element.nativeElement.classList.contains('UB1')) { return true; }
     else { return false; }
   }
   checkconditionrefill(item: CdkDrag<string>) {
-    if (item.element.nativeElement.classList[2] == '_SB_UB1' || item.element.nativeElement.classList[2] == '_SB_B1') { return true; }
+    if (item.element.nativeElement.classList.contains('_SB_UB1') || item.element.nativeElement.classList.contains('_SB_B1')) { return true; }
     else { return false; }
   }
   checkspikyrpn(item: CdkDrag<string>) {
-    if (item.element.nativeElement.classList[2] == 'B2') { return true; }
+    if (item.element.nativeElement.classList.contains('B2')) { return true; }
     else { return false; }
   }
   checkbouncyrpn(item: CdkDrag<string>) {
-    if (item.element.nativeElement.classList[2] == 'B3') { return true; }
+    if (item.element.nativeElement.classList.contains('B3')) { return true; }
     else { return false; }
   }
   checkbouncyrpnrefill(item: CdkDrag<string>) {
-    if (item.element.nativeElement.classList[2] == '_SB_B3' || item.element.nativeElement.classList[2] == '_SB_UB3') { return true; }
+    if (item.element.nativeElement.classList.contains('_SB_B3') || item.element.nativeElement.classList.contains('_SB_UB3')) { return true; }
     else {
       return false;
     }
   }
   checkbouncyurpn(item: CdkDrag<string>) {
-    if (item.element.nativeElement.classList[2] == 'UB3') { return true; }
+    if (item.element.nativeElement.classList.contains('UB3')) { return true; }
     else { return false; }
 
   }
   checkwavyurpn(item: CdkDrag<string>) {
-    if (item.element.nativeElement.classList[2] == 'UB4') { return true; }
+    if (item.element.nativeElement.classList.contains('UB4')) { return true; }
     else { return false; }
   }
   checksilkyvpn(item: CdkDrag<string>) {
-    if (item.element.nativeElement.classList[2] == 'B5') { return true; }
+    if (item.element.nativeElement.classList.contains('B5')) { return true; }
     else { return false; }
   }
   bottleclass = '';
@@ -1463,12 +1248,12 @@ export class MaincityComponent implements AfterViewInit, OnInit {
             this.router.navigate(["home"]);
           },
           (error) => {
-            console.log(error);
+            //console.log(error);
           }
         );
       },
       (error) => {
-        console.log(error);
+        //console.log(error);
       }
     );
 
@@ -1481,7 +1266,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         this.router.navigate(["login"]);
       },
       (error) => {
-        console.log(error);
+        //console.log(error);
       }
     );
   }
@@ -1522,35 +1307,53 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     this.netamount = 0;
     this.totalenv = 0;
     this.totalsupermarketbill = 0;
-    console.log(this.bottletaken);
+
+
+    //console.log(this.bottletaken);
     if (this.bottletaken.length > 0) {
       this.billpaid = false;
       //this.pleasecheck.nativeElement.play();
       for (let i = 0; i < this.bottletaken.length; i++) {
-        this.logser.getthisAssets(this.bottletaken[i].split("@")[0]).subscribe((data) => {
-          let calc = parseInt(data[0]['Content_Price']) + parseInt(data[0]['Bottle_Price']);
-          let discount = calc * (parseInt(data[0]['Discount_RefillB']) / 100);
-          let env = calc * (parseInt(data[0]['Env_Tax']) / 100);
-          this.totalenv += env;
-          let totalvalue = (calc + env) - discount;
-          data[0]['Totalvalue'] = totalvalue;
-          this.totalsupermarketbill += totalvalue - env;
-          this.netamount += totalvalue;
-          this.boughtbottledata.push(data[0]);
-          console.log(this.boughtbottledata);
-        })
+
+        let existingItem = this.commonobj.findIndex(item => item.id === this.bottletaken[i]);
+        this.commonobj[existingItem]['location']
+        if (this.commonobj[existingItem]['location'] == 'In' + this.currentUserCartId) {
+          let getcurrent = this.bottletaken[i].split("at")[0].split('City')[1];
+          console.log(getcurrent);
+          this.logser.getthisAssets(getcurrent).subscribe((data) => {
+            console.log(data)
+            let calc = parseInt(data[0]['Content_Price']) + parseInt(data[0]['Bottle_Price']);
+            let discount = calc * (parseInt(data[0]['Discount_RefillB']) / 100);
+            let env = calc * (parseInt(data[0]['Env_Tax']) / 100);
+            this.totalenv += env;
+            let totalvalue = (calc + env) - discount;
+            data[0]['Totalvalue'] = totalvalue;
+            this.totalsupermarketbill += totalvalue - env;
+            this.netamount += totalvalue;
+            this.boughtbottledata.push(data[0]);
+            //console.log(this.boughtbottledata);
+          })
+        }
+        else{
+          alert(this.bottletaken[i]+' This Item has been picked by someone Else.')
+          let existingItem = this.commonobj.findIndex(item => item.id === this.bottletaken[i]);
+        }
       }
     }
     else {
       this.billpaid = true;
     }
+    console.log('at the counter');
+    console.log(this.bottletaken);
+  
+
   }
   objectKeys(obj: any) {
     return Object.keys(obj)[0];
   }
   opensticker(bottlesticker: any, event: any) {
     let element = event.target || event.srcElement || event.currentTarget;
-    let elementId = element.id.split("@")[0];
+    let elementId = element.id.split("at")[0].split("City")[1];
     let elementClass = element.className;
     this.logser.getthisAssets(elementId).subscribe((data) => {
       this.assetdata = data;
@@ -1594,7 +1397,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
           $(".displaypic,.cartavatar").addClass('pic_' + this.logser.currentuser.avatar);
         },
         (error) => {
-          console.log(error);
+          //console.log(error);
         }
       );
     }
@@ -1787,7 +1590,10 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     }, 1000);
 
   }
-
+  updateonlyloc: any = {
+    'currentbottle': '',
+    'Bottleloc': ''
+  }
   drop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(
@@ -1797,12 +1603,50 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         event.container.data,
         event.previousIndex,
         event.currentIndex);
-      let that = this;
       if (this.opensuperflag == 1) {
-        if (this.bottletaken.length !== 0) {
+        let currentlyDroped = event.item.element.nativeElement.id;
+        let currentDropzone = event.container.element.nativeElement.classList;
+        if (currentDropzone.contains('newbottle_list')) {
           this.billpaid = false;
+          let itemid = currentlyDroped.split("at")[0].split('City')[1];
+          this.logser.getthisAssets(itemid).subscribe((data) => {
+            if (data[0]['dragged'] == false && data[0]['purchased'] == false) {
+              this.logser.lockthisAsset(itemid).subscribe(
+                response => {
+                  console.log(response);
+                  if (response['success'] == true) {
+                    console.log('ulla vern')
+                    this.updateonlyloc['currentbottle'] = itemid;
+                    this.updateonlyloc['Bottleloc'] = 'In' + this.currentUserCartId;
+                    this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
+                      this.updateStatus(currentlyDroped, 'blocked', this.currentUserCartId);
+                    });
+                  }
+                },
+                error => {
+                  console.error(error);
+                }
+              );
+            }
+          });
         }
+        if (currentDropzone.contains('shinyuvpn_list') || currentDropzone.contains('shinyvpn_list') || currentDropzone.contains('spikyrpr_list') ||
+          currentDropzone.contains('spikyrpn_list') || currentDropzone.contains('bouncyrpn_list') || currentDropzone.contains('bouncyurpn_list') ||
+          currentDropzone.contains('wavyurpr_list') || currentDropzone.contains('wavyurpn_list') || currentDropzone.contains('silkyvpn_list')) {
+          console.log(currentlyDroped, currentDropzone);
+          let itemid = currentlyDroped.split("at")[0].split('City')[1];
+          this.logser.getthisAssets(itemid).subscribe((data) => {
+            this.updateDragged['currentbottle'] = itemid;
+            this.updateDragged['Bottleloc'] = 'Supermarket shelf';
+            this.updateDragged['dragged'] = false;
+            this.logser.updatedragged(this.updateDragged).subscribe((data) => {
+              this.updateStatus(currentlyDroped, 'available', 'Supermarket shelf');
+            });
+          });
+        }
+
       }
+      let that = this;
       if (this.opensuperflag == 2) {
         setTimeout(function () {
           if (($(".refilllist").children('div').length) > 0) {
@@ -1829,8 +1673,19 @@ export class MaincityComponent implements AfterViewInit, OnInit {
 
   }
 
+  updateStatus(itemid: any, status: any, loc: any) {
+    console.log('enna maruthu', status)
+    console.log('enna item', itemid)
+
+    const existingIdIndex = this.commonobj.findIndex(item => item.id === itemid);
+    if (existingIdIndex > 0) {
+      this.commonobj[existingIdIndex]['status'] = status;
+      this.commonobj[existingIdIndex]['location'] = loc;
+
+    }
+    console.log(this.commonobj)
+  }
   opensupermarket() {
-    //this.welcome.nativeElement.play();
     this.instance1 = panzoom(this.supermarket.nativeElement, {
       maxZoom: 2,
       minZoom: 0.4,
@@ -1881,13 +1736,25 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   }
   currentusertransaction: any[] = [];
   loadledgerdata() {
-    console.log(this.boughtbottledata);
+    ////console.log(this.boughtbottledata);
     this.currentusertransaction = [];
     for (let i = 0; i < this.assetdataset.length; i++) {
-      if (this.assetdataset[i]['Bottle_loc'] == this.currentUserCartId) {
+      console.log(this.assetdataset);
+      console.log(this.assetdataset[i]['Bottle_loc'], this.currentUserCartId);
+      console.log(this.assetdataset[i]['purchased']);
+      if (this.assetdataset[i]['Bottle_loc'] == this.currentUserCartId && this.assetdataset[i]['purchased'] == true) {
         this.currentusertransaction.push(this.assetdataset[i]);
       }
-
+      else if (this.assetdataset[i]['Bottle_loc'] == 'In' + this.currentUserCartId && this.assetdataset[i]['purchased'] == false && this.assetdataset[i]['dragged'] == true) {
+        this.updateDragged['dragged'] = false;
+        this.updateDragged['purchased'] = false;
+        this.updateDragged['Bottleloc'] = 'Supermarket shelf';
+        for (let i = 0; i < this.bottletaken.length; i++) {
+          this.updateDragged['currentbottle'] = this.bottletaken[i].split("at")[0].split('City')[1];
+          this.logser.updatethisAssets(this.updateDragged).subscribe((data) => { });
+        }
+      }
+      console.log(this.currentusertransaction);
     }
   }
   showbutton = false;
@@ -1896,31 +1763,31 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     this.loadledgerdata();
     for (let i = 0; i < this.currentusertransaction.length; i++) {
       if (this.currentusertransaction[i]['Content_Code'] == "B1.Shiny" && this.currentusertransaction[i]['Bottle_Code'] == "UB.V" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + '@U' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'atU' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
       }
       else if (this.currentusertransaction[i]['Content_Code'] == "B1.Shiny" && this.currentusertransaction[i]['Bottle_Code'] == "B1.V" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + '@' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'at' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
       }
       else if (this.currentusertransaction[i]['Content_Code'] == "B2.Spiky" && this.currentusertransaction[i]['Bottle_Code'] == "B2.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + '@' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'at' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
       }
       else if (this.currentusertransaction[i]['Content_Code'] == "B2.Spiky" && this.currentusertransaction[i]['Bottle_Code'] == "B2.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + '@' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'at' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
       }
       else if (this.currentusertransaction[i]['Content_Code'] == "B3.Bouncy" && this.currentusertransaction[i]['Bottle_Code'] == "B3.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + '@' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'at' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
       }
       else if (this.currentusertransaction[i]['Content_Code'] == "B3.Bouncy" && this.currentusertransaction[i]['Bottle_Code'] == "UB.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + '@U' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'atU' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
       }
       else if (this.currentusertransaction[i]['Content_Code'] == "B4.Wavy" && this.currentusertransaction[i]['Bottle_Code'] == "UB.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + '@U' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'atU' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
       }
       else if (this.currentusertransaction[i]['Content_Code'] == "B4.Wavy" && this.currentusertransaction[i]['Bottle_Code'] == "UB.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + '@U' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'atU' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
       }
       else if (this.currentusertransaction[i]['Content_Code'] == "B5.Silky" && this.currentusertransaction[i]['Bottle_Code'] == "B5.V" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + '@' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'at' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
       }
     }
 

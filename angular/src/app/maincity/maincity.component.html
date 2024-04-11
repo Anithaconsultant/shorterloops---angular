@@ -121,7 +121,7 @@
                 <div class="bottleholder">
                     <div cdkDropList #bottleList="cdkDropList" [cdkDropListConnectedTo]="[droppedList]"
                         [cdkDropListData]="refillbottles" (cdkDropListDropped)="drop($event)" class="cart_bottle_list">
-                        <div *ngFor="let item of refillbottles"
+                        <div *ngFor="let item of refillbottles" id="{{item.split('.')[0].split('_')[2]}}"
                             class="bottle {{currentusercityId}}{{item}} {{item.split('.')[0].split('_')[2]}} " cdkDrag>
                         </div>
                     </div>
@@ -131,14 +131,15 @@
                     <div cdkDropList #bottlesshopped="cdkDropList"
                         [cdkDropListConnectedTo]="[shinyvpnbottle,shinyuvpnbottle,wavyurprbottle,spikyrpnbottle,spikyrprbottle,bouncyurpnbottle,bouncyrpnbottle,silkyvpnbottle]"
                         [cdkDropListData]="bottletaken" (cdkDropListDropped)="drop($event)" class="newbottle_list">
-                        <div *ngFor="let item of bottletaken" class="{{item}} {{item.split('@')[1]}}" cdkDrag></div>
+                        <div *ngFor="let item of bottletaken" class="{{item}} {{item.split('at')[1]}}" id="{{item}}" cdkDrag></div>
                     </div>
                 </div>
+ 
             </div>
 
             <div class="newrak">
-                <div class="shinyshelfvpn dropper">
-                    <div cdkDropList #shinyvpnbottle="cdkDropList" [cdkDropListConnectedTo]="[bottlesshopped]"
+                <div class="shinyshelfvpn dropper"><!-- (cdkDragEnded)="dragEnded($event)"-->
+                    <div cdkDropList #shinyvpnbottle="cdkDropList"  [cdkDropListConnectedTo]="[bottlesshopped]"
                         [cdkDropListData]="shinyvpn" (cdkDropListDropped)="drop($event)" class="shinyvpn_list"
                         [cdkDropListEnterPredicate]="checkcondition">
                         <div *ngFor="let item of shinyvpn" class="shiny_vpn" id="{{item}}"
@@ -209,6 +210,7 @@
                             (click)="opensticker(bottlesticker,$event)" cdkDrag></div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
