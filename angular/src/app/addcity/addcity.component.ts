@@ -136,7 +136,7 @@ export class AddcityComponent implements OnInit {
   city = {
     'CityName': '',
     'MayorId': this.logser.currentuser.UserId,
-    'Clocktickrate': '',
+    'Clocktickrate': 0,
     'Citystartdate': '',
     'CityCreateTime': '',
     'Status': 'Yes',
@@ -183,7 +183,10 @@ export class AddcityComponent implements OnInit {
       if (this.selectedavatar == 0) {
         alert("kindly select your Avatar")
       }
-      else {
+      if(isNaN(this.city.Clocktickrate)){
+        alert('Clock Tick rate is number.')
+      }
+      if(!isNaN(this.city.Clocktickrate) && this.selectedavatar!=0) {
         this.city.cityavatar = String(this.selectedavatar);
         console.log(this.city)
         this.logser.createcity(this.city).subscribe(

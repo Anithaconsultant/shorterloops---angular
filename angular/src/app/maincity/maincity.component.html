@@ -129,7 +129,7 @@
 
                 <div class="newbottleholder">
                     <div cdkDropList #bottlesshopped="cdkDropList"
-                        [cdkDropListConnectedTo]="[shinyvpnbottle,shinyuvpnbottle,wavyurprbottle,spikyrpnbottle,spikyrprbottle,bouncyurpnbottle,bouncyrpnbottle,silkyvpnbottle]"
+                        [cdkDropListConnectedTo]="[shinyvpnbottle,wavyurpnbottle,shinyuvpnbottle,wavyurprbottle,spikyrpnbottle,spikyrprbottle,bouncyurpnbottle,bouncyrpnbottle,silkyvpnbottle]"
                         [cdkDropListData]="bottletaken" (cdkDropListDropped)="drop($event)" class="newbottle_list">
                         <div *ngFor="let item of bottletaken" class="{{item}} {{item.split('at')[1]}}" id="{{item}}" cdkDrag></div>
                     </div>
@@ -187,7 +187,7 @@
                     </div>
                 </div>
                 <div class="wavyshelfurpn dropper">
-                    <div cdkDropList #bouncyurpnbottle="cdkDropList" [cdkDropListConnectedTo]="[bottlesshopped]"
+                    <div cdkDropList #wavyurpnbottle="cdkDropList" [cdkDropListConnectedTo]="[bottlesshopped]"
                         [cdkDropListData]="wavyurpn" (cdkDropListDropped)="drop($event)" class="wavyurpn_list"
                         [cdkDropListEnterPredicate]="checkwavyurpn">
                         <div *ngFor="let item of wavyurpn" class="wavyurpn" id="{{item}}"
@@ -197,7 +197,7 @@
                 <div class="wavyshelfurpr dropper">
                     <div cdkDropList #wavyurprbottle="cdkDropList" [cdkDropListConnectedTo]="[bottlesshopped]"
                         [cdkDropListData]="wavyurpr" (cdkDropListDropped)="drop($event)" class="wavyurpr_list"
-                        [cdkDropListEnterPredicate]="checkwavyurpn">
+                        [cdkDropListEnterPredicate]="checkwavyurpr">
                         <div *ngFor="let item of wavyurpr" class="wavyurpr" id="{{item}}"
                             (click)="opensticker(bottlesticker,$event)" cdkDrag></div>
                     </div>

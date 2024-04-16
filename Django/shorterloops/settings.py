@@ -81,16 +81,16 @@ WSGI_APPLICATION = 'shorterloops.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
- # {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'fresh',
-    #     'USER': 'root',
-    #     'PASSWORD': 'Admin@123',
-    #     'HOST': '127.0.0.1',
-    #     'PORT': '3306',
-    # }
+# {
+#     'ENGINE': 'django.db.backends.mysql',
+#     'NAME': 'fresh',
+#     'USER': 'root',
+#     'PASSWORD': 'Admin@123',
+#     'HOST': '127.0.0.1',
+#     'PORT': '3306',
+# }
 DATABASES = {
-    
+
     'default':
         {
         'ENGINE': 'django.db.backends.mysql',
@@ -100,8 +100,11 @@ DATABASES = {
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
-    #   {
+    # {
     #     'ENGINE': 'django.db.backends.mysql',
+    #     'OPTIONS': {
+    #         'sql_mode': 'traditional',
+    #     },
     #     'NAME': 'shorterloop',
     #     'USER': 'dbluser',
     #     'PASSWORD': 'Dbladmin@123',
@@ -157,8 +160,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = '/'
 CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
-CORS_REPLACE_HTTPS_REFERER = True
+# CORS_ALLOW_CREDENTIALS = True
+# CORS_REPLACE_HTTPS_REFERER = True
 # CORS_ALLOWED_ORIGINS = [
 #     "https://dbl.iihs.in",
 #     "https://10.10.4.129"

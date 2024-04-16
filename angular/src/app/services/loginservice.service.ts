@@ -24,20 +24,22 @@ export class LoginserviceService {
     'cityavatar': ''
   };
 
-  // baseurl = "https://dbl.iihs.in/api/";
-  baseurl = "http://127.0.0.1:8000/api/";
+  baseurl = "https://dbl.iihs.in/api/";
+  //baseurl = "http://127.0.0.1:8000/api/";
   authorizationData = 'Basic ' + btoa(this.username + ':' + this.password);
   httpHeaders = new HttpHeaders({
     'Content-Type': 'application/json',
     'Authorization': this.authorizationData
-  })
-  constructor(private http: HttpClient) { }
+  });
+ 
+  constructor(private http: HttpClient) {console.log(this.httpHeaders); }
   getAllUsers(): Observable<any> {
     return this.http.get(this.baseurl,
       { headers: this.httpHeaders });
   }
   createUser(user: any): Observable<any> {
     const body = { Username: user.Username, email: user.email, Password: user.Password, mobile: user.mobile, wallet: user.wallet, status: user.status, User_cityid: user.User_cityid, Role: user.Role, cartId: user.cartId, gender: user.gender, avatar: user.avatar };
+    console.log(this.httpHeaders);
     return this.http.post(this.baseurl + 'signup/', body,
       { headers: this.httpHeaders });
   }
@@ -47,9 +49,11 @@ export class LoginserviceService {
       { headers: this.httpHeaders });
   }
   createcity(city: any): Observable<any> {
+
     const body = { CityName: city.CityName, MayorId: city.MayorId, Clocktickrate: city.Clocktickrate, Status: city.Status, cityavatar: city.cityavatar };
     return this.http.post(this.baseurl + 'addcity/', body,
       { headers: this.httpHeaders });
+    
   }
   updatecurrenttime(city: any): Observable<any> {
     const body = { CurrentTime: city.CurrentTime, CurrentDay: city.CurrentDay };
