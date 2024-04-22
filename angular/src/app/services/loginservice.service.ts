@@ -24,8 +24,8 @@ export class LoginserviceService {
     'cityavatar': ''
   };
 
-  baseurl = "https://dbl.iihs.in/api/";
-  //baseurl = "http://127.0.0.1:8000/api/";
+  //baseurl = "https://dbl.iihs.in/api/";
+  baseurl = "http://127.0.0.1:8000/api/";
   authorizationData = 'Basic ' + btoa(this.username + ':' + this.password);
   httpHeaders = new HttpHeaders({
     'Content-Type': 'application/json',
@@ -111,8 +111,7 @@ export class LoginserviceService {
   updatelocation(currentbottle: any): Observable<any> {
     console.log("alert");
     const body = {
-      Bottle_loc: currentbottle.Bottleloc,
-      purchased: currentbottle.purchased
+      Bottle_loc: currentbottle.Bottleloc
 
     };
     console.log(body);
