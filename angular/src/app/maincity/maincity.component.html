@@ -58,7 +58,8 @@
             <div class="topbasketholder">
                 <div class="newbottle_list">
                     <div *ngFor="let item of bottletaken" class="{{item}} {{item.split('@')[1]}}"></div>
-                    <div *ngFor="let item of refilledbottles" class="{{item}} {{item.split('.')[0].split('_')[2]}}" ></div>
+                    <div *ngFor="let item of refilledbottles" class="{{item}} {{item.split('.')[0].split('_')[2]}}">
+                    </div>
                 </div>
             </div>
             <div class="bottombasketholder">
@@ -131,15 +132,16 @@
                     <div cdkDropList #bottlesshopped="cdkDropList"
                         [cdkDropListConnectedTo]="[shinyvpnbottle,wavyurpnbottle,shinyuvpnbottle,wavyurprbottle,spikyrpnbottle,spikyrprbottle,bouncyurpnbottle,bouncyrpnbottle,silkyvpnbottle]"
                         [cdkDropListData]="bottletaken" (cdkDropListDropped)="drop($event)" class="newbottle_list">
-                        <div *ngFor="let item of bottletaken" class="{{item}} {{item.split('at')[1]}}" id="{{item}}" cdkDrag></div>
+                        <div *ngFor="let item of bottletaken" class="{{item}} {{item.split('at')[1]}}" id="{{item}}"
+                            cdkDrag></div>
                     </div>
                 </div>
- 
+
             </div>
 
             <div class="newrak">
                 <div class="shinyshelfvpn dropper"><!-- (cdkDragEnded)="dragEnded($event)"-->
-                    <div cdkDropList #shinyvpnbottle="cdkDropList"  [cdkDropListConnectedTo]="[bottlesshopped]"
+                    <div cdkDropList #shinyvpnbottle="cdkDropList" [cdkDropListConnectedTo]="[bottlesshopped]"
                         [cdkDropListData]="shinyvpn" (cdkDropListDropped)="drop($event)" class="shinyvpn_list"
                         [cdkDropListEnterPredicate]="checkcondition">
                         <div *ngFor="let item of shinyvpn" class="shiny_vpn" id="{{item}}"

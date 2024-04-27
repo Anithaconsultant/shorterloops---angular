@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'accounts',
     'rest_framework',
     'corsheaders',
-    'bootstrap4'
+    'bootstrap4',
+    'auditlog',
 
 ]
 
@@ -56,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+     'auditlog.middleware.AuditlogMiddleware',
 ]
 
 ROOT_URLCONF = 'shorterloops.urls'
@@ -176,7 +178,17 @@ CORS_ALLOW_ALL_ORIGINS = True
 #     'https://dbl.iihs.in',
 #     'https://10.10.4.129',
 # )
+CORS_ORIGIN_ALLOW_ALL = False
 
+CORS_ALLOW_HEADERS = [
+    'Content-Type', 
+    'Authorization', 
+    'user-data',  # Add 'user-data' to the list of allowed headers
+]
+
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:4200',  # Add the origin of your Angular application
+]
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
@@ -185,4 +197,20 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAdminUser',
     ),
+}
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'auditlog': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    },
 }

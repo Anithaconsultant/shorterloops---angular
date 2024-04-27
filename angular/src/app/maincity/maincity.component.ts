@@ -175,6 +175,13 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     'transactiondate': '',
     'purchased': false
   }
+  userDetails = {
+    'currentuser': '',
+    'currentCartId': '',
+    'CityId': '',
+    'CurrentDay': ''
+
+  }
   constructor(private logser: LoginserviceService, private router: Router, private modalService: NgbModal) {
     this.currentUserRole = this.logser.currentuser.Role;
     this.currentUserCartId = this.logser.currentuser.cartId;
@@ -185,96 +192,108 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   }
   ngOnInit(): void {
     if (this.logser.currentuser.Username != '') {
-    //   sessionStorage.setItem('currentUser', JSON.stringify(this.logser.currentuser));
-    // } else {
-    //   let current = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
-    //   this.logser.currentuser = JSON.parse(JSON.stringify(current))
-    //   this.currentUserRole = this.logser.currentuser.Role;
-    //   this.currentUserCartId = this.logser.currentuser.cartId;
-    //   this.currentusername = this.logser.currentuser.Username;
-    //   this.currentusergender = this.logser.currentuser.gender;
-    //   this.currentuseravatar = this.logser.currentuser.avatar;
-    //   this.currentusercityId = this.logser.currentuser.CityId;
-    //   this.cityCurrentTime = this.logser.currentuser.CurrentTime;
-    //   this.citycurrentday = this.logser.currentuser.currentday;
-    //   this.cityrate = this.logser.currentuser.cityrate;
-    //   this.cityavatar = this.logser.currentuser.cityavatar;
-    //   this.currentwallet = this.logser.currentuser.wallet;
-    //   $(".maincity").addClass("city_" + this.cityavatar)
+      //   sessionStorage.setItem('currentUser', JSON.stringify(this.logser.currentuser));
+      // } else {
+      //   let current = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+      //   this.logser.currentuser = JSON.parse(JSON.stringify(current))
+      //   this.currentUserRole = this.logser.currentuser.Role;
+      //   this.currentUserCartId = this.logser.currentuser.cartId;
+      //   this.currentusername = this.logser.currentuser.Username;
+      //   this.currentusergender = this.logser.currentuser.gender;
+      //   this.currentuseravatar = this.logser.currentuser.avatar;
+      //   this.currentusercityId = this.logser.currentuser.CityId;
+      //   this.cityCurrentTime = this.logser.currentuser.CurrentTime;
+      //   this.citycurrentday = this.logser.currentuser.currentday;
+      //   this.cityrate = this.logser.currentuser.cityrate;
+      //   this.cityavatar = this.logser.currentuser.cityavatar;
+      //   this.currentwallet = this.logser.currentuser.wallet;
+      //   $(".maincity").addClass("city_" + this.cityavatar)
 
-    //}
-    this.loadAvailableAsset();
-    this.logser.getAllUsers().subscribe((data) => {
-      this.user = data;
-      for (var t = 0; t < this.user.length; t++) {
-        if (this.user[t].login == 1 && this.user[t].User_cityid == this.logser.currentuser.CityId) {
-          $("." + this.user[t].Role.split(" ")[0]).show();
-          this.currentUserId = this.user[t].UserId;
+      //}
+      this.userDetails.currentuser = this.logser.currentuser.Username;
+      this.userDetails.CityId = this.logser.currentuser.CityId;
+      this.userDetails.currentCartId = this.logser.currentuser.cartId;
+      this.userDetails.CurrentDay = this.logser.currentuser.currentday.toString();
+      this.logser.sendUserDetails(this.userDetails).subscribe(
+        response => {
+          console.log('User details sent successfully');
+        },
+        error => {
+          console.error('Error sending user details:', error);
         }
-        if (this.user[t].Username == this.currentusername) {
-          this.currentwallet = this.user[t].wallet;
-          this.logser.currentuser.wallet = this.user[t].wallet;
-        }
-        if (this.user[t].Username == this.currentusername && this.user[t].avatar == '') {
-          this.noavatar = true;
-          if (this.noavatar == true) {
-            this.open(this.content)
+      );
+      this.loadAvailableAsset();
+      this.logser.getAllUsers().subscribe((data) => {
+        this.user = data;
+        for (var t = 0; t < this.user.length; t++) {
+          if (this.user[t].login == 1 && this.user[t].User_cityid == this.logser.currentuser.CityId) {
+            $("." + this.user[t].Role.split(" ")[0]).show();
+            this.currentUserId = this.user[t].UserId;
           }
-        }
-        else if (this.user[t].Username == this.currentusername && this.user[t].avatar !== '') {
-          this.logser.currentuser.avatar = this.user[t].avatar;
-          this.currentuseravatar = this.user[t].avatar
-          $(".displaypic,.cartavatar").addClass('pic_' + this.logser.currentuser.avatar);
-        }
-        if (this.user[t].Role !== '') {
-          let word = this.user[t].Role.split(" ")[0];
-          let xpos = this.positionObject[word as keyof typeof this.positionObject][3][0];
-          let ypos = this.positionObject[word as keyof typeof this.positionObject][3][1];
-          let x2 = this.positionObject[word as keyof typeof this.positionObject][2][0];
-          let y2 = this.positionObject[word as keyof typeof this.positionObject][2][1];
-          $(".displaypanel." + word).css({ 'left': xpos + 'px', 'top': ypos + 'px' }).html(this.user[t].Role);
-          $(".housedisplay." + word).css({ 'left': x2 + 'px', 'top': y2 + 'px' }).html(this.user[t].Username).show();
-          if (word == 'Supermarket' || word == 'Plastic' || word == 'Ubottle' || word == 'Reverse' || word == 'Refilling') {
-            $(".commoncls." + word).html('').addClass('openlight');
+          if (this.user[t].Username == this.currentusername) {
+            this.currentwallet = this.user[t].wallet;
+            this.logser.currentuser.wallet = this.user[t].wallet;
           }
-        }
-        if (this.user[t].User_cityid == this.logser.currentuser.CityId) {
-          let avatarnumber = this.user[t].avatar;
-          for (var j = 0; j < this.maleset.length; j++) {
-            if (this.maleset[j].toString() == avatarnumber) {
-              this.maleset.splice(j, 1);
+          if (this.user[t].Username == this.currentusername && this.user[t].avatar == '') {
+            this.noavatar = true;
+            if (this.noavatar == true) {
+              this.open(this.content)
+            }
+          }
+          else if (this.user[t].Username == this.currentusername && this.user[t].avatar !== '') {
+            this.logser.currentuser.avatar = this.user[t].avatar;
+            this.currentuseravatar = this.user[t].avatar
+            $(".displaypic,.cartavatar").addClass('pic_' + this.logser.currentuser.avatar);
+          }
+          if (this.user[t].Role !== '') {
+            let word = this.user[t].Role.split(" ")[0];
+            let xpos = this.positionObject[word as keyof typeof this.positionObject][3][0];
+            let ypos = this.positionObject[word as keyof typeof this.positionObject][3][1];
+            let x2 = this.positionObject[word as keyof typeof this.positionObject][2][0];
+            let y2 = this.positionObject[word as keyof typeof this.positionObject][2][1];
+            $(".displaypanel." + word).css({ 'left': xpos + 'px', 'top': ypos + 'px' }).html(this.user[t].Role);
+            $(".housedisplay." + word).css({ 'left': x2 + 'px', 'top': y2 + 'px' }).html(this.user[t].Username).show();
+            if (word == 'Supermarket' || word == 'Plastic' || word == 'Ubottle' || word == 'Reverse' || word == 'Refilling') {
+              $(".commoncls." + word).html('').addClass('openlight');
+            }
+          }
+          if (this.user[t].User_cityid == this.logser.currentuser.CityId) {
+            let avatarnumber = this.user[t].avatar;
+            for (var j = 0; j < this.maleset.length; j++) {
+              if (this.maleset[j].toString() == avatarnumber) {
+                this.maleset.splice(j, 1);
+              }
             }
           }
         }
-      }
-      this.newmale = this.maleset.slice(0);
+        this.newmale = this.maleset.slice(0);
 
-    });
-    this.logser.getcitynames().subscribe((data) => {
-      console.log(data);
-      setTimeout(() => {
-        if (data[0].MayorId != 0) {
-          $(".mayorflag").show();
-        }
-        this.currentTime();
-      }, 500)
-      this.logser.currentuser.cityname = data[0].CityName;
-      this.logser.currentuser.CurrentTime = data[0].CurrentTime;
-      this.logser.currentuser.currentday = data[0].CurrentDay;
-      this.logser.currentuser.cityrate = data[0].cityrate;
-      this.logser.currentuser.cityavatar = data[0].cityavatar;
-      this.cityrate = data[0].cityrate;
-      this.cityavatar = data[0].cityavatar;
-      this.cityname = this.logser.currentuser.cityname;
-      this.cityCurrentTime = data[0].CurrentTime;
-      this.citycurrentday = data[0].CurrentDay;
-      (this.citycurrentday > 0) ? this.sec = (this.cityCurrentTime * 3600) + (3600 * 24 * this.citycurrentday) : this.sec = this.cityCurrentTime * 3600;
-      $(".maincity").addClass("city_" + this.cityavatar)
-    });
+      });
+      this.logser.getcitynames().subscribe((data) => {
+        console.log(data);
+        setTimeout(() => {
+          if (data[0].MayorId != 0) {
+            $(".mayorflag").show();
+          }
+          this.currentTime();
+        }, 500)
+        this.logser.currentuser.cityname = data[0].CityName;
+        this.logser.currentuser.CurrentTime = data[0].CurrentTime;
+        this.logser.currentuser.currentday = data[0].CurrentDay;
+        this.logser.currentuser.cityrate = data[0].cityrate;
+        this.logser.currentuser.cityavatar = data[0].cityavatar;
+        this.cityrate = data[0].cityrate;
+        this.cityavatar = data[0].cityavatar;
+        this.cityname = this.logser.currentuser.cityname;
+        this.cityCurrentTime = data[0].CurrentTime;
+        this.citycurrentday = data[0].CurrentDay;
+        (this.citycurrentday > 0) ? this.sec = (this.cityCurrentTime * 3600) + (3600 * 24 * this.citycurrentday) : this.sec = this.cityCurrentTime * 3600;
+        $(".maincity").addClass("city_" + this.cityavatar)
+      });
 
-    $("body").removeClass('frontpage').removeClass('cartcontent');
+      $("body").removeClass('frontpage').removeClass('cartcontent');
 
-    setInterval(() => { this.loadAvailableAsset() }, 10000);
+      setInterval(() => { this.loadAvailableAsset() }, 10000);
     }
     else {
       this.router.navigate(['/login']);
@@ -389,7 +408,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       this.commonobj[currentItem]['status'] = 'purchased';
       this.commonobj[currentItem]['location'] = bottleloc;
     }
-    
+
   }
   /*
   checkcartposition() {
@@ -1663,29 +1682,29 @@ export class MaincityComponent implements AfterViewInit, OnInit {
 
   ngAfterViewInit(): void {
     if (this.logser.currentuser.Username != '') {
-    this.instance = panzoom(this.scene.nativeElement, {
-      maxZoom: 3,
-      minZoom: 0.3,
-      bounds: true,
-      boundsPadding: 1,
-      smoothScroll: false,
-      filterKey: function () {
-        return true;
-      },
-      beforeWheel: function (e) {
-        var shouldIgnore = !e.shiftKey;
-        return shouldIgnore;
-      },
-      beforeMouseDown: function (e) {
-        var shouldIgnore = !e.shiftKey;
-        return shouldIgnore;
-      }
+      this.instance = panzoom(this.scene.nativeElement, {
+        maxZoom: 3,
+        minZoom: 0.3,
+        bounds: true,
+        boundsPadding: 1,
+        smoothScroll: false,
+        filterKey: function () {
+          return true;
+        },
+        beforeWheel: function (e) {
+          var shouldIgnore = !e.shiftKey;
+          return shouldIgnore;
+        },
+        beforeMouseDown: function (e) {
+          var shouldIgnore = !e.shiftKey;
+          return shouldIgnore;
+        }
 
 
-    });
+      });
 
-    this.loadinginitialState();
-     }
+      this.loadinginitialState();
+    }
   }
   loadinginitialState() {
     let a = this.currentUserRole.split(" ")[0];
@@ -2152,7 +2171,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         if (currentDropzone.contains('shinyuvpn_list') || currentDropzone.contains('shinyvpn_list') || currentDropzone.contains('spikyrpr_list') ||
           currentDropzone.contains('spikyrpn_list') || currentDropzone.contains('bouncyrpn_list') || currentDropzone.contains('bouncyurpn_list') ||
           currentDropzone.contains('wavyurpr_list') || currentDropzone.contains('wavyurpn_list') || currentDropzone.contains('silkyvpn_list')) {
-   
+
           let itemid = currentlyDroped.split("at")[0].split('City')[1];
           this.logser.getthisAssets(itemid).subscribe((data) => {
             this.updateDragged['currentbottle'] = itemid;

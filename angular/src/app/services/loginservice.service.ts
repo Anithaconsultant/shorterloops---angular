@@ -5,8 +5,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class LoginserviceService {
-  username = "anitha";
-  password = "anitha";
+  username = "admin";
+  password = "admin";
   currentuser = {
     'Username': '',
     'UserId': '',
@@ -31,8 +31,8 @@ export class LoginserviceService {
     'Content-Type': 'application/json',
     'Authorization': this.authorizationData
   });
- 
-  constructor(private http: HttpClient) {console.log(this.httpHeaders); }
+
+  constructor(private http: HttpClient) { console.log(this.httpHeaders); }
   getAllUsers(): Observable<any> {
     return this.http.get(this.baseurl,
       { headers: this.httpHeaders });
@@ -53,7 +53,7 @@ export class LoginserviceService {
     const body = { CityName: city.CityName, MayorId: city.MayorId, Clocktickrate: city.Clocktickrate, Status: city.Status, cityavatar: city.cityavatar };
     return this.http.post(this.baseurl + 'addcity/', body,
       { headers: this.httpHeaders });
-    
+
   }
   updatecurrenttime(city: any): Observable<any> {
     const body = { CurrentTime: city.CurrentTime, CurrentDay: city.CurrentDay };
@@ -219,5 +219,15 @@ export class LoginserviceService {
     //console.log(body);
     return this.http.put(this.baseurl + 'getmunicipalitycash/' + this.currentuser.CityId, body,
       { headers: this.httpHeaders });
+  }
+
+  sendUserDetails(userDetails: any): Observable<any> {
+    const headers = new HttpHeaders()
+      .set('Content-Type', 'application/json')
+      .set('Authorization', this.authorizationData)
+      .set('user-data', JSON.stringify(userDetails));
+
+    const url = this.baseurl + 'receive_user_details/';
+    return this.http.post(url, {}, { headers :headers});
   }
 }

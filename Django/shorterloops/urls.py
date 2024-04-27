@@ -4,7 +4,7 @@ from django.urls import include, path
 from accounts import views
 
 urlpatterns = [
-
+    path("admin/", admin.site.urls),
     path('api/api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/', views.login, name='login'),
     path('api/login/', views.login, name='login'),
@@ -23,8 +23,12 @@ urlpatterns = [
     path('api/assets/<itemid>', views.returnasset, name='returnasset'),
     path('api/lockasset/<itemid>', views.lockasset, name='lockasset'),
     path('api/unlockasset/<itemid>', views.unlockasset, name='unlockasset'),
+    path('api/receive_user_details/', views.receive_user_data, name='receive_user_data'),
     path('api/cashflow/', views.createtransaction, name='createtransaction'),
-    path('api/updatetransactionfacility/<cityid>', views.updatetransactionfacility, name='updatetransactionfacility'),
-    path('api/getsupermarketcash/<cityid>', views.getsupermarketcash, name='getsupermarketcash'),
-    path('api/getmunicipalitycash/<cityid>', views.getmunicipalitycash, name='getmunicipalitycash'),
+    path('api/updatetransactionfacility/<cityid>',
+         views.updatetransactionfacility, name='updatetransactionfacility'),
+    path('api/getsupermarketcash/<cityid>',
+         views.getsupermarketcash, name='getsupermarketcash'),
+    path('api/getmunicipalitycash/<cityid>',
+         views.getmunicipalitycash, name='getmunicipalitycash'),
 ]

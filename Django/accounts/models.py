@@ -1,8 +1,9 @@
 
 from django.db import models
 import datetime
-
-
+from auditlog.models import AuditlogHistoryField
+from auditlog.registry import auditlog
+import uuid
 FACILITY_CHOICES = (('mun', 'Municipality Office'),
                     ('sup', 'Supermarket Owner'),
                     ('clk', 'Clock Tower'),
@@ -31,31 +32,33 @@ class Shampooprice(models.Model):
     class Meta:
         db_table = "shampooprice"
     BottleContent = models.CharField(max_length=70)
-    UnitPrice=models.FloatField(default=0.0)
-    Discount=models.IntegerField(default=0)
-    
+    UnitPrice = models.FloatField(default=0.0)
+    Discount = models.IntegerField(default=0)
+
+
 class Bottleprice(models.Model):
     class Meta:
         db_table = "bottleprice"
     BottleType = models.CharField(max_length=70)
-    OriginalPrice=models.FloatField(default=0.0)
-    percentReturnGood=models.FloatField(default=0.0)
-    percentReturnDamage=models.FloatField(default=0.0)
-    percentPurchasediscount_refill=models.FloatField(default=0.0)
-    percentEnvTax_newbottle=models.FloatField(default=0.0)
-    percentEnvTax_refillbottle=models.FloatField(default=0.0)
-    Fine_Discard=models.FloatField(default=0.0)
-   
+    OriginalPrice = models.FloatField(default=0.0)
+    percentReturnGood = models.FloatField(default=0.0)
+    percentReturnDamage = models.FloatField(default=0.0)
+    percentPurchasediscount_refill = models.FloatField(default=0.0)
+    percentEnvTax_newbottle = models.FloatField(default=0.0)
+    percentEnvTax_refillbottle = models.FloatField(default=0.0)
+    Fine_Discard = models.FloatField(default=0.0)
+
+
 class Cashflow(models.Model):
-     class Meta:
+    class Meta:
         db_table = "Cashflow"
-     TransactionId = models.CharField(max_length=70, unique=True)
-     Amount= models.CharField(max_length=70)
-     DebitFacility=models.CharField(max_length=70)
-     CreditFacility=models.CharField(max_length=70)
-     Purpose=models.CharField(max_length=70)
-    
-    
+    TransactionId = models.CharField(max_length=70, unique=True)
+    Amount = models.CharField(max_length=70)
+    DebitFacility = models.CharField(max_length=70)
+    CreditFacility = models.CharField(max_length=70)
+    Purpose = models.CharField(max_length=70)
+
+
 class City(models.Model):
     class Meta:
         db_table = "city"
@@ -64,7 +67,7 @@ class City(models.Model):
     MayorId = models.IntegerField(null=True, unique=True)
     Clocktickrate = models.IntegerField(default=100)
     CurrentTime = models.IntegerField(default=0)
-    CurrentDay= models.IntegerField(default=0)
+    CurrentDay = models.IntegerField(default=0)
     Citystartdate = models.DateField(default=datetime.date.today)
     CityCreateTime = models.TimeField(auto_now=True)
     Status = models.CharField(max_length=70, null=True)
@@ -74,7 +77,8 @@ class City(models.Model):
 class Facility(models.Model):
     class Meta:
         db_table = "facility"
-    Facility_cityid =models.CharField(max_length=60)
+    history = AuditlogHistoryField()
+    Facility_cityid = models.CharField(max_length=60)
     FacilityId = models.AutoField(primary_key=True)
     Facilityname = models.CharField(max_length=60)
     Owner_status = models.CharField(max_length=70, blank=True, default='')
@@ -88,37 +92,59 @@ class Asset(models.Model):
     class Meta:
         db_table = "Asset"
     AssetDbId = models.AutoField(primary_key=True)
-    AssetId =models.CharField(max_length=1000, blank=True)
+    AssetId = models.CharField(max_length=1000, blank=True)
     Asset_CityId = models.ForeignKey("city", on_delete=models.CASCADE)
-    CategoryCode= models.CharField(max_length=1000, blank=True)
-    Bottle_Code= models.CharField(max_length=1000, blank=True)
-    Content_Code= models.CharField(max_length=1000, blank=True)
+    CategoryCode = models.CharField(max_length=1000, blank=True)
+    Bottle_Code = models.CharField(max_length=1000, blank=True)
+    Content_Code = models.CharField(max_length=1000, blank=True)
     Quantity = models.CharField(max_length=70, blank=True)
     Units = models.CharField(max_length=70, blank=True)
-    Bottle_loc= models.CharField(max_length=1000, blank=True)
-    Bottle_Status= models.CharField(max_length=1000, blank=True)
-    DOM=models.CharField(max_length=70, blank=True)
-    Max_Refill_Count=models.IntegerField(default=5, blank=True)
-    Current_Refill_Count=models.IntegerField(default=5, blank=True)
-    Latest_Refill_Date=models.CharField(max_length=70, blank=True)
-    Retirement_Date=models.CharField(max_length=70, blank=True)
-    Retire_Reason=models.CharField(max_length=70, blank=True)
+    Bottle_loc = models.CharField(max_length=1000, blank=True)
+    Bottle_Status = models.CharField(max_length=1000, blank=True)
+    DOM = models.CharField(max_length=70, blank=True)
+    Max_Refill_Count = models.IntegerField(default=5, blank=True)
+    Current_Refill_Count = models.IntegerField(default=5, blank=True)
+    Latest_Refill_Date = models.CharField(max_length=70, blank=True)
+    Retirement_Date = models.CharField(max_length=70, blank=True)
+    Retire_Reason = models.CharField(max_length=70, blank=True)
     Content_Price = models.CharField(max_length=70, blank=True)
-    Bottle_Price=models.CharField(max_length=70, blank=True)
-    Redeem_Good=models.CharField(max_length=70, blank=True)
-    Redeem_Damaged=models.CharField(max_length=70, blank=True)
-    Discount_RefillB=models.CharField(max_length=70, blank=True)
-    Env_Tax=models.CharField(max_length=70, blank=True)
-    Discard_fine=models.CharField(max_length=70, blank=True)
+    Bottle_Price = models.CharField(max_length=70, blank=True)
+    Redeem_Good = models.CharField(max_length=70, blank=True)
+    Redeem_Damaged = models.CharField(max_length=70, blank=True)
+    Discount_RefillB = models.CharField(max_length=70, blank=True)
+    Env_Tax = models.CharField(max_length=70, blank=True)
+    Discard_fine = models.CharField(max_length=70, blank=True)
     Transaction_Id = models.CharField(max_length=70, blank=True)
-    Transaction_Date= models.CharField(max_length=70, blank=True)
+    Transaction_Date = models.CharField(max_length=70, blank=True)
     Fromfacility = models.CharField(max_length=70, blank=True)
     Tofacility = models.CharField(max_length=70, blank=True)
-    purchased=models.BooleanField(default=False)
-    dragged=models.BooleanField(default=False)
-    
-    
-   
+    purchased = models.BooleanField(default=False)
+    dragged = models.BooleanField(default=False)
+
+    correlation_id = models.CharField(max_length=100, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.correlation_id:
+            self.correlation_id = str(uuid.uuid4())
+        super(Asset, self).save(*args, **kwargs)
+
+
+auditlog.register(Asset)
+
+
+class audit_log(models.Model):
+    class Meta:
+        db_table = "audit_log"
+    id = models.AutoField(primary_key=True)
+    action = models.CharField(max_length=70, blank=False)
+    model_name = models.CharField(max_length=100, blank=False)
+    AssetId = models.CharField(max_length=100, blank=False)
+    currentPlace = models.CharField(max_length=100, blank=False,default="Supermarket shelf")
+    currentLoc = models.CharField(max_length=100, blank=False,default="Supermarket shelf")
+    currentDay = models.CharField(max_length=100, blank=False,default="0")
+    changeDay = models.CharField(max_length=100, blank=False,default="0")
+    assetStatus = models.CharField(max_length=100, blank=False,default="full")
+    userName = models.CharField(max_length=100, blank=False,default="")
 
 
 class Cityrule(models.Model):
@@ -163,6 +189,7 @@ class Cityrule(models.Model):
     Dustbin_display = models.BooleanField(default=0, blank=True)
     Carbage_display = models.BooleanField(default=0, blank=True)
 
+
 class CustomUser(models.Model):
     class Meta:
         db_table = 'usertable'
@@ -177,5 +204,5 @@ class CustomUser(models.Model):
     Role = models.CharField(max_length=30, blank=True)
     cartId = models.CharField(max_length=30, blank=True, default=0)
     avatar = models.CharField(max_length=30, blank=True)
-    gender=models.CharField(max_length=30, blank=True)
-    login=models.CharField(max_length=30, blank=False,default=0)
+    gender = models.CharField(max_length=30, blank=True)
+    login = models.CharField(max_length=30, blank=False, default=0)

@@ -1,3 +1,4 @@
+from .userData import UserData
 from .models import City, CustomUser, Facility, FACILITY_CHOICES, Cityrule, Asset, Cashflow
 from .serializers import userSerializer, citySerializer, facilitySerializer, cityRuleSerializer, AssetSerializer, cashflowSerializer
 from rest_framework.decorators import api_view
@@ -7,7 +8,10 @@ from django.http import JsonResponse
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
+import json
 from django.core.exceptions import ObjectDoesNotExist
+from .signals import user_data_received
+from django.db.models.signals import post_save
 data1 = list()
 currentuser = ''
 cartcount = 100
@@ -16,9 +20,7 @@ cartcount = 100
 @transaction.atomic
 def confirm_payment(request, seat_number):
     seat = get_object_or_404(Seat, seat_number=seat_number, is_reserved=True)
-
     # Perform payment processing here...
-
     seat.is_booked = True
     seat.is_reserved = False
     seat.save()
@@ -28,35 +30,26 @@ def confirm_payment(request, seat_number):
 
 def reserve_seat(request, seat_number):
     seat = get_object_or_404(Seat, seat_number=seat_number, is_booked=False)
-
     seat.is_reserved = True
     seat.save()
-
     return JsonResponse({'message': 'Seat reserved successfully'})
 
 
 @transaction.atomic
 @csrf_exempt
 def lockasset(request, itemid):
-    print('locking')
     try:
         asset = get_object_or_404(Asset, AssetId=itemid, purchased=False)
         if asset.dragged == False:
             asset.dragged = True
+            post_save.disconnect(user_data_received, sender=Asset)
             asset.save()
+
             return JsonResponse({'success': True, 'message': 'item reserved successfully'})
         else:
             return JsonResponse({'success': False, 'message': 'Seat is not available for blocking.'})
     except ObjectDoesNotExist:
         return JsonResponse({'success': False, 'message': 'Seat does not exist.'})
-    print(asset.dragged)
-        # asset = Asset.objects.select_for_update().get(AssetId=itemid)
-
-        # if asset.dragged == False:
-        #     asset.dragged = True
-        #     print(asset.dragged)
-        #     asset.save()
-        #     return JsonResponse({'success': True})
 
 
 @api_view(['POST'])
@@ -84,7 +77,6 @@ def login(request):
 def signup(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
-        print(data)
         serializer = userSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -110,7 +102,6 @@ def getcityname(request, cityid):
 def addcity(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
-        print(data)
         serializer = citySerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -161,7 +152,6 @@ def createasset(request, cityid):
 def createtransaction(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
-        print(data)
         serializer = cashflowSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -187,6 +177,7 @@ def returnasset(request, itemid):
     if request.method == 'GET':
         data = Asset.objects.filter(AssetId=itemid)
         serializer = AssetSerializer(data, many=True)
+        # logs = LogEntry.objects.filter(object_id=itemid)
         return JsonResponse(serializer.data, safe=False)
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
@@ -272,8 +263,6 @@ def getsupermarketcash(request, cityid):
     if request.method == 'PUT':
         data = JSONParser().parse(request)
         serval = {'Cashbox': data['Cashbox']}
-        print(data)
-        print(serval)
         getfacility = Facility.objects.filter(
             Facilityname='Supermarket Owner', Facility_cityid=cityid).first()
         serializer = facilitySerializer(getfacility, data=serval, partial=True)
@@ -294,7 +283,6 @@ def getmunicipalitycash(request, cityid):
     if request.method == 'PUT':
         data = JSONParser().parse(request)
         serval = {'Cashbox': data['Cashbox']}
-        print(serval)
         getfacility = Facility.objects.filter(
             Facilityname='Municipality Office', Facility_cityid=cityid).first()
         serializer = facilitySerializer(getfacility, data=serval, partial=True)
@@ -314,7 +302,6 @@ def leavefacility(request, userid):
             serializer = facilitySerializer(record, data=data, partial=True)
             if serializer.is_valid():
                 serializer.save()
-                print(serializer)
             else:
                 print("invalid data")
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
@@ -353,7 +340,6 @@ def editcity(request, cityid):
 def updateusercity(request, userid):
     if request.method == 'PUT':
         data = JSONParser().parse(request)
-        print(data)
         getuser = CustomUser.objects.filter(pk=userid).first()
         serializer = userSerializer(getuser, data=data, partial=True)
         if serializer.is_valid():
@@ -365,3 +351,20 @@ def updateusercity(request, userid):
         data = CustomUser.objects.all()
         serializer = userSerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
+
+
+@csrf_exempt  # Only if you're accepting POST requests without CSRF token
+def receive_user_data(request):
+    if request.method == 'POST':
+        try:
+            user_data = json.loads(request.headers.get('User-Data', '{}'))
+            userdata = UserData.get_instance()
+            userdata.set_data('username', user_data.get('currentuser'))
+            userdata.set_data('CityId', user_data.get('CityId'))
+            userdata.set_data('currentCartId', user_data.get('currentCartId'))
+            userdata.set_data('CurrentDay', user_data.get('CurrentDay'))
+            return JsonResponse({'message': 'User details received successfully'})
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+    else:
+        return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
