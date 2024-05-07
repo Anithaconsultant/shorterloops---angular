@@ -1,6 +1,6 @@
 from .userData import UserData
-from .models import City, CustomUser, Facility, FACILITY_CHOICES, Cityrule, Asset, Cashflow
-from .serializers import userSerializer, citySerializer, facilitySerializer, cityRuleSerializer, AssetSerializer, cashflowSerializer
+from .models import City, CustomUser, Facility, FACILITY_CHOICES, Cityrule, Asset, Cashflow,audit_log
+from .serializers import userSerializer, citySerializer, facilitySerializer, cityRuleSerializer, AssetSerializer, cashflowSerializer,AuditSerializer
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from rest_framework import status
@@ -143,7 +143,7 @@ def createasset(request, cityid):
             print("invalid data")
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
     if request.method == 'GET':
-        data = Asset.objects.filter(Asset_CityId=cityid)
+        data = Asset.objects.filter(Asset_CityId=cityid)        
         serializer = AssetSerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
 
@@ -353,18 +353,33 @@ def updateusercity(request, userid):
         return JsonResponse(serializer.data, safe=False)
 
 
-@csrf_exempt  # Only if you're accepting POST requests without CSRF token
-def receive_user_data(request):
-    if request.method == 'POST':
-        try:
-            user_data = json.loads(request.headers.get('User-Data', '{}'))
-            userdata = UserData.get_instance()
-            userdata.set_data('username', user_data.get('currentuser'))
-            userdata.set_data('CityId', user_data.get('CityId'))
-            userdata.set_data('currentCartId', user_data.get('currentCartId'))
-            userdata.set_data('CurrentDay', user_data.get('CurrentDay'))
-            return JsonResponse({'message': 'User details received successfully'})
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON data'}, status=400)
-    else:
-        return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
+# @csrf_exempt  # Only if you're accepting POST requests without CSRF token
+# def receive_user_data(request):
+#     if request.method == 'POST':
+#         try:
+#             user_data = json.loads(request.headers.get('User-Data', '{}'))
+#             userdata = UserData.get_instance()
+#             userdata.set_data('username', user_data.get('currentuser'))
+#             userdata.set_data('CityId', user_data.get('CityId'))
+#             userdata.set_data('currentCartId', user_data.get('currentCartId'))
+#             userdata.set_data('CurrentDay', user_data.get('CurrentDay'))
+#             return JsonResponse({'message': 'User details received successfully'})
+#         except json.JSONDecodeError:
+#             return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+#     else:
+#         return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
+
+
+@api_view(['GET'])
+def get_audit_logs(request, asset_id):
+    data = audit_log.objects.filter(AssetId=asset_id)
+    serializer = AuditSerializer(data, many=True)
+    return JsonResponse(serializer.data, safe=False)
+
+@api_view(['GET'])
+def get_audit_logsuser(request, user):
+    print(user)
+    data = audit_log.objects.filter(userName=user)
+    print(data)
+    serializer = AuditSerializer(data, many=True)
+    return JsonResponse(serializer.data, safe=False)

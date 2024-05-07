@@ -172,7 +172,13 @@ export class AddcityComponent implements OnInit {
     $(".city_" + ind).css('border', '2px solid #333');
   }
   selectedavatar = 0;
+  userDetails = {
+    'currentuser': '',
+    'currentCartId': '',
+    'CityId': '',
+    'CurrentDay': ''
 
+  }
   addcity() {
     this.submitted = true;
     if (this.addcityForm.invalid) {
@@ -215,6 +221,19 @@ export class AddcityComponent implements OnInit {
                 console.log(error);
               }
             );
+            this.userDetails.currentuser = this.logser.currentuser.Username;
+            this.userDetails.CityId = this.logser.currentuser.CityId;
+            this.userDetails.currentCartId = this.logser.currentuser.cartId;
+            this.userDetails.CurrentDay = this.logser.currentuser.currentday.toString();
+            console.log(this.userDetails)
+            this.logser.sendUserDetails(this.userDetails).subscribe(
+              response => {
+                console.log('User details sent successfully');
+              },
+              error => {
+                console.error('Error sending user details:', error);
+              }
+            );
             let count = 0;
             let numbers = Object.values(this.assetData);
             numbers[0].forEach((number) => {
@@ -239,6 +258,8 @@ export class AddcityComponent implements OnInit {
               this.assettableobj['Env_Tax'] = this.assetData['Env_Tax'][count];
               this.assettableobj['Discard_fine'] = this.assetData['Discard_fine'][count];
               count++;
+              console.log("print");
+         
               this.logser.createAsset(this.assettableobj).subscribe(
                 data => {
                   this.assettableobj = data;

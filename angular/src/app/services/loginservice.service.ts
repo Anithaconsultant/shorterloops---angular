@@ -69,6 +69,7 @@ export class LoginserviceService {
     return this.http.get(this.baseurl + 'asset/' + this.currentuser.CityId,
       { headers: this.httpHeaders });
   }
+
   getthisAssets(currentitem: any): Observable<any> {
     return this.http.get(this.baseurl + 'assets/' + currentitem, { headers: this.httpHeaders });
   }
@@ -229,5 +230,13 @@ export class LoginserviceService {
 
     const url = this.baseurl + 'receive_user_details/';
     return this.http.post(url, {}, { headers :headers});
+  }
+  getAuditLogs(assetId: any) {
+    return this.http.get(this.baseurl + 'audit-log/' + assetId,
+    { headers: this.httpHeaders });
+  }
+  getAuditLogsuser(user: any) {
+    return this.http.get(this.baseurl + 'audit-logs/' + user,
+    { headers: this.httpHeaders });
   }
 }

@@ -18,7 +18,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTreeModule} from '@angular/material/tree';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
-import { AuthService } from './auth.service'; 
+import { AuthService } from './auth.service';
+import { ReportComponent } from './report/report.component'; 
 @NgModule({
   declarations: [
     AppComponent,
@@ -26,7 +27,8 @@ import { AuthService } from './auth.service';
     SignupComponent,
     MaincityComponent,
     HomeComponent,
-    AddcityComponent
+    AddcityComponent,
+    ReportComponent
   ],
   imports: [
     BrowserModule,

@@ -1,8 +1,6 @@
 
 from django.db import models
 import datetime
-from auditlog.models import AuditlogHistoryField
-from auditlog.registry import auditlog
 import uuid
 FACILITY_CHOICES = (('mun', 'Municipality Office'),
                     ('sup', 'Supermarket Owner'),
@@ -77,7 +75,6 @@ class City(models.Model):
 class Facility(models.Model):
     class Meta:
         db_table = "facility"
-    history = AuditlogHistoryField()
     Facility_cityid = models.CharField(max_length=60)
     FacilityId = models.AutoField(primary_key=True)
     Facilityname = models.CharField(max_length=60)
@@ -129,8 +126,6 @@ class Asset(models.Model):
         super(Asset, self).save(*args, **kwargs)
 
 
-auditlog.register(Asset)
-
 
 class audit_log(models.Model):
     class Meta:
@@ -140,10 +135,8 @@ class audit_log(models.Model):
     model_name = models.CharField(max_length=100, blank=False)
     AssetId = models.CharField(max_length=100, blank=False)
     currentPlace = models.CharField(max_length=100, blank=False,default="Supermarket shelf")
-    currentLoc = models.CharField(max_length=100, blank=False,default="Supermarket shelf")
     currentDay = models.CharField(max_length=100, blank=False,default="0")
-    changeDay = models.CharField(max_length=100, blank=False,default="0")
-    assetStatus = models.CharField(max_length=100, blank=False,default="full")
+    assetStatus = models.CharField(max_length=100, blank=False,default="Full")
     userName = models.CharField(max_length=100, blank=False,default="")
 
 

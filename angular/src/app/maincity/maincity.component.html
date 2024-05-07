@@ -325,7 +325,7 @@
                 <button ngbDropdownItem *ngIf="currentrole=='Mayor'">Run the garbage truck daily</button>
                 <button ngbDropdownItem *ngIf="currentrole=='Mayor'">Update the City Rule Book</button>
                 <button ngbDropdownItem *ngIf="currentrole=='Mayor'">Update Notices and Announcements</button>
-                <button ngbDropdownItem *ngIf="currentrole=='Mayor'">Generate Reports</button>
+                <button ngbDropdownItem *ngIf="currentrole=='Mayor'" (click)="showNewComponent()">Generate Reports</button>
                 <button ngbDropdownItem *ngIf="currentrole=='Mayor'">Set the City Clock Tower Tick rate</button>
                 <button ngbDropdownItem *ngIf="currentrole=='Mayor'">Audit the universal bottle cleaning
                     process</button>

@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                 ('currentLoc', models.CharField(default='Supermarket shelf', max_length=100)),
                 ('currentDay', models.CharField(default='0', max_length=100)),
                 ('changeDay', models.CharField(default='0', max_length=100)),
-                ('assetStatus', models.CharField(default='full', max_length=100)),
+                ('assetStatus', models.CharField(default='Full', max_length=100)),
                 ('userName', models.CharField(default='', max_length=100)),
             ],
             options={

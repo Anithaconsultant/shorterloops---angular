@@ -210,18 +210,19 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       //   $(".maincity").addClass("city_" + this.cityavatar)
 
       //}
+      console.log("print");
       this.userDetails.currentuser = this.logser.currentuser.Username;
       this.userDetails.CityId = this.logser.currentuser.CityId;
       this.userDetails.currentCartId = this.logser.currentuser.cartId;
       this.userDetails.CurrentDay = this.logser.currentuser.currentday.toString();
-      this.logser.sendUserDetails(this.userDetails).subscribe(
-        response => {
-          console.log('User details sent successfully');
-        },
-        error => {
-          console.error('Error sending user details:', error);
-        }
-      );
+      // this.logser.sendUserDetails(this.userDetails).subscribe(
+      //   response => {
+      //     console.log('User details sent successfully');
+      //   },
+      //   error => {
+      //     console.error('Error sending user details:', error);
+      //   }
+      // );
       this.loadAvailableAsset();
       this.logser.getAllUsers().subscribe((data) => {
         this.user = data;
@@ -305,7 +306,10 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     this.canMoveRight = true;
     this.canMoveLeft = true;
   }
-
+  showNewComponent() {
+    // Navigate to the new component route
+    this.router.navigate(['/report']);
+  }
   loadAvailableAsset() {
 
     this.logser.getAllAssets().subscribe((data) => {
