@@ -17,7 +17,7 @@ def record_audit_trail_on_save(sender, instance, created,  **kwargs):
 
     if created:
         audit_log.objects.create(
-            userName=instance.get_data('Tofacility'),
+            userName=instance.Tofacility,
             model_name=Asset,
             action='INSERT',
             AssetId=instance.AssetId,

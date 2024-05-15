@@ -63,7 +63,7 @@ class City(models.Model):
     CityId = models.AutoField(primary_key=True)
     CityName = models.CharField(max_length=70, unique=True)
     MayorId = models.IntegerField(null=True, unique=True)
-    Clocktickrate = models.IntegerField(default=100)
+    Clocktickrate = models.IntegerField(default=1)
     CurrentTime = models.IntegerField(default=0)
     CurrentDay = models.IntegerField(default=0)
     Citystartdate = models.DateField(default=datetime.date.today)
