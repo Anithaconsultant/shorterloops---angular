@@ -23,6 +23,7 @@ urlpatterns = [
     path('api/assets/<itemid>', views.returnasset, name='returnasset'),
     path('api/lockasset/<itemid>', views.lockasset, name='lockasset'),
     path('api/unlockasset/<itemid>', views.unlockasset, name='unlockasset'),
+    path('api/update_city_threads/', views.update_city_threads, name='update_city_threads'),
     #path('api/receive_user_details/', views.receive_user_data, name='receive_user_data'),
     path('api/cashflow/', views.createtransaction, name='createtransaction'),
     path('api/audit-log/<asset_id>/', views.get_audit_logs, name='get_audit_logs'),

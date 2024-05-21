@@ -1,1 +1,3 @@
-create database newfresh;
+use newfresh;
+show tables;
+select * from city;

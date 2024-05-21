@@ -113,6 +113,16 @@ def addcity(request):
         serializer = citySerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
 
+def update_city_threads(request):
+    # Assuming you have a list of city IDs
+    city_data = City.objects.values_list('id', 'Clocktickrate')
+
+    # Create and start a thread for each city
+    for city_id, clocktickrate in city_data:
+        city_thread = CityThread(city_id, clocktickrate)
+        city_thread.start()
+
+    return HttpResponse("City threads update started successfully.")
 
 @api_view(['GET', 'POST', 'PUT'])
 def updatecurrent(request, cityid):

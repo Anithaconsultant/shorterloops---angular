@@ -70,7 +70,7 @@ class City(models.Model):
     CityCreateTime = models.TimeField(auto_now=True)
     Status = models.CharField(max_length=70, null=True)
     cityavatar = models.CharField(max_length=70, null=True)
-
+   
 
 class Facility(models.Model):
     class Meta:

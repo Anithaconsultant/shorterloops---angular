@@ -5,8 +5,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class LoginserviceService {
-  username = "admin";
-  password = "admin";
+  username = "yuvathi";
+  password = "yuvathi";
   currentuser = {
     'Username': '',
     'UserId': '',
@@ -80,6 +80,10 @@ export class LoginserviceService {
   }
   unlockthisAsset(currentitem: string): Observable<any> {
     return this.http.post(this.baseurl + 'unlockasset/' + currentitem, { headers: this.httpHeaders });
+  }
+
+  startthread(): Observable<any> {
+    return this.http.post(this.baseurl + 'update_city_threads/' , { headers: this.httpHeaders });
   }
   updatethisAssets(currentitem: any): Observable<any> {
     console.log("alert");

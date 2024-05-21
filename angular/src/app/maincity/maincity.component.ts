@@ -276,7 +276,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
           if (data[0].MayorId != 0) {
             $(".mayorflag").show();
           }
-          this.currentTime();
+         // this.currentTime();
         }, 500)
         this.logser.currentuser.cityname = data[0].CityName;
         this.logser.currentuser.CurrentTime = data[0].CurrentTime;
@@ -1157,7 +1157,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     $(".cart").css({ 'left': '5291px', 'top': '2894px' })
   }
 
-
+/*
 
   currentTime() {
     let hour = 0;
@@ -1249,6 +1249,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     }, this.cityrate);
 
   }
+  */
   updateDragged: any = {
     'dragged': false,
     'purchased': false,

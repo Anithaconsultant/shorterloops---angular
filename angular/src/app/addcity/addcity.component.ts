@@ -189,10 +189,13 @@ export class AddcityComponent implements OnInit {
       if (this.selectedavatar == 0) {
         alert("kindly select your Avatar")
       }
+      if (this.city.Clocktickrate == 0) {
+        alert("kindly select your Avatar")
+      }
       if(isNaN(this.city.Clocktickrate)){
         alert('Clock Tick rate is number.')
       }
-      if(!isNaN(this.city.Clocktickrate) && this.selectedavatar!=0) {
+      if(!isNaN(this.city.Clocktickrate) && this.selectedavatar!=0 && this.city.Clocktickrate>0) {
         this.city.cityavatar = String(this.selectedavatar);
         console.log(this.city)
         this.logser.createcity(this.city).subscribe(
@@ -226,14 +229,14 @@ export class AddcityComponent implements OnInit {
             this.userDetails.currentCartId = this.logser.currentuser.cartId;
             this.userDetails.CurrentDay = this.logser.currentuser.currentday.toString();
             console.log(this.userDetails)
-            this.logser.sendUserDetails(this.userDetails).subscribe(
+            /*this.logser.sendUserDetails(this.userDetails).subscribe(
               response => {
                 console.log('User details sent successfully');
               },
               error => {
                 console.error('Error sending user details:', error);
               }
-            );
+            );*/
             let count = 0;
             let numbers = Object.values(this.assetData);
             numbers[0].forEach((number) => {
