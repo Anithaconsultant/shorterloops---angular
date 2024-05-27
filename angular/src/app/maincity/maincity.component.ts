@@ -148,7 +148,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   assetdataset: any[] = [];
   timeupdate = 0;
   citytiming = {
-    'CurrentTime': 0,
+    'CurrentTime': {},
     'CurrentDay': 0
   }
   canupdatedb = false;
@@ -310,6 +310,15 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     // Navigate to the new component route
     this.router.navigate(['/report']);
   }
+
+  convertSeconds(seconds: number) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+    let string=hours +':'+minutes;
+    return string
+  
+  }
   loadAvailableAsset() {
 
     this.logser.getAllAssets().subscribe((data) => {
@@ -397,6 +406,18 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       }
       console.log(this.commonobj);
     });
+
+    this.logser.updatecurrenttime().subscribe(
+      data => {
+        console.log(data)
+        this.citytiming['CurrentTime'] =this.convertSeconds(data[0]['CurrentTime']);
+        this.citytiming['CurrentDay'] = data[0].CurrentDay;
+        
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
   updateobjects(cat: any, isDragged: any, isPurchased: any, bottleloc: any) {
     let existingItem = this.commonobj.findIndex(item => item.id === cat);
@@ -1157,99 +1178,6 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     $(".cart").css({ 'left': '5291px', 'top': '2894px' })
   }
 
-/*
-
-  currentTime() {
-    let hour = 0;
-    let min = 0;
-    let day = 0;
-    let totalMinutes = 0;
-    let totalhour = 0;
-    const hR = 3600;
-    setInterval(() => {
-      this.sec++;
-      totalMinutes = Math.floor(this.sec / 60);
-      min = totalMinutes % 60;
-      totalhour = this.sec / hR;
-      hour = totalhour % 24;
-      $("#clock").html(Math.floor(hour) + " : " + Math.floor(min));
-      day = totalhour / 24
-      $("#day").html('Day ' + Math.floor(day));
-      if (totalhour % 1 == 0) {
-        this.citytiming['CurrentTime'] = Math.round(hour);
-        this.citytiming['CurrentDay'] = Math.round(day);
-        this.logser.updatecurrenttime(this.citytiming).subscribe(
-          data => {
-            this.citytiming = data;
-            this.timeupdate = hour
-          },
-          error => {
-            //console.log(error);
-          }
-        );
-        if (hour == 6 || hour == 19) {
-          $(".truck").animate({ left: '5210px' }, 1000, () => {
-            $(".truck").css({ transform: 'rotate(-90deg)' }).addClass('top').removeClass('side');
-            $(".truck").animate({ top: '3680px' }, 5500, () => {
-              $(".truck").css({ transform: 'scaleX(-1)' }).addClass('side').removeClass('top');
-              $(".truck").animate({ left: '7390px' }, 5500, () => {
-                $(".truck").css({ transform: 'rotate(0deg)' });
-                $(".truck").animate({ left: '5210px' }, 5500, () => {
-                  $(".truck").css({ transform: 'rotate(-90deg)' }).addClass('top').removeClass('side');;
-                  $(".truck").animate({ top: '4070px' }, 2500, () => {
-                    $(".truck").css({ transform: 'scaleX(-1)' }).addClass('side').removeClass('top');;
-                    $(".truck").animate({ left: '7390px' }, 5500, () => {
-                      $(".truck").css({ transform: 'rotate(0deg)' });
-                      $(".truck").animate({ left: '5210px' }, 5500, () => {
-                        $(".truck").css({ transform: 'rotate(90deg)' }).addClass('top').removeClass('side');;
-                        $(".truck").animate({ top: '3060px' }, 5500, () => {
-                          $(".truck").css({ transform: 'rotate(0deg)' }).addClass('side').removeClass('top');;
-                          $(".truck").animate({ left: '2730px' }, 5500, () => {
-                            $(".truck").css({ transform: 'rotate(-90deg)' }).addClass('top').removeClass('side');;
-                            $(".truck").animate({ top: '3680px' }, 2500, () => {
-                              $(".truck").css({ transform: 'rotate(0deg)' }).addClass('side').removeClass('top');;
-                              $(".truck").animate({ left: '300px' }, 5500, () => {
-                                $(".truck").css({ transform: 'scaleX(-1)' });
-                                $(".truck").animate({ left: '2730px' }, 5500, () => {
-                                  $(".truck").css({ transform: 'rotate(-90deg)' }).addClass('top').removeClass('side');;
-                                  $(".truck").animate({ top: '4070px' }, 2500, () => {
-                                    $(".truck").css({ transform: 'rotate(0deg)' }).addClass('side').removeClass('top');;
-                                    $(".truck").animate({ left: '300px' }, 5500, () => {
-                                      $(".truck").css({ transform: 'scaleX(-1)' });
-                                      $(".truck").animate({ left: '2730px' }, 5500, () => {
-                                        $(".truck").css({ transform: 'rotate(90deg)' }).addClass('top').removeClass('side');;
-                                        $(".truck").animate({ top: '3060px' }, 5500, () => {
-                                          $(".truck").css({ transform: 'scaleX(-1)' }).addClass('side').removeClass('top');;
-                                          $(".truck").animate({ left: '5210px' }, 5500, () => {
-                                            $(".truck").css({ transform: 'rotate(90deg)' }).addClass('top').removeClass('side');;
-                                            $(".truck").animate({ top: '1025px' }, 5500, () => {
-                                              $(".truck").css({ transform: 'scaleX(-1)' }).addClass('side').removeClass('top');;
-                                              $(".truck").animate({ left: '5933px' }, 5500);
-                                              $(".truck").css({ transform: 'rotate(0deg)' });
-                                            });
-                                          });
-                                        });
-                                      });
-                                    });
-                                  });
-                                });
-                              });
-                            });
-                          });
-                        });
-                      });
-                    });
-                  });
-                });
-              });
-            });
-          })
-        }
-      }
-    }, this.cityrate);
-
-  }
-  */
   updateDragged: any = {
     'dragged': false,
     'purchased': false,
@@ -1276,13 +1204,13 @@ export class MaincityComponent implements AfterViewInit, OnInit {
               this.transactioncount = '0000' + (data.length + 1);
             });
 
-            this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citycurrentday + '_' + this.cityCurrentTime + '_' + this.transactioncount + '_01';
+            this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_01';
             this.transaction['Amount'] = String(this.totalsupermarketbill);
             this.transaction['CreditFacility'] = 'Supermarket Owner';
             this.transaction['Purpose'] = 'Purchasing Shampoo from Supermarket';
             this.logser.createtransaction(this.transaction).subscribe(
               data => {
-                this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citycurrentday + '_' + this.cityCurrentTime + '_' + this.transactioncount + '_02';
+                this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_02';
                 this.transaction['Amount'] = String(this.totalenv);
                 this.transaction['CreditFacility'] = 'Municipality Office';
                 this.transaction['Purpose'] = 'Environment tax for Shampoo purchase';
@@ -1291,10 +1219,10 @@ export class MaincityComponent implements AfterViewInit, OnInit {
                     data = this.transaction;
 
                     this.updatebottleasset['bottlestatus'] = 'InUse';
-                    this.updatebottleasset['transactionid'] = this.currentusercityId + '_' + this.citycurrentday + '_' + this.cityCurrentTime + '_' + this.transactioncount
+                    this.updatebottleasset['transactionid'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount
                     this.updatebottleasset['fromfacility'] = 'Supermarket Owner'
                     this.updatebottleasset['tofacility'] = this.currentUserRole;
-                    this.updatebottleasset['transactiondate'] = String(this.citycurrentday);
+                    this.updatebottleasset['transactiondate'] = String(this.citytiming['CurrentDay']);
                     this.updatebottleasset['purchased'] = true;
                     this.updatebottleasset['Bottleloc'] = this.currentUserCartId;
                     for (let i = 0; i < this.bottletaken.length; i++) {

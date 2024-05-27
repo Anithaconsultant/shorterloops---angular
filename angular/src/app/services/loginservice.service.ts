@@ -55,11 +55,8 @@ export class LoginserviceService {
       { headers: this.httpHeaders });
 
   }
-  updatecurrenttime(city: any): Observable<any> {
-    const body = { CurrentTime: city.CurrentTime, CurrentDay: city.CurrentDay };
-    //console.log(body);
-    return this.http.put(this.baseurl + 'updatetime/' + this.currentuser.CityId, body,
-      { headers: this.httpHeaders });
+  updatecurrenttime(): Observable<any> {
+    return this.http.get(this.baseurl + 'updatetime/' + this.currentuser.CityId, { headers: this.httpHeaders });
   }
   getAllCities(): Observable<any> {
     return this.http.get(this.baseurl + 'addcity/',
@@ -83,7 +80,7 @@ export class LoginserviceService {
   }
 
   startthread(): Observable<any> {
-    return this.http.post(this.baseurl + 'update_city_threads/' , { headers: this.httpHeaders });
+    return this.http.post(this.baseurl + 'update_city_threads/', { headers: this.httpHeaders });
   }
   updatethisAssets(currentitem: any): Observable<any> {
     console.log("alert");
@@ -233,14 +230,14 @@ export class LoginserviceService {
       .set('user-data', JSON.stringify(userDetails));
 
     const url = this.baseurl + 'receive_user_details/';
-    return this.http.post(url, {}, { headers :headers});
+    return this.http.post(url, {}, { headers: headers });
   }
   getAuditLogs(assetId: any) {
     return this.http.get(this.baseurl + 'audit-log/' + assetId,
-    { headers: this.httpHeaders });
+      { headers: this.httpHeaders });
   }
   getAuditLogsuser(user: any) {
     return this.http.get(this.baseurl + 'audit-logs/' + user,
-    { headers: this.httpHeaders });
+      { headers: this.httpHeaders });
   }
 }

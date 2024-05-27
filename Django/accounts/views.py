@@ -136,7 +136,7 @@ def updatecurrent(request, cityid):
             print("invalid data")
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
     if request.method == 'GET':
-        getcity = City.objects.filter(pk=cityid).first()
+        getcity = City.objects.filter(pk=cityid)
         serializer = citySerializer(getcity, many=True)
         return JsonResponse(serializer.data, safe=False)
 

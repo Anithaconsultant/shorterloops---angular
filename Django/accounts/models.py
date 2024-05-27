@@ -95,6 +95,7 @@ class Asset(models.Model):
     Bottle_Code = models.CharField(max_length=1000, blank=True)
     Content_Code = models.CharField(max_length=1000, blank=True)
     Quantity = models.CharField(max_length=70, blank=True)
+    remQuantity = models.CharField(max_length=70, blank=True)
     Units = models.CharField(max_length=70, blank=True)
     Bottle_loc = models.CharField(max_length=1000, blank=True)
     Bottle_Status = models.CharField(max_length=1000, blank=True)
@@ -117,9 +118,7 @@ class Asset(models.Model):
     Tofacility = models.CharField(max_length=70, blank=True)
     purchased = models.BooleanField(default=False)
     dragged = models.BooleanField(default=False)
-
     correlation_id = models.CharField(max_length=100, blank=True, null=True)
-
     def save(self, *args, **kwargs):
         if not self.correlation_id:
             self.correlation_id = str(uuid.uuid4())
@@ -132,11 +131,22 @@ class audit_log(models.Model):
         db_table = "audit_log"
     id = models.AutoField(primary_key=True)
     action = models.CharField(max_length=70, blank=False)
-    model_name = models.CharField(max_length=100, blank=False)
     AssetId = models.CharField(max_length=100, blank=False)
-    currentPlace = models.CharField(max_length=100, blank=False,default="Supermarket shelf")
-    currentDay = models.CharField(max_length=100, blank=False,default="0")
+    TransactionId = models.CharField(max_length=100, blank=True)
+    TransactionDate= models.CharField(max_length=100, blank=True)
+    FromFacility= models.CharField(max_length=100, blank=False,default="Supermarket shelf")
+    ToFacility = models.CharField(max_length=100, blank=True)
+    ContentCode = models.CharField(max_length=100, blank=True)
     assetStatus = models.CharField(max_length=100, blank=False,default="Full")
+    Quantity = models.CharField(max_length=100, blank=True,)
+    remQuantity = models.CharField(max_length=100, blank=True)
+    Unit = models.CharField(max_length=100, blank=True)
+    ManufactureDate = models.CharField(max_length=100, blank=True)
+    refillCount = models.CharField(max_length=100, blank=True)
+    currentrefillCount = models.CharField(max_length=100, blank=True)
+    LatestFillDate = models.CharField(max_length=100, blank=True)
+    bottleRetireDate = models.CharField(max_length=100, blank=True)
+    RetireReason= models.CharField(max_length=100, blank=True)
     userName = models.CharField(max_length=100, blank=False,default="")
 
 
