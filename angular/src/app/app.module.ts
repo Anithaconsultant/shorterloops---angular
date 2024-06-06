@@ -20,6 +20,8 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import { AuthService } from './auth.service';
 import { ReportComponent } from './report/report.component'; 
+import { LongPressDragDirective } from './app-longpress.directive';
+import { PreventDoubleClickDirective } from './prevent-double-click.directive'
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,7 +30,9 @@ import { ReportComponent } from './report/report.component';
     MaincityComponent,
     HomeComponent,
     AddcityComponent,
-    ReportComponent
+    ReportComponent,
+    LongPressDragDirective,
+    PreventDoubleClickDirective
   ],
   imports: [
     BrowserModule,

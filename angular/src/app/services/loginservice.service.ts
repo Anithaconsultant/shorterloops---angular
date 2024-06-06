@@ -5,8 +5,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class LoginserviceService {
-  username = "yuvathi";
-  password = "yuvathi";
+  username = "admin";
+  password = "admin123";
   currentuser = {
     'Username': '',
     'UserId': '',
@@ -18,14 +18,14 @@ export class LoginserviceService {
     'avatar': '',
     'login': '',
     'cityname': '',
-    'CurrentTime': 0,
+    'CurrentTime': '',
     'currentday': 0,
     'cityrate': '',
     'cityavatar': ''
   };
 
-  //baseurl = "https://dbl.iihs.in/api/";
-  baseurl = "http://127.0.0.1:8000/api/";
+ baseurl = "https://dbl.iihs.in/api/";
+  //baseurl = "http://127.0.0.1:8000/api/";
   authorizationData = 'Basic ' + btoa(this.username + ':' + this.password);
   httpHeaders = new HttpHeaders({
     'Content-Type': 'application/json',

@@ -83,7 +83,7 @@ class CityTimer(threading.Thread):
             time.sleep(1/self.clocktickrate)
             with transaction.atomic():
                 city = City.objects.select_for_update().get(pk=self.city_id)
-                city.CurrentTime += 1
+                city.CurrentTime += 300
 
                 if city.CurrentTime >= 86400:  # 24 hours
                     city.CurrentTime = 0

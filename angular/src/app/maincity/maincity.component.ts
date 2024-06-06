@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import * as $ from 'jquery';
 import { CdkDragDrop, moveItemInArray, transferArrayItem, CdkDrag, CdkDragEnd } from '@angular/cdk/drag-drop';
-import { forkJoin } from 'rxjs';
+
 
 @Component({
   selector: 'app-maincity',
@@ -118,10 +118,10 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   hasMayor = false;
   cityname: any;
   cityrate: any;
-  canMoveTop = false;
-  canMoveLeft = false;
-  canMoveRight = false;
-  canMoveBottom = false;
+  canMoveTop = true;
+  canMoveLeft = true;
+  canMoveRight = true;
+  canMoveBottom = true;
   topval = 0;
   cartlocrefill = '';
   setflag = 0;
@@ -136,7 +136,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   cartlocmarket = '';
   deg = 90;
   whichRoad = '';
-  cityCurrentTime = 0;
+  cityCurrentTime = '';
   citycurrentday = 0;
   cityavatar = '';
   currentwallet = 0;
@@ -192,113 +192,113 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   }
   ngOnInit(): void {
     if (this.logser.currentuser.Username != '') {
-      //   sessionStorage.setItem('currentUser', JSON.stringify(this.logser.currentuser));
-      // } else {
-      //   let current = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
-      //   this.logser.currentuser = JSON.parse(JSON.stringify(current))
-      //   this.currentUserRole = this.logser.currentuser.Role;
-      //   this.currentUserCartId = this.logser.currentuser.cartId;
-      //   this.currentusername = this.logser.currentuser.Username;
-      //   this.currentusergender = this.logser.currentuser.gender;
-      //   this.currentuseravatar = this.logser.currentuser.avatar;
-      //   this.currentusercityId = this.logser.currentuser.CityId;
-      //   this.cityCurrentTime = this.logser.currentuser.CurrentTime;
-      //   this.citycurrentday = this.logser.currentuser.currentday;
-      //   this.cityrate = this.logser.currentuser.cityrate;
-      //   this.cityavatar = this.logser.currentuser.cityavatar;
-      //   this.currentwallet = this.logser.currentuser.wallet;
-      //   $(".maincity").addClass("city_" + this.cityavatar)
+      sessionStorage.setItem('currentUser', JSON.stringify(this.logser.currentuser));
+    } else {
+      let current = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+      this.logser.currentuser = JSON.parse(JSON.stringify(current))
+      this.currentUserRole = this.logser.currentuser.Role;
+      this.currentUserCartId = this.logser.currentuser.cartId;
+      this.currentusername = this.logser.currentuser.Username;
+      this.currentusergender = this.logser.currentuser.gender;
+      this.currentuseravatar = this.logser.currentuser.avatar;
+      this.currentusercityId = this.logser.currentuser.CityId;
+      this.cityCurrentTime = this.logser.currentuser.CurrentTime;
+      this.citycurrentday = this.logser.currentuser.currentday;
+      this.cityrate = this.logser.currentuser.cityrate;
+      this.cityavatar = this.logser.currentuser.cityavatar;
+      this.currentwallet = this.logser.currentuser.wallet;
+      $(".maincity").addClass("city_" + this.cityavatar)
 
-      //}
-      console.log("print");
-      this.userDetails.currentuser = this.logser.currentuser.Username;
-      this.userDetails.CityId = this.logser.currentuser.CityId;
-      this.userDetails.currentCartId = this.logser.currentuser.cartId;
-      this.userDetails.CurrentDay = this.logser.currentuser.currentday.toString();
-      // this.logser.sendUserDetails(this.userDetails).subscribe(
-      //   response => {
-      //     console.log('User details sent successfully');
-      //   },
-      //   error => {
-      //     console.error('Error sending user details:', error);
-      //   }
-      // );
-      this.loadAvailableAsset();
-      this.logser.getAllUsers().subscribe((data) => {
-        this.user = data;
-        for (var t = 0; t < this.user.length; t++) {
-          if (this.user[t].login == 1 && this.user[t].User_cityid == this.logser.currentuser.CityId) {
-            $("." + this.user[t].Role.split(" ")[0]).show();
-            this.currentUserId = this.user[t].UserId;
+    }
+
+    this.userDetails.currentuser = this.logser.currentuser.Username;
+    this.userDetails.CityId = this.logser.currentuser.CityId;
+    this.userDetails.currentCartId = this.logser.currentuser.cartId;
+    this.userDetails.CurrentDay = this.logser.currentuser.currentday.toString();
+    // this.logser.sendUserDetails(this.userDetails).subscribe(
+    //   response => {
+    //     console.log('User details sent successfully');
+    //   },
+    //   error => {
+    //     console.error('Error sending user details:', error);
+    //   }
+    // );
+    // this.loadAvailableAsset();
+    this.logser.getAllUsers().subscribe((data) => {
+      this.user = data;
+      for (var t = 0; t < this.user.length; t++) {
+        if (this.user[t].login == 1 && this.user[t].User_cityid == this.logser.currentuser.CityId) {
+          $("." + this.user[t].Role.split(" ")[0]).show();
+          this.currentUserId = this.user[t].UserId;
+        }
+        if (this.user[t].Username == this.currentusername) {
+          this.currentwallet = this.user[t].wallet;
+          this.logser.currentuser.wallet = this.user[t].wallet;
+        }
+        if (this.user[t].Username == this.currentusername && this.user[t].avatar == '') {
+          this.noavatar = true;
+          if (this.noavatar == true) {
+            this.open(this.content)
           }
-          if (this.user[t].Username == this.currentusername) {
-            this.currentwallet = this.user[t].wallet;
-            this.logser.currentuser.wallet = this.user[t].wallet;
+        }
+        else if (this.user[t].Username == this.currentusername && this.user[t].avatar !== '') {
+          this.logser.currentuser.avatar = this.user[t].avatar;
+          this.currentuseravatar = this.user[t].avatar
+          $(".displaypic,.cartavatar").addClass('pic_' + this.logser.currentuser.avatar);
+        }
+        if (this.user[t].Role !== '') {
+          let word = this.user[t].Role.split(" ")[0];
+          let xpos = this.positionObject[word as keyof typeof this.positionObject][3][0];
+          let ypos = this.positionObject[word as keyof typeof this.positionObject][3][1];
+          let x2 = this.positionObject[word as keyof typeof this.positionObject][2][0];
+          let y2 = this.positionObject[word as keyof typeof this.positionObject][2][1];
+          $(".displaypanel." + word).css({ 'left': xpos + 'px', 'top': ypos + 'px' }).html(this.user[t].Role);
+          $(".housedisplay." + word).css({ 'left': x2 + 'px', 'top': y2 + 'px' }).html(this.user[t].Username).show();
+          if (word == 'Supermarket' || word == 'Plastic' || word == 'Ubottle' || word == 'Reverse' || word == 'Refilling') {
+            $(".commoncls." + word).html('').addClass('openlight');
           }
-          if (this.user[t].Username == this.currentusername && this.user[t].avatar == '') {
-            this.noavatar = true;
-            if (this.noavatar == true) {
-              this.open(this.content)
-            }
-          }
-          else if (this.user[t].Username == this.currentusername && this.user[t].avatar !== '') {
-            this.logser.currentuser.avatar = this.user[t].avatar;
-            this.currentuseravatar = this.user[t].avatar
-            $(".displaypic,.cartavatar").addClass('pic_' + this.logser.currentuser.avatar);
-          }
-          if (this.user[t].Role !== '') {
-            let word = this.user[t].Role.split(" ")[0];
-            let xpos = this.positionObject[word as keyof typeof this.positionObject][3][0];
-            let ypos = this.positionObject[word as keyof typeof this.positionObject][3][1];
-            let x2 = this.positionObject[word as keyof typeof this.positionObject][2][0];
-            let y2 = this.positionObject[word as keyof typeof this.positionObject][2][1];
-            $(".displaypanel." + word).css({ 'left': xpos + 'px', 'top': ypos + 'px' }).html(this.user[t].Role);
-            $(".housedisplay." + word).css({ 'left': x2 + 'px', 'top': y2 + 'px' }).html(this.user[t].Username).show();
-            if (word == 'Supermarket' || word == 'Plastic' || word == 'Ubottle' || word == 'Reverse' || word == 'Refilling') {
-              $(".commoncls." + word).html('').addClass('openlight');
-            }
-          }
-          if (this.user[t].User_cityid == this.logser.currentuser.CityId) {
-            let avatarnumber = this.user[t].avatar;
-            for (var j = 0; j < this.maleset.length; j++) {
-              if (this.maleset[j].toString() == avatarnumber) {
-                this.maleset.splice(j, 1);
-              }
+        }
+        if (this.user[t].User_cityid == this.logser.currentuser.CityId) {
+          let avatarnumber = this.user[t].avatar;
+          for (var j = 0; j < this.maleset.length; j++) {
+            if (this.maleset[j].toString() == avatarnumber) {
+              this.maleset.splice(j, 1);
             }
           }
         }
-        this.newmale = this.maleset.slice(0);
+      }
+      this.newmale = this.maleset.slice(0);
 
-      });
-      this.logser.getcitynames().subscribe((data) => {
-        console.log(data);
-        setTimeout(() => {
-          if (data[0].MayorId != 0) {
-            $(".mayorflag").show();
-          }
-         // this.currentTime();
-        }, 500)
-        this.logser.currentuser.cityname = data[0].CityName;
-        this.logser.currentuser.CurrentTime = data[0].CurrentTime;
-        this.logser.currentuser.currentday = data[0].CurrentDay;
-        this.logser.currentuser.cityrate = data[0].cityrate;
-        this.logser.currentuser.cityavatar = data[0].cityavatar;
-        this.cityrate = data[0].cityrate;
-        this.cityavatar = data[0].cityavatar;
-        this.cityname = this.logser.currentuser.cityname;
-        this.cityCurrentTime = data[0].CurrentTime;
-        this.citycurrentday = data[0].CurrentDay;
-        (this.citycurrentday > 0) ? this.sec = (this.cityCurrentTime * 3600) + (3600 * 24 * this.citycurrentday) : this.sec = this.cityCurrentTime * 3600;
-        $(".maincity").addClass("city_" + this.cityavatar)
-      });
+    });
+    this.logser.getcitynames().subscribe((data) => {
+      console.log(data);
+      setTimeout(() => {
+        if (data[0].MayorId != 0) {
+          $(".mayorflag").show();
+        }
+        // this.currentTime();
+      }, 500)
+      this.logser.currentuser.cityname = data[0].CityName;
+      this.logser.currentuser.CurrentTime = (this.convertSeconds(data[0]['CurrentTime'].toString()));
+      this.logser.currentuser.currentday = data[0].CurrentDay;
+      this.logser.currentuser.cityrate = data[0].cityrate;
+      this.logser.currentuser.cityavatar = data[0].cityavatar;
+      this.cityrate = data[0].cityrate;
+      this.cityavatar = data[0].cityavatar;
+      this.cityname = this.logser.currentuser.cityname;
+      this.cityCurrentTime = (this.convertSeconds(data[0].CurrentTime));
+      this.citycurrentday = data[0].CurrentDay;
+      //(this.citycurrentday > 0) ? this.sec = (this.cityCurrentTime * 3600) + (3600 * 24 * this.citycurrentday) : this.sec = this.cityCurrentTime * 3600;
+      $(".maincity").addClass("city_" + this.cityavatar)
+    });
 
-      $("body").removeClass('frontpage').removeClass('cartcontent');
+    $("body").removeClass('frontpage').removeClass('cartcontent');
 
-      setInterval(() => { this.loadAvailableAsset() }, 10000);
-    }
-    else {
-      this.router.navigate(['/login']);
-    }
+    setInterval(() => { this.loadAvailableAsset() }, 10000);
+    // }
+    // else {
+    //   this.router.navigate(['/login']);
+    // }
   }
   setTrue() {
     this.canMoveTop = true;
@@ -306,6 +306,11 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     this.canMoveRight = true;
     this.canMoveLeft = true;
   }
+
+  onDragStart(event: DragEvent) {
+    event.preventDefault();
+  }
+
   showNewComponent() {
     // Navigate to the new component route
     this.router.navigate(['/report']);
@@ -315,9 +320,9 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const remainingSeconds = seconds % 60;
-    let string=hours +':'+minutes;
+    let string = hours + ':' + minutes;
     return string
-  
+
   }
   loadAvailableAsset() {
 
@@ -409,10 +414,10 @@ export class MaincityComponent implements AfterViewInit, OnInit {
 
     this.logser.updatecurrenttime().subscribe(
       data => {
-        console.log(data)
-        this.citytiming['CurrentTime'] =this.convertSeconds(data[0]['CurrentTime']);
+        //console.log(data)
+        this.citytiming['CurrentTime'] = this.convertSeconds(data[0]['CurrentTime']);
         this.citytiming['CurrentDay'] = data[0].CurrentDay;
-        
+
       },
       error => {
         console.log(error);
@@ -424,14 +429,16 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     if (existingItem == -1) {
       this.commonobj.push({ 'id': cat, 'status': 'available', 'location': 'Supermarket shelf' });
     }
-    let currentItem = this.commonobj.findIndex(item => item.id === cat);
-    if (isDragged == true && isPurchased == false && bottleloc !== 'Supermarket shelf') {
-      this.commonobj[currentItem]['status'] = 'blocked';
-      this.commonobj[currentItem]['location'] = bottleloc;
-    }
-    if (isDragged == true && isPurchased == true && bottleloc !== 'Supermarket shelf') {
-      this.commonobj[currentItem]['status'] = 'purchased';
-      this.commonobj[currentItem]['location'] = bottleloc;
+    else {
+      let currentItem = this.commonobj.findIndex(item => item.id === cat);
+      if (isDragged == true && isPurchased == false && bottleloc !== 'Supermarket shelf') {
+        this.commonobj[currentItem]['status'] = 'blocked';
+        this.commonobj[currentItem]['location'] = bottleloc;
+      }
+      if (isDragged == true && isPurchased == true && bottleloc !== 'Supermarket shelf') {
+        this.commonobj[currentItem]['status'] = 'purchased';
+        this.commonobj[currentItem]['location'] = bottleloc;
+      }
     }
 
   }
@@ -440,8 +447,9 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     const leftValue = parseInt($(".cart").css('left').split("px")[0]);
     const isWithinRange = (value: number, min: number, max: number) => value > min && value < max;
 
+    console.log(topValue,leftValue)
     if (isWithinRange(topValue, 2723, 2789) && isWithinRange(leftValue, 5300, 5891)) {
-      this.whichRoad = "refillingstation";
+      this.whichRoad = "refillingstation";  
       this.opensuperflag = 2;
       this.openrefillingstation();
       this.setTrue();
@@ -457,6 +465,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       }
     } else if (isWithinRange(topValue, 4000, 4065) && isWithinRange(leftValue, 5300, 7390)) {
       this.whichRoad = "lowercolonyrightroad";
+      console.log("helo")
       this.setTrue();
     } else if (isWithinRange(topValue, 0, 4395) && isWithinRange(leftValue, 2700, 2800)) {
       this.whichRoad = "lefthorizontalroad";
@@ -467,7 +476,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     } else if (isWithinRange(topValue, 3524, 3640) && isWithinRange(leftValue, 300, 2800)) {
       this.whichRoad = "leftcolonytop";
       this.setTrue();
-    } else if (isWithinRange(topValue, 4010, 4065) && isWithinRange(leftValue, 300, 2800)) {
+    } else if (isWithinRange(topValue, 4000, 4065) && isWithinRange(leftValue, 300, 2800)) {
       this.whichRoad = "leftcolonybottom";
       this.setTrue();
     } else if (isWithinRange(topValue, 2950, 3050) && isWithinRange(leftValue, 0, 7390)) {
@@ -748,6 +757,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   }
   @HostListener('document:keydown.arrowup', ['$event'])
   moveup($event: any) {
+    console.log(this.canMoveTop,this.canMoveBottom,this.canMoveLeft,this.canMoveRight)
     $event.stopPropagation();
     if (this.opensuperflag == 0) {
       this.checkCartPosition();
@@ -838,7 +848,9 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     this.refillright = true;
     this.refillbottom = true;
   }
-
+  recenter() {
+    this.dopanzoom((parseInt($(".cart").css('left').split('px')[0]) - 650) * -1, (parseInt($(".cart").css('top').split('px')[0]) - 300) * -1, '1');
+  }
   refillcartposition() {
     let topValue = parseInt($("#refillcart").css('top').split("px")[0]);
     let leftValue = parseInt($("#refillcart").css('left').split("px")[0]);
@@ -1482,6 +1494,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     this.modalService.open(cartcontent);
 
   }
+  presentitem: any[] = []
   docalculation() {
     this.boughtbottledata = [];
     this.netamount = 0;
@@ -1492,9 +1505,10 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       this.billpaid = false;
       //this.pleasecheck.nativeElement.play();
       for (let i = 0; i < this.bottletaken.length; i++) {
-
+        //City2_SB_UBidV_00004atUB1 
+        alert(this.bottletaken[i] + 'len: ' + this.bottletaken.length + 'i :' + i);
         let existingItem = this.commonobj.findIndex(item => item.id === this.bottletaken[i]);
-        this.commonobj[existingItem]['location']
+        console.log(existingItem, this.commonobj[existingItem]['location'], this.commonobj[existingItem]['location'] == 'In' + this.currentUserCartId)
         if (this.commonobj[existingItem]['location'] == 'In' + this.currentUserCartId) {
           let getcurrent = this.bottletaken[i].split("at")[0].split('City')[1];
           this.logser.getthisAssets(getcurrent).subscribe((data) => {
@@ -1511,10 +1525,14 @@ export class MaincityComponent implements AfterViewInit, OnInit {
           })
         }
         else {
-          alert(this.bottletaken[i] + ' This Item has been picked by someone Else.')
-          let existingItem = this.bottletaken.findIndex(item => item === this.bottletaken[i]);
-          this.bottletaken.splice(existingItem, 1);
+          alert(this.bottletaken[i] + ' This Item has been picked by someone Else.');
+          this.presentitem.push(this.bottletaken[i])
+
         }
+      }
+      for (let r = 0; r < this.presentitem.length; r++) {
+        let existingItem = this.bottletaken.findIndex(item => item === this.presentitem[r]);
+        this.bottletaken.splice(existingItem, 1);
       }
     }
     else {
@@ -1809,6 +1827,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
 
           let itemid = currentlyDroped.split("at")[0].split('City')[1];
           this.logser.getthisAssets(itemid).subscribe((data) => {
+            alert("return")
             this.updateDragged['currentbottle'] = itemid;
             this.updateDragged['Bottleloc'] = 'Supermarket shelf';
             this.updateDragged['dragged'] = false;
@@ -1849,11 +1868,13 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   updateStatus(itemid: any, status: any, loc: any) {
 
     const existingIdIndex = this.commonobj.findIndex(item => item.id === itemid);
+    console.log(existingIdIndex)
     if (existingIdIndex > 0) {
       this.commonobj[existingIdIndex]['status'] = status;
       this.commonobj[existingIdIndex]['location'] = loc;
 
     }
+    console.log(this.commonobj)
   }
   opensupermarket() {
     this.instance1 = panzoom(this.supermarket.nativeElement, {
@@ -1863,6 +1884,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
       bounds: true,
       boundsPadding: 1,
       smoothScroll: false,
+      autocenter: true,
       filterKey: function () {
         return true;
       },
@@ -1875,6 +1897,12 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         var shouldIgnore = !e.shiftKey;
         return shouldIgnore;
       },
+      onDoubleClick: function(e) {
+        return true; // tells the library to not preventDefault, and not stop propagation
+      },
+      onTouch: function(e) {
+        return false; // tells the library to not preventDefault.
+      }
     });
     let that = this;
     setTimeout(function () {

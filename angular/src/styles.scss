@@ -590,6 +590,8 @@ app-signup {
                 position: absolute;
                 left: -30px;
                 border-radius: 50%;
+
+
             }
 
             .cartid {
@@ -1230,7 +1232,9 @@ app-signup {
 }
 
 .wavyurpn,
-.U0B4,.U1B4,.UB4,
+.U0B4,
+.U1B4,
+.UB4,
 .wavyurpr {
     background-image: url('./assets/img/wavy_uvpn.png');
     width: 34px;
@@ -1926,5 +1930,62 @@ body {
         background-size: cover;
         cursor: pointer;
 
+    }
+}
+
+
+$panel-size: 125px;
+$button-size: 50px;
+
+.round-panel {
+    position: fixed;
+    width: $panel-size;
+    height: $panel-size;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    left: 28px;
+    top: 85px;
+}
+
+.button {
+    position: absolute;
+    width: $button-size;
+    height: $button-size;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.topbtn {
+        top: 0;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    &.left {
+        top: 50%;
+        left: 0;
+        transform: translate(-50%, -50%);
+    }
+
+    &.center {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    &.right {
+        top: 50%;
+        right: 0;
+        transform: translate(50%, -50%);
+    }
+
+    &.bottom {
+        bottom: 0;
+        left: 50%;
+        transform: translate(-50%, 50%);
     }
 }
