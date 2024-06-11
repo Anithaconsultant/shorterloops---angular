@@ -1,4 +1,4 @@
-import { Component, HostListener, ViewChild, AfterViewInit, ElementRef, OnInit } from '@angular/core';
+import { Component, HostListener, ViewChild, AfterViewInit, ElementRef, OnInit, OnDestroy } from '@angular/core';
 import panzoom from "panzoom";
 import { LoginserviceService } from '../services/loginservice.service';
 import { Router } from '@angular/router';
@@ -12,7 +12,7 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem, CdkDrag, CdkDragEnd } 
   templateUrl: './maincity.component.html',
   styleUrls: ['./maincity.component.scss']
 })
-export class MaincityComponent implements AfterViewInit, OnInit {
+export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
 
   noavatar = false;
@@ -192,24 +192,24 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   }
   ngOnInit(): void {
     if (this.logser.currentuser.Username != '') {
-      sessionStorage.setItem('currentUser', JSON.stringify(this.logser.currentuser));
-    } else {
-      let current = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
-      this.logser.currentuser = JSON.parse(JSON.stringify(current))
-      this.currentUserRole = this.logser.currentuser.Role;
-      this.currentUserCartId = this.logser.currentuser.cartId;
-      this.currentusername = this.logser.currentuser.Username;
-      this.currentusergender = this.logser.currentuser.gender;
-      this.currentuseravatar = this.logser.currentuser.avatar;
-      this.currentusercityId = this.logser.currentuser.CityId;
-      this.cityCurrentTime = this.logser.currentuser.CurrentTime;
-      this.citycurrentday = this.logser.currentuser.currentday;
-      this.cityrate = this.logser.currentuser.cityrate;
-      this.cityavatar = this.logser.currentuser.cityavatar;
-      this.currentwallet = this.logser.currentuser.wallet;
-      $(".maincity").addClass("city_" + this.cityavatar)
+    //   sessionStorage.setItem('currentUser', JSON.stringify(this.logser.currentuser));
+    // } else {
+    //   let current = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+    //   this.logser.currentuser = JSON.parse(JSON.stringify(current))
+    //   this.currentUserRole = this.logser.currentuser.Role;
+    //   this.currentUserCartId = this.logser.currentuser.cartId;
+    //   this.currentusername = this.logser.currentuser.Username;
+    //   this.currentusergender = this.logser.currentuser.gender;
+    //   this.currentuseravatar = this.logser.currentuser.avatar;
+    //   this.currentusercityId = this.logser.currentuser.CityId;
+    //   this.cityCurrentTime = this.logser.currentuser.CurrentTime;
+    //   this.citycurrentday = this.logser.currentuser.currentday;
+    //   this.cityrate = this.logser.currentuser.cityrate;
+    //   this.cityavatar = this.logser.currentuser.cityavatar;
+    //   this.currentwallet = this.logser.currentuser.wallet;
+    //   $(".maincity").addClass("city_" + this.cityavatar)
 
-    }
+    // }
 
     this.userDetails.currentuser = this.logser.currentuser.Username;
     this.userDetails.CityId = this.logser.currentuser.CityId;
@@ -295,10 +295,10 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     $("body").removeClass('frontpage').removeClass('cartcontent');
 
     setInterval(() => { this.loadAvailableAsset() }, 10000);
-    // }
-    // else {
-    //   this.router.navigate(['/login']);
-    // }
+    }
+    else {
+      this.router.navigate(['/login']);
+    }
   }
   setTrue() {
     this.canMoveTop = true;
@@ -447,9 +447,9 @@ export class MaincityComponent implements AfterViewInit, OnInit {
     const leftValue = parseInt($(".cart").css('left').split("px")[0]);
     const isWithinRange = (value: number, min: number, max: number) => value > min && value < max;
 
-    console.log(topValue,leftValue)
+    console.log(topValue, leftValue)
     if (isWithinRange(topValue, 2723, 2789) && isWithinRange(leftValue, 5300, 5891)) {
-      this.whichRoad = "refillingstation";  
+      this.whichRoad = "refillingstation";
       this.opensuperflag = 2;
       this.openrefillingstation();
       this.setTrue();
@@ -757,7 +757,7 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   }
   @HostListener('document:keydown.arrowup', ['$event'])
   moveup($event: any) {
-    console.log(this.canMoveTop,this.canMoveBottom,this.canMoveLeft,this.canMoveRight)
+    console.log(this.canMoveTop, this.canMoveBottom, this.canMoveLeft, this.canMoveRight)
     $event.stopPropagation();
     if (this.opensuperflag == 0) {
       this.checkCartPosition();
@@ -1897,10 +1897,10 @@ export class MaincityComponent implements AfterViewInit, OnInit {
         var shouldIgnore = !e.shiftKey;
         return shouldIgnore;
       },
-      onDoubleClick: function(e) {
+      onDoubleClick: function (e) {
         return true; // tells the library to not preventDefault, and not stop propagation
       },
-      onTouch: function(e) {
+      onTouch: function (e) {
         return false; // tells the library to not preventDefault.
       }
     });
@@ -2000,6 +2000,232 @@ export class MaincityComponent implements AfterViewInit, OnInit {
   opennavshorter(navigation: any) {
     $("body").removeClass('cartcontent').addClass('frontpage');
     this.modalService.open(navigation);
+  }
+  private intervalId: any;
+  private isMoving = false;
+
+  ngOnDestroy(): void {
+    this.clearMovement();
+  }
+
+
+  onMouseUp(event: MouseEvent): void {
+    this.clearMovement();
+  }
+
+  @HostListener('window:mouseup', ['$event'])
+  onWindowMouseUp(event: MouseEvent): void {
+    this.clearMovement();
+  }
+
+  moveUpbtn(event: any): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.clearMovement();
+    if (this.opensuperflag == 0) {
+      this.checkCartPosition();
+      if (this.canMoveTop) {
+        let leftval = $(".cart").css('top');
+        this.isMoving = true;
+        this.intervalId = setInterval(() => {
+          this.checkCartPosition();
+          if (this.isMoving && this.canMoveTop) {
+            leftval = parseInt(leftval) - 20 + "px";
+            $(".cart").css({ 'top': leftval })
+          }
+        }, 50);
+
+      }
+    }
+    else if (this.opensuperflag == 1) {
+      this.supercartposition();
+      if (this.markettop == true) {
+        let leftval = $(".supermarketcart").css('top');
+        this.isMoving = true;
+        this.intervalId = setInterval(() => {
+          this.supercartposition();
+          if (this.isMoving && this.markettop) {
+            leftval = parseInt(leftval) - 20 + "px";
+            $(".supermarketcart").css({ 'top': leftval })
+          }
+        }, 50);
+      }
+    }
+    else if (this.opensuperflag == 2) {
+      this.refillcartposition();
+      if (this.refilltop == true) {
+        this.isMoving = true;
+        let leftval = $("#refillcart").css('top');
+        this.intervalId = setInterval(() => {
+          this.refillcartposition();
+          if (this.isMoving && this.refilltop) {
+            leftval = parseInt(leftval) - 20 + "px";
+            $("#refillcart").css({ 'top': leftval })
+          }
+        }, 50);
+      }
+    }
+
+  }
+
+
+  moveDownbtn(event: any): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.clearMovement();
+    if (this.opensuperflag == 0) {
+      this.checkCartPosition();
+      if (this.canMoveBottom) {
+        let leftval = $(".cart").css('top');
+        this.isMoving = true;
+        this.intervalId = setInterval(() => {
+          this.checkCartPosition();
+          if (this.isMoving && this.canMoveBottom) {
+            leftval = parseInt(leftval) + 20 + "px";
+            $(".cart").css({ 'top': leftval })
+          }
+        },50);
+
+      }
+    }
+    else if (this.opensuperflag == 1) {
+      this.supercartposition();
+      if (this.marketbottom == true) {
+        let leftval = $(".supermarketcart").css('top');
+        this.isMoving = true;
+        this.intervalId = setInterval(() => {
+          this.supercartposition();
+          if (this.isMoving && this.marketbottom) {
+            leftval = parseInt(leftval) + 20 + "px";
+            $(".supermarketcart").css({ 'top': leftval })
+          }
+        }, 50);
+      }
+    }
+    else if (this.opensuperflag == 2) {
+      this.refillcartposition();
+      if (this.refillbottom == true) {
+        this.isMoving = true;
+        let leftval = $("#refillcart").css('top');
+        this.intervalId = setInterval(() => {
+          this.refillcartposition();
+          if (this.isMoving && this.refillbottom) {
+            leftval = parseInt(leftval) + 20 + "px";
+            $("#refillcart").css({ 'top': leftval })
+          }
+        }, 50);
+      }
+    }
+
+  }
+  moveLeftbtn(event: any): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.clearMovement();
+    if (this.opensuperflag == 0) {
+      this.checkCartPosition();
+      if (this.canMoveLeft) {
+        let leftval = $(".cart").css('left');
+        this.isMoving = true;
+        this.intervalId = setInterval(() => {
+          this.checkCartPosition();
+          if (this.isMoving && this.canMoveLeft) {
+            leftval = parseInt(leftval) - 20 + "px";
+            $(".cart").css({ 'left': leftval })
+          }
+        }, 50);
+
+      }
+    }
+    else if (this.opensuperflag == 1) {
+      this.supercartposition();
+      if (this.marketleft == true) {
+        let leftval = $(".supermarketcart").css('left');
+        this.isMoving = true;
+        this.intervalId = setInterval(() => {
+          this.supercartposition();
+          if (this.isMoving && this.marketleft) {
+            leftval = parseInt(leftval) - 20 + "px";
+            $(".supermarketcart").css({ 'left': leftval })
+          }
+        }, 50);
+      }
+    }
+    else if (this.opensuperflag == 2) {
+      this.refillcartposition();
+      if (this.refillleft == true) {
+        this.isMoving = true;
+        let leftval = $("#refillcart").css('left');
+        this.intervalId = setInterval(() => {
+          this.refillcartposition();
+          if (this.isMoving && this.refillleft) {
+            leftval = parseInt(leftval) - 20 + "px";
+            $("#refillcart").css({ 'left': leftval })
+          }
+        }, 50);
+      }
+    }
+
+  }
+  moveRightbtn(event: any): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.clearMovement();
+    if (this.opensuperflag == 0) {
+      this.checkCartPosition();
+      if (this.canMoveRight) {
+        let leftval = $(".cart").css('left');
+        this.isMoving = true;
+        this.intervalId = setInterval(() => {
+          this.checkCartPosition();
+          if (this.isMoving && this.canMoveRight) {
+            leftval = parseInt(leftval) + 20 + "px";
+            $(".cart").css({ 'left': leftval })
+          }
+        }, 50);
+
+      }
+    }
+    else if (this.opensuperflag == 1) {
+      this.supercartposition();
+      if (this.marketright == true) {
+        let leftval = $(".supermarketcart").css('left');
+        this.isMoving = true;
+        this.intervalId = setInterval(() => {
+          this.supercartposition();
+          if (this.isMoving && this.marketright) {
+            leftval = parseInt(leftval) + 20 + "px";
+            $(".supermarketcart").css({ 'left': leftval })
+          }
+        }, 50);
+      }
+    }
+    else if (this.opensuperflag == 2) {
+      this.refillcartposition();
+      if (this.refillright == true) {
+        this.isMoving = true;
+        let leftval = $("#refillcart").css('left');
+        this.intervalId = setInterval(() => {
+          this.refillcartposition();
+          if (this.isMoving && this.refillright) {
+            leftval = parseInt(leftval) + 20 + "px";
+            $("#refillcart").css({ 'left': leftval })
+          }
+        }, 50);
+      }
+    }
+
+  }
+
+
+
+
+  clearMovement(): void {
+    this.isMoving = false;
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
   }
 }
 
