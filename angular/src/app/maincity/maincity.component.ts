@@ -50,7 +50,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   timeout: any;
   resetanimation = false;
   opensuperflag = 0;
-
+  currentZoomLevel = 1;
   //bottles: string[] = [];
   bottledropped: string[] = [];
   bottletaken: string[] = [];
@@ -192,109 +192,109 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   }
   ngOnInit(): void {
     if (this.logser.currentuser.Username != '') {
-    //   sessionStorage.setItem('currentUser', JSON.stringify(this.logser.currentuser));
-    // } else {
-    //   let current = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
-    //   this.logser.currentuser = JSON.parse(JSON.stringify(current))
-    //   this.currentUserRole = this.logser.currentuser.Role;
-    //   this.currentUserCartId = this.logser.currentuser.cartId;
-    //   this.currentusername = this.logser.currentuser.Username;
-    //   this.currentusergender = this.logser.currentuser.gender;
-    //   this.currentuseravatar = this.logser.currentuser.avatar;
-    //   this.currentusercityId = this.logser.currentuser.CityId;
-    //   this.cityCurrentTime = this.logser.currentuser.CurrentTime;
-    //   this.citycurrentday = this.logser.currentuser.currentday;
-    //   this.cityrate = this.logser.currentuser.cityrate;
-    //   this.cityavatar = this.logser.currentuser.cityavatar;
-    //   this.currentwallet = this.logser.currentuser.wallet;
-    //   $(".maincity").addClass("city_" + this.cityavatar)
+      //   sessionStorage.setItem('currentUser', JSON.stringify(this.logser.currentuser));
+      // } else {
+      //   let current = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+      //   this.logser.currentuser = JSON.parse(JSON.stringify(current))
+      //   this.currentUserRole = this.logser.currentuser.Role;
+      //   this.currentUserCartId = this.logser.currentuser.cartId;
+      //   this.currentusername = this.logser.currentuser.Username;
+      //   this.currentusergender = this.logser.currentuser.gender;
+      //   this.currentuseravatar = this.logser.currentuser.avatar;
+      //   this.currentusercityId = this.logser.currentuser.CityId;
+      //   this.cityCurrentTime = this.logser.currentuser.CurrentTime;
+      //   this.citycurrentday = this.logser.currentuser.currentday;
+      //   this.cityrate = this.logser.currentuser.cityrate;
+      //   this.cityavatar = this.logser.currentuser.cityavatar;
+      //   this.currentwallet = this.logser.currentuser.wallet;
+      //   $(".maincity").addClass("city_" + this.cityavatar)
 
-    // }
+      // }
 
-    this.userDetails.currentuser = this.logser.currentuser.Username;
-    this.userDetails.CityId = this.logser.currentuser.CityId;
-    this.userDetails.currentCartId = this.logser.currentuser.cartId;
-    this.userDetails.CurrentDay = this.logser.currentuser.currentday.toString();
-    // this.logser.sendUserDetails(this.userDetails).subscribe(
-    //   response => {
-    //     console.log('User details sent successfully');
-    //   },
-    //   error => {
-    //     console.error('Error sending user details:', error);
-    //   }
-    // );
-    // this.loadAvailableAsset();
-    this.logser.getAllUsers().subscribe((data) => {
-      this.user = data;
-      for (var t = 0; t < this.user.length; t++) {
-        if (this.user[t].login == 1 && this.user[t].User_cityid == this.logser.currentuser.CityId) {
-          $("." + this.user[t].Role.split(" ")[0]).show();
-          this.currentUserId = this.user[t].UserId;
-        }
-        if (this.user[t].Username == this.currentusername) {
-          this.currentwallet = this.user[t].wallet;
-          this.logser.currentuser.wallet = this.user[t].wallet;
-        }
-        if (this.user[t].Username == this.currentusername && this.user[t].avatar == '') {
-          this.noavatar = true;
-          if (this.noavatar == true) {
-            this.open(this.content)
+      this.userDetails.currentuser = this.logser.currentuser.Username;
+      this.userDetails.CityId = this.logser.currentuser.CityId;
+      this.userDetails.currentCartId = this.logser.currentuser.cartId;
+      this.userDetails.CurrentDay = this.logser.currentuser.currentday.toString();
+      // this.logser.sendUserDetails(this.userDetails).subscribe(
+      //   response => {
+      //     console.log('User details sent successfully');
+      //   },
+      //   error => {
+      //     console.error('Error sending user details:', error);
+      //   }
+      // );
+      // this.loadAvailableAsset();
+      this.logser.getAllUsers().subscribe((data) => {
+        this.user = data;
+        for (var t = 0; t < this.user.length; t++) {
+          if (this.user[t].login == 1 && this.user[t].User_cityid == this.logser.currentuser.CityId) {
+            $("." + this.user[t].Role.split(" ")[0]).show();
+            this.currentUserId = this.user[t].UserId;
           }
-        }
-        else if (this.user[t].Username == this.currentusername && this.user[t].avatar !== '') {
-          this.logser.currentuser.avatar = this.user[t].avatar;
-          this.currentuseravatar = this.user[t].avatar
-          $(".displaypic,.cartavatar").addClass('pic_' + this.logser.currentuser.avatar);
-        }
-        if (this.user[t].Role !== '') {
-          let word = this.user[t].Role.split(" ")[0];
-          let xpos = this.positionObject[word as keyof typeof this.positionObject][3][0];
-          let ypos = this.positionObject[word as keyof typeof this.positionObject][3][1];
-          let x2 = this.positionObject[word as keyof typeof this.positionObject][2][0];
-          let y2 = this.positionObject[word as keyof typeof this.positionObject][2][1];
-          $(".displaypanel." + word).css({ 'left': xpos + 'px', 'top': ypos + 'px' }).html(this.user[t].Role);
-          $(".housedisplay." + word).css({ 'left': x2 + 'px', 'top': y2 + 'px' }).html(this.user[t].Username).show();
-          if (word == 'Supermarket' || word == 'Plastic' || word == 'Ubottle' || word == 'Reverse' || word == 'Refilling') {
-            $(".commoncls." + word).html('').addClass('openlight');
+          if (this.user[t].Username == this.currentusername) {
+            this.currentwallet = this.user[t].wallet;
+            this.logser.currentuser.wallet = this.user[t].wallet;
           }
-        }
-        if (this.user[t].User_cityid == this.logser.currentuser.CityId) {
-          let avatarnumber = this.user[t].avatar;
-          for (var j = 0; j < this.maleset.length; j++) {
-            if (this.maleset[j].toString() == avatarnumber) {
-              this.maleset.splice(j, 1);
+          if (this.user[t].Username == this.currentusername && this.user[t].avatar == '') {
+            this.noavatar = true;
+            if (this.noavatar == true) {
+              this.open(this.content)
+            }
+          }
+          else if (this.user[t].Username == this.currentusername && this.user[t].avatar !== '') {
+            this.logser.currentuser.avatar = this.user[t].avatar;
+            this.currentuseravatar = this.user[t].avatar
+            $(".displaypic,.cartavatar").addClass('pic_' + this.logser.currentuser.avatar);
+          }
+          if (this.user[t].Role !== '') {
+            let word = this.user[t].Role.split(" ")[0];
+            let xpos = this.positionObject[word as keyof typeof this.positionObject][3][0];
+            let ypos = this.positionObject[word as keyof typeof this.positionObject][3][1];
+            let x2 = this.positionObject[word as keyof typeof this.positionObject][2][0];
+            let y2 = this.positionObject[word as keyof typeof this.positionObject][2][1];
+            $(".displaypanel." + word).css({ 'left': xpos + 'px', 'top': ypos + 'px' }).html(this.user[t].Role);
+            $(".housedisplay." + word).css({ 'left': x2 + 'px', 'top': y2 + 'px' }).html(this.user[t].Username).show();
+            if (word == 'Supermarket' || word == 'Plastic' || word == 'Ubottle' || word == 'Reverse' || word == 'Refilling') {
+              $(".commoncls." + word).html('').addClass('openlight');
+            }
+          }
+          if (this.user[t].User_cityid == this.logser.currentuser.CityId) {
+            let avatarnumber = this.user[t].avatar;
+            for (var j = 0; j < this.maleset.length; j++) {
+              if (this.maleset[j].toString() == avatarnumber) {
+                this.maleset.splice(j, 1);
+              }
             }
           }
         }
-      }
-      this.newmale = this.maleset.slice(0);
+        this.newmale = this.maleset.slice(0);
 
-    });
-    this.logser.getcitynames().subscribe((data) => {
-      console.log(data);
-      setTimeout(() => {
-        if (data[0].MayorId != 0) {
-          $(".mayorflag").show();
-        }
-        // this.currentTime();
-      }, 500)
-      this.logser.currentuser.cityname = data[0].CityName;
-      this.logser.currentuser.CurrentTime = (this.convertSeconds(data[0]['CurrentTime'].toString()));
-      this.logser.currentuser.currentday = data[0].CurrentDay;
-      this.logser.currentuser.cityrate = data[0].cityrate;
-      this.logser.currentuser.cityavatar = data[0].cityavatar;
-      this.cityrate = data[0].cityrate;
-      this.cityavatar = data[0].cityavatar;
-      this.cityname = this.logser.currentuser.cityname;
-      this.cityCurrentTime = (this.convertSeconds(data[0].CurrentTime));
-      this.citycurrentday = data[0].CurrentDay;
-      //(this.citycurrentday > 0) ? this.sec = (this.cityCurrentTime * 3600) + (3600 * 24 * this.citycurrentday) : this.sec = this.cityCurrentTime * 3600;
-      $(".maincity").addClass("city_" + this.cityavatar)
-    });
+      });
+      this.logser.getcitynames().subscribe((data) => {
+        console.log(data);
+        setTimeout(() => {
+          if (data[0].MayorId != 0) {
+            $(".mayorflag").show();
+          }
+          // this.currentTime();
+        }, 500)
+        this.logser.currentuser.cityname = data[0].CityName;
+        this.logser.currentuser.CurrentTime = (this.convertSeconds(data[0]['CurrentTime'].toString()));
+        this.logser.currentuser.currentday = data[0].CurrentDay;
+        this.logser.currentuser.cityrate = data[0].cityrate;
+        this.logser.currentuser.cityavatar = data[0].cityavatar;
+        this.cityrate = data[0].cityrate;
+        this.cityavatar = data[0].cityavatar;
+        this.cityname = this.logser.currentuser.cityname;
+        this.cityCurrentTime = (this.convertSeconds(data[0].CurrentTime));
+        this.citycurrentday = data[0].CurrentDay;
+        //(this.citycurrentday > 0) ? this.sec = (this.cityCurrentTime * 3600) + (3600 * 24 * this.citycurrentday) : this.sec = this.cityCurrentTime * 3600;
+        $(".maincity").addClass("city_" + this.cityavatar)
+      });
 
-    $("body").removeClass('frontpage').removeClass('cartcontent');
+      $("body").removeClass('frontpage').removeClass('cartcontent');
 
-    setInterval(() => { this.loadAvailableAsset() }, 10000);
+      setInterval(() => { this.loadAvailableAsset() }, 10000);
     }
     else {
       this.router.navigate(['/login']);
@@ -849,14 +849,47 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     this.refillbottom = true;
   }
   recenter() {
-    this.dopanzoom((parseInt($(".cart").css('left').split('px')[0]) - 650) * -1, (parseInt($(".cart").css('top').split('px')[0]) - 300) * -1, '1');
+    if (this.opensuperflag == 0) {
+      this.dopanzoom((parseInt($(".cart").css('left').split('px')[0]) - 650) * -1, (parseInt($(".cart").css('top').split('px')[0]) - 300) * -1, '1');
+    }
+    if (this.opensuperflag == 1) {
+      this.dopanzoomsupermarket((parseInt($(".supermarketcart").css('left').split('px')[0]) - 500) * -1, (parseInt($(".supermarketcart").css('top').split('px')[0]) - 300) * -1, '1');
+    }
+
   }
+
+  zoomIn(event: any) {
+    event.preventDefault();
+    event.stopPropagation();
+    let c = this.instance.getTransform();
+    let r = c.scale;
+    if (r < 2.5 && r> 0.25) {
+      console.log(c);
+      let s = r + 0.1;
+      this.instance.zoomTo(0,0, s);
+      this.instance.getTransform().scale=s;
+    }
+
+  }
+  zoomOut(event: any) {
+    event.preventDefault();
+    event.stopPropagation();
+    let c = this.instance.getTransform();
+    let r = c.scale;
+    if (r > 0.4 && r < 2.5) { 
+      console.log(c);
+      let z = r - 0.1;
+      this.instance.zoomTo(0,0,z);
+      this.instance.getTransform().scale=z;
+    }
+  }
+  stopZoom() { }
   refillcartposition() {
     let topValue = parseInt($("#refillcart").css('top').split("px")[0]);
     let leftValue = parseInt($("#refillcart").css('left').split("px")[0]);
     if (topValue > 242 && topValue < 370 && leftValue > 10 && leftValue < 1060) {
       this.cartlocrefill = "enterpoint";
-
+      this.resetrefilling();
       this.setrefilltrue();
     }
     else if (topValue > 370 && topValue < 410 && leftValue > 10 && leftValue < 1060) {
@@ -1334,7 +1367,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         minZoom: 0.3,
         bounds: true,
         boundsPadding: 1,
-        smoothScroll: false,
+        smoothScroll: true,
         filterKey: function () {
           return true;
         },
@@ -1345,6 +1378,9 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         beforeMouseDown: function (e) {
           var shouldIgnore = !e.shiftKey;
           return shouldIgnore;
+        },
+        onDoubleClick: function (e) {
+          return false; // tells the library to not preventDefault, and not stop propagation
         }
 
 
@@ -2084,7 +2120,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             leftval = parseInt(leftval) + 20 + "px";
             $(".cart").css({ 'top': leftval })
           }
-        },50);
+        }, 50);
 
       }
     }

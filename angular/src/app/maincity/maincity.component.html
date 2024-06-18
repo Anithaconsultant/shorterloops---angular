@@ -1,59 +1,60 @@
-<div class="maincity_container" preventDoubleClick >
-    <audio #welcomemarket [volume]="0.8" muted="muted">
+<div class="maincity_container" preventDoubleClick>
+    <audio #welcomemarket [volume]="0.8" muted="muted" preload="auto">
         <source src="assets/audio/welcomesupermarket.mp3" type="audio/mp3" />
     </audio>
-    <audio #doneshopping [volume]="0.8" muted="muted">
+    <audio #doneshopping [volume]="0.8" muted="muted" preload="auto">
         <source src="assets/audio/Donewithyourshopping.mp3" type="audio/mp3" />
     </audio>
-    <audio #pleasecheck [volume]="0.8" muted="muted">
+    <audio #pleasecheck [volume]="0.8" muted="muted" preload="auto">
         <source src="assets/audio/Pleasecheck.mp3" type="audio/mp3" />
     </audio>
-    <audio #paymentreceived [volume]="0.8" muted="muted">
+    <audio #paymentreceived [volume]="0.8" muted="muted" preload="auto">
         <source src="assets/audio/PaymentReceived.mp3" type="audio/mp3" />
     </audio>
-    <audio #transactioncomplete [volume]="0.8" muted="muted">
+    <audio #transactioncomplete [volume]="0.8" muted="muted" preload="auto">
         <source src="assets/audio/TransactionComplete.mp3" type="audio/mp3" />
     </audio>
-    <audio #thankyousuper [volume]="0.8" muted="muted">
+    <audio #thankyousuper [volume]="0.8" muted="muted" preload="auto">
         <source src="assets/audio/Thankyousupermarket.mp3" type="audio/mp3" />
     </audio>
-    <audio #cityrail [volume]="0.3" muted="muted">
+    <audio #cityrail [volume]="0.3" muted="muted" preload="auto">
         <source src="assets/audio/cityrail.mp3" type="audio/mp3" />
     </audio>
-    <audio #welcome [volume]="0.8" muted="muted">
+    <audio #welcome [volume]="0.8" muted="muted" preload="auto">
         <source src="assets/audio/welcome.mp3" type="audio/mp3" />
     </audio>
-    <audio #placebottle [volume]="0.8" muted="muted">
+    <audio #placebottle [volume]="0.8" muted="muted" preload="auto">
         <source src="assets/audio/placebottle.mp3" type="audio/mp3" />
     </audio>
-    <audio #bottledroppeded [volume]="0.8" muted="muted">
+    <audio #bottledroppeded [volume]="0.8" muted="muted" preload="auto">
         <source src="assets/audio/bottledropped.mp3" type="audio/mp3" />
     </audio>
-    <audio #selectbrand [volume]="0.8" muted="muted">
+    <audio #selectbrand [volume]="0.8" muted="muted" preload="auto">
         <source src="assets/audio/selectbrand.mp3" type="audio/mp3" />
     </audio>
-    <audio #bottledifferent [volume]="0.8" muted="muted">
+    <audio #bottledifferent [volume]="0.8" muted="muted" preload="auto">
         <source src="assets/audio/bottledifferent.mp3" type="audio/mp3" />
     </audio>
-    <audio #checkprice [volume]="0.8" muted="muted">
+    <audio #checkprice [volume]="0.8" muted="muted" preload="auto">
         <source src="assets/audio/checkprice.mp3" type="audio/mp3" />
     </audio>
-    <audio #useplusminus [volume]="0.8" muted="muted">
+    <audio #useplusminus [volume]="0.8" muted="muted" preload="auto">
         <source src="assets/audio/useplusminuskey.mp3" type="audio/mp3" />
     </audio>
-    <audio #collectbottle [volume]="0.8" muted="muted">
+    <audio #collectbottle [volume]="0.8" muted="muted" preload="auto">
         <source src="assets/audio/collectyourbottle.mp3" type="audio/mp3" />
     </audio>
-    <audio #thankyou [volume]="0.8" muted="muted">
+    <audio #thankyou [volume]="0.8" muted="muted" preload="auto">
         <source src="assets/audio/thankyou.mp3" type="audio/mp3" />
     </audio>
-    <audio #cartdisplay [volume]="0.8" muted="muted">
+    <audio #cartdisplay [volume]="0.8" muted="muted" preload="auto">
         <source src="assets/audio/cartdisplay.mp3" type="audio/mp3" />
     </audio>
     <div class="maincity" #maincity id="maincity" [hidden]="opensuperflag!=0">
         <div class="truck side"></div>
         <div class="cart">
-            <div class="cartavatar" (click)="opensuperflag=1;opensupermarket();">
+            <div class="cartavatar" (click)="opensuperflag=1;opensupermarket();"
+                (touchend)="opensuperflag=1;opensupermarket();">
 
             </div>
             <div class="cartid" (click)="opencart(cartcontent,$event)"></div>
@@ -125,7 +126,8 @@
                     <div cdkDropList #bottleList="cdkDropList" [cdkDropListConnectedTo]="[droppedList]"
                         [cdkDropListData]="refillbottles" (cdkDropListDropped)="drop($event)" class="cart_bottle_list">
                         <div *ngFor="let item of refillbottles" id="{{item.split('.')[0].split('_')[2]}}"
-                            class="bottle {{currentusercityId}}{{item}} {{item.split('.')[0].split('_')[2]}} " cdkDrag (dragstart)="onDragStart($event)" longPressDrag [cdkDragStartDelay]="500">
+                            class="bottle {{currentusercityId}}{{item}} {{item.split('.')[0].split('_')[2]}} " cdkDrag
+                            (dragstart)="onDragStart($event)" longPressDrag [cdkDragStartDelay]="500">
                         </div>
                     </div>
                 </div>
@@ -135,7 +137,7 @@
                         [cdkDropListConnectedTo]="[shinyvpnbottle,wavyurpnbottle,shinyuvpnbottle,wavyurprbottle,spikyrpnbottle,spikyrprbottle,bouncyurpnbottle,bouncyrpnbottle,silkyvpnbottle]"
                         [cdkDropListData]="bottletaken" (cdkDropListDropped)="drop($event)" class="newbottle_list">
                         <div *ngFor="let item of bottletaken" class="{{item}} {{item.split('at')[1]}}" id="{{item}}"
-                            cdkDrag (dragstart)="onDragStart($event)" ></div>
+                            cdkDrag (dragstart)="onDragStart($event)"></div>
                     </div>
                 </div>
 
@@ -147,7 +149,8 @@
                         [cdkDropListData]="shinyvpn" (cdkDropListDropped)="drop($event)" class="shinyvpn_list"
                         [cdkDropListEnterPredicate]="checkcondition">
                         <div *ngFor="let item of shinyvpn" class="shiny_vpn" id="{{item}}"
-                            (click)="opensticker(bottlesticker,$event)" (dragstart)="onDragStart($event)" cdkdrag  longPressDrag [cdkDragStartDelay]="500"></div>
+                            (click)="opensticker(bottlesticker,$event)" (dragstart)="onDragStart($event)" cdkdrag
+                            longPressDrag [cdkDragStartDelay]="500"></div>
                     </div>
                 </div>
                 <div class="shinyshelfuvpn dropper">
@@ -155,7 +158,8 @@
                         [cdkDropListData]="shinyuvpn" (cdkDropListDropped)="drop($event)" class="shinyuvpn_list"
                         [cdkDropListEnterPredicate]="checkshinyuniver">
                         <div *ngFor="let item of shinyuvpn" class="shiny_uvpn" id="{{item}}"
-                            (click)="opensticker(bottlesticker,$event)" (dragstart)="onDragStart($event)" cdkdrag  longPressDrag [cdkDragStartDelay]="500"></div>
+                            (click)="opensticker(bottlesticker,$event)" (dragstart)="onDragStart($event)" cdkdrag
+                            longPressDrag [cdkDragStartDelay]="500"></div>
                     </div>
                 </div>
                 <div class="spikeshelfrpn dropper">
@@ -163,7 +167,8 @@
                         [cdkDropListData]="spikyrpn" (cdkDropListDropped)="drop($event)" class="spikyrpn_list"
                         [cdkDropListEnterPredicate]="checkspikyrpn">
                         <div *ngFor="let item of spikyrpn" class="spikyrpn" id="{{item}}"
-                            (click)="opensticker(bottlesticker,$event)" (dragstart)="onDragStart($event)" cdkdrag  longPressDrag [cdkDragStartDelay]="500"></div>
+                            (click)="opensticker(bottlesticker,$event)" (dragstart)="onDragStart($event)" cdkdrag
+                            longPressDrag [cdkDragStartDelay]="500"></div>
                     </div>
                 </div>
                 <div class="spikeshelfrpr dropper">
@@ -171,7 +176,8 @@
                         [cdkDropListData]="spikyrpr" (cdkDropListDropped)="drop($event)" class="spikyrpr_list"
                         [cdkDropListEnterPredicate]="checkspikyrpn">
                         <div *ngFor="let item of spikyrpr" class="spikyrpr" id="{{item}}"
-                            (click)="opensticker(bottlesticker,$event)" (dragstart)="onDragStart($event)" cdkdrag  longPressDrag [cdkDragStartDelay]="500"></div>
+                            (click)="opensticker(bottlesticker,$event)" (dragstart)="onDragStart($event)" cdkdrag
+                            longPressDrag [cdkDragStartDelay]="500"></div>
                     </div>
                 </div>
                 <div class="bouncyshelfrpn dropper">
@@ -179,7 +185,8 @@
                         [cdkDropListData]="bouncyrpn" (cdkDropListDropped)="drop($event)" class="bouncyrpn_list"
                         [cdkDropListEnterPredicate]="checkbouncyrpn">
                         <div *ngFor="let item of bouncyrpn" class="bouncyrpn" id="{{item}}"
-                            (click)="opensticker(bottlesticker,$event)" (dragstart)="onDragStart($event)" cdkdrag  longPressDrag [cdkDragStartDelay]="500"></div>
+                            (click)="opensticker(bottlesticker,$event)" (dragstart)="onDragStart($event)" cdkdrag
+                            longPressDrag [cdkDragStartDelay]="500"></div>
                     </div>
                 </div>
                 <div class="bouncyshelfurpn dropper">
@@ -187,7 +194,8 @@
                         [cdkDropListData]="bouncyurpn" (cdkDropListDropped)="drop($event)" class="bouncyurpn_list"
                         [cdkDropListEnterPredicate]="checkbouncyurpn">
                         <div *ngFor="let item of bouncyurpn" class="bouncyurpn" id="{{item}}"
-                            (click)="opensticker(bottlesticker,$event)" (dragstart)="onDragStart($event)" cdkdrag  [cdkDragStartDelay]="500" longPressDrag></div>
+                            (click)="opensticker(bottlesticker,$event)" (dragstart)="onDragStart($event)" cdkdrag
+                            [cdkDragStartDelay]="500" longPressDrag></div>
                     </div>
                 </div>
                 <div class="wavyshelfurpn dropper">
@@ -195,7 +203,8 @@
                         [cdkDropListData]="wavyurpn" (cdkDropListDropped)="drop($event)" class="wavyurpn_list"
                         [cdkDropListEnterPredicate]="checkwavyurpn">
                         <div *ngFor="let item of wavyurpn" class="wavyurpn" id="{{item}}"
-                            (click)="opensticker(bottlesticker,$event)" (dragstart)="onDragStart($event)" cdkdrag  longPressDrag [cdkDragStartDelay]="500"></div>
+                            (click)="opensticker(bottlesticker,$event)" (dragstart)="onDragStart($event)" cdkdrag
+                            longPressDrag [cdkDragStartDelay]="500"></div>
                     </div>
                 </div>
                 <div class="wavyshelfurpr dropper">
@@ -203,7 +212,8 @@
                         [cdkDropListData]="wavyurpr" (cdkDropListDropped)="drop($event)" class="wavyurpr_list"
                         [cdkDropListEnterPredicate]="checkwavyurpr">
                         <div *ngFor="let item of wavyurpr" class="wavyurpr" id="{{item}}"
-                            (click)="opensticker(bottlesticker,$event)" (dragstart)="onDragStart($event)" cdkdrag  longPressDrag [cdkDragStartDelay]="500"></div>
+                            (click)="opensticker(bottlesticker,$event)" (dragstart)="onDragStart($event)" cdkdrag
+                            longPressDrag [cdkDragStartDelay]="500"></div>
                     </div>
                 </div>
                 <div class="silkyshelfvpn dropper">
@@ -211,7 +221,8 @@
                         [cdkDropListData]="silkyvpn" (cdkDropListDropped)="drop($event)" class="silkyvpn_list"
                         [cdkDropListEnterPredicate]="checksilkyvpn">
                         <div *ngFor="let item of silkyvpn" class="silkyvpn" id="{{item}}"
-                            (click)="opensticker(bottlesticker,$event)" (dragstart)="onDragStart($event)" cdkdrag  longPressDrag [cdkDragStartDelay]="500"></div>
+                            (click)="opensticker(bottlesticker,$event)" (dragstart)="onDragStart($event)" cdkdrag
+                            longPressDrag [cdkDragStartDelay]="500"></div>
                     </div>
                 </div>
 
@@ -227,7 +238,8 @@
                     <div cdkDropList #bottlerefilled="cdkDropList" [cdkDropListConnectedTo]="[shinyrefill]"
                         [cdkDropListData]="refilledbottles" (cdkDropListDropped)="drop($event)" class="refilled_list">
                         <div *ngFor="let item of refilledbottles"
-                            class="{{item}} {{item.split('.')[0].split('_')[2]}} refillbtl refilldone" (dragstart)="onDragStart($event)" cdkdrag  longPressDrag [cdkDragStartDelay]="500" ></div>
+                            class="{{item}} {{item.split('.')[0].split('_')[2]}} refillbtl refilldone"
+                            (dragstart)="onDragStart($event)" cdkdrag longPressDrag [cdkDragStartDelay]="500"></div>
                     </div>
                 </div>
                 <div class="refillbottleholder">
@@ -235,8 +247,8 @@
                         [cdkDropListData]="refillbottles" (cdkDropListDropped)="drop($event)" class="refill_list"
                         [cdkDropListEnterPredicate]="checkrefillcondition">
                         <div *ngFor="let item of refillbottles"
-                            class="{{currentusercityId}}{{item}} {{item.split('.')[0].split('_')[2]}} refillbtl"
-                            cdkDrag  longPressDrag [cdkDragStartDelay]="500"></div>
+                            class="{{currentusercityId}}{{item}} {{item.split('.')[0].split('_')[2]}} refillbtl" cdkDrag
+                            longPressDrag [cdkDragStartDelay]="500"></div>
                     </div>
                 </div>
             </div>
@@ -246,29 +258,39 @@
                     on the conveyor.</div>
                 <div class="brandsection">
                     <div class="shiny"
-                        (click)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('shiny'); "   (touchend)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('shiny'); ">
+                        (click)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('shiny'); "
+                        (touchend)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('shiny'); ">
                     </div>
                     <div class="bouncy"
-                        (click)="(droppedbottle==false )?  $event.stopPropagation():checkrefillselect('bouncy');" (touchend)="(droppedbottle==false )?  $event.stopPropagation():checkrefillselect('bouncy');">
+                        (click)="(droppedbottle==false )?  $event.stopPropagation():checkrefillselect('bouncy');"
+                        (touchend)="(droppedbottle==false )?  $event.stopPropagation():checkrefillselect('bouncy');">
                     </div>
                     <div class="spiky"
-                        (click)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('spiky');" (touchend)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('spiky');">
+                        (click)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('spiky');"
+                        (touchend)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('spiky');">
                     </div>
                     <div class="silky"
-                        (click)="(droppedbottle==false )?  $event.stopPropagation():checkrefillselect('silky');" (touchend)="(droppedbottle==false )?  $event.stopPropagation():checkrefillselect('silky');">
+                        (click)="(droppedbottle==false )?  $event.stopPropagation():checkrefillselect('silky');"
+                        (touchend)="(droppedbottle==false )?  $event.stopPropagation():checkrefillselect('silky');">
                     </div>
                     <div class="wavy"
-                        (click)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('wavy');"  (touchend)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('wavy');">
+                        (click)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('wavy');"
+                        (touchend)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('wavy');">
                     </div>
                 </div>
                 <div class="adjustment">
-                    <div class="up" (click)="(brandselected==false)?  $event.stopPropagation():increament();"  (touchend)="(brandselected==false)?  $event.stopPropagation():increament();"></div>
-                    <div class="down" (click)="(brandselected==false)?  $event.stopPropagation():decrement();" (touchend)="(brandselected==false)?  $event.stopPropagation():decrement();"></div>
+                    <div class="up" (click)="(brandselected==false)?  $event.stopPropagation():increament();"
+                        (touchend)="(brandselected==false)?  $event.stopPropagation():increament();"></div>
+                    <div class="down" (click)="(brandselected==false)?  $event.stopPropagation():decrement();"
+                        (touchend)="(brandselected==false)?  $event.stopPropagation():decrement();"></div>
                 </div>
-                <div class="start" (click)="(quantityselected==false)?  $event.stopPropagation():startanimation();" (touchend)="(quantityselected==false)?  $event.stopPropagation():startanimation();">
+                <div class="start" (click)="(quantityselected==false)?  $event.stopPropagation():startanimation();"
+                    (touchend)="(quantityselected==false)?  $event.stopPropagation():startanimation();">
                 </div>
-                <div class="cancel" (click)="(quantityselected==false)?  $event.stopPropagation():increament();" (touchend)="(quantityselected==false)?  $event.stopPropagation():increament();"></div>
-                <div class="continue" (click)="(resetanimation==false)? resetrefilling(): $event.stopPropagation();" (touchend)="(resetanimation==false)? resetrefilling(): $event.stopPropagation();">
+                <div class="cancel" (click)="(quantityselected==false)?  $event.stopPropagation():increament();"
+                    (touchend)="(quantityselected==false)?  $event.stopPropagation():increament();"></div>
+                <div class="continue" (click)="(resetanimation==false)? resetrefilling(): $event.stopPropagation();"
+                    (touchend)="(resetanimation==false)? resetrefilling(): $event.stopPropagation();">
                 </div>
             </div>
             <div class="animationpanel">
@@ -299,24 +321,36 @@
                         [cdkDropListData]="shinyrefilling" (cdkDropListDropped)="drop($event)" class="refilllist"
                         [cdkDropListEnterPredicate]="checkrefilledbottle">
                         <div *ngFor="let item of shinyrefilling" class="{{item.split('.')[0].split('_')[2]}} refillbtl "
-                            id="{{item}}" (dragstart)="onDragStart($event)" cdkdrag  longPressDrag [cdkDragStartDelay]="500"></div>
+                            id="{{item}}" (dragstart)="onDragStart($event)" cdkdrag longPressDrag
+                            [cdkDragStartDelay]="500"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
+
+
     <div class="round-panel">
         <div>
-            <button (click)="moveup($event)" (mousedown)="moveUpbtn($event)"  (touchstart)="moveUpbtn($event)"  (touchend)="clearMovement()"  class=" button topbtn">T</button>
+            <button (click)="moveup($event)" (mousedown)="moveUpbtn($event)" (touchstart)="moveUpbtn($event)"
+                (touchend)="clearMovement()" class=" button topbtn">T</button>
         </div>
         <div>
-            <button (click)="moveleft($event)"(mousedown)="moveLeftbtn($event)"   (touchstart)="moveLeftbtn($event)"  (touchend)="clearMovement()" class="button left" >L</button>
-            <button (click)="moveright($event)" (mousedown)="moveRightbtn($event)"   (touchstart)="moveRightbtn($event)"  (touchend)="clearMovement()"  class="button right" >R</button>
+            <button (click)="moveleft($event)" (mousedown)="moveLeftbtn($event)" (touchstart)="moveLeftbtn($event)"
+                (touchend)="clearMovement()" class="button left">L</button>
+            <button (click)="moveright($event)" (mousedown)="moveRightbtn($event)" (touchstart)="moveRightbtn($event)"
+                (touchend)="clearMovement()" class="button right">R</button>
         </div>
         <div>
-            <button (click)="movedown($event)" (mousedown)="moveDownbtn($event)"   (touchstart)="moveDownbtn($event)"  (touchend)="clearMovement()"  class="button bottom">B</button>
-            <button (click)="recenter()" (touchend)="recenter()" class="button center" >Recenter</button>
+            <button (click)="movedown($event)" (mousedown)="moveDownbtn($event)" (touchstart)="moveDownbtn($event)"
+                (touchend)="clearMovement()" class="button bottom">B</button>
+            <button (click)="recenter()" (touchend)="recenter()" class="button center"
+                [disabled]="this.opensuperflag == 2">Recenter</button>
+        </div>
+
+        <div>
+            <button (mousedown)="zoomIn($event)" (touchend)="zoomIn($event)" class="button zoomIn">+</button>
+            <button (mousedown)="zoomOut($event)" (touchend)="zoomOut($event)" class="button zoomOut">-</button>
         </div>
 
     </div>

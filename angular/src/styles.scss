@@ -895,6 +895,8 @@ app-signup {
             }
         }
 
+
+
         #refillcart {
             @extend .cartimg;
             height: 100px;
@@ -1960,6 +1962,7 @@ $button-size: 50px;
     align-items: center;
     justify-content: center;
 
+
     &.topbtn {
         top: 0;
         left: 50%;
@@ -1988,5 +1991,15 @@ $button-size: 50px;
         bottom: 0;
         left: 50%;
         transform: translate(-50%, 50%);
+    }
+    &.zoomIn {
+        top: 100%;
+        left: 0%;
+        transform: translate(-50%, -50%);
+    }
+    &.zoomOut {
+        top: 100%;
+        left: 100%;
+        transform: translate(-50%, -50%);
     }
 }
