@@ -356,10 +356,7 @@ app-signup {
     }
 
     .maincity {
-        .House1 {
-            top: 3429px;
-            left: 705px;
-        }
+
 
         .common {
             position: absolute;
@@ -390,106 +387,125 @@ app-signup {
             left: 2301px;
         }
 
+        .house {
+            position: absolute;
+            width: 223px;
+            height: 198px;
+        }
+
+        .House1 {
+            top: 3378px;
+            left: 630px;
+        }
+
         .House2 {
-            top: 3428px;
-            left: 1042px;
+            top: 3378px;
+            left: 968px;
         }
 
         .House3 {
-            top: 3428px;
-            left: 1379px;
+            top: 3378px;
+            left: 1305px;
         }
 
         .House4 {
-            top: 3428px;
-            left: 1715px;
+            top: 3378px;
+            left: 1644px;
         }
 
         .House5 {
-            top: 3428px;
-            left: 2054px;
+            top: 3378px;
+            left: 1981px;
         }
 
         .House6 {
-            top: 3853px;
-            left: 706px;
+            top: 3803px;
+            left: 630px;
         }
 
         .House7 {
-            top: 3853px;
-            left: 1041px;
+            top: 3803px;
+            left: 968px;
         }
 
         .House8 {
-            top: 3854px;
-            left: 1378px;
+            top: 3803px;
+            left: 1305px;
         }
 
         .House9 {
-            top: 3853px;
-            left: 1715px;
+            top: 3803px;
+            left: 1644px;
         }
 
         .House10 {
-            top: 3854px;
-            left: 2053px;
+            top: 3803px;
+            left: 1981px;
         }
 
         .Recycling {
-            top: 3854px;
-            left: 5938px;
+            top: 3800px;
+            left: 5868px;
         }
 
         .Supermarket {
-            top: 3854px;
-            left: 6275px;
+            top: 3800px;
+            left: 6205px;
+        }
+
+        .Universal {
+            top: 3800px;
+            left: 6541px;
         }
 
         .Grocery {
-            top: 3853px;
+            top: 3800px;
             left: 6613px;
         }
 
         .Ubottle {
-            top: 3853px;
+            top: 3800px;
             left: 6949px;
         }
 
         .Making {
-            top: 3853px;
+            top: 3800px;
             left: 7287px;
         }
 
         .Reverse {
-            top: 3428px;
-            left: 7286px;
+            top: 3378px;
+            left: 7214px;
         }
 
         .Plastic {
-            top: 3429px;
-            left: 6950px;
+            top: 3378px;
+            left: 6878px;
         }
 
         .Refilling {
-            top: 3428px;
-            left: 6613px;
+            top: 3378px;
+            left: 6541px;
         }
 
         .Bottle {
-            top: 3428px;
-            left: 6275px;
+            top: 3378px;
+            left: 6203px;
         }
 
         .Mayor {
-            top: 3428px;
-            left: 5938px;
+
+            top: 3378px;
+            left: 5866px;
+
+
         }
 
         .bottombasketholder {
             width: 53px;
             position: absolute;
-            left: 13px;
-            top: 49px;
+            left: 5px;
+            top: 46px;
             height: 25px;
             display: flex;
             overflow: hidden;
@@ -515,6 +531,15 @@ app-signup {
                     height: 23px !important;
                 }
             }
+        }
+    }
+
+    .Inhouseshelf_bottles {
+        flex-wrap: wrap;
+
+        .bottle {
+            width: 9px !important;
+            height: 23px !important;
         }
     }
 
@@ -598,9 +623,9 @@ app-signup {
             .cartid {
                 position: absolute;
                 color: #000;
-                left: 11px;
-                font-size: 7px;
-                top: -4px;
+                left: 20px;
+                font-size: 9px;
+                top: -3px;
                 cursor: pointer;
             }
         }
@@ -661,7 +686,7 @@ app-signup {
             .cartid {
                 position: absolute;
                 color: #000;
-                left: 34px;
+                left: 81px;
                 font-size: 30px;
                 top: 1px;
                 cursor: pointer;
@@ -758,7 +783,7 @@ app-signup {
         .bottleholder {
             width: 144px;
             position: absolute;
-            left: 90px;
+            left: 70px;
             top: 200px;
             height: 93px;
             display: flex;
@@ -1654,7 +1679,7 @@ body {
         background-repeat: no-repeat;
         background-size: contain;
         position: absolute;
-        top: 81px;
+        top: 155px;
         left: 1px;
 
     }
@@ -1937,69 +1962,104 @@ body {
 }
 
 
-$panel-size: 125px;
-$button-size: 50px;
+$panel-size: 90px;
+$button-size: 25px;
+$align-space: 14px;
 
 .round-panel {
     position: fixed;
-    width: $panel-size;
-    height: $panel-size;
+    width: 90px;
+    height: 90px;
     border-radius: 50%;
-    background-color: #f0f0f0;
-    left: 28px;
-    top: 85px;
+    background-color: rgb(143 143 143 / 40%);
+    right: 75px;
+    bottom: 17px;
 }
 
 .button {
     position: absolute;
     width: $button-size;
     height: $button-size;
-    background-color: #007bff;
     color: white;
     border: none;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-
+    background-size: 100% 100%;
+    cursor: pointer;
 
     &.topbtn {
-        top: 0;
+        top: $align-space;
         left: 50%;
         transform: translate(-50%, -50%);
+        background-image: url('./assets/img/up.png');
     }
 
     &.left {
         top: 50%;
-        left: 0;
+        left: $align-space;
         transform: translate(-50%, -50%);
+        background-image: url('./assets/img/left.png');
     }
 
     &.center {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
+        background-image: url('./assets/img/center.png');
+        background-color: transparent;
+        width: 34px;
+        height: 34px;
     }
 
     &.right {
         top: 50%;
-        right: 0;
+        right: $align-space;
         transform: translate(50%, -50%);
+        background-image: url('./assets/img/right.png');
     }
 
     &.bottom {
-        bottom: 0;
+        bottom: $align-space;
         left: 50%;
         transform: translate(-50%, 50%);
+        background-image: url('./assets/img/down.png');
     }
-    &.zoomIn {
-        top: 100%;
-        left: 0%;
-        transform: translate(-50%, -50%);
+
+
+}
+
+.zoom {
+    background-color: rgb(143 143 143 / 40%);
+    width: 34px;
+    height: 76px;
+    position: absolute;
+    left: 111px;
+    border-radius: 5px;
+    top: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+
+    .zoomIn {
+        background-image: url('./assets/img/zoomin.png');
+        width: 26px;
+        height: 25px;
+        background-size: contain;
+        border-radius: 0;
+        margin: 0px 0px 6px 0px;
+        cursor: pointer;
     }
-    &.zoomOut {
-        top: 100%;
-        left: 100%;
-        transform: translate(-50%, -50%);
+
+    .zoomOut {
+        background-image: url('./assets/img/zoomout.png');
+        width: 26px;
+        height: 25px;
+        background-size: contain;
+        border-radius: 0;
+        cursor: pointer;
     }
 }

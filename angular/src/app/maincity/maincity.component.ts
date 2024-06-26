@@ -4,7 +4,7 @@ import { LoginserviceService } from '../services/loginservice.service';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import * as $ from 'jquery';
-import { CdkDragDrop, moveItemInArray, transferArrayItem, CdkDrag, CdkDragEnd } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, transferArrayItem, CdkDrag, CdkDragEnd, CdkDropList } from '@angular/cdk/drag-drop';
 
 
 @Component({
@@ -65,6 +65,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   wavyurpn: string[] = [];
   wavyurpr: string[] = [];
   bottles = ['silkyvpn', 'spikyrpn', 'shiny_vpn', 'bouncyrpn']
+  BottleInHouseList: string[] = [];
   refillbottles = ['_SB_UB1.V_00007', '_SB_B2.R_00001', '_SB_UB3.R_00001', '_SB_UB4.R_00001']
   refilledbottles: string[] = [];
   shinyrefilling: string[] = [];
@@ -92,24 +93,24 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   currentusercityId = '';
   objkey = Object.keys;
   positionObject = {
-    'House6': [[-199, -3525], [712, 4010], [665, 3898], [614, 3807]],
-    'House7': [[-443, -3538], [1049, 4010], [1003, 3898], [951, 3807]],
-    'House8': [[-744, -3475], [1384, 4010], [1337, 3898], [1288, 3807]],
-    'House9': [[-1053, -3468], [1718, 4010], [1674, 3898], [1626, 3807]],
-    'House10': [[-1282, -3537], [2061, 4010], [2009, 3898], [1962, 3807]],
-    'House1': [[-277, -3247], [712, 3584], [665, 3472], [614, 3382]],
-    'House2': [[-443, -3154], [1049, 3584], [1003, 3472], [951, 3382]],
-    'House3': [[-744, -3154], [1384, 3584], [1337, 3472], [1288, 3382]],
-    'House4': [[-1053, -3154], [1718, 3584], [1674, 3472], [1626, 3382]],
-    'House5': [[-1282, -3154], [2061, 3584], [2009, 3472], [1962, 3382]],
-    'Recycling': [[-5641, -3623], [5930, 4010], [5898, 3898], [6009, 3806]],
-    'Supermarket': [[-5651, -3616], [6268, 4010], [6235, 3898], [6346, 3806]],
-    'Universal': [[-6360, -3606], [6945, 4010], [6910, 3898], [7020, 3806]],
-    'Reverse': [[-6635, -3154], [7295, 3584], [7246, 3473], [7357, 3382]],
-    'Plastic': [[-6254, -3154], [6958, 3584], [6910, 3473], [7020, 3382]],
-    'Refilling': [[-6158, -3154], [6617, 3584], [6576, 3473], [6683, 3382]],
-    'Bottle': [[-5762, -3154], [6279, 3584], [6235, 3473], [6346, 3382]],
-    'Mayor': [[-5762, -3154], [5931, 3584], [5898, 3473], [6009, 3382]]
+    'House6': [[-199, -3525], [694, 4010]],
+    'House7': [[-443, -3538], [1031, 4010]],
+    'House8': [[-744, -3475], [1369, 4010]],
+    'House9': [[-1053, -3468], [1708, 4010]],
+    'House10': [[-1282, -3537], [2044, 4010]],
+    'House1': [[-277, -3247], [694, 3584]],
+    'House2': [[-443, -3154], [1031, 3584]],
+    'House3': [[-744, -3154], [1369, 3584]],
+    'House4': [[-1053, -3154], [1708, 3584]],
+    'House5': [[-1282, -3154], [2044, 3584]],
+    'Recycling': [[-5641, -3623], [5931, 4010]],
+    'Supermarket': [[-5651, -3616], [6268, 4010]],
+    'Universal': [[-6360, -3606], [6604, 4010]],
+    'Reverse': [[-6635, -3154], [7279, 3584]],
+    'Plastic': [[-6254, -3154], [6943, 3584]],
+    'Refilling': [[-6158, -3154], [6604, 3584]],
+    'Bottle': [[-5762, -3154], [6268, 3584]],
+    'Mayor': [[-5762, -3154], [5931, 3584]]
   }
   newmale: any[] = [];
   maleset = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39];
@@ -182,6 +183,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     'CurrentDay': ''
 
   }
+  currentUserPurhcased: any[] = [];
+  //houseshelfList: string | CdkDropList<any> ='';
   constructor(private logser: LoginserviceService, private router: Router, private modalService: NgbModal) {
     this.currentUserRole = this.logser.currentuser.Role;
     this.currentUserCartId = this.logser.currentuser.cartId;
@@ -192,38 +195,13 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   }
   ngOnInit(): void {
     if (this.logser.currentuser.Username != '') {
-      //   sessionStorage.setItem('currentUser', JSON.stringify(this.logser.currentuser));
-      // } else {
-      //   let current = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
-      //   this.logser.currentuser = JSON.parse(JSON.stringify(current))
-      //   this.currentUserRole = this.logser.currentuser.Role;
-      //   this.currentUserCartId = this.logser.currentuser.cartId;
-      //   this.currentusername = this.logser.currentuser.Username;
-      //   this.currentusergender = this.logser.currentuser.gender;
-      //   this.currentuseravatar = this.logser.currentuser.avatar;
-      //   this.currentusercityId = this.logser.currentuser.CityId;
-      //   this.cityCurrentTime = this.logser.currentuser.CurrentTime;
-      //   this.citycurrentday = this.logser.currentuser.currentday;
-      //   this.cityrate = this.logser.currentuser.cityrate;
-      //   this.cityavatar = this.logser.currentuser.cityavatar;
-      //   this.currentwallet = this.logser.currentuser.wallet;
-      //   $(".maincity").addClass("city_" + this.cityavatar)
 
-      // }
 
       this.userDetails.currentuser = this.logser.currentuser.Username;
       this.userDetails.CityId = this.logser.currentuser.CityId;
       this.userDetails.currentCartId = this.logser.currentuser.cartId;
       this.userDetails.CurrentDay = this.logser.currentuser.currentday.toString();
-      // this.logser.sendUserDetails(this.userDetails).subscribe(
-      //   response => {
-      //     console.log('User details sent successfully');
-      //   },
-      //   error => {
-      //     console.error('Error sending user details:', error);
-      //   }
-      // );
-      // this.loadAvailableAsset();
+
       this.logser.getAllUsers().subscribe((data) => {
         this.user = data;
         for (var t = 0; t < this.user.length; t++) {
@@ -248,12 +226,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           }
           if (this.user[t].Role !== '') {
             let word = this.user[t].Role.split(" ")[0];
-            let xpos = this.positionObject[word as keyof typeof this.positionObject][3][0];
-            let ypos = this.positionObject[word as keyof typeof this.positionObject][3][1];
-            let x2 = this.positionObject[word as keyof typeof this.positionObject][2][0];
-            let y2 = this.positionObject[word as keyof typeof this.positionObject][2][1];
-            $(".displaypanel." + word).css({ 'left': xpos + 'px', 'top': ypos + 'px' }).html(this.user[t].Role);
-            $(".housedisplay." + word).css({ 'left': x2 + 'px', 'top': y2 + 'px' }).html(this.user[t].Username).show();
+
+            $("." + word + " .displaypanel").html(this.user[t].Role);
+            $("." + word + " .housedisplay").html(this.user[t].Username).show();
+            $("." + word + " .houselite").show();
             if (word == 'Supermarket' || word == 'Plastic' || word == 'Ubottle' || word == 'Reverse' || word == 'Refilling') {
               $(".commoncls." + word).html('').addClass('openlight');
             }
@@ -263,6 +239,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             for (var j = 0; j < this.maleset.length; j++) {
               if (this.maleset[j].toString() == avatarnumber) {
                 this.maleset.splice(j, 1);
+
               }
             }
           }
@@ -271,12 +248,11 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
       });
       this.logser.getcitynames().subscribe((data) => {
-        console.log(data);
+
         setTimeout(() => {
           if (data[0].MayorId != 0) {
             $(".mayorflag").show();
           }
-          // this.currentTime();
         }, 500)
         this.logser.currentuser.cityname = data[0].CityName;
         this.logser.currentuser.CurrentTime = (this.convertSeconds(data[0]['CurrentTime'].toString()));
@@ -288,9 +264,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         this.cityname = this.logser.currentuser.cityname;
         this.cityCurrentTime = (this.convertSeconds(data[0].CurrentTime));
         this.citycurrentday = data[0].CurrentDay;
-        //(this.citycurrentday > 0) ? this.sec = (this.cityCurrentTime * 3600) + (3600 * 24 * this.citycurrentday) : this.sec = this.cityCurrentTime * 3600;
         $(".maincity").addClass("city_" + this.cityavatar)
       });
+
+
 
       $("body").removeClass('frontpage').removeClass('cartcontent');
 
@@ -337,6 +314,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       this.wavyurpn = [];
       this.wavyurpr = [];
       this.silkyvpn = [];
+      this.currentUserPurhcased = [];
       for (let y = 0; y < data.length; y++) {
         this.assetdataset.push(data[y]);
         let isDragged = data[y]['dragged'];
@@ -349,12 +327,28 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             if (isDragged == false && bottleloc == 'Supermarket shelf') {
               this.shinyuvpn.push(cat1);
             }
+            else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == this.currentUserCartId) {
+              let existingItem = this.currentUserPurhcased.findIndex(item => item.id === cat1);
+              if (existingItem == -1) { this.currentUserPurhcased.push(cat1); }
+            }
+            else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
+              let existingItem = this.BottleInHouseList.findIndex(item => item === cat1);
+              if (existingItem == -1) { this.BottleInHouseList.push(cat1); }
+            }
             this.updateobjects(cat1, isDragged, isPurchased, bottleloc);
             break;
           case data[y]['Content_Code'] == "B1.Shiny" && data[y]['Bottle_Code'] == "B1.V":
             let cat2 = "City" + data[y]['AssetId'] + 'at' + data[y]['Content_Code'].split('.')[0];
             if (isDragged == false && bottleloc == 'Supermarket shelf') {
               this.shinyvpn.push(cat2);
+            }
+            else if (data[y]['Tofacility'] == this.currentUserRole && isPurchased == true && bottleloc == this.currentUserCartId) {
+              let existingItem = this.currentUserPurhcased.findIndex(item => item.id === cat2);
+              if (existingItem == -1) { this.currentUserPurhcased.push(cat2); }
+            }
+            else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
+              let existingItem = this.BottleInHouseList.findIndex(item => item === cat2);
+              if (existingItem == -1) { this.BottleInHouseList.push(cat2); }
             }
             this.updateobjects(cat2, isDragged, isPurchased, bottleloc);
             break;
@@ -363,12 +357,28 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             if (isDragged == false && bottleloc == 'Supermarket shelf') {
               this.spikyrpr.push(cat3);
             }
+            else if (data[y]['Tofacility'] == this.currentUserRole && isPurchased == true && bottleloc == this.currentUserCartId) {
+              let existingItem = this.currentUserPurhcased.findIndex(item => item.id === cat3);
+              if (existingItem == -1) { this.currentUserPurhcased.push(cat3); }
+            }
+            else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
+              let existingItem = this.BottleInHouseList.findIndex(item => item === cat3);
+              if (existingItem == -1) { this.BottleInHouseList.push(cat3); }
+            }
             this.updateobjects(cat3, isDragged, isPurchased, bottleloc);
             break;
           case data[y]['Content_Code'] == "B2.Spiky" && data[y]['Bottle_Code'] == "B2.R" && data[y]['Current_Refill_Count'] == 0:
             let cat4 = "City" + data[y]['AssetId'] + 'at' + data[y]['Content_Code'].split('.')[0];
             if (isDragged == false && bottleloc == 'Supermarket shelf') {
               this.spikyrpn.push(cat4);
+            }
+            else if (data[y]['Tofacility'] == this.currentUserRole && isPurchased == true && bottleloc == this.currentUserCartId) {
+              let existingItem = this.currentUserPurhcased.findIndex(item => item.id === cat4);
+              if (existingItem == -1) { this.currentUserPurhcased.push(cat4); }
+            }
+            else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
+              let existingItem = this.BottleInHouseList.findIndex(item => item === cat4);
+              if (existingItem == -1) { this.BottleInHouseList.push(cat4); }
             }
             this.updateobjects(cat4, isDragged, isPurchased, bottleloc);
             break;
@@ -377,12 +387,28 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             if (isDragged == false && bottleloc == 'Supermarket shelf') {
               this.bouncyrpn.push(cat5);
             }
+            else if (data[y]['Tofacility'] == this.currentUserRole && isPurchased == true && bottleloc == this.currentUserCartId) {
+              let existingItem = this.currentUserPurhcased.findIndex(item => item.id === cat5);
+              if (existingItem == -1) { this.currentUserPurhcased.push(cat5); }
+            }
+            else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
+              let existingItem = this.BottleInHouseList.findIndex(item => item === cat5);
+              if (existingItem == -1) { this.BottleInHouseList.push(cat5); }
+            }
             this.updateobjects(cat5, isDragged, isPurchased, bottleloc);
             break;
           case data[y]['Content_Code'] == "B3.Bouncy" && data[y]['Bottle_Code'] == "UB.R":
             let cat6 = "City" + data[y]['AssetId'] + 'atU' + data[y]['Content_Code'].split('.')[0];
             if (isDragged == false && bottleloc == 'Supermarket shelf') {
               this.bouncyurpn.push(cat6);
+            }
+            else if (data[y]['Tofacility'] == this.currentUserRole && isPurchased == true && bottleloc == this.currentUserCartId) {
+              let existingItem = this.currentUserPurhcased.findIndex(item => item.id === cat6);
+              if (existingItem == -1) { this.currentUserPurhcased.push(cat6); }
+            }
+            else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
+              let existingItem = this.BottleInHouseList.findIndex(item => item === cat6);
+              if (existingItem == -1) { this.BottleInHouseList.push(cat6); }
             }
             this.updateobjects(cat6, isDragged, isPurchased, bottleloc);
             break;
@@ -391,12 +417,28 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             if (isDragged == false && bottleloc == 'Supermarket shelf') {
               this.wavyurpr.push(cat7);
             }
+            else if (data[y]['Tofacility'] == this.currentUserRole && isPurchased == true && bottleloc == this.currentUserCartId) {
+              let existingItem = this.currentUserPurhcased.findIndex(item => item.id === cat7);
+              if (existingItem == -1) { this.currentUserPurhcased.push(cat7); }
+            }
+            else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
+              let existingItem = this.BottleInHouseList.findIndex(item => item === cat7);
+              if (existingItem == -1) { this.BottleInHouseList.push(cat7); }
+            }
             this.updateobjects(cat7, isDragged, isPurchased, bottleloc);
             break;
           case data[y]['Content_Code'] == "B4.Wavy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Current_Refill_Count'] == 0:
             let cat8 = "City" + data[y]['AssetId'] + 'atU0' + data[y]['Content_Code'].split('.')[0];
             if (isDragged == false && bottleloc == 'Supermarket shelf') {
               this.wavyurpn.push(cat8);
+            }
+            else if (data[y]['Tofacility'] == this.currentUserRole && isPurchased == true && bottleloc == this.currentUserCartId) {
+              let existingItem = this.currentUserPurhcased.findIndex(item => item.id === cat8);
+              if (existingItem == -1) { this.currentUserPurhcased.push(cat8); }
+            }
+            else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
+              let existingItem = this.BottleInHouseList.findIndex(item => item === cat8);
+              if (existingItem == -1) { this.BottleInHouseList.push(cat8); }
             }
             this.updateobjects(cat8, isDragged, isPurchased, bottleloc);
             break;
@@ -405,16 +447,23 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             if (isDragged == false && bottleloc == 'Supermarket shelf') {
               this.silkyvpn.push(cat9);
             }
+            else if (data[y]['Tofacility'] == this.currentUserRole && isPurchased == true && bottleloc == this.currentUserCartId) {
+              let existingItem = this.currentUserPurhcased.findIndex(item => item.id === cat9);
+              if (existingItem == -1) { this.currentUserPurhcased.push(cat9); }
+
+            }
+            else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
+              let existingItem = this.BottleInHouseList.findIndex(item => item === cat9);
+              if (existingItem == -1) { this.BottleInHouseList.push(cat9); }
+            }
             this.updateobjects(cat9, isDragged, isPurchased, bottleloc);
             break;
         }
       }
-      console.log(this.commonobj);
     });
 
     this.logser.updatecurrenttime().subscribe(
       data => {
-        //console.log(data)
         this.citytiming['CurrentTime'] = this.convertSeconds(data[0]['CurrentTime']);
         this.citytiming['CurrentDay'] = data[0].CurrentDay;
 
@@ -447,8 +496,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     const leftValue = parseInt($(".cart").css('left').split("px")[0]);
     const isWithinRange = (value: number, min: number, max: number) => value > min && value < max;
 
-    console.log(topValue, leftValue)
-    if (isWithinRange(topValue, 2723, 2789) && isWithinRange(leftValue, 5300, 5891)) {
+    if (isWithinRange(topValue, 2810, 2840) && isWithinRange(leftValue, 5300, 5891)) {
       this.whichRoad = "refillingstation";
       this.opensuperflag = 2;
       this.openrefillingstation();
@@ -465,7 +513,6 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       }
     } else if (isWithinRange(topValue, 4000, 4065) && isWithinRange(leftValue, 5300, 7390)) {
       this.whichRoad = "lowercolonyrightroad";
-      console.log("helo")
       this.setTrue();
     } else if (isWithinRange(topValue, 0, 4395) && isWithinRange(leftValue, 2700, 2800)) {
       this.whichRoad = "lefthorizontalroad";
@@ -632,13 +679,13 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           this.canMoveLeft = true;
           this.canMoveRight = true;
         }
-        if (leftValue <= 5300) {
+        if (leftValue <= 2700) {
           this.canMoveRight = true;
           this.canMoveLeft = false;
           this.canMoveTop = true;
           this.canMoveBottom = true;
         }
-        if (leftValue >= 7390) {
+        if (leftValue >= 2800) {
           this.canMoveRight = false;
           this.canMoveLeft = true;
           this.canMoveTop = true;
@@ -731,6 +778,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   movedown($event: any) {
     $event.stopPropagation();
     if (this.opensuperflag == 0) {
+
       this.checkCartPosition();
       if (this.canMoveBottom) {
         let leftval = $(".cart").css('top');
@@ -757,7 +805,6 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   }
   @HostListener('document:keydown.arrowup', ['$event'])
   moveup($event: any) {
-    console.log(this.canMoveTop, this.canMoveBottom, this.canMoveLeft, this.canMoveRight)
     $event.stopPropagation();
     if (this.opensuperflag == 0) {
       this.checkCartPosition();
@@ -863,11 +910,11 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     event.stopPropagation();
     let c = this.instance.getTransform();
     let r = c.scale;
-    if (r < 2.5 && r> 0.25) {
-      console.log(c);
+    if (r < 2.5 && r > 0.25) {
+
       let s = r + 0.1;
-      this.instance.zoomTo(0,0, s);
-      this.instance.getTransform().scale=s;
+      this.instance.zoomTo(0, 0, s);
+      this.instance.getTransform().scale = s;
     }
 
   }
@@ -876,29 +923,34 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     event.stopPropagation();
     let c = this.instance.getTransform();
     let r = c.scale;
-    if (r > 0.4 && r < 2.5) { 
-      console.log(c);
+    if (r > 0.4 && r < 2.5) {
+
       let z = r - 0.1;
-      this.instance.zoomTo(0,0,z);
-      this.instance.getTransform().scale=z;
+      this.instance.zoomTo(0, 0, z);
+      this.instance.getTransform().scale = z;
     }
   }
   stopZoom() { }
   refillcartposition() {
     let topValue = parseInt($("#refillcart").css('top').split("px")[0]);
     let leftValue = parseInt($("#refillcart").css('left').split("px")[0]);
-    if (topValue > 242 && topValue < 370 && leftValue > 10 && leftValue < 1060) {
+
+    if (leftValue <= 40 && leftValue >= 15 && topValue > 242 && topValue < 292) {
+      this.movetomaincity();
+    }
+    if (topValue < 350 && topValue > 310 && leftValue > 10 && leftValue < 1060) {
       this.cartlocrefill = "enterpoint";
       this.resetrefilling();
       this.setrefilltrue();
     }
-    else if (topValue > 370 && topValue < 410 && leftValue > 10 && leftValue < 1060) {
+    else if (topValue > 242 && topValue < 292 && leftValue > 30 && leftValue < 1060) {
       this.cartlocrefill = "exitpoint";
       this.setrefilltrue();
       if (leftValue <= 40 && leftValue >= 15) {
         this.movetomaincity();
       }
     }
+
     else {
       this.refilltop = false;
       this.refillleft = false;
@@ -906,25 +958,25 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       this.refillbottom = false;
 
       if (this.cartlocrefill == 'enterpoint') {
-        if (topValue <= 242) {
+        if (topValue >= 310) {
           this.refillbottom = true;
           this.refilltop = false;
           this.refillleft = true;
           this.refillright = true;
         }
-        else if (topValue >= 300) {
+        else if (topValue <= 350) {
           this.refilltop = true;
           this.refillbottom = false;
           this.refillleft = true;
           this.refillright = true;
         }
-        else if (leftValue <= 10) {
+        else if (leftValue >= 10) {
           this.refillright = true;
           this.refillbottom = true;
           this.refilltop = true;
           this.refillleft = false;
         }
-        else if (leftValue >= 1060) {
+        else if (leftValue <= 1060) {
           this.refillleft = true;
           this.refillbottom = true;
           this.refilltop = true;
@@ -934,25 +986,25 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       }
 
       else if (this.cartlocrefill == 'exitpoint') {
-        if (topValue <= 370) {
+        if (topValue <= 242) {
           this.refillbottom = true;
           this.refilltop = false;
           this.refillleft = true;
           this.refillright = true;
         }
-        else if (topValue >= 410) {
+        else if (topValue >= 292) {
           this.refilltop = true;
           this.refillbottom = false;
           this.refillleft = true;
           this.refillright = true;
         }
-        else if (leftValue <= 10) {
+        else if (leftValue >= 10) {
           this.refillright = true;
           this.refillbottom = true;
           this.refilltop = true;
           this.refillleft = false;
         }
-        else if (leftValue >= 1060) {
+        else if (leftValue <= 1060) {
           this.refillleft = true;
           this.refillbottom = true;
           this.refilltop = true;
@@ -1015,11 +1067,13 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       if (topValue < 3533 && topValue > 3090 && leftValue > 4900 && leftValue < 5000) {
         this.cartlocmarket = "nearconveyor";
         this.setmarkettrue();
-
-        if ($(".cart_bottle_list").children('div').length > 0 || $(".newbottle_list").children('div').length > 0) {
+        // if ($(".cart_bottle_list").children('div').length > 0 || $(".newbottle_list").children('div').length > 0) {
+        if ($(".cart_bottle_list").children('div').length > 0) {
           this.marketright = false;
           $("#checklight2").removeClass('green')
           $("#checklight1").addClass('red');
+          $("#innerdoor1").css('background-color', '#bc0000');
+
           if (this.setflag == 0) {
             alert("Please place all items you intend to return at the mouth of the conveyor")
             this.setflag = 1;
@@ -1035,6 +1089,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         $("#checklight1").removeClass('red')
         $("#checklight2").addClass('green');
         this.cartlocmarket = "supermatketentry";
+        $("#innerdoor1").css('background-color', '#00ba00');
         this.setmarkettrue();
         this.cityrail.nativeElement.play();
         $('#innerdoor1').animate({ 'height': '100px' }, 300);
@@ -1220,7 +1275,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     this.opensuperflag = 0;
     let where = this;
     setTimeout(function () { where.dopanzoom(-4853, -2622, '1'); }, 100);
-    $(".cart").css({ 'left': '5291px', 'top': '2894px' })
+    $(".cart").css({ 'left': '5270px', 'top': '2760px' })
   }
 
   updateDragged: any = {
@@ -1319,7 +1374,6 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         for (let i = 0; i < this.bottletaken.length; i++) {
           this.updateDragged['currentbottle'] = this.bottletaken[i].split("at")[0].split('City')[1];
           this.logser.updatedragged(this.updateDragged).subscribe((data) => {
-            console.log(data);
             $(".pay").hide();
             $(".close").show();
             this.bottletaken.length = 0;
@@ -1387,6 +1441,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       });
 
       this.loadinginitialState();
+
+
     }
   }
   loadinginitialState() {
@@ -1395,14 +1451,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     let y = this.positionObject[a as keyof typeof this.positionObject][0][1];
     let x1 = this.positionObject[a as keyof typeof this.positionObject][1][0];
     let y1 = this.positionObject[a as keyof typeof this.positionObject][1][1];
-    let x2 = this.positionObject[a as keyof typeof this.positionObject][2][0];
-    let y2 = this.positionObject[a as keyof typeof this.positionObject][2][1];
     this.dopanzoom(x, y, '1');
+    $("." + a + ".bottleStore").css({ 'left': (x1 - 31) + 'px', 'top': (y1 - 87) + 'px' });
     $(".cart").css({ 'left': x1 + 'px', 'top': y1 + 'px' });
-    $(".housedisplay").css({ 'left': x2 + 'px', 'top': y2 + 'px' });
     $(".houselite").hide();
-    //  alert(this.logser.currentuser.avatar+','+this.logser.currentuser.Username)
-    //$(".displaypic,.cartavatar").addClass('pic_' + this.logser.currentuser.avatar);
     $(".cartid").html(this.currentUserCartId);
   }
 
@@ -1542,9 +1594,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       //this.pleasecheck.nativeElement.play();
       for (let i = 0; i < this.bottletaken.length; i++) {
         //City2_SB_UBidV_00004atUB1 
-        alert(this.bottletaken[i] + 'len: ' + this.bottletaken.length + 'i :' + i);
         let existingItem = this.commonobj.findIndex(item => item.id === this.bottletaken[i]);
-        console.log(existingItem, this.commonobj[existingItem]['location'], this.commonobj[existingItem]['location'] == 'In' + this.currentUserCartId)
         if (this.commonobj[existingItem]['location'] == 'In' + this.currentUserCartId) {
           let getcurrent = this.bottletaken[i].split("at")[0].split('City')[1];
           this.logser.getthisAssets(getcurrent).subscribe((data) => {
@@ -1557,7 +1607,6 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             this.totalsupermarketbill += totalvalue - env;
             this.netamount += totalvalue;
             this.boughtbottledata.push(data[0]);
-            //console.log(this.boughtbottledata);
           })
         }
         else {
@@ -1635,7 +1684,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   openrefillingstation() {
     this.cityrail.nativeElement.play();
     this.resetanimation = true;
-    $("#refillcart").css({ 'left': '50px', 'top': '262px' });
+    $("#refillcart").css({ 'left': '50px', 'top': '332px' });
     setTimeout(function () {
       that.welcome.nativeElement.play();
     }, 2000)
@@ -1823,6 +1872,34 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     'currentbottle': '',
     'Bottleloc': ''
   }
+  boughtdrop(event: CdkDragDrop<string[]>) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(
+        event.container.data, event.previousIndex, event.currentIndex,);
+    } else {
+      transferArrayItem(event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex);
+      if (this.opensuperflag == 0) {
+        let currentlyDroped = event.item.element.nativeElement.id;
+        let currentDropzone = event.container.element.nativeElement.classList;
+        if (currentDropzone.contains('Inhouseshelf_bottles')) {
+          this.updateonlyloc['currentbottle'] = currentlyDroped.split('City')[1].split("at")[0];
+          this.updateonlyloc['Bottleloc'] = 'House@' + this.currentUserCartId;
+          this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
+          });
+        }
+        else if (currentDropzone.contains('newbottle_list')) {
+          this.updateonlyloc['currentbottle'] = currentlyDroped.split('City')[1].split("at")[0];
+          this.updateonlyloc['Bottleloc'] = this.currentUserCartId;
+          this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
+          });
+        }
+      }
+    }
+  }
+
   drop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(
@@ -1863,7 +1940,6 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
           let itemid = currentlyDroped.split("at")[0].split('City')[1];
           this.logser.getthisAssets(itemid).subscribe((data) => {
-            alert("return")
             this.updateDragged['currentbottle'] = itemid;
             this.updateDragged['Bottleloc'] = 'Supermarket shelf';
             this.updateDragged['dragged'] = false;
@@ -1904,13 +1980,11 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   updateStatus(itemid: any, status: any, loc: any) {
 
     const existingIdIndex = this.commonobj.findIndex(item => item.id === itemid);
-    console.log(existingIdIndex)
     if (existingIdIndex > 0) {
       this.commonobj[existingIdIndex]['status'] = status;
       this.commonobj[existingIdIndex]['location'] = loc;
 
     }
-    console.log(this.commonobj)
   }
   opensupermarket() {
     this.instance1 = panzoom(this.supermarket.nativeElement, {
@@ -1959,9 +2033,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         let w = that;
         setTimeout(function () {
           w.dopanzoom(-885, -2343, '1');
-          $(".maincity .cart").css({ 'top': '2900px', 'left': '1499px' });
+          $(".maincity .cart").css({ 'top': '3019px', 'left': '1557px' });
 
-          console.log(that.currentusertransaction);
         }, 1000);
 
       });
@@ -1972,11 +2045,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   }
   currentusertransaction: any[] = [];
   loadledgerdata() {
-    ////console.log(this.boughtbottledata);
     this.currentusertransaction = [];
     for (let i = 0; i < this.assetdataset.length; i++) {
 
-      if (this.assetdataset[i]['Bottle_loc'] == this.currentUserCartId && this.assetdataset[i]['purchased'] == true) {
+      if (this.assetdataset[i]['Bottle_loc'] == this.currentUserCartId || this.assetdataset[i]['Bottle_loc'] == 'House@' + this.currentUserCartId && this.assetdataset[i]['purchased'] == true) {
         this.currentusertransaction.push(this.assetdataset[i]);
       }
       else if (this.assetdataset[i]['Bottle_loc'] == 'In' + this.currentUserCartId && this.assetdataset[i]['purchased'] == false && this.assetdataset[i]['dragged'] == true) {

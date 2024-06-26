@@ -16,7 +16,7 @@ export class LongPressDragDirective extends CdkDrag {
   onMouseDown(event:any) {
     this.timeout = setTimeout(() => {
       this.longPressStart.emit(event);
-    }, 500); // Adjust the duration as needed
+    }, 250); // Adjust the duration as needed
   }
 
   // Cancel timeout on mouse up event
