@@ -102,6 +102,7 @@ def getcityname(request, cityid):
 def addcity(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
+        print(data)
         serializer = citySerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -388,8 +389,6 @@ def get_audit_logs(request, asset_id):
 
 @api_view(['GET'])
 def get_audit_logsuser(request, user):
-    print(user)
     data = audit_log.objects.filter(userName=user)
-    print(data)
     serializer = AuditSerializer(data, many=True)
     return JsonResponse(serializer.data, safe=False)

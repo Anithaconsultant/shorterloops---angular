@@ -34,14 +34,12 @@ export class LoginComponent implements OnInit {
     if (this.submitted) {
       let userfound = false;
       this.logser.getAllUsers().subscribe(res => {
-        console.log(res)
         const user = res.find((a: any) => {
           if (a.Username === this.loginForm.value.username) {
             userfound = true;
           }
           return a.Username === this.loginForm.value.username && a.Password === this.loginForm.value.password;
         });
-        console.log(user);
         if (user) {
           this.logser.currentuser.Username = user.Username;
           this.logser.currentuser.UserId = user.UserId;

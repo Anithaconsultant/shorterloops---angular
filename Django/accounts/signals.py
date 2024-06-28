@@ -60,7 +60,7 @@ def record_audit_trail_on_save(sender, instance, created,  **kwargs):
             bottleRetireDate=instance.Retirement_Date,
             RetireReason=instance.Retire_Reason,
             userName=instance.Tofacility
-        )   
+        )
 
 
 user_data_received.connect(record_audit_trail_on_save,
@@ -75,16 +75,20 @@ class CityTimer(threading.Thread):
         super().__init__()
         self.city_id = city_id
         self.clocktickrate = clocktickrate
+        self.intervalcalculation= 86400/(self.clocktickrate*60)
         self.running = True
 
     def run(self):
         print(f'Starting timer for city {self.city_id}')
+        
         while self.running:
-            time.sleep(1/self.clocktickrate)
+
+            time.sleep(1)
             with transaction.atomic():
                 city = City.objects.select_for_update().get(pk=self.city_id)
-                city.CurrentTime += 300
-
+                city.CurrentTime += self.intervalcalculation
+                if({self.city_id}==6):
+                    print('printing city 6 time ',(city.CurrentTime))
                 if city.CurrentTime >= 86400:  # 24 hours
                     city.CurrentTime = 0
                     city.CurrentDay += 1

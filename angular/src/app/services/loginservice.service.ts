@@ -23,22 +23,22 @@ export class LoginserviceService {
     'cityrate': '',
     'cityavatar': ''
   };
-  baseurl = "https://dbl.iihs.in/api/";
-  //baseurl = "http://127.0.0.1:8000/api/";
+ // baseurl = "https://dbl.iihs.in/api/";
+  baseurl = "http://127.0.0.1:8000/api/";
   authorizationData = 'Basic ' + btoa(this.username + ':' + this.password);
   httpHeaders = new HttpHeaders({
     'Content-Type': 'application/json',
     'Authorization': this.authorizationData
   });
 
-  constructor(private http: HttpClient) { console.log(this.httpHeaders); }
+  constructor(private http: HttpClient) {  }
   getAllUsers(): Observable<any> {
     return this.http.get(this.baseurl,
       { headers: this.httpHeaders });
   }
   createUser(user: any): Observable<any> {
     const body = { Username: user.Username, email: user.email, Password: user.Password, mobile: user.mobile, wallet: user.wallet, status: user.status, User_cityid: user.User_cityid, Role: user.Role, cartId: user.cartId, gender: user.gender, avatar: user.avatar };
-    console.log(this.httpHeaders);
+    
     return this.http.post(this.baseurl + 'signup/', body,
       { headers: this.httpHeaders });
   }
@@ -82,7 +82,6 @@ export class LoginserviceService {
     return this.http.post(this.baseurl + 'update_city_threads/', { headers: this.httpHeaders });
   }
   updatethisAssets(currentitem: any): Observable<any> {
-    console.log("alert");
     const body = {
       Bottle_loc: currentitem.Bottleloc, Bottle_Status: currentitem.bottlestatus,
       Transaction_Id: currentitem.transactionid, Transaction_Date: currentitem.transactiondate,
@@ -93,29 +92,23 @@ export class LoginserviceService {
 
     };
 
-    console.log(body);
     return this.http.put(this.baseurl + 'assets/' + currentitem.currentitem, body,
       { headers: this.httpHeaders });
   }
   updatedragged(currentbottle: any): Observable<any> {
-    console.log("alert");
     const body = {
       Bottle_loc: currentbottle.Bottleloc,
       dragged: currentbottle.dragged,
       purchased: currentbottle.purchased
 
     };
-    console.log(body);
     return this.http.put(this.baseurl + 'assets/' + currentbottle.currentbottle, body,
       { headers: this.httpHeaders });
   }
   updatelocation(currentbottle: any): Observable<any> {
-    console.log("alert");
     const body = {
       Bottle_loc: currentbottle.Bottleloc
-
     };
-    console.log(body);
     return this.http.put(this.baseurl + 'assets/' + currentbottle.currentbottle, body,
       { headers: this.httpHeaders });
   }
@@ -125,28 +118,24 @@ export class LoginserviceService {
       { headers: this.httpHeaders });
   }
   updateloggeduser(loguser: any): Observable<any> {
-    //console.log("updateloggeduser nana 1");
     let body;
     body = { login: loguser.login };
     return this.http.put(this.baseurl + 'updateusercity/' + this.currentuser.UserId, body,
       { headers: this.httpHeaders });
   }
   updateuseravatar(avatar: any): Observable<any> {
-    //console.log("updateuseravatar nana 2");
     let body;
     body = { avatar: avatar };
     return this.http.put(this.baseurl + 'updateusercity/' + this.currentuser.UserId, body,
       { headers: this.httpHeaders });
   }
   leavescity(): Observable<any> {
-    //console.log("leavescity 3");
     let body;
     body = { User_cityid: '', Role: '', cartId: '', avatar: '' };
     return this.http.put(this.baseurl + 'updateusercity/' + this.currentuser.UserId, body,
       { headers: this.httpHeaders });
   }
   updateuser(edituser: any): Observable<any> {
-    //console.log("updateuser 4");
     let body;
     if (edituser.cartId == undefined && edituser.Role == "Mayor") {
       this.currentuser.cartId = edituser.cityid + '_100';
@@ -160,7 +149,6 @@ export class LoginserviceService {
   }
   updatewallet(): Observable<any> {
     let body = { wallet: this.currentuser.wallet };
-    //console.log(body);
     return this.http.put(this.baseurl + 'updateusercity/' + this.currentuser.UserId, body,
       { headers: this.httpHeaders });
   }
@@ -189,7 +177,6 @@ export class LoginserviceService {
       TransactionId: transaction.TransactionId, 'Amount': transaction.Amount, 'DebitFacility': this.currentuser.Role,
       'CreditFacility': transaction.CreditFacility, 'Purpose': transaction.Purpose
     };
-    //console.log(body);
     return this.http.post(this.baseurl + 'cashflow/', body,
       { headers: this.httpHeaders });
   }
@@ -217,7 +204,6 @@ export class LoginserviceService {
   }
   updatecashboxmunicipality(cashbox: any): Observable<any> {
     const body = { Cashbox: cashbox }
-    //console.log(body);
     return this.http.put(this.baseurl + 'getmunicipalitycash/' + this.currentuser.CityId, body,
       { headers: this.httpHeaders });
   }

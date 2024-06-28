@@ -224,7 +224,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             this.currentuseravatar = this.user[t].avatar
             $(".displaypic,.cartavatar").addClass('pic_' + this.logser.currentuser.avatar);
           }
-          if (this.user[t].Role !== '') {
+          if (this.user[t].Role !== '' && this.user[t].User_cityid == this.logser.currentuser.CityId) {
             let word = this.user[t].Role.split(" ")[0];
 
             $("." + word + " .displaypanel").html(this.user[t].Role);
@@ -272,6 +272,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       $("body").removeClass('frontpage').removeClass('cartcontent');
 
       setInterval(() => { this.loadAvailableAsset() }, 10000);
+      setInterval(() => { this.loadtime() }, 1000);
     }
     else {
       this.router.navigate(['/login']);
@@ -295,9 +296,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
   convertSeconds(seconds: number) {
     const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = seconds % 60;
-    let string = hours + ':' + minutes;
+    let string = hours + ':00' ;
     return string
 
   }
@@ -314,6 +313,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       this.wavyurpn = [];
       this.wavyurpr = [];
       this.silkyvpn = [];
+      this.BottleInHouseList = [];
       this.currentUserPurhcased = [];
       for (let y = 0; y < data.length; y++) {
         this.assetdataset.push(data[y]);
@@ -328,12 +328,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
               this.shinyuvpn.push(cat1);
             }
             else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == this.currentUserCartId) {
-              let existingItem = this.currentUserPurhcased.findIndex(item => item.id === cat1);
-              if (existingItem == -1) { this.currentUserPurhcased.push(cat1); }
+              this.currentUserPurhcased.push(cat1);
             }
             else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
-              let existingItem = this.BottleInHouseList.findIndex(item => item === cat1);
-              if (existingItem == -1) { this.BottleInHouseList.push(cat1); }
+              this.BottleInHouseList.push(cat1);
             }
             this.updateobjects(cat1, isDragged, isPurchased, bottleloc);
             break;
@@ -343,12 +341,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
               this.shinyvpn.push(cat2);
             }
             else if (data[y]['Tofacility'] == this.currentUserRole && isPurchased == true && bottleloc == this.currentUserCartId) {
-              let existingItem = this.currentUserPurhcased.findIndex(item => item.id === cat2);
-              if (existingItem == -1) { this.currentUserPurhcased.push(cat2); }
+              this.currentUserPurhcased.push(cat2);
             }
             else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
-              let existingItem = this.BottleInHouseList.findIndex(item => item === cat2);
-              if (existingItem == -1) { this.BottleInHouseList.push(cat2); }
+              this.BottleInHouseList.push(cat2);
             }
             this.updateobjects(cat2, isDragged, isPurchased, bottleloc);
             break;
@@ -358,12 +354,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
               this.spikyrpr.push(cat3);
             }
             else if (data[y]['Tofacility'] == this.currentUserRole && isPurchased == true && bottleloc == this.currentUserCartId) {
-              let existingItem = this.currentUserPurhcased.findIndex(item => item.id === cat3);
-              if (existingItem == -1) { this.currentUserPurhcased.push(cat3); }
+              this.currentUserPurhcased.push(cat3);
             }
             else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
-              let existingItem = this.BottleInHouseList.findIndex(item => item === cat3);
-              if (existingItem == -1) { this.BottleInHouseList.push(cat3); }
+              this.BottleInHouseList.push(cat3);
             }
             this.updateobjects(cat3, isDragged, isPurchased, bottleloc);
             break;
@@ -373,12 +367,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
               this.spikyrpn.push(cat4);
             }
             else if (data[y]['Tofacility'] == this.currentUserRole && isPurchased == true && bottleloc == this.currentUserCartId) {
-              let existingItem = this.currentUserPurhcased.findIndex(item => item.id === cat4);
-              if (existingItem == -1) { this.currentUserPurhcased.push(cat4); }
+              this.currentUserPurhcased.push(cat4);
             }
             else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
-              let existingItem = this.BottleInHouseList.findIndex(item => item === cat4);
-              if (existingItem == -1) { this.BottleInHouseList.push(cat4); }
+              this.BottleInHouseList.push(cat4);
             }
             this.updateobjects(cat4, isDragged, isPurchased, bottleloc);
             break;
@@ -388,12 +380,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
               this.bouncyrpn.push(cat5);
             }
             else if (data[y]['Tofacility'] == this.currentUserRole && isPurchased == true && bottleloc == this.currentUserCartId) {
-              let existingItem = this.currentUserPurhcased.findIndex(item => item.id === cat5);
-              if (existingItem == -1) { this.currentUserPurhcased.push(cat5); }
+              this.currentUserPurhcased.push(cat5);
             }
             else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
-              let existingItem = this.BottleInHouseList.findIndex(item => item === cat5);
-              if (existingItem == -1) { this.BottleInHouseList.push(cat5); }
+              this.BottleInHouseList.push(cat5);
             }
             this.updateobjects(cat5, isDragged, isPurchased, bottleloc);
             break;
@@ -403,12 +393,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
               this.bouncyurpn.push(cat6);
             }
             else if (data[y]['Tofacility'] == this.currentUserRole && isPurchased == true && bottleloc == this.currentUserCartId) {
-              let existingItem = this.currentUserPurhcased.findIndex(item => item.id === cat6);
-              if (existingItem == -1) { this.currentUserPurhcased.push(cat6); }
+              this.currentUserPurhcased.push(cat6);
             }
             else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
-              let existingItem = this.BottleInHouseList.findIndex(item => item === cat6);
-              if (existingItem == -1) { this.BottleInHouseList.push(cat6); }
+              this.BottleInHouseList.push(cat6);
             }
             this.updateobjects(cat6, isDragged, isPurchased, bottleloc);
             break;
@@ -418,12 +406,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
               this.wavyurpr.push(cat7);
             }
             else if (data[y]['Tofacility'] == this.currentUserRole && isPurchased == true && bottleloc == this.currentUserCartId) {
-              let existingItem = this.currentUserPurhcased.findIndex(item => item.id === cat7);
-              if (existingItem == -1) { this.currentUserPurhcased.push(cat7); }
+              this.currentUserPurhcased.push(cat7);
             }
             else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
-              let existingItem = this.BottleInHouseList.findIndex(item => item === cat7);
-              if (existingItem == -1) { this.BottleInHouseList.push(cat7); }
+              this.BottleInHouseList.push(cat7);
             }
             this.updateobjects(cat7, isDragged, isPurchased, bottleloc);
             break;
@@ -433,12 +419,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
               this.wavyurpn.push(cat8);
             }
             else if (data[y]['Tofacility'] == this.currentUserRole && isPurchased == true && bottleloc == this.currentUserCartId) {
-              let existingItem = this.currentUserPurhcased.findIndex(item => item.id === cat8);
-              if (existingItem == -1) { this.currentUserPurhcased.push(cat8); }
+              this.currentUserPurhcased.push(cat8);
             }
             else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
-              let existingItem = this.BottleInHouseList.findIndex(item => item === cat8);
-              if (existingItem == -1) { this.BottleInHouseList.push(cat8); }
+              this.BottleInHouseList.push(cat8);
             }
             this.updateobjects(cat8, isDragged, isPurchased, bottleloc);
             break;
@@ -448,13 +432,11 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
               this.silkyvpn.push(cat9);
             }
             else if (data[y]['Tofacility'] == this.currentUserRole && isPurchased == true && bottleloc == this.currentUserCartId) {
-              let existingItem = this.currentUserPurhcased.findIndex(item => item.id === cat9);
-              if (existingItem == -1) { this.currentUserPurhcased.push(cat9); }
+              this.currentUserPurhcased.push(cat9);
 
             }
             else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
-              let existingItem = this.BottleInHouseList.findIndex(item => item === cat9);
-              if (existingItem == -1) { this.BottleInHouseList.push(cat9); }
+              this.BottleInHouseList.push(cat9);
             }
             this.updateobjects(cat9, isDragged, isPurchased, bottleloc);
             break;
@@ -462,6 +444,12 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       }
     });
 
+
+  }
+
+
+
+  loadtime() {
     this.logser.updatecurrenttime().subscribe(
       data => {
         this.citytiming['CurrentTime'] = this.convertSeconds(data[0]['CurrentTime']);
@@ -1405,14 +1393,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       });
     });
   }
-  updateTime(k: any) {
-    if (k < 10) {
-      return "0" + k;
-    }
-    else {
-      return k;
-    }
-  }
+
 
   ngAfterViewInit(): void {
     if (this.logser.currentuser.Username != '') {
@@ -1882,18 +1863,35 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         event.previousIndex,
         event.currentIndex);
       if (this.opensuperflag == 0) {
+
+
         let currentlyDroped = event.item.element.nativeElement.id;
         let currentDropzone = event.container.element.nativeElement.classList;
         if (currentDropzone.contains('Inhouseshelf_bottles')) {
+
+          console.log('BottleInHouseList');
+          console.log(this.BottleInHouseList);
+
+
           this.updateonlyloc['currentbottle'] = currentlyDroped.split('City')[1].split("at")[0];
           this.updateonlyloc['Bottleloc'] = 'House@' + this.currentUserCartId;
           this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
+            console.log(this.updateonlyloc);
+            console.log("bottle location update to house");
+
           });
         }
         else if (currentDropzone.contains('newbottle_list')) {
+          console.log('currentUserPurhcased');
+          console.log(this.currentUserPurhcased);
+
+
           this.updateonlyloc['currentbottle'] = currentlyDroped.split('City')[1].split("at")[0];
           this.updateonlyloc['Bottleloc'] = this.currentUserCartId;
           this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
+            console.log(this.updateonlyloc);
+            console.log("bottle location update to cart back");
+
           });
         }
       }
