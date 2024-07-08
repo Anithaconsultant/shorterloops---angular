@@ -23,7 +23,7 @@ export class LoginserviceService {
     'cityrate': '',
     'cityavatar': ''
   };
- // baseurl = "https://dbl.iihs.in/api/";
+  // baseurl = "https://dbl.iihs.in/api/";
   baseurl = "http://127.0.0.1:8000/api/";
   authorizationData = 'Basic ' + btoa(this.username + ':' + this.password);
   httpHeaders = new HttpHeaders({
@@ -31,14 +31,14 @@ export class LoginserviceService {
     'Authorization': this.authorizationData
   });
 
-  constructor(private http: HttpClient) {  }
+  constructor(private http: HttpClient) { }
   getAllUsers(): Observable<any> {
     return this.http.get(this.baseurl,
       { headers: this.httpHeaders });
   }
   createUser(user: any): Observable<any> {
     const body = { Username: user.Username, email: user.email, Password: user.Password, mobile: user.mobile, wallet: user.wallet, status: user.status, User_cityid: user.User_cityid, Role: user.Role, cartId: user.cartId, gender: user.gender, avatar: user.avatar };
-    
+
     return this.http.post(this.baseurl + 'signup/', body,
       { headers: this.httpHeaders });
   }
@@ -93,6 +93,28 @@ export class LoginserviceService {
     };
 
     return this.http.put(this.baseurl + 'assets/' + currentitem.currentitem, body,
+      { headers: this.httpHeaders });
+  }
+  updateConveyorAssets(currentitem: any): Observable<any> {
+    const body = {
+      Bottle_loc: 'ReturnConveyor', 
+      Bottle_Status: 'Empty-Dirty',
+      Fromfacility: currentitem.fromfacility,
+      Tofacility: 'ReturnConveyor'
+    };
+
+    return this.http.put(this.baseurl + 'assets/' + currentitem.currentitem, body,
+      { headers: this.httpHeaders });
+  }
+
+  updatethisAssetQuantity(currentbottle: any): Observable<any> {
+    const body = {
+      remQuantity: currentbottle.Quantity,
+      Bottle_Status: currentbottle.Bottle_Status
+
+    };
+
+    return this.http.put(this.baseurl + 'assets/' + currentbottle.currentbottle, body,
       { headers: this.httpHeaders });
   }
   updatedragged(currentbottle: any): Observable<any> {

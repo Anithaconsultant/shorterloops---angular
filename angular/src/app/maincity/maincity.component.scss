@@ -168,7 +168,7 @@
 .bottle_list,
 .refill_list,
 .refilled_list,
-.refilllist,.Inhouseshelf_bottles{
+.refilllist,.Inhouseshelf_bottles,.dustbin_bottles{
     display: flex;
     justify-content: center;
     width: 100%;
@@ -390,6 +390,7 @@
         width: 102px !important;
         height: 263px !important;
         margin-top: 10px !important;
+        margin:0 auto;
 
         &.B1 {
             width: 127px !important;
@@ -532,4 +533,17 @@
     height: 52px !important;
     // box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
     box-shadow: 0 5px 5px -3px rgba(192, 224, 6, 0.815), 0 8px 10px 1px rgba(192, 224, 6, 0.815), 0 3px 14px 2px rgba(192, 224, 6, 0.815);
+}
+.loadinglogo{
+    position: absolute;
+    left: -3px;
+    top: 20px;
+    color: #fff;
+    font-size: 15px;
+    width: 73px;
+    height: 30px;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

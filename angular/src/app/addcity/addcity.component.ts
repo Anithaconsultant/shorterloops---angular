@@ -197,7 +197,6 @@ export class AddcityComponent implements OnInit {
       }
       if(!isNaN(this.city.Clocktickrate) && this.selectedavatar!=0 && this.city.Clocktickrate>0) {
         this.city.cityavatar = String(this.selectedavatar);
-        console.log(this.city)
         this.logser.createcity(this.city).subscribe(
           data => {
             this.city = data;
@@ -228,15 +227,6 @@ export class AddcityComponent implements OnInit {
             this.userDetails.CityId = this.logser.currentuser.CityId;
             this.userDetails.currentCartId = this.logser.currentuser.cartId;
             this.userDetails.CurrentDay = this.logser.currentuser.currentday.toString();
-            console.log(this.userDetails)
-            /*this.logser.sendUserDetails(this.userDetails).subscribe(
-              response => {
-                console.log('User details sent successfully');
-              },
-              error => {
-                console.error('Error sending user details:', error);
-              }
-            );*/
             let count = 0;
             let numbers = Object.values(this.assetData);
             numbers[0].forEach((number) => {
@@ -261,8 +251,6 @@ export class AddcityComponent implements OnInit {
               this.assettableobj['Env_Tax'] = this.assetData['Env_Tax'][count];
               this.assettableobj['Discard_fine'] = this.assetData['Discard_fine'][count];
               count++;
-              console.log("print");
-         
               this.logser.createAsset(this.assettableobj).subscribe(
                 data => {
                   this.assettableobj = data;

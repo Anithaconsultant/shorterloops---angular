@@ -58,20 +58,29 @@
 
             </div>
             <div class="cartid" (click)="opencart(cartcontent,$event)"></div>
+            <div class="loadinglogo">Loading...</div>
             <div class="topbasketholder">
-                <div cdkDropList #customercartList="cdkDropList" [cdkDropListConnectedTo]="[houseshelfList]"
+                <div cdkDropList #customercartList="cdkDropList" [cdkDropListConnectedTo]="[houseshelfList,DustbinList]"
                     [cdkDropListData]="currentUserPurhcased" (cdkDropListDropped)="boughtdrop($event)"
-                    class="newbottle_list">
+                    [cdkDropListEnterPredicate]="checksBottleStatus" class="newbottle_list">
                     <div *ngFor="let item of currentUserPurhcased" id="{{item}}" class="bottle {{item.split('at')[1]}} "
-                        cdkDrag (dragstart)="onDragStart($event)" longPressDrag [cdkDragStartDelay]="250">
+                        cdkDrag (dragstart)="onDragStart($event)" longPressDrag [cdkDragStartDelay]="250"
+                        (click)="openbottelstages(cartcontent,$event)">
                     </div>
                 </div>
             </div>
             <div class="bottombasketholder">
-                <div class="cart_bottle_list">
-                    <div *ngFor="let item of refillbottles"
-                        class="bottle {{currentusercityId}}{{item}} {{item.split('.')[0].split('_')[2]}}"></div>
+                <div cdkDropList #customercartBottomList="cdkDropList" [cdkDropListConnectedTo]="[houseshelfList,DustbinList]"
+                    [cdkDropListData]="refillbottles" (cdkDropListDropped)="boughtdrop($event)"
+                    [cdkDropListEnterPredicate]="checksBottleempty" class="cart_bottle_list">
+                    <div *ngFor="let item of refillbottles" id="{{item}}" class="bottle {{item.split('at')[1]}} "
+                        cdkDrag (dragstart)="onDragStart($event)" longPressDrag [cdkDragStartDelay]="250"
+                        (click)="openbottelstages(cartcontent,$event)">
+                    </div>
                 </div>
+
+
+
             </div>
         </div>
         <!-- <div class="housedisplay">{{currentusername | titlecase}}</div> -->
@@ -96,22 +105,28 @@
                 <div class="namedisplay housedisplay"></div>
             </div>
             <div class="bottleStore {{currentUserRole}}">
-                <div cdkDropList #houseshelfList="cdkDropList" [cdkDropListConnectedTo]="[customercartList]"
+                <div cdkDropList #houseshelfList="cdkDropList"
+                    [cdkDropListConnectedTo]="[customercartList,customercartBottomList]"
                     [cdkDropListData]="BottleInHouseList" (cdkDropListDropped)="boughtdrop($event)"
                     class="Inhouseshelf_bottles">
-                    <div *ngFor="let item of BottleInHouseList" class="bottle {{item.split('at')[1]}}" id="{{item}}" cdkDrag
-                        (dragstart)="onDragStart($event)" longPressDrag [cdkDragStartDelay]="250">
+                    <div *ngFor="let item of BottleInHouseList" class="bottle {{item.split('at')[1]}}" id="{{item}}"
+                        cdkDrag (dragstart)="onDragStart($event)" longPressDrag [cdkDragStartDelay]="250"
+                        (click)="openbottelstages(cartcontent,$event)">
                     </div>
                 </div>
             </div>
         </div>
-        <!-- <div class="houselitewrapper">
-            <div *ngFor="let key of objkey(positionObject);let i = index" class="houselite {{key}}"></div>
+        <div class="CityDustBin">
+            <div cdkDropList #DustbinList="cdkDropList"
+                [cdkDropListConnectedTo]="[customercartList,customercartBottomList]"
+                [cdkDropListData]="dustbinbottles" (cdkDropListDropped)="boughtdrop($event)"
+                class="dustbin_bottles">
+                <div *ngFor="let item of dustbinbottles" class="bottle {{item.split('at')[1]}}" id="{{item}}" cdkDrag
+                    (dragstart)="onDragStart($event)" longPressDrag [cdkDragStartDelay]="250"
+                    (click)="openbottelstages(cartcontent,$event)">
+                </div>
+            </div>
         </div>
-        <div class="householder">
-            <div *ngFor="let key of objkey(positionObject);let i = index" class="displaypanel {{key}}"></div>
-            <div *ngFor="let key of objkey(positionObject);let i = index" class="housedisplay {{key}}"></div>
-        </div> -->
         <div class="supermarketentry"></div>
     </div>
     <div class="supermarketstage" [hidden]="opensuperflag!=1">
@@ -132,8 +147,8 @@
             <div class="displayconveyor">Return used bottles here</div>
             <div class="conveyorbottledropper">
                 <div cdkDropList #droppedList="cdkDropList" [cdkDropListConnectedTo]="[bottleList]"
-                    [cdkDropListData]="bottledropped" (cdkDropListDropped)="drop($event)" class="bottle_list">
-                    <div *ngFor="let item of bottledropped" class="bottle {{item}} {{item.split('.')[0].split('_')[2]}}"
+                    [cdkDropListData]="bottledropped" (cdkDropListDropped)="returndrop($event)" class="bottle_list">
+                    <div *ngFor="let item of bottledropped" class="bottle {{item.split('at')[1]}} " id="{{item}}"
                         (dragstart)="onDragStart($event)" cdkdrag longPressDrag [cdkDragStartDelay]="250"></div>
                 </div>
             </div>
@@ -143,10 +158,10 @@
                 <div class="cartid" (click)="opencart(cartcontent,$event)"></div>
                 <div class="bottleholder">
                     <div cdkDropList #bottleList="cdkDropList" [cdkDropListConnectedTo]="[droppedList]"
-                        [cdkDropListData]="refillbottles" (cdkDropListDropped)="drop($event)" class="cart_bottle_list">
-                        <div *ngFor="let item of refillbottles" id="{{item.split('.')[0].split('_')[2]}}"
-                            class="bottle {{currentusercityId}}{{item}} {{item.split('.')[0].split('_')[2]}} " cdkDrag
-                            (dragstart)="onDragStart($event)" longPressDrag [cdkDragStartDelay]="250">
+                        [cdkDropListData]="refillbottles" (cdkDropListDropped)="returndrop($event)"
+                        class="cart_bottle_list">
+                        <div *ngFor="let item of refillbottles" id="{{item}}" class="bottle {{item.split('at')[1]}} "
+                            cdkDrag (dragstart)="onDragStart($event)" longPressDrag [cdkDragStartDelay]="250">
                         </div>
                     </div>
                 </div>
@@ -584,16 +599,17 @@
                 <div class="emptycontent" *ngIf="bottletaken.length==0">There is no item added to cart</div>
             </div>
             <div *ngIf="altertab==2 && opensuperflag==0">
-                <div class="holder" *ngIf="currentusertransaction.length!==0">
-                    <div *ngFor="let item of currentusertransaction" class="whole">
-                        <div class="{{item.value.split('@')[1]}} imgclass"></div>
-                    </div>
-                </div>
+
+                <div id="{{selectedBottleatStage.split('at')[0].split('City')[1]}}"
+                    class="{{selectedBottleatStage.split('at')[1] }} imgclass"></div>
+                <div> "Bottle Status :" {{currentbottle['Bottle_Status']}}</div>
+                <div>"Sampoo Quantity :" {{currentbottle['Quantity']}}</div>
+                <div>"Bottle ID:" {{currentbottle['currentbottle'] }}</div>
                 <div class="btncont">
-                    <div class="use">Use</div>
-                    <div class="dent">Dent</div>
-                    <div class="empty">Empty</div>
-                    <div class="throw">Throw</div>
+                    <div class="use" (click)="reduceCapacity()">Use</div>
+                    <div class="dent" (click)="makeitDamaged()">Dent</div>
+                    <div class="empty" (click)="makeitEmpty()">Empty</div>
+                    <div class="throw" (click)="makeitThrown()">Throw</div>
                 </div>
             </div>
 
@@ -618,7 +634,7 @@
             </div>
             <div class="btn btn-outline-dark pay" *ngIf="billpaid==false" (click)="payamount();">Pay</div>
             <div class="btn btn-outline-dark paydummy" *ngIf="billpaid==true">Pay</div>
-            <div class="btn btn-outline-dark cancel" (click)="modal.close('Save click');">Cancel</div>
+            <div class="btn btn-outline-dark cancel" (click)="modal.close('Save click');">Close</div>
         </div>
     </div>
 </ng-template>

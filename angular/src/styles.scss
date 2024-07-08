@@ -381,6 +381,24 @@ app-signup {
             left: 5457px;
         }
 
+        .CityDustBin {
+            @extend .common;
+            top: 3570px;
+            left: 3463px;
+            border: 1px solid;
+            width: 55px;
+            height: 40px;
+
+            .dustbin_bottles {
+                height: 100%;
+
+                .bottle {
+                    width: 17px;
+                    height: 37px;
+                }
+            }
+        }
+
         .leftcolony {
             @extend .common;
             top: 3285px;

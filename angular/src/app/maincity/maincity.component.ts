@@ -66,7 +66,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   wavyurpr: string[] = [];
   bottles = ['silkyvpn', 'spikyrpn', 'shiny_vpn', 'bouncyrpn']
   BottleInHouseList: string[] = [];
-  refillbottles = ['_SB_UB1.V_00007', '_SB_B2.R_00001', '_SB_UB3.R_00001', '_SB_UB4.R_00001']
+  refillbottles: string[] = [];
+  dustbinbottles: string[] = [];
   refilledbottles: string[] = [];
   shinyrefilling: string[] = [];
   spikyrefilling: string[] = [];
@@ -175,6 +176,14 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     'tofacility': '',
     'transactiondate': '',
     'purchased': false
+  }
+  updatebottlereturn = {
+    'currentitem': '',
+    'Bottleloc': 'ReturnConveyor',
+    'bottlestatus': 'Empty-Dirty',
+    'fromfacility': '',
+    'tofacility': 'ReturnConveyor',
+    'refunded': false
   }
   userDetails = {
     'currentuser': '',
@@ -296,12 +305,12 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
   convertSeconds(seconds: number) {
     const hours = Math.floor(seconds / 3600);
-    let string = hours + ':00' ;
+    let string = hours + ':00';
     return string
 
   }
   loadAvailableAsset() {
-
+    $(".loadinglogo").hide();
     this.logser.getAllAssets().subscribe((data) => {
       this.assetdataset = [];
       this.shinyvpn = [];
@@ -311,6 +320,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       this.bouncyrpn = [];
       this.bouncyurpn = [];
       this.wavyurpn = [];
+      this.dustbinbottles=[];
+      this.refillbottles = [];
       this.wavyurpr = [];
       this.silkyvpn = [];
       this.BottleInHouseList = [];
@@ -320,6 +331,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         let isDragged = data[y]['dragged'];
         let isPurchased = data[y]['purchased'];
         let bottleloc = data[y]['Bottle_loc'];
+        let bottle_status = data[y]['Bottle_Status'];
+        let bottle_remquantity = data[y]['remQuantity'];
 
         switch (true) {
           case data[y]['Content_Code'] == "B1.Shiny" && data[y]['Bottle_Code'] == "UB.V":
@@ -333,7 +346,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
               this.BottleInHouseList.push(cat1);
             }
-            this.updateobjects(cat1, isDragged, isPurchased, bottleloc);
+            this.updateobjects(cat1, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
             break;
           case data[y]['Content_Code'] == "B1.Shiny" && data[y]['Bottle_Code'] == "B1.V":
             let cat2 = "City" + data[y]['AssetId'] + 'at' + data[y]['Content_Code'].split('.')[0];
@@ -346,7 +359,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
               this.BottleInHouseList.push(cat2);
             }
-            this.updateobjects(cat2, isDragged, isPurchased, bottleloc);
+            this.updateobjects(cat2, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
             break;
           case data[y]['Content_Code'] == "B2.Spiky" && data[y]['Bottle_Code'] == "B2.R" && data[y]['Current_Refill_Count'] == 1:
             let cat3 = "City" + data[y]['AssetId'] + 'at' + data[y]['Content_Code'].split('.')[0];
@@ -359,7 +372,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
               this.BottleInHouseList.push(cat3);
             }
-            this.updateobjects(cat3, isDragged, isPurchased, bottleloc);
+            this.updateobjects(cat3, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
             break;
           case data[y]['Content_Code'] == "B2.Spiky" && data[y]['Bottle_Code'] == "B2.R" && data[y]['Current_Refill_Count'] == 0:
             let cat4 = "City" + data[y]['AssetId'] + 'at' + data[y]['Content_Code'].split('.')[0];
@@ -372,7 +385,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
               this.BottleInHouseList.push(cat4);
             }
-            this.updateobjects(cat4, isDragged, isPurchased, bottleloc);
+            this.updateobjects(cat4, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
             break;
           case data[y]['Content_Code'] == "B3.Bouncy" && data[y]['Bottle_Code'] == "B3.R":
             let cat5 = "City" + data[y]['AssetId'] + 'at' + data[y]['Content_Code'].split('.')[0];
@@ -385,7 +398,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
               this.BottleInHouseList.push(cat5);
             }
-            this.updateobjects(cat5, isDragged, isPurchased, bottleloc);
+            this.updateobjects(cat5, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
             break;
           case data[y]['Content_Code'] == "B3.Bouncy" && data[y]['Bottle_Code'] == "UB.R":
             let cat6 = "City" + data[y]['AssetId'] + 'atU' + data[y]['Content_Code'].split('.')[0];
@@ -398,7 +411,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
               this.BottleInHouseList.push(cat6);
             }
-            this.updateobjects(cat6, isDragged, isPurchased, bottleloc);
+            this.updateobjects(cat6, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
             break;
           case data[y]['Content_Code'] == "B4.Wavy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Current_Refill_Count'] == 1:
             let cat7 = "City" + data[y]['AssetId'] + 'atU1' + data[y]['Content_Code'].split('.')[0];
@@ -411,7 +424,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
               this.BottleInHouseList.push(cat7);
             }
-            this.updateobjects(cat7, isDragged, isPurchased, bottleloc);
+            this.updateobjects(cat7, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
             break;
           case data[y]['Content_Code'] == "B4.Wavy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Current_Refill_Count'] == 0:
             let cat8 = "City" + data[y]['AssetId'] + 'atU0' + data[y]['Content_Code'].split('.')[0];
@@ -424,7 +437,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
               this.BottleInHouseList.push(cat8);
             }
-            this.updateobjects(cat8, isDragged, isPurchased, bottleloc);
+            this.updateobjects(cat8, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
             break;
           case data[y]['Content_Code'] == "B5.Silky" && data[y]['Bottle_Code'] == "B5.V":
             let cat9 = "City" + data[y]['AssetId'] + 'at' + data[y]['Content_Code'].split('.')[0];
@@ -438,9 +451,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
               this.BottleInHouseList.push(cat9);
             }
-            this.updateobjects(cat9, isDragged, isPurchased, bottleloc);
+            this.updateobjects(cat9, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
             break;
         }
+
       }
     });
 
@@ -461,7 +475,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       }
     );
   }
-  updateobjects(cat: any, isDragged: any, isPurchased: any, bottleloc: any) {
+  updateobjects(cat: any, isDragged: any, isPurchased: any, bottleloc: any, bottle_status: any, bottle_remquantity: any) {
     let existingItem = this.commonobj.findIndex(item => item.id === cat);
     if (existingItem == -1) {
       this.commonobj.push({ 'id': cat, 'status': 'available', 'location': 'Supermarket shelf' });
@@ -476,7 +490,29 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         this.commonobj[currentItem]['status'] = 'purchased';
         this.commonobj[currentItem]['location'] = bottleloc;
       }
+
     }
+
+    if (bottle_status == 'Empty-Dirty' && bottleloc == this.currentUserCartId) {
+      let index = this.currentUserPurhcased.findIndex(item => item === cat)
+      this.refillbottles.push(cat);
+      this.currentUserPurhcased.splice(index, 1);
+    }
+    if ( bottleloc == "City Dustbin") {
+      this.dustbinbottles.push(cat);
+    }
+    if (bottle_status == 'Empty-Dirty' && bottleloc == 'House@' + this.currentUserCartId) {
+      console.log(cat);
+      $(".Inhouseshelf_bottles #" + cat).addClass('zero-empty');
+    }
+    if (bottle_status == 'Damaged') {
+      $(".Inhouseshelf_bottles #" + cat).addClass('damaged');
+    }
+    if (bottle_status == 'Street') {
+      $(".Inhouseshelf_bottles #" + cat).addClass('street');
+    }
+   
+
 
   }
   checkCartPosition() {
@@ -489,7 +525,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       this.opensuperflag = 2;
       this.openrefillingstation();
       this.setTrue();
-    } else if (isWithinRange(topValue, 3524, 3640) && isWithinRange(leftValue, 5300, 7390)) {
+    } else if (isWithinRange(topValue, 3524, 3640) && isWithinRange(leftValue, 300, 7390)) {
       this.whichRoad = "mayorhouseroad";
       this.setTrue();
     } else if (isWithinRange(topValue, 2640, 3000) && isWithinRange(leftValue, 1500, 1700)) {
@@ -508,16 +544,13 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     } else if (isWithinRange(topValue, 0, 4395) && isWithinRange(leftValue, 5190, 5300)) {
       this.whichRoad = "rightroad";
       this.setTrue();
-    } else if (isWithinRange(topValue, 3524, 3640) && isWithinRange(leftValue, 300, 2800)) {
-      this.whichRoad = "leftcolonytop";
-      this.setTrue();
-    } else if (isWithinRange(topValue, 4000, 4065) && isWithinRange(leftValue, 300, 2800)) {
+    }else if (isWithinRange(topValue, 4000, 4065) && isWithinRange(leftValue, 300, 2800)) {
       this.whichRoad = "leftcolonybottom";
       this.setTrue();
     } else if (isWithinRange(topValue, 2950, 3050) && isWithinRange(leftValue, 0, 7390)) {
       this.whichRoad = "municipalityroad";
       this.setTrue();
-    } else {
+    }else {
       this.canMoveLeft = false;
       this.canMoveTop = false;
       this.canMoveBottom = false;
@@ -542,6 +575,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           this.canMoveLeft = true;
           this.canMoveTop = false;
           this.canMoveBottom = true;
+          
         }
         if (topValue >= 4395) {
           this.canMoveRight = true;
@@ -577,7 +611,9 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         }
       }
       else if (this.whichRoad == 'mayorhouseroad') {
+       
         if (topValue <= 3524) {
+
           this.canMoveBottom = true;
           this.canMoveTop = false;
           this.canMoveLeft = true;
@@ -589,7 +625,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           this.canMoveLeft = true;
           this.canMoveRight = true;
         }
-        if (leftValue <= 5300) {
+        if (leftValue <= 300) {
           this.canMoveRight = true;
           this.canMoveLeft = false;
           this.canMoveTop = true;
@@ -680,32 +716,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           this.canMoveBottom = true;
         }
       }
-      else if (this.whichRoad == "leftcolonytop") {
-        if (topValue <= 3524) {
-          this.canMoveBottom = true;
-          this.canMoveTop = false;
-          this.canMoveLeft = true;
-          this.canMoveRight = true;
-        }
-        if (topValue >= 3640) {
-          this.canMoveTop = true;
-          this.canMoveBottom = false;
-          this.canMoveLeft = true;
-          this.canMoveRight = true;
-        }
-        if (leftValue <= 300) {
-          this.canMoveRight = true;
-          this.canMoveLeft = false;
-          this.canMoveTop = true;
-          this.canMoveBottom = true;
-        }
-        if (leftValue >= 2800) {
-          this.canMoveRight = false;
-          this.canMoveLeft = true;
-          this.canMoveTop = true;
-          this.canMoveBottom = true;
-        }
-      }
+  
       else if (this.whichRoad == "leftcolonybottom") {
         if (topValue <= 4010) {
           this.canMoveBottom = true;
@@ -758,6 +769,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           this.canMoveBottom = false;
         }
       }
+     
     }
   }
 
@@ -795,6 +807,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   moveup($event: any) {
     $event.stopPropagation();
     if (this.opensuperflag == 0) {
+      console.log(this.canMoveTop)
       this.checkCartPosition();
       if (this.canMoveTop) {
         let leftval = $(".cart").css('top');
@@ -1862,38 +1875,66 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         event.container.data,
         event.previousIndex,
         event.currentIndex);
-      if (this.opensuperflag == 0) {
 
+      let currentlyDroped = event.item.element.nativeElement.id;
+      let currentDropzone = event.container.element.nativeElement.classList;
+      console.log(currentDropzone,currentlyDroped)
+      if (currentDropzone.contains('Inhouseshelf_bottles')) {
+        this.updateonlyloc['currentbottle'] = currentlyDroped.split('City')[1].split("at")[0];
+        this.updateonlyloc['Bottleloc'] = 'House@' + this.currentUserCartId;
+        this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
+          console.log("bottle location update to house");
 
-        let currentlyDroped = event.item.element.nativeElement.id;
-        let currentDropzone = event.container.element.nativeElement.classList;
-        if (currentDropzone.contains('Inhouseshelf_bottles')) {
+        });
+      }
+      else if (currentDropzone.contains('newbottle_list') || currentDropzone.contains('cart_bottle_list')) {
+        this.updateonlyloc['currentbottle'] = currentlyDroped.split('City')[1].split("at")[0];
+        this.updateonlyloc['Bottleloc'] = this.currentUserCartId;
+        this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
+          console.log("bottle location update to cart back");
 
-          console.log('BottleInHouseList');
-          console.log(this.BottleInHouseList);
+        });
 
+      }
+      else if (currentDropzone.contains('dustbin_bottles') ) {
+        
+        this.updateonlyloc['currentbottle'] = currentlyDroped.split('City')[1].split("at")[0];
+        this.updateonlyloc['Bottleloc'] = "City Dustbin";
+        this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
+          console.log("bottle location update to City Dustbin");
 
-          this.updateonlyloc['currentbottle'] = currentlyDroped.split('City')[1].split("at")[0];
-          this.updateonlyloc['Bottleloc'] = 'House@' + this.currentUserCartId;
-          this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
-            console.log(this.updateonlyloc);
-            console.log("bottle location update to house");
+        });
 
-          });
-        }
-        else if (currentDropzone.contains('newbottle_list')) {
-          console.log('currentUserPurhcased');
-          console.log(this.currentUserPurhcased);
+      }
+    
+    }
+  }
 
+  returndrop(event: CdkDragDrop<string[]>) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(
+        event.container.data, event.previousIndex, event.currentIndex,);
+    } else {
+      transferArrayItem(event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex);
 
-          this.updateonlyloc['currentbottle'] = currentlyDroped.split('City')[1].split("at")[0];
-          this.updateonlyloc['Bottleloc'] = this.currentUserCartId;
-          this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
-            console.log(this.updateonlyloc);
-            console.log("bottle location update to cart back");
-
-          });
-        }
+      let currentlyDroped = event.item.element.nativeElement.id;
+      let currentDropzone = event.container.element.nativeElement.classList;
+      if (currentDropzone.contains('bottle_list')) {
+        this.updatebottlereturn['currentitem'] = currentlyDroped.split('City')[1].split("at")[0];
+        this.updatebottlereturn['fromfacility'] = this.currentUserRole;
+        this.logser.updateConveyorAssets(this.updatebottlereturn).subscribe((data) => {
+          console.log("bottle location update to Return Conveyor");
+        });
+      }
+      else if (currentDropzone.contains('cart_bottle_list')) {
+        this.updateonlyloc['currentbottle'] = currentlyDroped.split('City')[1].split("at")[0];
+        this.updateonlyloc['Bottleloc'] = this.currentUserCartId;
+        this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
+          console.log("bottle location update to cart back");
+        });
       }
     }
   }
@@ -2333,6 +2374,79 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       this.intervalId = null;
     }
   }
+  makeitEmpty() {
+    this.currentbottle['Quantity'] = 0;
+    console.log(this.currentbottle['currentbottle'])
+    $(".Inhouseshelf_bottles #" + this.selectedBottleatStage).addClass('zero-empty');
+    this.currentbottle['Bottle_Status'] = "Empty-Dirty";
+    this.refillbottles.push(this.currentbottle['currentbottle']);
+    this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => { console.log(data) });
+  }
+  makeitDamaged() {
+    $("#" + this.selectedBottleatStage).addClass('damaged');
+    this.currentbottle['Bottle_Status'] = "Damaged";
+    this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => { console.log(data) });
+  }
+  makeitThrown() {
+    $("#" + this.selectedBottleatStage).addClass('street');
+    this.currentbottle['Bottle_Status'] = "Street";
+    this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => { console.log(data) });
+  }
+  reduceCapacity() {
+    console.log(this.currentbottle['Quantity'])
+    if (this.currentbottle['Quantity'] >= 20) {
+      this.currentbottle['Quantity'] -= 20;
+      if (this.currentbottle['Quantity'] == 0) {
+        this.currentbottle['Bottle_Status'] = "Empty-Dirty";
+      }
+    }
+    this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => { console.log(data) });
+  }
+  currentbottle = {
+    'currentbottle': '',
+    'Quantity': 0,
+    'Bottle_Status': "InUse"
+  }
+  selectedBottleatStage: string = '';
+  sldBottleData: any;
+  openbottelstages(cartcontent: any, event: any) {
+    let element = event.target || event.srcElement || event.currentTarget;
+    this.selectedBottleatStage = element.id;
+    this.currentbottle['currentbottle'] = element.id.split("at")[0].split("City")[1];
+
+    $("body").removeClass('frontpage').addClass('cartcontent');
+    if (this.opensuperflag == 0) {
+      this.altertab = 2;
+    }
+    this.modalService.open(cartcontent);
+    this.logser.getthisAssets(this.currentbottle['currentbottle']).subscribe((data) => {
+      this.sldBottleData = data;
+      console.log(data);
+      if (data[0]['remQuantity'] == '') {
+        data[0]['remQuantity'] = 500;
+      }
+      this.currentbottle['Quantity'] = data[0]['remQuantity'];
+      this.currentbottle['Bottle_Status'] = data[0]['Bottle_Status'];
+
+    });
+
+
+
+  }
+
+  checksBottleStatus(item: CdkDrag<string>) {
+    console.log(item.element.nativeElement.classList, ' top ', !item.element.nativeElement.classList.contains('zero-empty'));
+    if (!item.element.nativeElement.classList.contains('zero-empty') && !item.element.nativeElement.classList.contains('damaged')&& !item.element.nativeElement.classList.contains('street')) { return true; }
+    else { return false; }
+  }
+
+  checksBottleempty(item: CdkDrag<string>) {
+    console.log("epty");
+    console.log(item.element.nativeElement.classList, ' bottom ', item.element.nativeElement.classList.contains('zero-empty'));
+    if (item.element.nativeElement.classList.contains('zero-empty') && !item.element.nativeElement.classList.contains('damaged') && !item.element.nativeElement.classList.contains('street')) { return true; }
+    else { return false; }
+  }
+
 }
 
 

@@ -86,11 +86,9 @@ export class HomeComponent implements OnInit {
   }
   canUpdate = false;
   checkindata() {
-    console.log(this.selectedcityid, this.selectedfacility, this.selectedCity);
     this.logser.getallfacility(this.selectedcityid).subscribe((data) => {
       this.facility = data;
       for (let key in this.facility) {
-        console.log(key);
         if (
           this.facility[key].Facility_cityid == this.selectedcityid &&
           this.facility[key].Owner_id != "" &&
@@ -102,10 +100,10 @@ export class HomeComponent implements OnInit {
           this.canUpdate = true;
         } else {
           let currentcartId;
-          console.log("varia illaiya",this.facility[key].Facilityname,this.selectedfacility);
+          
           if (this.facility[key].Facilityname == this.selectedfacility) {
             currentcartId = this.facility[key].cartId;
-            console.log(parseInt(this.selectedcityid), this.selectedfacility,this.logser.currentuser.UserId,currentcartId)
+            
             this.facilityobj.facilityCityId = parseInt(this.selectedcityid);
             this.facilityobj.facilityname = this.selectedfacility;
             this.facilityobj.Ownerid = this.logser.currentuser.UserId;

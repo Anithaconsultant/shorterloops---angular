@@ -23,7 +23,6 @@ export class ReportComponent implements OnInit {
       });
   }
   onAssetSelectChange() {
-    console.log(this.selectedAsset, this.selectedUser)
     if (this.selectedAsset != '') {
       this.fetchAuditLogs(this.selectedAsset);
     }
@@ -40,10 +39,8 @@ export class ReportComponent implements OnInit {
       });
   }
   fetchAuditLogsUsers(userId: string) {
-    console.log("here")
     this.logser.getAuditLogsuser(this.selectedUser)
       .subscribe((logs: any) => {
-        console.log(logs)
         this.auditLogs = logs;
       });
   }
