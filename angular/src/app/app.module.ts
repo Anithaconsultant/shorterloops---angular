@@ -12,6 +12,16 @@ import { SignupComponent } from './signup/signup.component';
 import { MaincityComponent } from './maincity/maincity.component';
 import { HomeComponent } from './home/home.component';
 import { AddcityComponent } from './addcity/addcity.component';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatTreeModule} from '@angular/material/tree';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import { AuthService } from './auth.service';
+import { ReportComponent } from './report/report.component'; 
+import { LongPressDragDirective } from './app-longpress.directive';
+import { PreventDoubleClickDirective } from './prevent-double-click.directive'
 @NgModule({
   declarations: [
     AppComponent,
@@ -19,7 +29,10 @@ import { AddcityComponent } from './addcity/addcity.component';
     SignupComponent,
     MaincityComponent,
     HomeComponent,
-    AddcityComponent
+    AddcityComponent,
+    ReportComponent,
+    LongPressDragDirective,
+    PreventDoubleClickDirective
   ],
   imports: [
     BrowserModule,
@@ -28,9 +41,11 @@ import { AddcityComponent } from './addcity/addcity.component';
     ReactiveFormsModule,
     HttpClientModule,
     NgbModule,
-    NgbDropdownModule
+    NgbDropdownModule,
+    BrowserAnimationsModule,
+    DragDropModule,MatTreeModule, MatButtonModule, MatIconModule
   ],
-  providers: [
+  providers: [AuthService,{ provide: LocationStrategy, useClass: HashLocationStrategy },
     DatePipe],
   bootstrap: [AppComponent]
 })

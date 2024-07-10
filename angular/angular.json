@@ -20,6 +20,7 @@
             "outputPath": "dist/angular",
             "index": "src/index.html",
             "main": "src/main.ts",
+            "allowedCommonJsDependencies": ["panzoom", "jquery"],
             "polyfills": [
               "zone.js"
             ],
@@ -31,22 +32,24 @@
               "src/assets"
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss"
             ],
-            "scripts" :["./node_modules/jquery/dist/jquery.min.js"]
+            "scripts" :[  "./node_modules/jquery/dist/jquery.min.js",
+            "./node_modules/jquery-ui/dist/jquery-ui.js"]
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "25kb",
+                  "maximumError": "50kb"
                 }
               ],
 			   "optimization": {
@@ -104,9 +107,11 @@
               "src/assets"
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [ "./node_modules/jquery/dist/jquery.min.js",
+            "./node_modules/jquery-ui/dist/jquery-ui.js"]
           }
         }
       }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { LoginserviceService } from "./../services/loginservice.service";
 import { Router } from "@angular/router";
-
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: "app-home",
   templateUrl: "./home.component.html",
@@ -21,6 +21,7 @@ export class HomeComponent implements OnInit {
     facilityname: "",
     facilityCityId: 0,
     Ownerid: "",
+    Owner_status:''
   };
   user: any;
   userobj = {
@@ -32,7 +33,7 @@ export class HomeComponent implements OnInit {
   }
 
 
-  constructor(private logser: LoginserviceService, private router: Router) {
+  constructor(private logser: LoginserviceService, private router: Router,private modalService: NgbModal) {
     this.currentuser = { ...this.logser.currentuser };
     this.setusername = this.currentuser.Username;
     this.userobj.gender = this.currentuser.gender;
@@ -40,9 +41,6 @@ export class HomeComponent implements OnInit {
       this.city = data;
       this.getcityList();
     });
-
-    
-
   }
   ngOnInit(): void {
     if (this.logser.currentuser.Username == '') {
@@ -50,20 +48,16 @@ export class HomeComponent implements OnInit {
     }
     this.logser.getAllUsers().subscribe((data) => {
       this.user = data;
-      console.log(this.user);
-
-
+      
     })
+    $("body").addClass('frontpage').removeClass('cartcontent');
   }
   setList: any[] = [];
   selectedcityid = '';
   choosefacility() {
-    console.log(this.user);
     this.selectedcityid = this.getCityId();
-    console.log(this.selectedcityid);
     for (var t = 0; t < this.user.length; t++) {
       if (this.user[t].Role !== '' && this.user[t].User_cityid == this.selectedcityid) {
-        console.log(this.user[t].Role)
         let that = this;
         $('#role').find('option').each(function () {
           if ($(this).attr('value') == that.user[t].Role) {
@@ -82,24 +76,18 @@ export class HomeComponent implements OnInit {
       newdata = [this.dataList[key].CityName, this.dataList[key].CityId];
       this.setList.push(newdata);
     }
-
-    console.log(this.setList, this.selectedCity);
   }
   getCityId() {
     for (var i = 0; i < this.setList.length; i++) {
       if (this.setList[i][0] == this.selectedCity) {
-        console.log(this.setList[i][1]);
         return this.setList[i][1];
       }
     }
   }
   canUpdate = false;
   checkindata() {
-    console.log(this.selectedcityid, this.selectedfacility, this.selectedCity);
     this.logser.getallfacility(this.selectedcityid).subscribe((data) => {
       this.facility = data;
-      console.log(this.facility);
-
       for (let key in this.facility) {
         if (
           this.facility[key].Facility_cityid == this.selectedcityid &&
@@ -112,12 +100,14 @@ export class HomeComponent implements OnInit {
           this.canUpdate = true;
         } else {
           let currentcartId;
+          
           if (this.facility[key].Facilityname == this.selectedfacility) {
             currentcartId = this.facility[key].cartId;
-            console.log('currentcartId' + currentcartId);
+            
             this.facilityobj.facilityCityId = parseInt(this.selectedcityid);
             this.facilityobj.facilityname = this.selectedfacility;
             this.facilityobj.Ownerid = this.logser.currentuser.UserId;
+            this.facilityobj.Owner_status = 'Active';
             this.userobj.cityid = parseInt(this.selectedcityid);
             this.userobj.Role = this.selectedfacility;
             this.userobj.cartId = currentcartId;
@@ -131,11 +121,21 @@ export class HomeComponent implements OnInit {
 
 
     });
+  }  openwhyshorter(whyshorter:any){
+  
+    this.modalService.open(whyshorter);
   }
+  openaboutshorter(aboutshorter:any){
+  
+    this.modalService.open(aboutshorter);
+  }
+  opennavshorter(navigation: any) {
+
+    this.modalService.open(navigation);
+  }
+
   dochanges() {
-    console.log("updating")
     if (this.canUpdate == false && this.selectrole) {
-      console.log(this.facilityobj);
       this.logser.updatefacility(this.facilityobj).subscribe(
         (data) => {
           this.facilityobj = data;

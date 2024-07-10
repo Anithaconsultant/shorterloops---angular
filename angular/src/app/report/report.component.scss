@@ -1,0 +1,54 @@
+.report_maincontainer {
+    width: 100vw;
+    height: 100vb;
+    display: flex;
+    justify-content: center;
+    border: 1px solid;
+
+    .reportWrapper {
+        display: flex;
+        flex-direction: column;
+        width: 80%;
+
+        .text {
+            font-size: 30px;
+            font-weight: bold;
+            padding: 10px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .formcls {
+            display: flex;
+            margin: 20px auto;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+
+            .element {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                div{
+                    margin:3px ;
+                }
+            }
+        }
+
+        #search {
+            width:80px;
+            height:30px;
+            background-color: #beb7b7b9;
+            color:#fff;
+            text-align: center;
+            border-radius:5px;
+            align-self: center;  display: flex;
+            justify-content: center;
+            align-items: center;
+            margin:20px 0;
+            cursor: pointer;
+        }
+
+    }
+
+}

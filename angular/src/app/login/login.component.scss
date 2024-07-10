@@ -3,14 +3,44 @@
     height: 100%;
     background-image: url('./../../assets/img/landingpage.png');
     background-size: cover;
+    font-family: 'poppin';
+
+    .topright {
+        position: absolute;
+        width: 100px;
+        right: 10px;
+        top: 10px;
+        height: 30px;
+        display: flex;
+        justify-content: space-between;
+
+        .navigation {
+            background-image: url('./../../assets/img/navigation.png');
+            width: 30px;
+            height: 30px;
+            background-size: cover;
+            cursor: pointer;
+        }
+
+        .information {
+            background-image: url('./../../assets/img/information.png');
+            width: 30px;
+            height: 30px;
+            background-size: cover;
+            cursor: pointer;
+        }
+    }
+
+
 
     .loginblock {
-        margin-top: 13%;
+        margin-top: 1%;
     }
 
     .commonclas {
         color: #fff;
         text-align: center;
+        font-family: 'poppin' !important;
     }
 
     .displaytext {
@@ -38,18 +68,22 @@
         justify-content: center;
         height: 30px;
         font-size: 14px;
+        font-family: 'poppin' !important;
     }
 
     .signuptxt {
         display: flex;
         justify-content: center;
         align-items: center;
+
         a {
             color: #636569;
             font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             text-decoration: none;
+            font-family: 'poppin' !important;
         }
     }
 }
+

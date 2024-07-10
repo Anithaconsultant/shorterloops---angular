@@ -46,7 +46,19 @@ export class SignupComponent implements OnInit {
       password: ['', Validators.required],
       gender: ['', Validators.required]
     })
+    $("body").addClass('frontpage').removeClass('cartcontent');
+  }
+  openwhyshorter(whyshorter: any) {
 
+    this.modalService.open(whyshorter);
+  }
+  openaboutshorter(aboutshorter: any) {
+
+    this.modalService.open(aboutshorter);
+  }
+  opennavshorter(navigation: any) {
+
+    this.modalService.open(navigation);
   }
   signup() {
     this.submitted = true;
@@ -58,18 +70,27 @@ export class SignupComponent implements OnInit {
     if (this.submitted) {
       this.logser.createUser(this.newuser).subscribe(
         data => {
-          this.newuser = data;
+          if (data.message == 'Success') {
+            this.newuser = data;
+            $(".success").show();
+          }
+          else {
+            alert(data.message);
+          }
+
         },
         error => {
           console.log(error);
         }
       );
-      this.router.navigate(["login"])
+
     }
 
   }
 
 
-
+  navigate() {
+    this.router.navigate(["login"])
+  }
 
 }

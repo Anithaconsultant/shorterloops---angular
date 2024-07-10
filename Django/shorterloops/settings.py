@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'bootstrap4',
+    'auditlog',
 
 ]
 
@@ -56,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+     'auditlog.middleware.AuditlogMiddleware',
 ]
 
 ROOT_URLCONF = 'shorterloops.urls'
@@ -81,12 +83,20 @@ WSGI_APPLICATION = 'shorterloops.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
+# {
+#     'ENGINE': 'django.db.backends.mysql',
+#     'NAME': 'fresh',
+#     'USER': 'root',
+#     'PASSWORD': 'Admin@123',
+#     'HOST': '127.0.0.1',
+#     'PORT': '3306',
+# }
 DATABASES = {
+
     'default':
-    {
+        {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'fresh',
+        'NAME': 'newfresh',
         'USER': 'root',
         'PASSWORD': 'Admin@123',
         'HOST': '127.0.0.1',
@@ -94,6 +104,9 @@ DATABASES = {
     }
     # {
     #     'ENGINE': 'django.db.backends.mysql',
+    #     'OPTIONS': {
+    #         'sql_mode': 'traditional',
+    #     },
     #     'NAME': 'shorterloop',
     #     'USER': 'dbluser',
     #     'PASSWORD': 'Dbladmin@123',
@@ -149,8 +162,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = '/'
 CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
-CORS_REPLACE_HTTPS_REFERER = True
+# CORS_ALLOW_CREDENTIALS = True
+# CORS_REPLACE_HTTPS_REFERER = True
 # CORS_ALLOWED_ORIGINS = [
 #     "https://dbl.iihs.in",
 #     "https://10.10.4.129"
@@ -165,7 +178,17 @@ CORS_REPLACE_HTTPS_REFERER = True
 #     'https://dbl.iihs.in',
 #     'https://10.10.4.129',
 # )
+CORS_ORIGIN_ALLOW_ALL = False
 
+CORS_ALLOW_HEADERS = [
+    'Content-Type', 
+    'Authorization', 
+    'user-data',  # Add 'user-data' to the list of allowed headers
+]
+
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:4200',  # Add the origin of your Angular application
+]
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
@@ -174,4 +197,20 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAdminUser',
     ),
+}
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'auditlog': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    },
 }
