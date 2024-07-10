@@ -2447,6 +2447,65 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     else { return false; }
   }
 
+  if (hour == 6 || hour == 19) {
+    $(".truck").animate({ left: '5210px' }, 1000, () => {
+      $(".truck").css({ transform: 'rotate(-90deg)' }).addClass('top').removeClass('side');
+      $(".truck").animate({ top: '3680px' }, 5500, () => {
+        $(".truck").css({ transform: 'scaleX(-1)' }).addClass('side').removeClass('top');
+        $(".truck").animate({ left: '7390px' }, 5500, () => {
+          $(".truck").css({ transform: 'rotate(0deg)' });
+          $(".truck").animate({ left: '5210px' }, 5500, () => {
+            $(".truck").css({ transform: 'rotate(-90deg)' }).addClass('top').removeClass('side');;
+            $(".truck").animate({ top: '4070px' }, 2500, () => {
+              $(".truck").css({ transform: 'scaleX(-1)' }).addClass('side').removeClass('top');;
+              $(".truck").animate({ left: '7390px' }, 5500, () => {
+                $(".truck").css({ transform: 'rotate(0deg)' });
+                $(".truck").animate({ left: '5210px' }, 5500, () => {
+                  $(".truck").css({ transform: 'rotate(90deg)' }).addClass('top').removeClass('side');;
+                  $(".truck").animate({ top: '3060px' }, 5500, () => {
+                    $(".truck").css({ transform: 'rotate(0deg)' }).addClass('side').removeClass('top');;
+                    $(".truck").animate({ left: '2730px' }, 5500, () => {
+                      $(".truck").css({ transform: 'rotate(-90deg)' }).addClass('top').removeClass('side');;
+                      $(".truck").animate({ top: '3680px' }, 2500, () => {
+                        $(".truck").css({ transform: 'rotate(0deg)' }).addClass('side').removeClass('top');;
+                        $(".truck").animate({ left: '300px' }, 5500, () => {
+                          $(".truck").css({ transform: 'scaleX(-1)' });
+                          $(".truck").animate({ left: '2730px' }, 5500, () => {
+                            $(".truck").css({ transform: 'rotate(-90deg)' }).addClass('top').removeClass('side');;
+                            $(".truck").animate({ top: '4070px' }, 2500, () => {
+                              $(".truck").css({ transform: 'rotate(0deg)' }).addClass('side').removeClass('top');;
+                              $(".truck").animate({ left: '300px' }, 5500, () => {
+                                $(".truck").css({ transform: 'scaleX(-1)' });
+                                $(".truck").animate({ left: '2730px' }, 5500, () => {
+                                  $(".truck").css({ transform: 'rotate(90deg)' }).addClass('top').removeClass('side');;
+                                  $(".truck").animate({ top: '3060px' }, 5500, () => {
+                                    $(".truck").css({ transform: 'scaleX(-1)' }).addClass('side').removeClass('top');;
+                                    $(".truck").animate({ left: '5210px' }, 5500, () => {
+                                      $(".truck").css({ transform: 'rotate(90deg)' }).addClass('top').removeClass('side');;
+                                      $(".truck").animate({ top: '1025px' }, 5500, () => {
+                                        $(".truck").css({ transform: 'scaleX(-1)' }).addClass('side').removeClass('top');;
+                                        $(".truck").animate({ left: '5933px' }, 5500);
+                                        $(".truck").css({ transform: 'rotate(0deg)' });
+                                      });
+                                    });
+                                  });
+                                });
+                              });
+                            });
+                          });
+                        });
+                      });
+                    });
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
+    })
+  }
+
 }
 
 
