@@ -384,7 +384,7 @@ app-signup {
         .CityDustBin {
             @extend .common;
             top: 3570px;
-            left: 3463px;
+            left: 3511px;
             border: 1px solid;
             width: 55px;
             height: 40px;
@@ -751,16 +751,18 @@ app-signup {
             width: 243px;
             height: 48px;
             left: 6131px;
-            top: 363px;
+            top: 396px;
+            font-size:34px !important;
         }
 
         .displaymoniter {
             @extend .commonds;
             width: 238px;
             height: 136px;
-            left: 6295px;
-            top: 432px;
+            left: 6287px;
+            top: 465px;
             line-height: 28px;
+            font-size:24px;
         }
 
         .displaycallout {
@@ -957,10 +959,10 @@ app-signup {
 
             .cartid {
                 position: absolute;
-                color: #00f;
-                left: 12px;
-                font-size: 7px;
-                top: -4px;
+                color: #000;
+                left: 20px;
+                font-size: 9px;
+                top: -3px;
             }
 
             .refillbottleholder {
@@ -1705,7 +1707,7 @@ body {
     .shinyfiller,
     .wavyfiller,
     .spikyfiller,
-    silkyfiller,
+    .silkyfiller,
     .bouncyfiller {
         position: absolute;
         width: 2px;

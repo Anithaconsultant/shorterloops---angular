@@ -1,6 +1,6 @@
 from .userData import UserData
-from .models import City, CustomUser, Facility, FACILITY_CHOICES, Cityrule, Asset, Cashflow,audit_log
-from .serializers import userSerializer, citySerializer, facilitySerializer, cityRuleSerializer, AssetSerializer, cashflowSerializer,AuditSerializer
+from .models import City, CustomUser, Facility, FACILITY_CHOICES, Cityrule, Asset, Cashflow,audit_log,Bottleprice,Shampooprice
+from .serializers import userSerializer, citySerializer, facilitySerializer, cityRuleSerializer, AssetSerializer, cashflowSerializer,AuditSerializer,BottleSerializer,shampooSerializer
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from rest_framework import status
@@ -184,6 +184,20 @@ def getfacility(request, cityid):
 
 
 @api_view(['GET', 'PUT'])
+def get_BottlePrice(request):
+    if request.method == 'GET':
+        data = Bottleprice.objects.all()
+        serializer = BottleSerializer(data, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+@api_view(['GET', 'PUT'])
+def get_ShampooPrice(request):
+    if request.method == 'GET':
+        data = Shampooprice.objects.all()
+        serializer = shampooSerializer(data, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+@api_view(['GET', 'PUT'])
 def returnasset(request, itemid):
     if request.method == 'GET':
         data = Asset.objects.filter(AssetId=itemid)
@@ -192,6 +206,7 @@ def returnasset(request, itemid):
         return JsonResponse(serializer.data, safe=False)
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
+        print(data)
         getasset = Asset.objects.filter(AssetId=itemid).first()
         serializer = AssetSerializer(getasset, data=data, partial=True)
         if serializer.is_valid():
@@ -296,6 +311,26 @@ def getmunicipalitycash(request, cityid):
         serval = {'Cashbox': data['Cashbox']}
         getfacility = Facility.objects.filter(
             Facilityname='Municipality Office', Facility_cityid=cityid).first()
+        serializer = facilitySerializer(getfacility, data=serval, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            print("invalid data")
+        return JsonResponse(serializer.data, safe=False)
+
+
+@api_view(['GET', 'PUT'])
+def getrefillingstationcash(request, cityid):
+    if request.method == 'GET':
+        data = Facility.objects.filter(
+            Facilityname='Refilling Van Owner', Facility_cityid=cityid)
+        serializer = facilitySerializer(data, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    if request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serval = {'Cashbox': data['Cashbox']}
+        getfacility = Facility.objects.filter(
+            Facilityname='Refilling Van Owner', Facility_cityid=cityid).first()
         serializer = facilitySerializer(getfacility, data=serval, partial=True)
         if serializer.is_valid():
             serializer.save()

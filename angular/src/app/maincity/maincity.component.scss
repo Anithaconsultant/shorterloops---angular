@@ -56,7 +56,7 @@
             height: 70px;
             position: absolute;
             display: flex;
-            overflow:hidden;
+            overflow: hidden;
         }
 
         .displaypanel {
@@ -117,9 +117,29 @@
         width: 168px;
         height: 80px;
         background-size: cover;
+        // left: 5933px;
+        //top: 3680px;
         left: 5933px;
         top: 1025px;
         position: absolute;
+
+        .holder {
+            width: 105px;
+            height: 57px;
+            left: 61px;
+            position: absolute;
+            top: 1px;
+            border: 1px solid #fff;
+
+            .truckContList {
+                height: 100%;
+            }
+
+            .bottle {
+                width: 10px !important;
+                height: 24px !important;
+            }
+        }
     }
 
     .side {
@@ -168,7 +188,10 @@
 .bottle_list,
 .refill_list,
 .refilled_list,
-.refilllist,.Inhouseshelf_bottles,.dustbin_bottles{
+.refilllist,
+.Inhouseshelf_bottles,
+.dustbin_bottles,
+.truckContList {
     display: flex;
     justify-content: center;
     width: 100%;
@@ -390,7 +413,7 @@
         width: 102px !important;
         height: 263px !important;
         margin-top: 10px !important;
-        margin:0 auto;
+        margin: 0 auto;
 
         &.B1 {
             width: 127px !important;
@@ -529,12 +552,13 @@
 .cdk-drag-preview {
     box-sizing: border-box;
     border-radius: 4px;
-    width:20px !important;
+    width: 20px !important;
     height: 52px !important;
     // box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
     box-shadow: 0 5px 5px -3px rgba(192, 224, 6, 0.815), 0 8px 10px 1px rgba(192, 224, 6, 0.815), 0 3px 14px 2px rgba(192, 224, 6, 0.815);
 }
-.loadinglogo{
+
+.loadinglogo {
     position: absolute;
     left: -3px;
     top: 20px;

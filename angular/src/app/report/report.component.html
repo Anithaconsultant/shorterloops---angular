@@ -34,16 +34,27 @@
                         <th>Changed Day</th>
                         <th>Status</th>
                         <th>Role</th>
+                        <th>Fromfacility</th>
+                        <th>Remaining Quantity</th>
+                        <th>Max Refill Count</th>
+                        <th>Current Refill Count</th>
+                        <th>Latest Refill Date</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let log of auditLogs">
                         <td>{{ log.action }}</td>
                         <td>{{ log.AssetId }}</td>
-                        <td>{{ log.currentPlace }}</td>
-                        <td>{{ log.currentDay }}</td>
+                        <td>{{ log.Bottle_loc }}</td>
+                        <td>{{ log.TransactionDate }}</td>
                         <td>{{ log.assetStatus }}</td>
                         <td>{{ log.userName }}</td>
+                        <td>{{ log.Fromfacility }}</td>
+                        <td>{{ log.ToFacility }}</td>
+                        <td>{{ log.remQuantity }}</td>
+                        <td>{{ log.refillCount }}</td>
+                        <td>{{ log.currentrefillCount }}</td>
+                        <td>{{ log.LatestFillDate }}</td>
                     </tr>
                 </tbody>
             </table>

@@ -44,6 +44,7 @@ def record_audit_trail_on_save(sender, instance, created,  **kwargs):
         audit_log.objects.create(
             action='Update',
             AssetId=instance.AssetId,
+            Bottle_loc=instance.Bottle_loc,
             TransactionId=instance.Transaction_Id,
             TransactionDate=instance.Transaction_Date,
             FromFacility=instance.Fromfacility,
@@ -51,7 +52,7 @@ def record_audit_trail_on_save(sender, instance, created,  **kwargs):
             ContentCode=instance.Content_Code,
             assetStatus=instance.Bottle_Status,
             Quantity=instance.Quantity,
-            remQuantity=0,
+            remQuantity=instance.remQuantity,
             Unit=instance.Units,
             ManufactureDate=instance.DOM,
             refillCount=instance.Max_Refill_Count,

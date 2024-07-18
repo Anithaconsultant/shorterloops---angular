@@ -26,10 +26,11 @@
                         <div class="form-group mb-3">
                             <input id="inputclk" type="text" formControlName="Clocktickrate"
                                 [(ngModel)]="city.Clocktickrate" [ngClass]="{ 'is-invalid': submitted  }"
-                                placeholder="Clock rate" required="" autofocus=""
+                                placeholder="Enter the XX Min Here" required="" autofocus=""
                                 class="form-control rounded-pill border-0 shadow-sm px-4">
+                                <div class="note">1 Day in the Virtual City = XX Min in the Real World *</div>
                         </div>
-                        <div class="form-group mb-3">
+                        <!--div class="form-group mb-3">
                             <input id="inputdate" type="text" formControlName="Citystartdate"
                                 [(ngModel)]="city.Citystartdate" [readonly] [ngClass]="{ 'is-invalid': submitted  }"
                                 placeholder="Input City Start date" required=""
@@ -40,10 +41,10 @@
                                 [(ngModel)]="city.CityCreateTime" [readonly] [ngClass]="{ 'is-invalid': submitted  }"
                                 placeholder="Input City Create Time" required=""
                                 class="form-control rounded-pill border-0 shadow-sm px-4 " [value]="currentTime">
-                        </div>
+                        </div-->
 
                     </form>
-                    <div class="textcs">Select your City Avatar</div>
+                    <div class="textcs">Click one of the two images below to select your city avatar.</div>
                 </div>
 
                 <div class="centeraligned">
