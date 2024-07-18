@@ -107,15 +107,16 @@ export class AddcityComponent implements OnInit {
   assettableobj = {
     'AssetId': '',
     'Asset_CityId': '',
-    'CategoryCode': '',
+    'CategoryCode': 'SB',
     'Bottle_Code': '',
     'Content_Code': '',
-    'Quantity': '',
-    'Units': '',
-    'Bottle_loc': '',
-    'Bottle_Status': '',
-    'DOM': '',
-    'Max_Refill_Count': 0,
+    'Quantity': '500',
+    'remQuantity': '500',
+    'Units': 'ml',
+    'Bottle_loc': 'Supermarket shelf',
+    'Bottle_Status': 'Full',
+    'DOM': '1/1/2023',
+    'Max_Refill_Count': 5,
     'Current_Refill_Count': 0,
     'Latest_Refill_Date': '',
     'Retirement_Date': '',
@@ -136,7 +137,7 @@ export class AddcityComponent implements OnInit {
   city = {
     'CityName': '',
     'MayorId': this.logser.currentuser.UserId,
-    'Clocktickrate':1,
+    'Clocktickrate': '',
     'Citystartdate': '',
     'CityCreateTime': '',
     'Status': 'Yes',
@@ -189,13 +190,13 @@ export class AddcityComponent implements OnInit {
       if (this.selectedavatar == 0) {
         alert("kindly select your Avatar")
       }
-      if (this.city.Clocktickrate == 0) {
-        alert("kindly select your Avatar")
-      }
-      if(isNaN(this.city.Clocktickrate)){
+      // if (parseInt(this.city.Clocktickrate) == 0) {
+      //   alert("kindly select your Avatar")
+      // }
+      if (isNaN(parseInt(this.city.Clocktickrate))) {
         alert('Clock Tick rate is number.')
       }
-      if(!isNaN(this.city.Clocktickrate) && this.selectedavatar!=0 && this.city.Clocktickrate>0) {
+      if (!isNaN(parseInt(this.city.Clocktickrate)) && this.selectedavatar != 0 && parseInt(this.city.Clocktickrate) > 0) {
         this.city.cityavatar = String(this.selectedavatar);
         this.logser.createcity(this.city).subscribe(
           data => {
@@ -232,15 +233,8 @@ export class AddcityComponent implements OnInit {
             numbers[0].forEach((number) => {
               this.assettableobj['AssetId'] = this.Asset_CityId + "_" + number;
               this.assettableobj['Asset_CityId'] = this.Asset_CityId;
-              this.assettableobj['CategoryCode'] = 'SB';
               this.assettableobj['Bottle_Code'] = this.assetData['Bottle_Code'][count];
               this.assettableobj['Content_Code'] = this.assetData['Content_Code'][count];
-              this.assettableobj['Quantity'] = '500';
-              this.assettableobj['Units'] = 'ml';
-              this.assettableobj['Bottle_loc'] = 'Supermarket shelf';
-              this.assettableobj['Bottle_Status'] = 'Full';
-              this.assettableobj['DOM'] = '1/1/2023';
-              this.assettableobj['Max_Refill_Count'] = 5;
               this.assettableobj['Current_Refill_Count'] = this.assetData['Current_Refill_Count'][count];
               this.assettableobj['Latest_Refill_Date'] = this.assetData['Latest_Refill_Date'][count];
               this.assettableobj['Content_Price'] = this.assetData['Content_Price'][count];

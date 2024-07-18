@@ -42,6 +42,7 @@ export class ReportComponent implements OnInit {
     this.logser.getAuditLogsuser(this.selectedUser)
       .subscribe((logs: any) => {
         this.auditLogs = logs;
+        console.log(this.auditLogs)
       });
   }
 

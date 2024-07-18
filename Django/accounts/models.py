@@ -28,7 +28,7 @@ FACILITY_CHOICES = (('mun', 'Municipality Office'),
 
 class Shampooprice(models.Model):
     class Meta:
-        db_table = "shampooprice"
+        db_table = "Shampooprice"
     BottleContent = models.CharField(max_length=70)
     UnitPrice = models.FloatField(default=0.0)
     Discount = models.IntegerField(default=0)
@@ -132,6 +132,7 @@ class audit_log(models.Model):
     id = models.AutoField(primary_key=True)
     action = models.CharField(max_length=70, blank=False)
     AssetId = models.CharField(max_length=100, blank=False)
+    Bottle_loc = models.CharField(max_length=100, blank=False,default="Supermarket shelf")
     TransactionId = models.CharField(max_length=100, blank=True)
     TransactionDate= models.CharField(max_length=100, blank=True)
     FromFacility= models.CharField(max_length=100, blank=False,default="Supermarket shelf")

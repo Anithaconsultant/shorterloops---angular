@@ -66,10 +66,11 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   wavyurpr: string[] = [];
   bottles = ['silkyvpn', 'spikyrpn', 'shiny_vpn', 'bouncyrpn']
   BottleInHouseList: string[] = [];
+  throwntoTruckList: string[] = [];
   refillbottles: string[] = [];
   dustbinbottles: string[] = [];
   refilledbottles: string[] = [];
-  shinyrefilling: string[] = [];
+  atRefillingMchn: string[] = [];
   spikyrefilling: string[] = [];
   silkyrefilling: string[] = [];
   bouncyrefilling: string[] = [];
@@ -164,6 +165,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   }
   municipalcashbox = 0;
   supermarketcashbox = 0;
+  getrefillingstationcashbox = 0;
   transactioncount = '00000';
   billpaid = true;
   transactionsubcount = '00';
@@ -175,7 +177,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     'fromfacility': '',
     'tofacility': '',
     'transactiondate': '',
-    'purchased': false
+    'purchased': '',
+    'contentCode': ''
   }
   updatebottlereturn = {
     'currentitem': '',
@@ -282,6 +285,15 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
       setInterval(() => { this.loadAvailableAsset() }, 10000);
       setInterval(() => { this.loadtime() }, 1000);
+
+      this.logser.getBottlePrice().subscribe((data: any) => {
+        this.bottlePrice = data;
+      });
+      this.logser.getShampooPrice().subscribe((data: any) => {
+        this.shampooPrice = data;
+      });
+
+
     }
     else {
       this.router.navigate(['/login']);
@@ -293,7 +305,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     this.canMoveRight = true;
     this.canMoveLeft = true;
   }
-
+  bottlePrice: any[] = [];
+  shampooPrice: any[] = [];
   onDragStart(event: DragEvent) {
     event.preventDefault();
   }
@@ -302,11 +315,89 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     // Navigate to the new component route
     this.router.navigate(['/report']);
   }
-
+  count = 0;
   convertSeconds(seconds: number) {
     const hours = Math.floor(seconds / 3600);
     let string = hours + ':00';
     return string
+  }
+  runtruck() {
+    $(".truck").animate({ left: '5210px' }, 1000, () => {
+      console.log("1");
+      $(".truck").css({ transform: 'rotate(-90deg)' }).addClass('top').removeClass('side');
+      $(".truck").animate({ top: '3680px' }, 5500, () => {
+        console.log("2");
+        $(".truck").css({ transform: 'scaleX(-1)' }).addClass('side').removeClass('top');
+        $(".truck").animate({ left: '7390px' }, 15000, () => {
+          console.log("3");
+          $(".truck").css({ transform: 'rotate(0deg)' });
+          $(".truck").animate({ left: '5210px' }, 15000, () => {
+            console.log("4");
+            $(".truck").css({ transform: 'rotate(-90deg)' }).addClass('top').removeClass('side');
+            $(".truck").animate({ top: '4070px' }, 2500, () => {
+              console.log("5");
+              $(".truck").css({ transform: 'scaleX(-1)' }).addClass('side').removeClass('top');
+              $(".truck").animate({ left: '7390px' }, 15000, () => {
+                console.log("6");
+                $(".truck").css({ transform: 'rotate(0deg)' });
+                $(".truck").animate({ left: '5210px' }, 15000, () => {
+                  console.log("7");
+                  $(".truck").css({ transform: 'rotate(90deg)' }).addClass('top').removeClass('side');
+                  $(".truck").animate({ top: '3060px' }, 5500, () => {
+                    console.log("8");
+                    $(".truck").css({ transform: 'rotate(0deg)' }).addClass('side').removeClass('top');
+                    $(".truck").animate({ left: '2730px' }, 5500, () => {
+                      console.log("9");
+                      $(".truck").css({ transform: 'rotate(-90deg)' }).addClass('top').removeClass('side');
+                      $(".truck").animate({ top: '3680px' }, 2500, () => {
+                        console.log("10");
+                        $(".truck").css({ transform: 'rotate(0deg)' }).addClass('side').removeClass('top');
+                        $(".truck").animate({ left: '300px' }, 15000, () => {
+                          console.log("11");
+                          $(".truck").css({ transform: 'scaleX(-1)' });
+                          $(".truck").animate({ left: '2730px' }, 15000, () => {
+                            console.log("12");
+                            $(".truck").css({ transform: 'rotate(-90deg)' }).addClass('top').removeClass('side');
+                            $(".truck").animate({ top: '4070px' }, 2500, () => {
+                              console.log("13");
+                              $(".truck").css({ transform: 'rotate(0deg)' }).addClass('side').removeClass('top');
+                              $(".truck").animate({ left: '300px' }, 10000, () => {
+                                $(".truck").css({ transform: 'scaleX(-1)' });
+                                console.log("14");
+                                $(".truck").animate({ left: '2730px' }, 10000, () => {
+                                  console.log("15");
+                                  $(".truck").css({ transform: 'rotate(90deg)' }).addClass('top').removeClass('side');
+                                  $(".truck").animate({ top: '3060px' }, 5500, () => {
+                                    console.log("16");
+                                    $(".truck").css({ transform: 'scaleX(-1)' }).addClass('side').removeClass('top');
+                                    $(".truck").animate({ left: '5210px' }, 5500, () => {
+                                      console.log("17");
+                                      $(".truck").css({ transform: 'rotate(90deg)' }).addClass('top').removeClass('side');
+                                      $(".truck").animate({ top: '1025px' }, 5500, () => {
+                                        console.log("18");
+                                        $(".truck").css({ transform: 'scaleX(-1)' }).addClass('side').removeClass('top');
+                                        $(".truck").animate({ left: '5933px' }, 5500);
+                                        $(".truck").css({ transform: 'rotate(0deg)' });
+                                        this.count++;
+                                      });
+                                    });
+                                  });
+                                });
+                              });
+                            });
+                          });
+                        });
+                      });
+                    });
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
+    })
+
 
   }
   loadAvailableAsset() {
@@ -316,11 +407,12 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       this.shinyvpn = [];
       this.shinyuvpn = [];
       this.spikyrpn = [];
+      this.throwntoTruckList = [];
       this.spikyrpr = [];
       this.bouncyrpn = [];
       this.bouncyurpn = [];
       this.wavyurpn = [];
-      this.dustbinbottles=[];
+      this.dustbinbottles = [];
       this.refillbottles = [];
       this.wavyurpr = [];
       this.silkyvpn = [];
@@ -340,24 +432,12 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             if (isDragged == false && bottleloc == 'Supermarket shelf') {
               this.shinyuvpn.push(cat1);
             }
-            else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == this.currentUserCartId) {
-              this.currentUserPurhcased.push(cat1);
-            }
-            else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
-              this.BottleInHouseList.push(cat1);
-            }
             this.updateobjects(cat1, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
             break;
           case data[y]['Content_Code'] == "B1.Shiny" && data[y]['Bottle_Code'] == "B1.V":
             let cat2 = "City" + data[y]['AssetId'] + 'at' + data[y]['Content_Code'].split('.')[0];
             if (isDragged == false && bottleloc == 'Supermarket shelf') {
               this.shinyvpn.push(cat2);
-            }
-            else if (data[y]['Tofacility'] == this.currentUserRole && isPurchased == true && bottleloc == this.currentUserCartId) {
-              this.currentUserPurhcased.push(cat2);
-            }
-            else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
-              this.BottleInHouseList.push(cat2);
             }
             this.updateobjects(cat2, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
             break;
@@ -366,24 +446,12 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             if (isDragged == false && bottleloc == 'Supermarket shelf') {
               this.spikyrpr.push(cat3);
             }
-            else if (data[y]['Tofacility'] == this.currentUserRole && isPurchased == true && bottleloc == this.currentUserCartId) {
-              this.currentUserPurhcased.push(cat3);
-            }
-            else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
-              this.BottleInHouseList.push(cat3);
-            }
             this.updateobjects(cat3, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
             break;
           case data[y]['Content_Code'] == "B2.Spiky" && data[y]['Bottle_Code'] == "B2.R" && data[y]['Current_Refill_Count'] == 0:
             let cat4 = "City" + data[y]['AssetId'] + 'at' + data[y]['Content_Code'].split('.')[0];
             if (isDragged == false && bottleloc == 'Supermarket shelf') {
               this.spikyrpn.push(cat4);
-            }
-            else if (data[y]['Tofacility'] == this.currentUserRole && isPurchased == true && bottleloc == this.currentUserCartId) {
-              this.currentUserPurhcased.push(cat4);
-            }
-            else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
-              this.BottleInHouseList.push(cat4);
             }
             this.updateobjects(cat4, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
             break;
@@ -392,24 +460,12 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             if (isDragged == false && bottleloc == 'Supermarket shelf') {
               this.bouncyrpn.push(cat5);
             }
-            else if (data[y]['Tofacility'] == this.currentUserRole && isPurchased == true && bottleloc == this.currentUserCartId) {
-              this.currentUserPurhcased.push(cat5);
-            }
-            else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
-              this.BottleInHouseList.push(cat5);
-            }
             this.updateobjects(cat5, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
             break;
           case data[y]['Content_Code'] == "B3.Bouncy" && data[y]['Bottle_Code'] == "UB.R":
             let cat6 = "City" + data[y]['AssetId'] + 'atU' + data[y]['Content_Code'].split('.')[0];
             if (isDragged == false && bottleloc == 'Supermarket shelf') {
               this.bouncyurpn.push(cat6);
-            }
-            else if (data[y]['Tofacility'] == this.currentUserRole && isPurchased == true && bottleloc == this.currentUserCartId) {
-              this.currentUserPurhcased.push(cat6);
-            }
-            else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
-              this.BottleInHouseList.push(cat6);
             }
             this.updateobjects(cat6, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
             break;
@@ -418,24 +474,12 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             if (isDragged == false && bottleloc == 'Supermarket shelf') {
               this.wavyurpr.push(cat7);
             }
-            else if (data[y]['Tofacility'] == this.currentUserRole && isPurchased == true && bottleloc == this.currentUserCartId) {
-              this.currentUserPurhcased.push(cat7);
-            }
-            else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
-              this.BottleInHouseList.push(cat7);
-            }
             this.updateobjects(cat7, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
             break;
           case data[y]['Content_Code'] == "B4.Wavy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Current_Refill_Count'] == 0:
             let cat8 = "City" + data[y]['AssetId'] + 'atU0' + data[y]['Content_Code'].split('.')[0];
             if (isDragged == false && bottleloc == 'Supermarket shelf') {
               this.wavyurpn.push(cat8);
-            }
-            else if (data[y]['Tofacility'] == this.currentUserRole && isPurchased == true && bottleloc == this.currentUserCartId) {
-              this.currentUserPurhcased.push(cat8);
-            }
-            else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
-              this.BottleInHouseList.push(cat8);
             }
             this.updateobjects(cat8, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
             break;
@@ -444,21 +488,15 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             if (isDragged == false && bottleloc == 'Supermarket shelf') {
               this.silkyvpn.push(cat9);
             }
-            else if (data[y]['Tofacility'] == this.currentUserRole && isPurchased == true && bottleloc == this.currentUserCartId) {
-              this.currentUserPurhcased.push(cat9);
-
-            }
-            else if (data[y]['Tofacility'] == this.currentUserRole && bottleloc == 'House@' + this.currentUserCartId) {
-              this.BottleInHouseList.push(cat9);
-            }
             this.updateobjects(cat9, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
             break;
+          default:
+            let cat10 = "City" + data[y]['AssetId'] + 'at' + data[y]['Content_Code'].split('.')[0];
+            this.updateobjects(cat10, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
         }
 
       }
     });
-
-
   }
 
 
@@ -492,17 +530,22 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       }
 
     }
-
     if (bottle_status == 'Empty-Dirty' && bottleloc == this.currentUserCartId) {
-      let index = this.currentUserPurhcased.findIndex(item => item === cat)
       this.refillbottles.push(cat);
-      this.currentUserPurhcased.splice(index, 1);
     }
-    if ( bottleloc == "City Dustbin") {
+    else if (bottleloc == this.currentUserCartId && bottle_status == 'InUse') {
+      this.currentUserPurhcased.push(cat);
+    }
+    if (bottleloc == "City Dustbin") {
       this.dustbinbottles.push(cat);
     }
+    if (bottleloc == "Landfill") {
+      this.throwntoTruckList.push(cat);
+    }
+    if (bottleloc == 'House@' + this.currentUserCartId) {
+      this.BottleInHouseList.push(cat);
+    }
     if (bottle_status == 'Empty-Dirty' && bottleloc == 'House@' + this.currentUserCartId) {
-      console.log(cat);
       $(".Inhouseshelf_bottles #" + cat).addClass('zero-empty');
     }
     if (bottle_status == 'Damaged') {
@@ -511,7 +554,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     if (bottle_status == 'Street') {
       $(".Inhouseshelf_bottles #" + cat).addClass('street');
     }
-   
+
+
 
 
   }
@@ -520,7 +564,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     const leftValue = parseInt($(".cart").css('left').split("px")[0]);
     const isWithinRange = (value: number, min: number, max: number) => value > min && value < max;
 
-    if (isWithinRange(topValue, 2810, 2840) && isWithinRange(leftValue, 5300, 5891)) {
+    if (isWithinRange(topValue, 2800, 2850) && isWithinRange(leftValue, 5300, 5891)) {
       this.whichRoad = "refillingstation";
       this.opensuperflag = 2;
       this.openrefillingstation();
@@ -542,15 +586,24 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       this.whichRoad = "lefthorizontalroad";
       this.setTrue();
     } else if (isWithinRange(topValue, 0, 4395) && isWithinRange(leftValue, 5190, 5300)) {
-      this.whichRoad = "rightroad";
-      this.setTrue();
-    }else if (isWithinRange(topValue, 4000, 4065) && isWithinRange(leftValue, 300, 2800)) {
+
+      if (isWithinRange(topValue, 2800, 2850) && isWithinRange(leftValue, 5300, 5891)) {
+        this.whichRoad = "refillingstation";
+        this.opensuperflag = 2;
+        this.openrefillingstation();
+        this.setTrue();
+      }
+      else {
+        this.whichRoad = "rightroad";
+        this.setTrue();
+      }
+    } else if (isWithinRange(topValue, 4000, 4065) && isWithinRange(leftValue, 300, 2800)) {
       this.whichRoad = "leftcolonybottom";
       this.setTrue();
     } else if (isWithinRange(topValue, 2950, 3050) && isWithinRange(leftValue, 0, 7390)) {
       this.whichRoad = "municipalityroad";
       this.setTrue();
-    }else {
+    } else {
       this.canMoveLeft = false;
       this.canMoveTop = false;
       this.canMoveBottom = false;
@@ -575,7 +628,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           this.canMoveLeft = true;
           this.canMoveTop = false;
           this.canMoveBottom = true;
-          
+
         }
         if (topValue >= 4395) {
           this.canMoveRight = true;
@@ -611,7 +664,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         }
       }
       else if (this.whichRoad == 'mayorhouseroad') {
-       
+
         if (topValue <= 3524) {
 
           this.canMoveBottom = true;
@@ -716,7 +769,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           this.canMoveBottom = true;
         }
       }
-  
+
       else if (this.whichRoad == "leftcolonybottom") {
         if (topValue <= 4010) {
           this.canMoveBottom = true;
@@ -769,8 +822,9 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           this.canMoveBottom = false;
         }
       }
-     
+
     }
+    console.log(this.whichRoad);
   }
 
 
@@ -807,7 +861,6 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   moveup($event: any) {
     $event.stopPropagation();
     if (this.opensuperflag == 0) {
-      console.log(this.canMoveTop)
       this.checkCartPosition();
       if (this.canMoveTop) {
         let leftval = $(".cart").css('top');
@@ -931,7 +984,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       this.instance.getTransform().scale = z;
     }
   }
-  stopZoom() { }
+
   refillcartposition() {
     let topValue = parseInt($("#refillcart").css('top').split("px")[0]);
     let leftValue = parseInt($("#refillcart").css('left').split("px")[0]);
@@ -1275,7 +1328,11 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   movetomaincity() {
     this.opensuperflag = 0;
     let where = this;
-    setTimeout(function () { where.dopanzoom(-4853, -2622, '1'); }, 100);
+    setTimeout(function () {
+      where.dopanzoom(-4853, -2622, '1');
+      where.resetrefilling();
+      where.setrefilltrue();
+    }, 100);
     $(".cart").css({ 'left': '5270px', 'top': '2760px' })
   }
 
@@ -1324,7 +1381,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
                     this.updatebottleasset['fromfacility'] = 'Supermarket Owner'
                     this.updatebottleasset['tofacility'] = this.currentUserRole;
                     this.updatebottleasset['transactiondate'] = String(this.citytiming['CurrentDay']);
-                    this.updatebottleasset['purchased'] = true;
+                    this.updatebottleasset['purchased'] = 'true';
                     this.updatebottleasset['Bottleloc'] = this.currentUserCartId;
                     for (let i = 0; i < this.bottletaken.length; i++) {
                       this.updatebottleasset['currentitem'] = this.bottletaken[i].split("at")[0].split('City')[1];
@@ -1460,6 +1517,11 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   checkrefillcondition(item: CdkDrag<string>) {
     if (item.element.nativeElement.classList.contains('refilled')) { return false; }
     else { return true; }
+
+  }
+  checkrefilledcondition(item: CdkDrag<string>) {
+    if (item.element.nativeElement.classList.contains('refilled')) { return true; }
+    else { return false; }
 
   }
   checkrefilledbottle(item: CdkDrag<string>) {
@@ -1688,26 +1750,26 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     }, 5000)
   }
 
-  initiateanimation() {
-    if ($(".refilllist").children('div').length > 0 && this.droppedbottle == true) {
+  initiateanimation(placedBottle: string) {
+    if (this.droppedbottle == true) {
       this.selectbrand.nativeElement.play();
       this.refillbrandselected = '';
       $(".displaylight").removeClass('off').addClass('on');
-      let getbrand = $(".refilllist").children('div')[0].classList[1];
+      let getbrand = placedBottle.split("at")[1];
       if (getbrand == 'UB1' || getbrand == 'B1') {
-        this.getcurrentplacedbrand = 'shiny';
+        this.getcurrentplacedbrand = 'B1.Shiny';
       }
       else if (getbrand == 'UB2' || getbrand == 'B2') {
-        this.getcurrentplacedbrand = 'spiky';
+        this.getcurrentplacedbrand = 'B2.Spiky';
       }
       else if (getbrand == 'UB3' || getbrand == 'B3') {
-        this.getcurrentplacedbrand = 'bouncy';
+        this.getcurrentplacedbrand = 'B3.Bouncy';
       }
       else if (getbrand == 'UB4' || getbrand == 'B4') {
-        this.getcurrentplacedbrand = 'wavy';
+        this.getcurrentplacedbrand = 'B4.Wavy';
       }
       else if (getbrand == 'UB5' || getbrand == 'B5') {
-        this.getcurrentplacedbrand = 'silky';
+        this.getcurrentplacedbrand = 'B5.Silky';
       }
 
       $(".displayboard").html("Your bottle's brand =" + this.getcurrentplacedbrand + "<br/>Select shampoo brand for refill.")
@@ -1723,11 +1785,26 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       }
       $(".displayboard").html("Selected Quantity :" + this.selectquantity);
       let that = this;
+      this.calculaterefillAmount();
       clearTimeout(this.timeout);
-      this.timeout = setTimeout(function () { $(".displaylight").removeClass('off').addClass('on'); that.checkprice.nativeElement.play(); that.quantityselected = true; $(".displayboard").html("Brand =" + that.refillbrandselected + "<br/>Quantity = " + that.selectquantity + "ml<br/>Price/ml = ₹…..<br/>Discount = x%<br/>Net Amount = ₹…........<br/> Please confirm the order."); }, 6000);
+      this.timeout = setTimeout(function () {
+
+        $(".displaylight").removeClass('off').addClass('on'); that.checkprice.nativeElement.play(); that.quantityselected = true; $(".displayboard").html("Brand =" + that.refillbrandselected + "<br/>Quantity = " + that.selectquantity + "ml<br/>Price/ml = ₹" + that.unitprice + "<br/>Discount = " + that.currentDiscount + "%<br/>Net Amount = ₹ " + that.refill_amount_topay + "<br/> Please confirm the order.");
+      }, 6000);
     }
     else {
       alert("please select the brand")
+    }
+  }
+  calculaterefillAmount() {
+
+    for (let r = 0; r < this.shampooPrice.length; r++) {
+      if (this.shampooPrice[r]['BottleContent'] == this.refillbrandselected) {
+        this.refill_amount_topay = this.selectquantity * this.shampooPrice[r]['UnitPrice'] * (this.shampooPrice[r]['Discount'] / 100)
+        this.unitprice = this.shampooPrice[r]['UnitPrice'];
+        this.currentDiscount = this.shampooPrice[r]['Discount'];
+      }
+
     }
   }
   decrement() {
@@ -1737,14 +1814,19 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       }
       $(".displayboard").html("Selected Quantity :" + this.selectquantity);
       let that = this;
+      this.calculaterefillAmount();
       clearTimeout(this.timeout);
-      this.timeout = setTimeout(function () { $(".displaylight").removeClass('off').addClass('on'); that.checkprice.nativeElement.play(); that.quantityselected = true; $(".displayboard").html("Brand =" + that.refillbrandselected + "<br/>Quantity = " + that.selectquantity + "ml<br/>Price/ml = ₹…..<br/>Discount = x%<br/>Net Amount = ₹…........<br/> Please confirm the order."); }, 6000);
+      this.timeout = setTimeout(function () { $(".displaylight").removeClass('off').addClass('on'); that.checkprice.nativeElement.play(); that.quantityselected = true; $(".displayboard").html("Brand =" + that.refillbrandselected + "<br/>Quantity = " + that.selectquantity + "ml<br/>Price/ml = ₹" + that.unitprice + "<br/>Discount = " + that.currentDiscount + "%<br/>Net Amount = ₹" + that.refill_amount_topay + "<br/> Please confirm the order."); }, 6000);
     }
     else {
       alert("please select the brand")
     }
   }
+  unitprice = 0;
+  currentDiscount = 0;
   checkrefillselect(currentbrand: any) {
+
+
     if (this.droppedbottle == true && this.resetanimation == true) {
       this.refillbrandselected = currentbrand;
       if (this.refillbrandselected == this.getcurrentplacedbrand) {
@@ -1759,15 +1841,73 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       }
     }
   }
-  startanimation() {
+  refill_amount_topay = 0;
+  startrefillinganimation() {
     $(".displaylight").removeClass('on').addClass('off');
-    $(".displayboard").html("Brand =" + this.refillbrandselected + "<br/>Quantity = " + this.selectquantity + "ml<br/>Price/ml = ₹…..<br/>Discount = x%<br/>Net Amount = ₹…........<br/> Order Confirmed. Please wait till we refill your bottle.");
+    if (this.currentwallet > this.refill_amount_topay) {
+      alert("User has Succifient amount for Payment");
+      this.currentwallet = this.currentwallet - this.refill_amount_topay;
+      this.logser.currentuser.wallet = this.currentwallet;
+
+
+      this.logser.updatewallet().subscribe(
+        data => {
+          data = this.currentwallet;
+          this.paymentreceived.nativeElement.play();
+          $(".displayboard").html("Payment Received");
+          this.logser.gettransactions().subscribe(data => {
+            this.transactioncount = '0000' + (data.length + 1);
+          });
+
+          this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_01';
+          this.transaction['Amount'] = String(this.refill_amount_topay);
+          this.transaction['CreditFacility'] = 'Refilling Station';
+          this.transaction['Purpose'] = 'Refilling shampoo from the Refilling Station';
+          this.logser.createtransaction(this.transaction).subscribe(
+            data => {
+              data = this.transaction;
+
+              this.updatebottleasset['bottlestatus'] = 'InUse';
+              this.updatebottleasset['transactionid'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount;
+              this.updatebottleasset['fromfacility'] = 'Refilling Station'
+              this.updatebottleasset['tofacility'] = this.currentUserRole;
+              this.updatebottleasset['transactiondate'] = String(this.citytiming['CurrentDay']);
+              this.updatebottleasset['Bottleloc'] = this.currentUserCartId;
+              this.updatebottleasset['contentCode'] = this.refillbrandselected;
+              this.updatebottleasset['currentitem'] = this.currentlyrefillingBottle.split("at")[0].split('City')[1];
+              this.logser.updatethisAssets(this.updatebottleasset).subscribe((data) => {
+                this.transactioncomplete.nativeElement.play();
+              });
+
+            },
+            error => {
+              console.log(error);
+            });
+        },
+        error => {
+          console.log(error);
+        });
+
+
+
+
+      this.logser.getrefillingstationcashbox().subscribe(data => {
+
+        (data[0]['Cashbox'] == '') ? this.getrefillingstationcashbox = 0 : this.getrefillingstationcashbox = parseInt(data[0]['Cashbox']);
+        this.getrefillingstationcashbox += this.refill_amount_topay;
+        this.logser.updaterefillingcashbox(String(this.getrefillingstationcashbox)).subscribe(data => { });
+      });
+
+
+
+    }
+    $(".displayboard").html("Brand =" + this.refillbrandselected + "<br/>Quantity = " + this.selectquantity + "ml<br/>Price/ml = ₹" + this.unitprice + "<br/>Discount = x%<br/>Net Amount = ₹" + this.refill_amount_topay + "<br/> Order Confirmed. Please wait till we refill your bottle.");
     $("#pressor").animate({ 'top': '1px' }, 2000, () => {
       $("#pressor").animate({ 'top': '-10px' });
       $(".gear").addClass('icon');
       let getbrand = $(".refilllist").children('div')[0].classList[1];
       $("." + getbrand).addClass('removedcap');
-      if (this.refillbrandselected == 'shiny') {
+      if (this.refillbrandselected == 'B1.Shiny') {
         $(".refilldropper").animate({ 'left': '44px' }, 2000, () => {
           $(".shinyfiller").show();
           $(".gear").removeClass('icon');
@@ -1777,7 +1917,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           }, 2000);
         });
       }
-      if (this.refillbrandselected == 'spiky') {
+      if (this.refillbrandselected == 'B2.Spiky') {
         $(".refilldropper").animate({ 'left': '94px' }, 2000, () => {
           $(".spikyfiller").show(); $(".gear").removeClass('icon');
           let that = this;
@@ -1788,7 +1928,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           }, 2000);
         });
       }
-      if (this.refillbrandselected == 'wavy') {
+      if (this.refillbrandselected == 'B4.Wavy') {
         $(".refilldropper").animate({ 'left': '196px' }, 2000, () => {
           $(".wavyfiller").show();
           $(".gear").removeClass('icon');
@@ -1800,7 +1940,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           }, 2000);
         });
       }
-      if (this.refillbrandselected == 'silky') {
+      if (this.refillbrandselected == 'B5.Silky') {
         $(".refilldropper").animate({ 'left': '247px' }, 2000, () => {
           $(".silkyfiller").show();
           $(".gear").removeClass('icon');
@@ -1812,7 +1952,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           }, 2000);
         });
       }
-      if (this.refillbrandselected == 'bouncy') {
+      if (this.refillbrandselected == 'B3.Bouncy') {
         $(".refilldropper").animate({ 'left': '145px' }, 2000, () => {
           $(".bouncyfiller").show();
           $(".gear").removeClass('icon');
@@ -1878,7 +2018,6 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
       let currentlyDroped = event.item.element.nativeElement.id;
       let currentDropzone = event.container.element.nativeElement.classList;
-      console.log(currentDropzone,currentlyDroped)
       if (currentDropzone.contains('Inhouseshelf_bottles')) {
         this.updateonlyloc['currentbottle'] = currentlyDroped.split('City')[1].split("at")[0];
         this.updateonlyloc['Bottleloc'] = 'House@' + this.currentUserCartId;
@@ -1896,8 +2035,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         });
 
       }
-      else if (currentDropzone.contains('dustbin_bottles') ) {
-        
+      else if (currentDropzone.contains('dustbin_bottles')) {
+
         this.updateonlyloc['currentbottle'] = currentlyDroped.split('City')[1].split("at")[0];
         this.updateonlyloc['Bottleloc'] = "City Dustbin";
         this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
@@ -1906,7 +2045,17 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         });
 
       }
-    
+      else if (currentDropzone.contains('truckContList')) {
+
+        this.updateonlyloc['currentbottle'] = currentlyDroped.split('City')[1].split("at")[0];
+        this.updateonlyloc['Bottleloc'] = "Landfill";
+        this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
+          console.log("bottle location update to Garbage truck");
+
+        });
+
+      }
+
     }
   }
 
@@ -1938,6 +2087,77 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       }
     }
   }
+  currentlyrefillingBottle = '';
+  refilldrop(event: CdkDragDrop<string[]>) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(
+        event.container.data, event.previousIndex, event.currentIndex,);
+    } else {
+      transferArrayItem(event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex);
+      this.currentlyrefillingBottle = event.item.element.nativeElement.id;
+      let currentlyDroped = event.item.element.nativeElement.id;
+      let currentDropzone = event.container.element.nativeElement.classList;
+      let that = this;
+      if (currentDropzone.contains('refilllist')) {
+        that.droppedbottle = true;
+        if (that.resetanimation == true) {
+          that.initiateanimation(currentlyDroped);
+          that.bottledroppeded.nativeElement.play();
+        }
+        this.updateonlyloc['currentbottle'] = currentlyDroped.split('City')[1].split("at")[0];
+        this.updateonlyloc['Bottleloc'] = "Refilling";
+        this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
+          console.log("bottle location update to Refilling Machine");
+        });
+      }
+
+      if (currentDropzone.contains('refill_list') || currentDropzone.contains('refilled_list')) {
+
+        if (currentDropzone.contains('refill_list')) {
+          this.updateonlyloc['currentbottle'] = currentlyDroped.split('City')[1].split("at")[0];
+          this.updateonlyloc['Bottleloc'] = this.currentUserCartId;
+          this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
+            console.log("bottle location update to Cart Again!", data);
+          });
+        }
+
+        if (currentDropzone.contains('refilled_list')) {
+          this.updateonlyloc['currentbottle'] = currentlyDroped.split('City')[1].split("at")[0];
+          this.updateonlyloc['Bottleloc'] = this.currentUserCartId;
+          this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
+            for (let i = 0; i < this.assetdataset.length; i++) {
+
+              if (this.assetdataset[i]['AssetId'] == this.currentbottle['currentbottle']) {
+                this.currentbottle['Current_Refill_Count'] = this.assetdataset[i]['Current_Refill_Count'];
+                break;
+              }
+            }
+            this.currentUserPurhcased.push(currentlyDroped);
+            let index = this.refillbottles.findIndex(item => item === currentlyDroped)
+            this.refillbottles.splice(index, 1);
+            this.currentbottle['Current_Refill_Count'] = this.currentbottle['Current_Refill_Count'] + 1;
+            this.currentbottle['Quantity'] = this.selectquantity;
+            this.currentbottle['Bottle_Status'] = 'InUse';
+            this.currentbottle['currentbottle'] = currentlyDroped.split('City')[1].split("at")[0];
+            this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => {
+              $(".displayboard").html('Thank you. Visit again. Please press Continue button to refill another bottle');
+              that.thankyou.nativeElement.play();
+              that.refillbrandselected = '';
+              $(".refilldropper").css({ 'left': '8px' }).hide();
+              that.resetanimation = false;
+              $(".continue").show();
+            }
+            );
+          });
+
+        }
+      }
+
+    }
+  }
 
   drop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
@@ -1948,81 +2168,54 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         event.container.data,
         event.previousIndex,
         event.currentIndex);
-      if (this.opensuperflag == 1) {
-        let currentlyDroped = event.item.element.nativeElement.id;
-        let currentDropzone = event.container.element.nativeElement.classList;
-        if (currentDropzone.contains('newbottle_list')) {
-          this.billpaid = false;
-          let itemid = currentlyDroped.split("at")[0].split('City')[1];
-          this.logser.getthisAssets(itemid).subscribe((data) => {
-            if (data[0]['dragged'] == false && data[0]['purchased'] == false) {
-              this.logser.lockthisAsset(itemid).subscribe(
-                response => {
-                  if (response['success'] == true) {
-                    this.updateonlyloc['currentbottle'] = itemid;
-                    this.updateonlyloc['Bottleloc'] = 'In' + this.currentUserCartId;
-                    this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
-                      this.updateStatus(currentlyDroped, 'blocked', this.currentUserCartId);
-                    });
-                  }
-                },
-                error => {
-                  console.error(error);
+
+      let currentlyDroped = event.item.element.nativeElement.id;
+      let currentDropzone = event.container.element.nativeElement.classList;
+      let itemid = currentlyDroped.split("at")[0].split('City')[1];
+      if (currentDropzone.contains('newbottle_list')) {
+        this.billpaid = false;
+
+        this.logser.getthisAssets(itemid).subscribe((data) => {
+          if (data[0]['dragged'] == false && data[0]['purchased'] == false) {
+            this.logser.lockthisAsset(itemid).subscribe(
+              response => {
+                if (response['success'] == true) {
+                  this.updateonlyloc['currentbottle'] = itemid;
+                  this.updateonlyloc['Bottleloc'] = 'In' + this.currentUserCartId;
+                  this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
+                    this.updateStatus(currentlyDroped, 'blocked', this.currentUserCartId);
+                  });
                 }
-              );
-            }
-          });
-        }
-        if (currentDropzone.contains('shinyuvpn_list') || currentDropzone.contains('shinyvpn_list') || currentDropzone.contains('spikyrpr_list') ||
-          currentDropzone.contains('spikyrpn_list') || currentDropzone.contains('bouncyrpn_list') || currentDropzone.contains('bouncyurpn_list') ||
-          currentDropzone.contains('wavyurpr_list') || currentDropzone.contains('wavyurpn_list') || currentDropzone.contains('silkyvpn_list')) {
-
-          let itemid = currentlyDroped.split("at")[0].split('City')[1];
-          this.logser.getthisAssets(itemid).subscribe((data) => {
-            this.updateDragged['currentbottle'] = itemid;
-            this.updateDragged['Bottleloc'] = 'Supermarket shelf';
-            this.updateDragged['dragged'] = false;
-            this.logser.updatedragged(this.updateDragged).subscribe((data) => {
-              this.updateStatus(currentlyDroped, 'available', 'Supermarket shelf');
-            });
-          });
-        }
-
+              },
+              error => {
+                console.error(error);
+              }
+            );
+          }
+        });
       }
-      let that = this;
-      if (this.opensuperflag == 2) {
-        setTimeout(function () {
-          if (($(".refilllist").children('div').length) > 0) {
-            that.droppedbottle = true;
-            if (that.resetanimation == true) {
-              that.initiateanimation();
-              that.bottledroppeded.nativeElement.play();
-            }
-          }
-        }, 100);
-        setTimeout(function () {
-          if (($(".refilllist").children('div').length) == 0) {
-            $(".displayboard").html('Thank you. Visit again. Please press Continue button to refill another bottle');
-            that.thankyou.nativeElement.play();
-            that.refillbrandselected = '';
-            $(".refilldropper").css({ 'left': '8px' }).hide();
-            that.resetanimation = false;
-            $(".continue").show();
-          }
-        }, 150);
+      else if (currentDropzone.contains('shinyuvpn_list') || currentDropzone.contains('shinyvpn_list') || currentDropzone.contains('spikyrpr_list') ||
+        currentDropzone.contains('spikyrpn_list') || currentDropzone.contains('bouncyrpn_list') || currentDropzone.contains('bouncyurpn_list') ||
+        currentDropzone.contains('wavyurpr_list') || currentDropzone.contains('wavyurpn_list') || currentDropzone.contains('silkyvpn_list')) {
+
+        this.logser.getthisAssets(itemid).subscribe((data) => {
+          this.updateDragged['currentbottle'] = itemid;
+          this.updateDragged['Bottleloc'] = 'Supermarket shelf';
+          this.updateDragged['dragged'] = false;
+          this.logser.updatedragged(this.updateDragged).subscribe((data) => {
+            this.updateStatus(currentlyDroped, 'available', 'Supermarket shelf');
+          });
+        });
       }
     }
-
-
   }
 
-  updateStatus(itemid: any, status: any, loc: any) {
 
+  updateStatus(itemid: any, status: any, loc: any) {
     const existingIdIndex = this.commonobj.findIndex(item => item.id === itemid);
     if (existingIdIndex > 0) {
       this.commonobj[existingIdIndex]['status'] = status;
       this.commonobj[existingIdIndex]['location'] = loc;
-
     }
   }
   opensupermarket() {
@@ -2376,36 +2569,38 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   }
   makeitEmpty() {
     this.currentbottle['Quantity'] = 0;
-    console.log(this.currentbottle['currentbottle'])
     $(".Inhouseshelf_bottles #" + this.selectedBottleatStage).addClass('zero-empty');
     this.currentbottle['Bottle_Status'] = "Empty-Dirty";
-    this.refillbottles.push(this.currentbottle['currentbottle']);
-    this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => { console.log(data) });
+    this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => {
+      let index = this.currentUserPurhcased.findIndex(item => item === this.currentbottle['currentbottle'])
+      this.currentUserPurhcased.splice(index, 1);
+      this.refillbottles.push(this.currentbottle['currentbottle']);
+    });
   }
   makeitDamaged() {
     $("#" + this.selectedBottleatStage).addClass('damaged');
     this.currentbottle['Bottle_Status'] = "Damaged";
-    this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => { console.log(data) });
+    this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => { });
   }
   makeitThrown() {
     $("#" + this.selectedBottleatStage).addClass('street');
     this.currentbottle['Bottle_Status'] = "Street";
-    this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => { console.log(data) });
+    this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => { });
   }
   reduceCapacity() {
-    console.log(this.currentbottle['Quantity'])
     if (this.currentbottle['Quantity'] >= 20) {
       this.currentbottle['Quantity'] -= 20;
       if (this.currentbottle['Quantity'] == 0) {
         this.currentbottle['Bottle_Status'] = "Empty-Dirty";
       }
     }
-    this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => { console.log(data) });
+    this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => { });
   }
   currentbottle = {
     'currentbottle': '',
     'Quantity': 0,
-    'Bottle_Status': "InUse"
+    'Bottle_Status': "InUse",
+    'Current_Refill_Count': 0
   }
   selectedBottleatStage: string = '';
   sldBottleData: any;
@@ -2421,12 +2616,12 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     this.modalService.open(cartcontent);
     this.logser.getthisAssets(this.currentbottle['currentbottle']).subscribe((data) => {
       this.sldBottleData = data;
-      console.log(data);
       if (data[0]['remQuantity'] == '') {
         data[0]['remQuantity'] = 500;
       }
       this.currentbottle['Quantity'] = data[0]['remQuantity'];
       this.currentbottle['Bottle_Status'] = data[0]['Bottle_Status'];
+
 
     });
 
@@ -2435,76 +2630,15 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   checksBottleStatus(item: CdkDrag<string>) {
-    console.log(item.element.nativeElement.classList, ' top ', !item.element.nativeElement.classList.contains('zero-empty'));
-    if (!item.element.nativeElement.classList.contains('zero-empty') && !item.element.nativeElement.classList.contains('damaged')&& !item.element.nativeElement.classList.contains('street')) { return true; }
+    if (!item.element.nativeElement.classList.contains('zero-empty') && !item.element.nativeElement.classList.contains('damaged') && !item.element.nativeElement.classList.contains('street')) { return true; }
     else { return false; }
   }
 
   checksBottleempty(item: CdkDrag<string>) {
-    console.log("epty");
-    console.log(item.element.nativeElement.classList, ' bottom ', item.element.nativeElement.classList.contains('zero-empty'));
     if (item.element.nativeElement.classList.contains('zero-empty') && !item.element.nativeElement.classList.contains('damaged') && !item.element.nativeElement.classList.contains('street')) { return true; }
     else { return false; }
   }
 
-  // if (hour == 6 || hour == 19) {
-  //   $(".truck").animate({ left: '5210px' }, 1000, () => {
-  //     $(".truck").css({ transform: 'rotate(-90deg)' }).addClass('top').removeClass('side');
-  //     $(".truck").animate({ top: '3680px' }, 5500, () => {
-  //       $(".truck").css({ transform: 'scaleX(-1)' }).addClass('side').removeClass('top');
-  //       $(".truck").animate({ left: '7390px' }, 5500, () => {
-  //         $(".truck").css({ transform: 'rotate(0deg)' });
-  //         $(".truck").animate({ left: '5210px' }, 5500, () => {
-  //           $(".truck").css({ transform: 'rotate(-90deg)' }).addClass('top').removeClass('side');;
-  //           $(".truck").animate({ top: '4070px' }, 2500, () => {
-  //             $(".truck").css({ transform: 'scaleX(-1)' }).addClass('side').removeClass('top');;
-  //             $(".truck").animate({ left: '7390px' }, 5500, () => {
-  //               $(".truck").css({ transform: 'rotate(0deg)' });
-  //               $(".truck").animate({ left: '5210px' }, 5500, () => {
-  //                 $(".truck").css({ transform: 'rotate(90deg)' }).addClass('top').removeClass('side');;
-  //                 $(".truck").animate({ top: '3060px' }, 5500, () => {
-  //                   $(".truck").css({ transform: 'rotate(0deg)' }).addClass('side').removeClass('top');;
-  //                   $(".truck").animate({ left: '2730px' }, 5500, () => {
-  //                     $(".truck").css({ transform: 'rotate(-90deg)' }).addClass('top').removeClass('side');;
-  //                     $(".truck").animate({ top: '3680px' }, 2500, () => {
-  //                       $(".truck").css({ transform: 'rotate(0deg)' }).addClass('side').removeClass('top');;
-  //                       $(".truck").animate({ left: '300px' }, 5500, () => {
-  //                         $(".truck").css({ transform: 'scaleX(-1)' });
-  //                         $(".truck").animate({ left: '2730px' }, 5500, () => {
-  //                           $(".truck").css({ transform: 'rotate(-90deg)' }).addClass('top').removeClass('side');;
-  //                           $(".truck").animate({ top: '4070px' }, 2500, () => {
-  //                             $(".truck").css({ transform: 'rotate(0deg)' }).addClass('side').removeClass('top');;
-  //                             $(".truck").animate({ left: '300px' }, 5500, () => {
-  //                               $(".truck").css({ transform: 'scaleX(-1)' });
-  //                               $(".truck").animate({ left: '2730px' }, 5500, () => {
-  //                                 $(".truck").css({ transform: 'rotate(90deg)' }).addClass('top').removeClass('side');;
-  //                                 $(".truck").animate({ top: '3060px' }, 5500, () => {
-  //                                   $(".truck").css({ transform: 'scaleX(-1)' }).addClass('side').removeClass('top');;
-  //                                   $(".truck").animate({ left: '5210px' }, 5500, () => {
-  //                                     $(".truck").css({ transform: 'rotate(90deg)' }).addClass('top').removeClass('side');;
-  //                                     $(".truck").animate({ top: '1025px' }, 5500, () => {
-  //                                       $(".truck").css({ transform: 'scaleX(-1)' }).addClass('side').removeClass('top');;
-  //                                       $(".truck").animate({ left: '5933px' }, 5500);
-  //                                       $(".truck").css({ transform: 'rotate(0deg)' });
-  //                                     });
-  //                                   });
-  //                                 });
-  //                               });
-  //                             });
-  //                           });
-  //                         });
-  //                       });
-  //                     });
-  //                   });
-  //                 });
-  //               });
-  //             });
-  //           });
-  //         });
-  //       });
-  //     });
-  //   })
-  // }
 
 }
 

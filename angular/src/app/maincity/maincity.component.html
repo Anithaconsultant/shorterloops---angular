@@ -51,7 +51,17 @@
         <source src="assets/audio/cartdisplay.mp3" type="audio/mp3" />
     </audio>
     <div class="maincity" #maincity id="maincity" [hidden]="opensuperflag!=0">
-        <div class="truck side"></div>
+        <div class="truck side">
+            <div class="holder">
+                <div cdkDropList #truckList="cdkDropList"
+                    [cdkDropListConnectedTo]="[houseshelfList,customercartBottomList,customercartList]"
+                    [cdkDropListData]="throwntoTruckList" (cdkDropListDropped)="boughtdrop($event)"
+                    class="truckContList">
+                    <div *ngFor="let item of throwntoTruckList" id="{{item}}" class="bottle {{item.split('at')[1]}} ">
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="cart">
             <div class="cartavatar" (click)="opensuperflag=1;opensupermarket();"
                 (touchend)="opensuperflag=1;opensupermarket();">
@@ -60,7 +70,8 @@
             <div class="cartid" (click)="opencart(cartcontent,$event)"></div>
             <div class="loadinglogo">Loading...</div>
             <div class="topbasketholder">
-                <div cdkDropList #customercartList="cdkDropList" [cdkDropListConnectedTo]="[houseshelfList,DustbinList]"
+                <div cdkDropList #customercartList="cdkDropList"
+                    [cdkDropListConnectedTo]="[houseshelfList,DustbinList,truckList]"
                     [cdkDropListData]="currentUserPurhcased" (cdkDropListDropped)="boughtdrop($event)"
                     [cdkDropListEnterPredicate]="checksBottleStatus" class="newbottle_list">
                     <div *ngFor="let item of currentUserPurhcased" id="{{item}}" class="bottle {{item.split('at')[1]}} "
@@ -70,9 +81,10 @@
                 </div>
             </div>
             <div class="bottombasketholder">
-                <div cdkDropList #customercartBottomList="cdkDropList" [cdkDropListConnectedTo]="[houseshelfList,DustbinList]"
-                    [cdkDropListData]="refillbottles" (cdkDropListDropped)="boughtdrop($event)"
-                    [cdkDropListEnterPredicate]="checksBottleempty" class="cart_bottle_list">
+                <div cdkDropList #customercartBottomList="cdkDropList"
+                    [cdkDropListConnectedTo]="[houseshelfList,DustbinList,truckList]" [cdkDropListData]="refillbottles"
+                    (cdkDropListDropped)="boughtdrop($event)" [cdkDropListEnterPredicate]="checksBottleempty"
+                    class="cart_bottle_list">
                     <div *ngFor="let item of refillbottles" id="{{item}}" class="bottle {{item.split('at')[1]}} "
                         cdkDrag (dragstart)="onDragStart($event)" longPressDrag [cdkDragStartDelay]="250"
                         (click)="openbottelstages(cartcontent,$event)">
@@ -106,7 +118,7 @@
             </div>
             <div class="bottleStore {{currentUserRole}}">
                 <div cdkDropList #houseshelfList="cdkDropList"
-                    [cdkDropListConnectedTo]="[customercartList,customercartBottomList]"
+                    [cdkDropListConnectedTo]="[customercartList,customercartBottomList,truckList]"
                     [cdkDropListData]="BottleInHouseList" (cdkDropListDropped)="boughtdrop($event)"
                     class="Inhouseshelf_bottles">
                     <div *ngFor="let item of BottleInHouseList" class="bottle {{item.split('at')[1]}}" id="{{item}}"
@@ -118,9 +130,8 @@
         </div>
         <div class="CityDustBin">
             <div cdkDropList #DustbinList="cdkDropList"
-                [cdkDropListConnectedTo]="[customercartList,customercartBottomList]"
-                [cdkDropListData]="dustbinbottles" (cdkDropListDropped)="boughtdrop($event)"
-                class="dustbin_bottles">
+                [cdkDropListConnectedTo]="[customercartList,customercartBottomList]" [cdkDropListData]="dustbinbottles"
+                (cdkDropListDropped)="boughtdrop($event)" class="dustbin_bottles">
                 <div *ngFor="let item of dustbinbottles" class="bottle {{item.split('at')[1]}}" id="{{item}}" cdkDrag
                     (dragstart)="onDragStart($event)" longPressDrag [cdkDragStartDelay]="250"
                     (click)="openbottelstages(cartcontent,$event)">
@@ -269,19 +280,20 @@
                 <div class="cartavatar"></div>
                 <div class="cartid"></div>
                 <div class="refilledholder">
-                    <div cdkDropList #bottlerefilled="cdkDropList" [cdkDropListConnectedTo]="[shinyrefill]"
-                        [cdkDropListData]="refilledbottles" (cdkDropListDropped)="drop($event)" class="refilled_list">
-                        <div *ngFor="let item of refilledbottles"
-                            class="{{item}} {{item.split('.')[0].split('_')[2]}} refillbtl refilldone"
+                    <div cdkDropList #bottlerefilled="cdkDropList" [cdkDropListConnectedTo]="[refillingMachine]"
+                        [cdkDropListData]="refilledbottles" (cdkDropListDropped)="refilldrop($event)" class="refilled_list"
+                        [cdkDropListEnterPredicate]="checkrefilledcondition">
+                        <div *ngFor="let item of refilledbottles" id="{{item}}"
+                            class=" {{item.split('at')[1]}} refillbtl "
                             (dragstart)="onDragStart($event)" cdkdrag longPressDrag [cdkDragStartDelay]="250"></div>
                     </div>
                 </div>
                 <div class="refillbottleholder">
-                    <div cdkDropList #bottlestoberefilled="cdkDropList" [cdkDropListConnectedTo]="[shinyrefill]"
-                        [cdkDropListData]="refillbottles" (cdkDropListDropped)="drop($event)" class="refill_list"
+                    <div cdkDropList #bottlestoberefilled="cdkDropList" [cdkDropListConnectedTo]="[refillingMachine]"
+                        [cdkDropListData]="refillbottles" (cdkDropListDropped)="refilldrop($event)" class="refill_list"
                         [cdkDropListEnterPredicate]="checkrefillcondition">
-                        <div *ngFor="let item of refillbottles"
-                            class="{{currentusercityId}}{{item}} {{item.split('.')[0].split('_')[2]}} refillbtl" cdkDrag
+                        <div *ngFor="let item of refillbottles" id="{{item}}"
+                            class="{{item}} {{item.split('at')[1]}} refillbtl toberefilled" cdkDrag
                             longPressDrag [cdkDragStartDelay]="250"></div>
                     </div>
                 </div>
@@ -292,24 +304,24 @@
                     on the conveyor.</div>
                 <div class="brandsection">
                     <div class="shiny"
-                        (click)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('shiny'); "
-                        (touchend)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('shiny'); ">
+                        (click)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('B1.Shiny'); "
+                        (touchend)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('B1.Shiny'); ">
                     </div>
                     <div class="bouncy"
-                        (click)="(droppedbottle==false )?  $event.stopPropagation():checkrefillselect('bouncy');"
-                        (touchend)="(droppedbottle==false )?  $event.stopPropagation():checkrefillselect('bouncy');">
+                        (click)="(droppedbottle==false )?  $event.stopPropagation():checkrefillselect('B3.Bouncy');"
+                        (touchend)="(droppedbottle==false )?  $event.stopPropagation():checkrefillselect('B3.Bouncy');">
                     </div>
                     <div class="spiky"
-                        (click)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('spiky');"
-                        (touchend)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('spiky');">
+                        (click)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('B2.Spiky');"
+                        (touchend)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('B2.Spiky');">
                     </div>
                     <div class="silky"
-                        (click)="(droppedbottle==false )?  $event.stopPropagation():checkrefillselect('silky');"
-                        (touchend)="(droppedbottle==false )?  $event.stopPropagation():checkrefillselect('silky');">
+                        (click)="(droppedbottle==false )?  $event.stopPropagation():checkrefillselect('B5.Silky');"
+                        (touchend)="(droppedbottle==false )?  $event.stopPropagation():checkrefillselect('B5.Silky');">
                     </div>
                     <div class="wavy"
-                        (click)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('wavy');"
-                        (touchend)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('wavy');">
+                        (click)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('B4.Wavy');"
+                        (touchend)="(droppedbottle==false)?  $event.stopPropagation():checkrefillselect('B4.Wavy');">
                     </div>
                 </div>
                 <div class="adjustment">
@@ -318,8 +330,8 @@
                     <div class="down" (click)="(brandselected==false)?  $event.stopPropagation():decrement();"
                         (touchend)="(brandselected==false)?  $event.stopPropagation():decrement();"></div>
                 </div>
-                <div class="start" (click)="(quantityselected==false)?  $event.stopPropagation():startanimation();"
-                    (touchend)="(quantityselected==false)?  $event.stopPropagation():startanimation();">
+                <div class="start" (click)="(quantityselected==false)?  $event.stopPropagation():startrefillinganimation();"
+                    (touchend)="(quantityselected==false)?  $event.stopPropagation():startrefillinganimation();">
                 </div>
                 <div class="cancel" (click)="(quantityselected==false)?  $event.stopPropagation():increament();"
                     (touchend)="(quantityselected==false)?  $event.stopPropagation():increament();"></div>
@@ -350,11 +362,11 @@
             </div>
             <div class="bdropper">
                 <div class="refilldropper">
-                    <div cdkDropList #shinyrefill="cdkDropList"
+                    <div cdkDropList #refillingMachine="cdkDropList"
                         [cdkDropListConnectedTo]="[bottlestoberefilled,bottlerefilled]"
-                        [cdkDropListData]="shinyrefilling" (cdkDropListDropped)="drop($event)" class="refilllist"
+                        [cdkDropListData]="atRefillingMchn" (cdkDropListDropped)="refilldrop($event)" class="refilllist"
                         [cdkDropListEnterPredicate]="checkrefilledbottle">
-                        <div *ngFor="let item of shinyrefilling" class="{{item.split('.')[0].split('_')[2]}} refillbtl "
+                        <div *ngFor="let item of atRefillingMchn" class="{{item.split('at')[1]}} refillbtl"
                             id="{{item}}" (dragstart)="onDragStart($event)" cdkdrag longPressDrag
                             [cdkDragStartDelay]="250">
                         </div>
@@ -535,7 +547,8 @@
                                     <th>Asset Moved From </th>
                                     <th>Asset Moved To </th>
                                     <th>Content Code</th>
-                                    <th>Quantity</th>
+                                    <th>Bottle Status</th>
+                                    <th>Remaining Quantity</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -545,7 +558,8 @@
                                     <td>{{ item.Fromfacility}}</td>
                                     <td>{{ item.Bottle_loc}}</td>
                                     <td>{{ item.Content_Code}}</td>
-                                    <td>{{ item.Quantity}}</td>
+                                    <td>{{ item.Bottle_Status}}</td>
+                                    <td>{{ item.remQuantity}}</td>
                                 </tr>
                             </tbody>
                         </table>
