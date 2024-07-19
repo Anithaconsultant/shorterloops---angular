@@ -179,6 +179,7 @@ export class LoginserviceService {
   }
   updatewallet(): Observable<any> {
     let body = { wallet: this.currentuser.wallet };
+    console.log(body);
     return this.http.put(this.baseurl + 'updateusercity/' + this.currentuser.UserId, body,
       { headers: this.httpHeaders });
   }
@@ -257,11 +258,11 @@ export class LoginserviceService {
     return this.http.post(url, {}, { headers: headers });
   }
   getAuditLogs(assetId: any) {
-    return this.http.get(this.baseurl + 'audit-log/' + assetId,
+    return this.http.get(this.baseurl + 'audit-log/' + assetId+'&'+this.currentuser.CityId,
       { headers: this.httpHeaders });
   }
   getAuditLogsuser(user: any) {
-    return this.http.get(this.baseurl + 'audit-logs/' + user,
+    return this.http.get(this.baseurl + 'audit-logs/' + user+'&'+this.currentuser.CityId,
       { headers: this.httpHeaders });
   }
   getBottlePrice(){

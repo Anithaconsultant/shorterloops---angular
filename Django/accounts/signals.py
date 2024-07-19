@@ -23,6 +23,8 @@ def record_audit_trail_on_save(sender, instance, created,  **kwargs):
         audit_log.objects.create(
             action='INSERT',
             AssetId=instance.AssetId,
+            CityId=instance.Asset_CityId_id,
+            Bottle_loc=instance.Bottle_loc,
             TransactionId='',
             TransactionDate='',
             FromFacility='Supermarket shelf',
@@ -44,6 +46,7 @@ def record_audit_trail_on_save(sender, instance, created,  **kwargs):
         audit_log.objects.create(
             action='Update',
             AssetId=instance.AssetId,
+            CityId=instance.Asset_CityId,
             Bottle_loc=instance.Bottle_loc,
             TransactionId=instance.Transaction_Id,
             TransactionDate=instance.Transaction_Date,

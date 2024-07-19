@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { LoginserviceService } from '../services/loginservice.service';
 @Component({
@@ -11,16 +12,23 @@ export class ReportComponent implements OnInit {
   selectedAsset = '';
   selectedUser = '';
   auditLogs: any[] = [];
-  constructor(private logser: LoginserviceService) { }
+  constructor(private router: Router, private logser: LoginserviceService) { }
   ngOnInit(): void {
-    this.logser.getAllAssets()
-      .subscribe((logs: any) => {
-        for (let y = 0; y < logs.length; y++) {
-          this.options.push(logs[y]['AssetId']);
-          if(logs[y]['Tofacility']!='' && !this.users.includes(logs[y]['Tofacility']))
-          this.users.push(logs[y]['Tofacility'])
-        }
-      });
+
+    if (this.logser.currentuser.Username != '') {
+
+      this.logser.getAllAssets()
+        .subscribe((logs: any) => {
+          for (let y = 0; y < logs.length; y++) {
+            this.options.push(logs[y]['AssetId']);
+            if (logs[y]['Tofacility'] != '' && !this.users.includes(logs[y]['Tofacility']))
+              this.users.push(logs[y]['Tofacility'])
+          }
+        });
+    }
+    else {
+      this.router.navigate(['/login']);
+    }
   }
   onAssetSelectChange() {
     if (this.selectedAsset != '') {

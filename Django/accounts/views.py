@@ -418,12 +418,17 @@ def updateusercity(request, userid):
 
 @api_view(['GET'])
 def get_audit_logs(request, asset_id):
-    data = audit_log.objects.filter(AssetId=asset_id)
+    assetid=asset_id.split("&")[0]
+    cityid=asset_id.split("&")[1]
+    data = audit_log.objects.filter(AssetId=asset_id,CityId=cityid)
     serializer = AuditSerializer(data, many=True)
     return JsonResponse(serializer.data, safe=False)
 
 @api_view(['GET'])
 def get_audit_logsuser(request, user):
-    data = audit_log.objects.filter(userName=user)
+    username=user.split("&")[0]
+    cityid=user.split("&")[1]
+    data = audit_log.objects.filter(userName=username)
     serializer = AuditSerializer(data, many=True)
+    print(serializer.data)
     return JsonResponse(serializer.data, safe=False)
