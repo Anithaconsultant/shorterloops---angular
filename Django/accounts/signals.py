@@ -1,7 +1,7 @@
 
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
-from .models import Asset, audit_log
+from .models import Asset, audit_log, CustomUser
 from django.dispatch import Signal
 from .userData import UserData
 import threading
@@ -73,26 +73,24 @@ user_data_received.connect(record_audit_trail_on_save,
 
 timers = {}
 
-
 class CityTimer(threading.Thread):
     def __init__(self, city_id, clocktickrate):
         super().__init__()
         self.city_id = city_id
         self.clocktickrate = clocktickrate
-        self.intervalcalculation= 86400/(self.clocktickrate*60)
+        self.intervalcalculation = 86400 / (self.clocktickrate * 60)
         self.running = True
+        self.last_update_day = None
 
     def run(self):
         print(f'Starting timer for city {self.city_id}')
-        
-        while self.running:
 
+        while self.running:
             time.sleep(1)
             with transaction.atomic():
                 city = City.objects.select_for_update().get(pk=self.city_id)
                 city.CurrentTime += self.intervalcalculation
-                if({self.city_id}==6):
-                    print('printing city 6 time ',(city.CurrentTime))
+
                 if city.CurrentTime >= 86400:  # 24 hours
                     city.CurrentTime = 0
                     city.CurrentDay += 1
@@ -100,11 +98,25 @@ class CityTimer(threading.Thread):
                 if city.CurrentDay >= 365:  # 365 days
                     city.CurrentDay = 0
 
+                # Check if 30 days have passed and update wallets if needed
+                if city.CurrentDay % 30 == 0 and city.CurrentDay != self.last_update_day:
+                    self.update_wallets(city.CityId)
+                    self.last_update_day = city.CurrentDay
+
                 city.save()
+
+    def update_wallets(self, city_id):
+        print('update_wallet', city_id)
+        users = CustomUser.objects.filter(User_cityid=city_id)
+        for user in users:
+            # Assuming wallet is stored as a string, adjust if necessary
+            user.wallet = str(float(user.wallet) + 2000)
+            user.save()
+
+        print(f'Successfully updated wallets for users in city ID: {city_id}')
 
     def stop(self):
         self.running = False
-
 
 def start_timer_for_city(city):
     timer = CityTimer(city.CityId, city.Clocktickrate)

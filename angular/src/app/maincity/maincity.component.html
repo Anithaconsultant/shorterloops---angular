@@ -5,13 +5,13 @@
     <audio #doneshopping preload="auto">
         <source src="assets/audio/Donewithyourshopping.mp3" type="audio/mp3" />
     </audio>
-    <audio #pleasecheck  preload="auto">
+    <audio #pleasecheck preload="auto">
         <source src="assets/audio/Pleasecheck.mp3" type="audio/mp3" />
     </audio>
-    <audio #paymentreceived  preload="auto">
+    <audio #paymentreceived preload="auto">
         <source src="assets/audio/PaymentReceived.mp3" type="audio/mp3" />
     </audio>
-    <audio #transactioncomplete  preload="auto">
+    <audio #transactioncomplete preload="auto">
         <source src="assets/audio/TransactionComplete.mp3" type="audio/mp3" />
     </audio>
     <audio #thankyousuper preload="auto">
@@ -281,11 +281,11 @@
                 <div class="cartid"></div>
                 <div class="refilledholder">
                     <div cdkDropList #bottlerefilled="cdkDropList" [cdkDropListConnectedTo]="[refillingMachine]"
-                        [cdkDropListData]="refilledbottles" (cdkDropListDropped)="refilldrop($event)" class="refilled_list"
-                        [cdkDropListEnterPredicate]="checkrefilledcondition">
+                        [cdkDropListData]="refilledbottles" (cdkDropListDropped)="refilldrop($event)"
+                        class="refilled_list" [cdkDropListEnterPredicate]="checkrefilledcondition">
                         <div *ngFor="let item of refilledbottles" id="{{item}}"
-                            class=" {{item.split('at')[1]}} refillbtl "
-                            (dragstart)="onDragStart($event)" cdkdrag longPressDrag [cdkDragStartDelay]="250"></div>
+                            class=" {{item.split('at')[1]}} refillbtl " (dragstart)="onDragStart($event)" cdkdrag
+                            longPressDrag [cdkDragStartDelay]="250"></div>
                     </div>
                 </div>
                 <div class="refillbottleholder">
@@ -293,8 +293,8 @@
                         [cdkDropListData]="refillbottles" (cdkDropListDropped)="refilldrop($event)" class="refill_list"
                         [cdkDropListEnterPredicate]="checkrefillcondition">
                         <div *ngFor="let item of refillbottles" id="{{item}}"
-                            class="{{item}} {{item.split('at')[1]}} refillbtl toberefilled" cdkDrag
-                            longPressDrag [cdkDragStartDelay]="250"></div>
+                            class="{{item}} {{item.split('at')[1]}} refillbtl toberefilled" cdkDrag longPressDrag
+                            [cdkDragStartDelay]="250"></div>
                     </div>
                 </div>
             </div>
@@ -330,7 +330,8 @@
                     <div class="down" (click)="(brandselected==false)?  $event.stopPropagation():decrement();"
                         (touchend)="(brandselected==false)?  $event.stopPropagation():decrement();"></div>
                 </div>
-                <div class="start" (click)="(quantityselected==false)?  $event.stopPropagation():startrefillinganimation();"
+                <div class="start"
+                    (click)="(quantityselected==false)?  $event.stopPropagation():startrefillinganimation();"
                     (touchend)="(quantityselected==false)?  $event.stopPropagation():startrefillinganimation();">
                 </div>
                 <div class="cancel" (click)="(quantityselected==false)?  $event.stopPropagation():increament();"
@@ -613,17 +614,24 @@
                 <div class="emptycontent" *ngIf="bottletaken.length==0">There is no item added to cart</div>
             </div>
             <div *ngIf="altertab==2 && opensuperflag==0">
-
-                <div id="{{selectedBottleatStage.split('at')[0].split('City')[1]}}"
-                    class="{{selectedBottleatStage.split('at')[1] }} imgclass"></div>
-                <div> "Bottle Status :" {{currentbottle['Bottle_Status']}}</div>
-                <div>"Sampoo Quantity :" {{currentbottle['Quantity']}}</div>
-                <div>"Bottle ID:" {{currentbottle['currentbottle'] }}</div>
-                <div class="btncont">
-                    <div class="use" (click)="reduceCapacity()">Use</div>
-                    <div class="dent" (click)="makeitDamaged()">Dent</div>
-                    <div class="empty" (click)="makeitEmpty()">Empty</div>
-                    <div class="throw" (click)="makeitThrown()">Throw</div>
+                <div class="currentbottleshow">
+                    <div id="{{selectedBottleatStage.split('at')[0].split('City')[1]}}"
+                        class="{{selectedBottleatStage.split('at')[1] }}_{{currentbottle['Bottle_Status']}} imgclass">
+                        <div class="shampoolevel {{selectedBottleatStage.split('at')[1] }}"></div>
+                    </div>
+                   
+                    <div class="btncont">
+                        <div class="use" (click)="reduceCapacity()">Use</div>
+                        <div class="dent" (click)="makeitDamaged()">Dent</div>
+                        <div class="empty" (click)="makeitEmpty()">Empty</div>
+                        <div class="throw" (click)="makeitThrown()">Throw</div>
+                    </div>
+                </div>
+                <div class="bottlecontent">
+                    <div> "Bottle Status :" {{currentbottle['Bottle_Status']}}</div>
+                    <div>"Sampoo Quantity :" {{currentbottle['Quantity']}}</div>
+                    <div>"Bottle ID:" {{currentbottle['currentbottle'] }}</div> 
+                    <div>"Bottle Location:" {{currentbottle['Location'] }}</div> 
                 </div>
             </div>
 

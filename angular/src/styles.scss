@@ -1219,6 +1219,50 @@ app-signup {
         width: 11px !important;
     }
 }
+.B1_InUse,.B1_Empty-Dirty{
+    background-image: url('./assets/img/B1_use.png');
+
+}
+.B1_Damaged{
+    background-image: url('./assets/img/B1_dmg.png');
+
+}
+.B2_InUse,.B2_Empty-Dirty{
+    background-image: url('./assets/img/B2_use.png');
+
+}
+.B2_Damaged{
+    background-image: url('./assets/img/B2_dmg.png');
+
+}
+.B3_InUse,.B3_Empty-Dirty{
+    background-image: url('./assets/img/B3_use.png');
+
+}
+.B3_Damaged{
+    background-image: url('./assets/img/B3_dmg.png');
+
+}
+
+.B5_InUse,.B5_Empty-Dirty{
+    background-image: url('./assets/img/B5_use.png');
+}
+.B5_Damaged{
+    background-image: url('./assets/img/B5_dmg.png');
+
+}
+.UB1_InUse,.UB2_InUse,.UB3_InUse,.U0B4_InUse,.U1B4_InUse,.UB5_InUse,.U0B4_Empty-Dirty,.U1B4_Empty-Dirty,.UB1_Empty-Dirty,.UB2_Empty-Dirty,.UB3_Empty-Dirty,.U0B4_Empty-Dirty,.U1B4_Empty-Dirty,.UB5_Empty-Dirty{
+    background-image: url('./assets/img/UB_use.png');
+    width: 96px !important;
+    height: 253px !important;
+
+}
+.UB1_Damaged,.UB2_Damaged,.UB3_Damaged,.U0B4_Damaged,.U1B4_Damaged,.UB5_Damaged{
+    background-image: url('./assets/img/UB_dmg.png');
+    width: 96px !important;
+    height: 253px !important;
+
+}
 
 .bouncyrpn,
 .B3 {

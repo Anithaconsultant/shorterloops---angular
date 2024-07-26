@@ -77,6 +77,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   bouncyrefilling: string[] = [];
   wavyrefilling: string[] = [];
   frontclass = '';
+  status = '';
   leblfound = false;
   frontlabel = '';
   shapooprice = 0.0;
@@ -293,7 +294,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       $("body").removeClass('frontpage').removeClass('cartcontent');
 
       setInterval(() => { this.loadAvailableAsset() }, 10000);
-      setInterval(() => { this.loadtime() }, 1000);
+      setInterval(() => { this.loadtime() }, 10000);
 
       this.logser.getBottlePrice().subscribe((data: any) => {
         this.bottlePrice = data;
@@ -527,7 +528,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     if (bottle_status == 'Empty-Dirty' && bottleloc == this.currentUserCartId) {
       this.refillbottles.push(cat);
     }
-    else if (bottleloc == this.currentUserCartId && bottle_status == 'InUse') {
+    else if (bottleloc == this.currentUserCartId && (bottle_status == 'InUse' || bottle_status == 'Damaged')) {
       this.currentUserPurhcased.push(cat);
     }
     if (bottleloc == "City Dustbin") {
@@ -1069,255 +1070,286 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     this.marketbottom = true;
   }
 
-  // supercartposition() {
-  //   let topValue = parseInt($(".supermarketcart").css('top').split("px")[0]);
-  //   let leftValue = parseInt($(".supermarketcart").css('left').split("px")[0]);
-  //   console.log(leftValue,topValue);
-  //   if (this.setflag == 0 || this.setflag == 1) {
-  //     if (topValue < 3533 && topValue > 3090 && leftValue > 920 && leftValue < 4900) {
-  //       this.cartlocmarket = "nearconveyor";
-  //       this.setmarkettrue();
-  //     }
-  //     else {
-  //       this.markettop = false;
-  //       this.marketleft = false;
-  //       this.marketright = false;
-  //       this.marketbottom = false;
-  //       if (this.cartlocmarket == "nearconveyor") {
-  //         if (topValue > 3533) {
-  //           this.markettop = true;
-  //           this.marketleft = true;
-  //           this.marketright = true;
-  //           this.marketbottom = false;
-  //         }
-  //         if (topValue < 3090) {
-  //           this.markettop = false;
-  //           this.marketleft = true;
-  //           this.marketright = true;
-  //           this.marketbottom = true;
-  //         }
-  //         if (leftValue < 920) {
-  //           this.markettop = true;
-  //           this.marketleft = false;
-  //           this.marketright = true;
-  //           this.marketbottom = true;
-  //         }
-  //         if (leftValue > 4900) {
-  //           this.markettop = true;
-  //           this.marketleft = true;
-  //           this.marketright = false;
-  //           this.marketbottom = true;
-  //         }
-  //       }
-  //     }
-
-
-
-  //     if (topValue < 3533 && topValue > 3090 && leftValue > 4900 && leftValue < 5000) {
-  //       this.cartlocmarket = "nearconveyor";
-  //       this.setmarkettrue();
-  //       // if ($(".cart_bottle_list").children('div').length > 0 || $(".newbottle_list").children('div').length > 0) {
-  //       if ($(".cart_bottle_list").children('div').length > 0) {
-  //         this.marketright = false;
-  //         $("#checklight2").removeClass('green')
-  //         $("#checklight1").addClass('red');
-  //         $("#innerdoor1").css('background-color', '#bc0000');
-
-  //         if (this.setflag == 0) {
-  //           alert("Please place all items you intend to return at the mouth of the conveyor")
-  //           this.setflag = 1;
-  //         }
-  //       }
-  //       else {
-  //         this.setflag = 2
-  //       }
-  //     }
-  //   }
-  //   if (this.setflag == 2) {
-  //     if (leftValue > 4980 && leftValue < 5050 && topValue < 3533 && topValue > 3090) {
-  //       $("#checklight1").removeClass('red')
-  //       $("#checklight2").addClass('green');
-  //       this.cartlocmarket = "supermatketentry";
-  //       $("#innerdoor1").css('background-color', '#00ba00');
-  //       this.setmarkettrue();
-  //       this.playAudioElement(this.cityrail.nativeElement, 0.3);
-  //       $('#innerdoor1').animate({ 'height': '100px' }, 300);
-  //       this.setflag = 3;
-  //     }
-
-
-  //   }
-  //   if (this.setflag == 3 || this.setflag == 4) {
-
-  //     if (topValue > 3090 && topValue < 3533 && leftValue > 5000 && leftValue < 11400) {
-  //       if (this.setflag == 3) {
-  //         if (leftValue > 5700 && leftValue < 5800) {
-  //           this.playAudioElement(this.welcomemarket.nativeElement, 0.8);
-  //           $("#checklight2").removeClass('green');
-  //           this.setflag = 4;
-  //           $('#innerdoor1').animate({ 'height': '1076px' }, 300);
-  //         }
-  //       }
-  //       this.cartlocmarket = "maincorider";
-  //       this.setmarkettrue();
-  //     }
-  //     else if (topValue > 1005 && topValue < 3240 && leftValue > 11250 && leftValue < 11450) {
-  //       this.cartlocmarket = "turningcorider";
-  //       this.setmarkettrue();
-  //     }
-  //     else if (topValue > 1005 && topValue < 1270 && leftValue > 6050 && leftValue < 11450) {
-  //       this.cartlocmarket = "othercorider";
-  //       this.setmarkettrue();
-  //       if (topValue < 1150 && leftValue > 6600 && leftValue < 6800 && this.billpaid == false && this.bottletaken.length !== 0) {
-  //         this.startbilling();
-  //         this.playAudioElement(this.cityrail.nativeElement, 0.3);
-  //       }
-  //     }
-  //     else if (topValue > 1005 && topValue < 1270 && leftValue > 5600 && leftValue < 6050 && this.billpaid == true) {
-
-  //       this.playAudioElement(this.thankyousuper.nativeElement, 0.8);
-  //       $(".displaymoniter").html("Thank you! Visit Again!");
-  //       this.cartlocmarket = "cameout";
-  //       $(".cartid_highlight").removeClass('highlight');
-  //       $("#innerdoor2").animate({ 'height': '100px' }, 200);
-  //     }
-  //     else if (topValue > 1005 && topValue < 1270 && leftValue <= 5700 && leftValue > 1000) {
-  //       this.cartlocmarket = "cameout";
-  //       if (leftValue < 5200) {
-  //         $("#innerdoor2").animate({ 'height': '1030px' }, 200);
-  //       }
-  //     }
-
-  //     else if (topValue > 1005 && topValue < 1270 && leftValue < 1000) {
-  //       this.cartlocmarket = "stopped";
-  //       this.markettop = false;
-  //       this.marketleft = false;
-  //       this.marketright = false;
-  //       this.marketbottom = false;
-  //     }
-
-  //     else {
-  //       this.markettop = false;
-  //       this.marketleft = false;
-  //       this.marketright = false;
-  //       this.marketbottom = false;
-  //       if (this.cartlocmarket == 'maincorider') {
-  //         if (topValue < 3090) {
-  //           this.marketbottom = true;
-  //           this.markettop = false;
-  //           this.marketleft = true;
-  //           this.marketright = true;
-  //         }
-  //         else if (topValue > 3400) {
-  //           this.markettop = true;
-  //           this.marketbottom = false;
-  //           this.marketleft = true;
-  //           this.marketright = true;
-  //         }
-  //         else if (leftValue < 5000) {
-  //           this.marketright = true;
-  //           this.marketbottom = true;
-  //           this.markettop = true;
-  //           this.marketleft = false;
-  //         }
-  //         else if (leftValue > 11400) {
-  //           this.marketleft = true;
-  //           this.marketbottom = true;
-  //           this.markettop = true;
-  //           this.marketright = false;
-
-  //         }
-  //       }
-  //       else if (this.cartlocmarket == 'turningcorider') {
-  //         if (topValue < 1005) {
-  //           this.marketbottom = true;
-  //           this.markettop = false;
-  //           this.marketleft = true;
-  //           this.marketright = true;
-  //         }
-  //         else if (topValue > 3240) {
-  //           this.markettop = true;
-  //           this.marketbottom = false;
-  //           this.marketleft = true;
-  //           this.marketright = true;
-  //         }
-  //         else if (leftValue < 11250) {
-  //           this.marketright = true;
-  //           this.markettop = true;
-  //           this.marketbottom = true;
-  //           this.marketleft = false;
-  //         }
-  //         else if (leftValue > 11450) {
-  //           this.marketleft = true;
-  //           this.marketright = false;
-  //           this.markettop = true;
-  //           this.marketbottom = true;
-  //         }
-  //       }
-  //       else if (this.cartlocmarket == 'othercorider') {
-  //         if (topValue < 1020) {
-  //           this.marketbottom = true;
-  //           this.markettop = false;
-  //           this.marketleft = true;
-  //           this.marketright = true;
-  //         }
-  //         else if (topValue > 1270) {
-  //           this.markettop = true;
-  //           this.marketbottom = false;
-  //           this.marketleft = true;
-  //           this.marketright = true;
-  //         }
-  //         else if (leftValue < 6050) {
-  //           this.marketright = true;
-  //           this.markettop = true;
-  //           this.marketbottom = true;
-  //           this.marketleft = false;
-  //         }
-  //         else if (leftValue > 11450) {
-  //           this.marketleft = true;
-  //           this.marketright = false;
-  //           this.markettop = true;
-  //           this.marketbottom = true;
-  //         }
-  //       }
-  //       else if (this.cartlocmarket == 'cameout') {
-  //         if (topValue < 1020) {
-  //           this.marketbottom = true;
-  //           this.markettop = false;
-  //           this.marketleft = true;
-  //           this.marketright = true;
-  //         }
-  //         else if (topValue > 1270) {
-  //           this.markettop = true;
-  //           this.marketbottom = false;
-  //           this.marketleft = true;
-  //           this.marketright = true;
-  //         }
-  //         else if (leftValue < 5700 && leftValue > 1000) {
-  //           this.marketright = false;
-  //           this.markettop = true;
-  //           this.marketbottom = true;
-  //           this.marketleft = true;
-  //         }
-  //         else if (leftValue < 900) {
-  //           this.marketright = false;
-  //           this.markettop = false;
-  //           this.marketbottom = false;
-  //           this.marketleft = false;
-  //         }
-
-  //       }
-  //     }
-  //   }
-  // }
   supercartposition() {
+    let topValue = parseInt($(".supermarketcart").css('top').split("px")[0]);
+    let leftValue = parseInt($(".supermarketcart").css('left').split("px")[0]);
+    console.log(leftValue, topValue);
+    if (this.setflag == 0 || this.setflag == 1) {
+      if (topValue < 3533 && topValue > 3090 && leftValue > 920 && leftValue < 4900) {
+        this.cartlocmarket = "nearconveyor";
+        this.setmarkettrue();
+      }
+      else if ((topValue < 3089 && topValue > 1040 && leftValue > 930 && leftValue < 1130)) {
+        this.cartlocmarket = "exiting";
+        this.setmarkettrue();
+      }
+      else {
+        this.markettop = false;
+        this.marketleft = false;
+        this.marketright = false;
+        this.marketbottom = false;
+        if (this.cartlocmarket == "nearconveyor") {
+          if (topValue > 3533) {
+            this.markettop = true;
+            this.marketleft = true;
+            this.marketright = true;
+            this.marketbottom = false;
+          }
+          if (topValue < 3090) {
+            this.markettop = false;
+            this.marketleft = true;
+            this.marketright = true;
+            this.marketbottom = true;
+          }
+          if (leftValue < 920) {
+            this.markettop = true;
+            this.marketleft = false;
+            this.marketright = true;
+            this.marketbottom = true;
+          }
+          if (leftValue > 4900) {
+            this.markettop = true;
+            this.marketleft = true;
+            this.marketright = false;
+            this.marketbottom = true;
+          }
+        }
+        if (this.cartlocmarket == "exiting") {
+          if (topValue > 3089) {
+            this.markettop = true;
+            this.marketleft = true;
+            this.marketright = true;
+            this.marketbottom = false;
+          }
+          if (topValue < 1040) {
+            this.markettop = false;
+            this.marketleft = true;
+            this.marketright = true;
+            this.marketbottom = true;
+          }
+          if (leftValue < 930) {
+            this.markettop = true;
+            this.marketleft = false;
+            this.marketright = true;
+            this.marketbottom = true;
+          }
+          if (leftValue > 1130) {
+            this.markettop = true;
+            this.marketleft = true;
+            this.marketright = false;
+            this.marketbottom = true;
+          }
+        }
+      }
+
+
+
+      if (topValue < 3533 && topValue > 3090 && leftValue > 4900 && leftValue < 5000) {
+        this.cartlocmarket = "nearconveyor";
+        this.setmarkettrue();
+        // if ($(".cart_bottle_list").children('div').length > 0 || $(".newbottle_list").children('div').length > 0) {
+        if ($(".cart_bottle_list").children('div').length > 0) {
+          this.marketright = false;
+          $("#checklight2").removeClass('green')
+          $("#checklight1").addClass('red');
+          $("#innerdoor1").css('background-color', '#bc0000');
+
+          if (this.setflag == 0) {
+            alert("Please place all items you intend to return at the mouth of the conveyor")
+            this.setflag = 1;
+          }
+        }
+        else {
+          this.setflag = 2
+        }
+      }
+    }
+    if (this.setflag == 2) {
+      if (leftValue > 4980 && leftValue < 5050 && topValue < 3533 && topValue > 3090) {
+        $("#checklight1").removeClass('red')
+        $("#checklight2").addClass('green');
+        this.cartlocmarket = "supermatketentry";
+        $("#innerdoor1").css('background-color', '#00ba00');
+        this.setmarkettrue();
+        this.playAudioElement(this.cityrail.nativeElement, 0.3);
+        $('#innerdoor1').animate({ 'height': '100px' }, 300);
+        this.setflag = 3;
+      }
+
+
+    }
+    if (this.setflag == 3 || this.setflag == 4) {
+
+      if (topValue > 3090 && topValue < 3533 && leftValue > 5000 && leftValue < 11400) {
+        if (this.setflag == 3) {
+          if (leftValue > 5700 && leftValue < 5800) {
+            this.playAudioElement(this.welcomemarket.nativeElement, 0.8);
+            $("#checklight2").removeClass('green');
+            this.setflag = 4;
+            $('#innerdoor1').animate({ 'height': '1076px' }, 300);
+          }
+        }
+        this.cartlocmarket = "maincorider";
+        this.setmarkettrue();
+
+      }
+      else if (topValue > 1005 && topValue < 3240 && leftValue > 11250 && leftValue < 11450) {
+        this.cartlocmarket = "turningcorider";
+        this.setmarkettrue();
+      }
+      else if (topValue > 1005 && topValue < 1270 && leftValue > 6050 && leftValue < 11450) {
+        this.cartlocmarket = "othercorider";
+        this.setmarkettrue();
+        if (topValue < 1150 && leftValue > 6600 && leftValue < 6800 && this.billpaid == false && this.bottletaken.length !== 0) {
+          this.startbilling();
+          this.playAudioElement(this.cityrail.nativeElement, 0.3);
+        }
+      }
+      else if (topValue > 1005 && topValue < 1270 && leftValue > 5600 && leftValue < 6050 && this.billpaid == true) {
+
+        this.playAudioElement(this.thankyousuper.nativeElement, 0.8);
+        $(".displaymoniter").html("Thank you! Visit Again!");
+        this.cartlocmarket = "cameout";
+        $(".cartid_highlight").removeClass('highlight');
+        $("#innerdoor2").animate({ 'height': '100px' }, 200);
+      }
+      else if (topValue > 1005 && topValue < 1270 && leftValue <= 5700 && leftValue > 1000) {
+        this.cartlocmarket = "cameout";
+        if (leftValue < 5200) {
+          $("#innerdoor2").animate({ 'height': '1030px' }, 200);
+        }
+      }
+
+      else if (topValue > 1005 && topValue < 1270 && leftValue < 1000) {
+        this.cartlocmarket = "stopped";
+        this.markettop = false;
+        this.marketleft = false;
+        this.marketright = false;
+        this.marketbottom = false;
+      }
+
+      else {
+        this.markettop = false;
+        this.marketleft = false;
+        this.marketright = false;
+        this.marketbottom = false;
+        if (this.cartlocmarket == 'maincorider') {
+          if (topValue < 3090) {
+            this.marketbottom = true;
+            this.markettop = false;
+            this.marketleft = true;
+            this.marketright = true;
+          }
+          else if (topValue > 3400) {
+            this.markettop = true;
+            this.marketbottom = false;
+            this.marketleft = true;
+            this.marketright = true;
+          }
+          else if (leftValue < 5000) {
+            this.marketright = true;
+            this.marketbottom = true;
+            this.markettop = true;
+            this.marketleft = false;
+          }
+          else if (leftValue > 11400) {
+            this.marketleft = true;
+            this.marketbottom = true;
+            this.markettop = true;
+            this.marketright = false;
+
+          }
+        }
+        else if (this.cartlocmarket == 'turningcorider') {
+          if (topValue < 1005) {
+            this.marketbottom = true;
+            this.markettop = false;
+            this.marketleft = true;
+            this.marketright = true;
+          }
+          else if (topValue > 3240) {
+            this.markettop = true;
+            this.marketbottom = false;
+            this.marketleft = true;
+            this.marketright = true;
+          }
+          else if (leftValue < 11250) {
+            this.marketright = true;
+            this.markettop = true;
+            this.marketbottom = true;
+            this.marketleft = false;
+          }
+          else if (leftValue > 11450) {
+            this.marketleft = true;
+            this.marketright = false;
+            this.markettop = true;
+            this.marketbottom = true;
+          }
+        }
+        else if (this.cartlocmarket == 'othercorider') {
+          if (topValue < 1020) {
+            this.marketbottom = true;
+            this.markettop = false;
+            this.marketleft = true;
+            this.marketright = true;
+          }
+          else if (topValue > 1270) {
+            this.markettop = true;
+            this.marketbottom = false;
+            this.marketleft = true;
+            this.marketright = true;
+          }
+          else if (leftValue < 6050) {
+            this.marketright = true;
+            this.markettop = true;
+            this.marketbottom = true;
+            this.marketleft = false;
+          }
+          else if (leftValue > 11450) {
+            this.marketleft = true;
+            this.marketright = false;
+            this.markettop = true;
+            this.marketbottom = true;
+          }
+        }
+        else if (this.cartlocmarket == 'cameout') {
+          if (topValue < 1020) {
+            this.marketbottom = true;
+            this.markettop = false;
+            this.marketleft = true;
+            this.marketright = true;
+          }
+          else if (topValue > 1270) {
+            this.markettop = true;
+            this.marketbottom = false;
+            this.marketleft = true;
+            this.marketright = true;
+          }
+          else if (leftValue < 5700 && leftValue > 1000) {
+            this.marketright = false;
+            this.markettop = true;
+            this.marketbottom = true;
+            this.marketleft = true;
+          }
+          else if (leftValue < 900) {
+            this.marketright = false;
+            this.markettop = false;
+            this.marketbottom = false;
+            this.marketleft = false;
+          }
+
+        }
+      }
+    }
+  }
+  /*supercartposition() {
     const topValue = parseInt($(".supermarketcart").css('top').split("px")[0]);
     const leftValue = parseInt($(".supermarketcart").css('left').split("px")[0]);
     console.log(leftValue, topValue);
 
-    const nearConveyor = (topValue < 3533 && topValue > 3090 && leftValue > 920 && leftValue < 4900);
-    const exiting = (topValue < 3533 && topValue > 1040 && leftValue > 920 && leftValue < 1130);
-    const nearRightConveyor = (topValue < 3533 && topValue > 3090 && leftValue > 4900 && leftValue < 5000);
+    const nearConveyor = (topValue < 3300 && topValue > 3090 && leftValue > 920 && leftValue < 4900);
+    const exiting = (topValue < 3089 && topValue > 1040 && leftValue > 930 && leftValue < 1130);
+    const nearRightConveyor = (topValue < 3200 && topValue > 3090 && leftValue > 4900 && leftValue < 5000);
     const superMarketEntry = (leftValue > 4980 && leftValue < 5050 && topValue < 3533 && topValue > 3090);
     const mainCorider = (topValue > 3090 && topValue < 3533 && leftValue > 5000 && leftValue < 11400);
     const turningCorider = (topValue > 1005 && topValue < 3240 && leftValue > 11250 && leftValue < 11450);
@@ -1347,7 +1379,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       } else {
         setMarketFalse();
         if (this.cartlocmarket == "nearconveyor") {
-          if (topValue > 3533) setMarketFlags(true, true, true, false);
+          if (topValue > 3300) setMarketFlags(true, true, true, false);
           if (topValue < 3090) setMarketFlags(false, true, true, true);
           if (leftValue < 920) setMarketFlags(true, false, true, true);
           if (leftValue > 4900) setMarketFlags(true, true, false, true);
@@ -1456,7 +1488,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         }
       }
     }
-  }
+  }*/
 
   switchrole() {
     this.currentrole = this.currentUserRole;
@@ -1772,6 +1804,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
   }
   totalenv = 0;
+  stepheight=0.0;
+  totalheight=0.0;
   totalsupermarketbill = 0;
   opencart(cartcontent: any, event: any) {
     $(".displaycallout").hide();
@@ -1779,9 +1813,15 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     if (this.opensuperflag == 1) {
       this.altertab = 1;
     }
+    if(this.selectedBottleatStage!==''){
+      this.totalheight=parseFloat($("."+this.selectedBottleatStage.split("at")[1]+".shampoolevel").css('height').split("px")[0]);
+      this.stepheight=this.totalheight/25;
+    }
+    
     this.modalService.open(cartcontent);
 
   }
+
   presentitem: any[] = []
   docalculation() {
     this.boughtbottledata = [];
@@ -2739,14 +2779,20 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       if (this.currentbottle['Quantity'] == 0) {
         this.currentbottle['Bottle_Status'] = "Empty-Dirty";
       }
+
     }
+    let getheight=$("."+this.selectedBottleatStage.split("at")[1]+".shampoolevel").css('height').split("px")[0];
+    let reducedheight=parseFloat(getheight)- this.stepheight;
+    $("."+this.selectedBottleatStage.split("at")[1]+".shampoolevel").css('height',reducedheight+'px');
+
     this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => { });
   }
   currentbottle = {
     'currentbottle': '',
     'Quantity': 0,
     'Bottle_Status': "InUse",
-    'Current_Refill_Count': 0
+    'Current_Refill_Count': 0,
+    'Location':''
   }
   selectedBottleatStage: string = '';
   sldBottleData: any;
@@ -2767,8 +2813,14 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       }
       this.currentbottle['Quantity'] = data[0]['remQuantity'];
       this.currentbottle['Bottle_Status'] = data[0]['Bottle_Status'];
+      this.currentbottle['Location']=data[0]['Bottle_loc'];
+      let getheight=$("."+this.selectedBottleatStage.split("at")[1]+".shampoolevel").css('height').split("px")[0];
 
-
+      let unitreduction=500-(this.currentbottle['Quantity']);
+      let reductionpropo=unitreduction/500;
+      let heightred=parseFloat(getheight)*reductionpropo;
+      let reducedheight=parseFloat(getheight)-heightred;
+      $("."+this.selectedBottleatStage.split("at")[1]+".shampoolevel").css('height',reducedheight+'px');
     });
 
 
@@ -2795,6 +2847,3 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     });
   }
 }
-
-
-
