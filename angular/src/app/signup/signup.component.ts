@@ -46,7 +46,7 @@ export class SignupComponent implements OnInit {
       password: ['', Validators.required],
       gender: ['', Validators.required]
     })
-    $("body").addClass('frontpage').removeClass('cartcontent');
+    //$("body").addClass('frontpage').removeClass('cartcontent');
   }
   openwhyshorter(whyshorter: any) {
 

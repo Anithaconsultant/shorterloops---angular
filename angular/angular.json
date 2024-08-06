@@ -17,14 +17,14 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/angular",
+            "outputPath": "dist/shorterloops",
             "index": "src/index.html",
             "main": "src/main.ts",
             "allowedCommonJsDependencies": ["panzoom", "jquery"],
             "polyfills": [
               "zone.js"
             ],
-            "baseHref": "/angular/",
+            "baseHref": "/shorterloops/",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [

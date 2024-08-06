@@ -5,7 +5,8 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import * as $ from 'jquery';
 import { CdkDragDrop, moveItemInArray, transferArrayItem, CdkDrag, CdkDragEnd, CdkDropList } from '@angular/cdk/drag-drop';
-
+import { interval } from 'rxjs';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
   selector: 'app-maincity',
@@ -19,7 +20,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   userobj = {
     'login': '1'
   }
-  currentrole = "Customer";
+  currentrole = "";
   @ViewChild('cityrail', { static: true }) public cityrail!: ElementRef;
   @ViewChild('transactioncomplete', { static: true }) public transactioncomplete!: ElementRef;
   @ViewChild('thankyousuper', { static: true }) public thankyousuper!: ElementRef;
@@ -42,6 +43,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild('cartcontent', { static: false }) private cartcontent!: ElementRef;
   @ViewChild('supermarket', { static: false }) private supermarket!: ElementRef;
   @ViewChild('cartdisplay', { static: false }) private cartdisplay!: ElementRef;
+  @ViewChild('StopEntry', { static: false }) private StopEntry!: ElementRef;
+  @ViewChild('Supermarket_Return', { static: false }) private Supermarket_Return!: ElementRef;
+  @ViewChild('Thanksreturning', { static: false }) private Thanksreturning!: ElementRef;
+  @ViewChild('Fine', { static: false }) private Fine!: ElementRef;
   netamount = 0;
   boughtbottledata: any[] = [];
   getcurrentplacedbrand = '';
@@ -76,6 +81,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   bouncyrefilling: string[] = [];
   wavyrefilling: string[] = [];
   frontclass = '';
+  status = '';
   leblfound = false;
   frontlabel = '';
   shapooprice = 0.0;
@@ -142,7 +148,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   cityCurrentTime = '';
   citycurrentday = 0;
   cityavatar = '';
-  currentwallet = 0;
+  currentwallet = 0.0;
   showwallet = false;
   showratings = false;
   showbottles = false;
@@ -159,7 +165,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   transaction = {
     'TransactionId': '',
     'Amount': '',
-    'DebitFacility': this.currentUserRole,
+    'DebitFacility': '',
     'CreditFacility': '',
     'Purpose': ''
   }
@@ -205,7 +211,15 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     this.currentuseravatar = this.logser.currentuser.avatar;
     this.currentusercityId = this.logser.currentuser.CityId;
   }
+  private hasCalledFunction = false;
   ngOnInit(): void {
+
+
+    interval(1000)
+      .pipe(takeWhile(() => !this.hasCalledFunction))
+      .subscribe(seconds => {
+        this.convertSeconds(seconds);
+      });
     if (this.logser.currentuser.Username != '') {
 
 
@@ -222,7 +236,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             this.currentUserId = this.user[t].UserId;
           }
           if (this.user[t].Username == this.currentusername) {
-            this.currentwallet = this.user[t].wallet;
+            this.currentwallet = parseFloat(this.user[t].wallet);
             this.logser.currentuser.wallet = this.user[t].wallet;
           }
           if (this.user[t].Username == this.currentusername && this.user[t].avatar == '') {
@@ -279,11 +293,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         $(".maincity").addClass("city_" + this.cityavatar)
       });
 
-
-
-      $("body").removeClass('frontpage').removeClass('cartcontent');
-
-      setInterval(() => { this.loadAvailableAsset() }, 10000);
+      setInterval(() => { this.loadAvailableAsset() }, 2000);
       setInterval(() => { this.loadtime() }, 1000);
 
       this.logser.getBottlePrice().subscribe((data: any) => {
@@ -315,70 +325,55 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     // Navigate to the new component route
     this.router.navigate(['/report']);
   }
-  count = 0;
+
   convertSeconds(seconds: number) {
     const hours = Math.floor(seconds / 3600);
     let string = hours + ':00';
+    if (hours === 6 && !this.hasCalledFunction) {
+      this.runtruck();
+      this.hasCalledFunction = true; // Set the flag to true
+    }
     return string
   }
   runtruck() {
     $(".truck").animate({ left: '5210px' }, 1000, () => {
-      console.log("1");
       $(".truck").css({ transform: 'rotate(-90deg)' }).addClass('top').removeClass('side');
       $(".truck").animate({ top: '3680px' }, 5500, () => {
-        console.log("2");
         $(".truck").css({ transform: 'scaleX(-1)' }).addClass('side').removeClass('top');
-        $(".truck").animate({ left: '7390px' }, 15000, () => {
-          console.log("3");
+        $(".truck").animate({ left: '7390px' }, 25000, () => {
           $(".truck").css({ transform: 'rotate(0deg)' });
-          $(".truck").animate({ left: '5210px' }, 15000, () => {
-            console.log("4");
+          $(".truck").animate({ left: '5210px' }, 25000, () => {
             $(".truck").css({ transform: 'rotate(-90deg)' }).addClass('top').removeClass('side');
             $(".truck").animate({ top: '4070px' }, 2500, () => {
-              console.log("5");
               $(".truck").css({ transform: 'scaleX(-1)' }).addClass('side').removeClass('top');
-              $(".truck").animate({ left: '7390px' }, 15000, () => {
-                console.log("6");
+              $(".truck").animate({ left: '7390px' }, 25000, () => {
                 $(".truck").css({ transform: 'rotate(0deg)' });
-                $(".truck").animate({ left: '5210px' }, 15000, () => {
-                  console.log("7");
+                $(".truck").animate({ left: '5210px' }, 25000, () => {
                   $(".truck").css({ transform: 'rotate(90deg)' }).addClass('top').removeClass('side');
                   $(".truck").animate({ top: '3060px' }, 5500, () => {
-                    console.log("8");
                     $(".truck").css({ transform: 'rotate(0deg)' }).addClass('side').removeClass('top');
                     $(".truck").animate({ left: '2730px' }, 5500, () => {
-                      console.log("9");
                       $(".truck").css({ transform: 'rotate(-90deg)' }).addClass('top').removeClass('side');
                       $(".truck").animate({ top: '3680px' }, 2500, () => {
-                        console.log("10");
                         $(".truck").css({ transform: 'rotate(0deg)' }).addClass('side').removeClass('top');
-                        $(".truck").animate({ left: '300px' }, 15000, () => {
-                          console.log("11");
+                        $(".truck").animate({ left: '300px' }, 25000, () => {
                           $(".truck").css({ transform: 'scaleX(-1)' });
-                          $(".truck").animate({ left: '2730px' }, 15000, () => {
-                            console.log("12");
+                          $(".truck").animate({ left: '2730px' }, 25000, () => {
                             $(".truck").css({ transform: 'rotate(-90deg)' }).addClass('top').removeClass('side');
                             $(".truck").animate({ top: '4070px' }, 2500, () => {
-                              console.log("13");
                               $(".truck").css({ transform: 'rotate(0deg)' }).addClass('side').removeClass('top');
-                              $(".truck").animate({ left: '300px' }, 10000, () => {
+                              $(".truck").animate({ left: '300px' }, 25000, () => {
                                 $(".truck").css({ transform: 'scaleX(-1)' });
-                                console.log("14");
-                                $(".truck").animate({ left: '2730px' }, 10000, () => {
-                                  console.log("15");
+                                $(".truck").animate({ left: '2730px' }, 25000, () => {
                                   $(".truck").css({ transform: 'rotate(90deg)' }).addClass('top').removeClass('side');
                                   $(".truck").animate({ top: '3060px' }, 5500, () => {
-                                    console.log("16");
                                     $(".truck").css({ transform: 'scaleX(-1)' }).addClass('side').removeClass('top');
                                     $(".truck").animate({ left: '5210px' }, 5500, () => {
-                                      console.log("17");
                                       $(".truck").css({ transform: 'rotate(90deg)' }).addClass('top').removeClass('side');
                                       $(".truck").animate({ top: '1025px' }, 5500, () => {
-                                        console.log("18");
                                         $(".truck").css({ transform: 'scaleX(-1)' }).addClass('side').removeClass('top');
                                         $(".truck").animate({ left: '5933px' }, 5500);
                                         $(".truck").css({ transform: 'rotate(0deg)' });
-                                        this.count++;
                                       });
                                     });
                                   });
@@ -533,7 +528,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     if (bottle_status == 'Empty-Dirty' && bottleloc == this.currentUserCartId) {
       this.refillbottles.push(cat);
     }
-    else if (bottleloc == this.currentUserCartId && bottle_status == 'InUse') {
+    else if (bottleloc == this.currentUserCartId && (bottle_status == 'InUse' || bottle_status == 'Damaged')) {
       this.currentUserPurhcased.push(cat);
     }
     if (bottleloc == "City Dustbin") {
@@ -551,8 +546,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     if (bottle_status == 'Damaged') {
       $(".Inhouseshelf_bottles #" + cat).addClass('damaged');
     }
-    if (bottle_status == 'Street') {
-      $(".Inhouseshelf_bottles #" + cat).addClass('street');
+    if (bottleloc == 'Street') {
+      $(".Inhouseshelf_bottles #" + cat).addClass('Street');
     }
 
 
@@ -564,11 +559,18 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     const leftValue = parseInt($(".cart").css('left').split("px")[0]);
     const isWithinRange = (value: number, min: number, max: number) => value > min && value < max;
 
-    if (isWithinRange(topValue, 2800, 2850) && isWithinRange(leftValue, 5300, 5891)) {
+    if (isWithinRange(topValue, 2800, 2850) && isWithinRange(leftValue, 5290, 5891)) {
       this.whichRoad = "refillingstation";
-      this.opensuperflag = 2;
-      this.openrefillingstation();
       this.setTrue();
+      if (this.currentUserPurhcased.length > 0) {
+        this.playAudioElement(this.StopEntry.nativeElement, 0.8);
+        alert("Sorry!  You are allowed to take only empty shampoo bottles inside this facility.     Please leave your non-empty bottles on the shelf at your house and come. You may also empty the bottle or throw the bottle if you wish, before entering.  Mind you! You may have to pay a fine if you throw the bottle.")
+      }
+      else {
+        this.opensuperflag = 2;
+        this.openrefillingstation();
+      }
+
     } else if (isWithinRange(topValue, 3524, 3640) && isWithinRange(leftValue, 300, 7390)) {
       this.whichRoad = "mayorhouseroad";
       this.setTrue();
@@ -576,8 +578,16 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       this.whichRoad = "Supermarketroad";
       this.setTrue();
       if (topValue < 2720) {
-        this.opensuperflag = 1;
-        this.opensupermarket();
+        if (this.currentUserPurhcased.length > 0) {
+          this.playAudioElement(this.StopEntry.nativeElement, 0.8);
+          alert("Sorry!  You are allowed to take only empty shampoo bottles inside this facility.     Please leave your non-empty bottles on the shelf at your house and come. You may also empty the bottle or throw the bottle if you wish, before entering.  Mind you! You may have to pay a fine if you throw the bottle.")
+        }
+        else {
+          this.playAudioElement(this.Supermarket_Return.nativeElement, 0.8);
+          this.opensuperflag = 1;
+          this.opensupermarket();
+        }
+
       }
     } else if (isWithinRange(topValue, 4000, 4065) && isWithinRange(leftValue, 5300, 7390)) {
       this.whichRoad = "lowercolonyrightroad";
@@ -600,7 +610,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     } else if (isWithinRange(topValue, 4000, 4065) && isWithinRange(leftValue, 300, 2800)) {
       this.whichRoad = "leftcolonybottom";
       this.setTrue();
-    } else if (isWithinRange(topValue, 2950, 3050) && isWithinRange(leftValue, 0, 7390)) {
+    } else if (isWithinRange(topValue, 2950, 3050) && isWithinRange(leftValue, 0, 5400)) {
       this.whichRoad = "municipalityroad";
       this.setTrue();
     } else {
@@ -803,7 +813,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           this.canMoveLeft = false;
           this.canMoveRight = true;
         }
-        if (leftValue >= 7390) {
+        if (leftValue >= 5400) {
           this.canMoveTop = true;
           this.canMoveBottom = true;
           this.canMoveLeft = true;
@@ -824,7 +834,6 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       }
 
     }
-    console.log(this.whichRoad);
   }
 
 
@@ -960,28 +969,52 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   zoomIn(event: any) {
+
     event.preventDefault();
     event.stopPropagation();
-    let c = this.instance.getTransform();
-    let r = c.scale;
-    if (r < 2.5 && r > 0.25) {
+    if (this.opensuperflag == 0) {
+      let c = this.instance.getTransform();
+      let r = c.scale;
+      if (r < 2.5 && r > 0.25) {
 
-      let s = r + 0.1;
-      this.instance.zoomTo(0, 0, s);
-      this.instance.getTransform().scale = s;
+        let s = r + 0.1;
+        this.instance.zoomTo(0, 0, s);
+        this.instance.getTransform().scale = s;
+      }
     }
+    else if (this.opensuperflag == 1) {
+      let c = this.instance1.getTransform();
+      let r = c.scale;
+      if (r < 2.5 && r > 0.25) {
 
+        let s = r + 0.1;
+        this.instance1.zoomTo(0, 0, s);
+        this.instance1.getTransform().scale = s;
+      }
+    }
   }
   zoomOut(event: any) {
     event.preventDefault();
     event.stopPropagation();
-    let c = this.instance.getTransform();
-    let r = c.scale;
-    if (r > 0.4 && r < 2.5) {
+    if (this.opensuperflag == 0) {
+      let c = this.instance.getTransform();
+      let r = c.scale;
+      if (r > 0.4 && r < 2.5) {
 
-      let z = r - 0.1;
-      this.instance.zoomTo(0, 0, z);
-      this.instance.getTransform().scale = z;
+        let z = r - 0.1;
+        this.instance.zoomTo(0, 0, z);
+        this.instance.getTransform().scale = z;
+      }
+    }
+    else if (this.opensuperflag == 1) {
+      let c = this.instance1.getTransform();
+      let r = c.scale;
+      if (r > 0.4 && r < 2.5) {
+
+        let z = r - 0.1;
+        this.instance1.zoomTo(0, 0, z);
+        this.instance1.getTransform().scale = z;
+      }
     }
   }
 
@@ -1083,6 +1116,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         this.cartlocmarket = "nearconveyor";
         this.setmarkettrue();
       }
+      else if ((topValue < 3089 && topValue > 1040 && leftValue > 930 && leftValue < 1130)) {
+        this.cartlocmarket = "exiting";
+        this.setmarkettrue();
+      }
       else {
         this.markettop = false;
         this.marketleft = false;
@@ -1108,6 +1145,32 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             this.marketbottom = true;
           }
           if (leftValue > 4900) {
+            this.markettop = true;
+            this.marketleft = true;
+            this.marketright = false;
+            this.marketbottom = true;
+          }
+        }
+        if (this.cartlocmarket == "exiting") {
+          if (topValue > 3089) {
+            this.markettop = true;
+            this.marketleft = true;
+            this.marketright = true;
+            this.marketbottom = false;
+          }
+          if (topValue < 1040) {
+            this.markettop = false;
+            this.marketleft = true;
+            this.marketright = true;
+            this.marketbottom = true;
+          }
+          if (leftValue < 930) {
+            this.markettop = true;
+            this.marketleft = false;
+            this.marketright = true;
+            this.marketbottom = true;
+          }
+          if (leftValue > 1130) {
             this.markettop = true;
             this.marketleft = true;
             this.marketright = false;
@@ -1145,7 +1208,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         this.cartlocmarket = "supermatketentry";
         $("#innerdoor1").css('background-color', '#00ba00');
         this.setmarkettrue();
-        this.cityrail.nativeElement.play();
+        this.playAudioElement(this.cityrail.nativeElement, 0.3);
+
         $('#innerdoor1').animate({ 'height': '100px' }, 300);
         this.setflag = 3;
       }
@@ -1157,7 +1221,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       if (topValue > 3090 && topValue < 3533 && leftValue > 5000 && leftValue < 11400) {
         if (this.setflag == 3) {
           if (leftValue > 5700 && leftValue < 5800) {
-            this.welcomemarket.nativeElement.play();
+            this.playAudioElement(this.welcomemarket.nativeElement, 0.8);
             $("#checklight2").removeClass('green');
             this.setflag = 4;
             $('#innerdoor1').animate({ 'height': '1076px' }, 300);
@@ -1165,6 +1229,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         }
         this.cartlocmarket = "maincorider";
         this.setmarkettrue();
+
       }
       else if (topValue > 1005 && topValue < 3240 && leftValue > 11250 && leftValue < 11450) {
         this.cartlocmarket = "turningcorider";
@@ -1175,11 +1240,12 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         this.setmarkettrue();
         if (topValue < 1150 && leftValue > 6600 && leftValue < 6800 && this.billpaid == false && this.bottletaken.length !== 0) {
           this.startbilling();
-          this.cityrail.nativeElement.play();
+          this.playAudioElement(this.cityrail.nativeElement, 0.3);
         }
       }
       else if (topValue > 1005 && topValue < 1270 && leftValue > 5600 && leftValue < 6050 && this.billpaid == true) {
-        this.thankyousuper.nativeElement.play();
+
+        this.playAudioElement(this.thankyousuper.nativeElement, 0.8);
         $(".displaymoniter").html("Thank you! Visit Again!");
         this.cartlocmarket = "cameout";
         $(".cartid_highlight").removeClass('highlight');
@@ -1315,15 +1381,17 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     }
   }
 
-  switchrole() {
-    this.currentrole = this.currentUserRole;
-    this.dopanzoom(-3341, -2150, '1');
-    $(".cart").hide();
-  }
+
   switchcustomerrole() {
-    this.currentrole = 'Customer';
-    this.loadinginitialState();
-    $(".cart").show();
+    if (this.currentrole == 'Mayor' && this.switchyesorno == 1) {
+      this.switchyesorno = 2;
+      this.dopanzoom(-3341, -2150, '1');
+      $(".cart").hide();
+    }
+    else {
+      this.loadinginitialState();
+      $(".cart").show();
+    }
   }
   movetomaincity() {
     this.opensuperflag = 0;
@@ -1333,7 +1401,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       where.resetrefilling();
       where.setrefilltrue();
     }, 100);
-    $(".cart").css({ 'left': '5270px', 'top': '2760px' })
+    $(".cart").css({ 'left': '5310px', 'top': '2760px' })
   }
 
   updateDragged: any = {
@@ -1347,7 +1415,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
 
       if (this.currentwallet > this.netamount) {
-        alert("User has Succifient amount for Payment");
+        alert("Your wallet has sufficient balance for this purchase");
         this.currentwallet = this.currentwallet - this.netamount;
         this.logser.currentuser.wallet = this.currentwallet;
 
@@ -1355,7 +1423,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         this.logser.updatewallet().subscribe(
           data => {
             data = this.currentwallet;
-            this.paymentreceived.nativeElement.play();
+            this.playAudioElement(this.paymentreceived.nativeElement, 0.8);
             $(".displaymoniter").html("Payment Received");
             $(".tick").show();
             this.logser.gettransactions().subscribe(data => {
@@ -1365,12 +1433,14 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_01';
             this.transaction['Amount'] = String(this.totalsupermarketbill);
             this.transaction['CreditFacility'] = 'Supermarket Owner';
+            this.transaction['DebitFacility'] = this.currentUserRole;
             this.transaction['Purpose'] = 'Purchasing Shampoo from Supermarket';
             this.logser.createtransaction(this.transaction).subscribe(
               data => {
                 this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_02';
                 this.transaction['Amount'] = String(this.totalenv);
                 this.transaction['CreditFacility'] = 'Municipality Office';
+                this.transaction['DebitFacility'] = this.currentUserRole;
                 this.transaction['Purpose'] = 'Environment tax for Shampoo purchase';
                 this.logser.createtransaction(this.transaction).subscribe(
                   data => {
@@ -1388,7 +1458,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
                       this.logser.updatethisAssets(this.updatebottleasset).subscribe((data) => {
                         $(".pay").hide();
                         $(".close").show();
-                        this.transactioncomplete.nativeElement.play();
+                        this.playAudioElement(this.transactioncomplete.nativeElement, 0.8);
+
                         this.billpaid = true;
                       });
                     }
@@ -1445,7 +1516,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
 
   startbilling() {
-    this.doneshopping.nativeElement.play();
+    this.playAudioElement(this.doneshopping.nativeElement, 0.8);
     $(".cartid_highlight").addClass('highlight');
     $(".beam").show();
     $(".displaymoniter").html("Scanning");
@@ -1457,7 +1528,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         if (this.billpaid == false) {
           setTimeout(function () { that.docalculation(); }, 500);
         }
-        this.cartdisplay.nativeElement.play();
+        this.playAudioElement(this.cartdisplay.nativeElement, 0.8);
         $(".displaymoniter").html("Check and pay by clicking the cart display panel");
         $(".displaycallout").show();
       });
@@ -1507,8 +1578,20 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     $(".cart").css({ 'left': x1 + 'px', 'top': y1 + 'px' });
     $(".houselite").hide();
     $(".cartid").html(this.currentUserCartId);
+    this.currentrole = this.currentUserRole;
+    if (this.currentrole == 'Mayor') {
+      this.switchyesorno = 1;
+    }
+    else if (this.currentrole.includes('House')) {
+      this.switchyesorno = 0;
+    }
+    else {
+      this.switchyesorno = 2;
+    }
   }
 
+
+  switchyesorno = 0;
   dopanzoom(x: number, y: number, zoomlevel: string) {
     this.instance.smoothMoveTo(x, y);
     this.instance.zoomTo(x, y, parseFloat(zoomlevel));
@@ -1526,6 +1609,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   }
   checkrefilledbottle(item: CdkDrag<string>) {
     if (item.element.nativeElement.classList.contains('refilldone')) { return false; }
+
     else { return true; }
   }
   checkcondition(item: CdkDrag<string>) {
@@ -1628,15 +1712,34 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
   }
   totalenv = 0;
+  stepheight = 0.0;
+  totalheight = 0.0;
   totalsupermarketbill = 0;
   opencart(cartcontent: any, event: any) {
+    this.altertab = 0;
     $(".displaycallout").hide();
-    $("body").removeClass('frontpage').addClass('cartcontent');
+    $('.btncont,.shampoolevel').show();
     if (this.opensuperflag == 1) {
       this.altertab = 1;
     }
-    this.modalService.open(cartcontent);
+    this.showcashflow();
+    this.calculatenetfine();
+    this.loadledgerdata();
+    this.checkthebottlestatusfordisplay();
+    this.modalService.open(cartcontent, { windowClass: 'cartcontent' });
 
+  }
+  cashflowdata: any = [];
+  showcashflow() {
+    this.cashflowdata = [];
+    this.logser.gettransactions().subscribe(data => {
+      for (let t = 0; t < data.length; t++) {
+        let getcityId = data[t]['TransactionId'].split("_")[0];
+        if (data[t]['DebitFacility'] == this.currentUserRole && getcityId == this.currentusercityId) {
+          this.cashflowdata.push(data[t]);
+        }
+      }
+    });
   }
   presentitem: any[] = []
   docalculation() {
@@ -1647,9 +1750,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
     if (this.bottletaken.length > 0) {
       this.billpaid = false;
-      //this.pleasecheck.nativeElement.play();
       for (let i = 0; i < this.bottletaken.length; i++) {
-        //City2_SB_UBidV_00004atUB1 
         let existingItem = this.commonobj.findIndex(item => item.id === this.bottletaken[i]);
         if (this.commonobj[existingItem]['location'] == 'In' + this.currentUserCartId) {
           let getcurrent = this.bottletaken[i].split("at")[0].split('City')[1];
@@ -1738,21 +1839,22 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   openrefillingstation() {
-    this.cityrail.nativeElement.play();
+    this.playAudioElement(this.cityrail.nativeElement, 0.8);
     this.resetanimation = true;
     $("#refillcart").css({ 'left': '50px', 'top': '332px' });
     setTimeout(function () {
-      that.welcome.nativeElement.play();
+      that.playAudioElement(that.welcome.nativeElement, 0.8);
+
     }, 2000)
     let that = this;
     setTimeout(function () {
-      that.placebottle.nativeElement.play();
+      that.playAudioElement(that.placebottle.nativeElement, 0.8);
     }, 5000)
   }
 
   initiateanimation(placedBottle: string) {
     if (this.droppedbottle == true) {
-      this.selectbrand.nativeElement.play();
+      this.playAudioElement(this.selectbrand.nativeElement, 0.8);
       this.refillbrandselected = '';
       $(".displaylight").removeClass('off').addClass('on');
       let getbrand = placedBottle.split("at")[1];
@@ -1789,7 +1891,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       clearTimeout(this.timeout);
       this.timeout = setTimeout(function () {
 
-        $(".displaylight").removeClass('off').addClass('on'); that.checkprice.nativeElement.play(); that.quantityselected = true; $(".displayboard").html("Brand =" + that.refillbrandselected + "<br/>Quantity = " + that.selectquantity + "ml<br/>Price/ml = ₹" + that.unitprice + "<br/>Discount = " + that.currentDiscount + "%<br/>Net Amount = ₹ " + that.refill_amount_topay + "<br/> Please confirm the order.");
+        $(".displaylight").removeClass('off').addClass('on'); that.playAudioElement(that.checkprice.nativeElement, 0.8); that.quantityselected = true; $(".displayboard").html("Brand =" + that.refillbrandselected + "<br/>Quantity = " + that.selectquantity + "ml<br/>Price/ml = ₹" + that.unitprice + "<br/>Discount = " + that.currentDiscount + "%<br/>Net Amount = ₹ " + that.refill_amount_topay + "<br/> Please confirm the order.");
       }, 6000);
     }
     else {
@@ -1816,7 +1918,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       let that = this;
       this.calculaterefillAmount();
       clearTimeout(this.timeout);
-      this.timeout = setTimeout(function () { $(".displaylight").removeClass('off').addClass('on'); that.checkprice.nativeElement.play(); that.quantityselected = true; $(".displayboard").html("Brand =" + that.refillbrandselected + "<br/>Quantity = " + that.selectquantity + "ml<br/>Price/ml = ₹" + that.unitprice + "<br/>Discount = " + that.currentDiscount + "%<br/>Net Amount = ₹" + that.refill_amount_topay + "<br/> Please confirm the order."); }, 6000);
+      this.timeout = setTimeout(function () {
+        $(".displaylight").removeClass('off').addClass('on');
+        that.playAudioElement(that.checkprice.nativeElement, 0.8); that.quantityselected = true; $(".displayboard").html("Brand =" + that.refillbrandselected + "<br/>Quantity = " + that.selectquantity + "ml<br/>Price/ml = ₹" + that.unitprice + "<br/>Discount = " + that.currentDiscount + "%<br/>Net Amount = ₹" + that.refill_amount_topay + "<br/> Please confirm the order.");
+      }, 6000);
     }
     else {
       alert("please select the brand")
@@ -1830,12 +1935,12 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     if (this.droppedbottle == true && this.resetanimation == true) {
       this.refillbrandselected = currentbrand;
       if (this.refillbrandselected == this.getcurrentplacedbrand) {
-        this.useplusminus.nativeElement.play();
+        this.playAudioElement(this.useplusminus.nativeElement, 0.8);
         $(".displaylight").removeClass('off').addClass('on');
         $(".displayboard").html("Bottle's brand = " + this.getcurrentplacedbrand + " <br/> Shampoo brand = " + this.refillbrandselected + "<br/>Use +/- keys to specify quantity.")
       }
       else {
-        this.bottledifferent.nativeElement.play();
+        this.playAudioElement(this.bottledifferent.nativeElement, 0.8);
         $(".displaylight").removeClass('off').addClass('on');
         $(".displayboard").html("Bottle's brand = " + this.getcurrentplacedbrand + " <br/> Shampoo brand = " + this.refillbrandselected + "<br/> Bottle and shampoo are of different brands. If OK,  specify quantity using  +/- keys. Else,  re-select sampoo brand.")
       }
@@ -1845,16 +1950,14 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   startrefillinganimation() {
     $(".displaylight").removeClass('on').addClass('off');
     if (this.currentwallet > this.refill_amount_topay) {
-      alert("User has Succifient amount for Payment");
+      alert("Your wallet has sufficient balance for this purchase");
       this.currentwallet = this.currentwallet - this.refill_amount_topay;
       this.logser.currentuser.wallet = this.currentwallet;
-
 
       this.logser.updatewallet().subscribe(
         data => {
           data = this.currentwallet;
-          this.paymentreceived.nativeElement.play();
-          $(".displayboard").html("Payment Received");
+          this.playAudioElement(this.paymentreceived.nativeElement, 0.8);
           this.logser.gettransactions().subscribe(data => {
             this.transactioncount = '0000' + (data.length + 1);
           });
@@ -1862,6 +1965,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_01';
           this.transaction['Amount'] = String(this.refill_amount_topay);
           this.transaction['CreditFacility'] = 'Refilling Station';
+          this.transaction['DebitFacility'] = this.currentUserRole;
           this.transaction['Purpose'] = 'Refilling shampoo from the Refilling Station';
           this.logser.createtransaction(this.transaction).subscribe(
             data => {
@@ -1876,7 +1980,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
               this.updatebottleasset['contentCode'] = this.refillbrandselected;
               this.updatebottleasset['currentitem'] = this.currentlyrefillingBottle.split("at")[0].split('City')[1];
               this.logser.updatethisAssets(this.updatebottleasset).subscribe((data) => {
-                this.transactioncomplete.nativeElement.play();
+                this.playAudioElement(this.transactioncomplete.nativeElement, 0.8);
               });
 
             },
@@ -1975,7 +2079,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     this.confirmpressed = false;
     this.selectquantity = 0;
     this.refillbrandselected = '';
-    this.placebottle.nativeElement.play();
+    this.playAudioElement(this.placebottle.nativeElement, 0.8);
     $(".refilldropper").css({ 'left': '8px' }).show();
     $(".displaylight").removeClass('off').addClass('on');
     $(".displayboard").html(' Please place your empty bottle on the conveyor.');
@@ -1990,7 +2094,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           $("#cappressor ").animate({ 'top': '-10px' }, 1000, () => {
             $(".displaylight").removeClass('off').addClass('on');
             $(".displayboard").html('Please collect your bottle.');
-            that.collectbottle.nativeElement.play();
+            that.playAudioElement(that.collectbottle.nativeElement, 0.8);
 
           });
           $(".refilldropper .refillbtl").addClass('refilled');
@@ -2041,6 +2145,53 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         this.updateonlyloc['Bottleloc'] = "City Dustbin";
         this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
           console.log("bottle location update to City Dustbin");
+          let amount_fine = 0.0;
+          for (let i = 0; i < this.bottlePrice.length; i++) {
+            if (this.bottlePrice[i]['BottleType'] == currentlyDroped.split('id')[0].split('_')[2] + '.' + currentlyDroped.split('id')[1].split('_')[0]) {
+              amount_fine = parseFloat(this.bottlePrice[i]['OriginalPrice']) * 0.5;
+              break;
+            }
+          }
+          if (this.currentwallet > amount_fine) {
+            alert("A fine of ₹" + amount_fine + " has been charged for this offense");
+            this.currentwallet = this.currentwallet - amount_fine;
+            this.logser.currentuser.wallet = this.currentwallet;
+
+            this.logser.updatewallet().subscribe(
+              data => {
+                data = this.currentwallet;
+                this.playAudioElement(this.Fine.nativeElement, 0.8);
+                this.logser.gettransactions().subscribe(data => {
+                  this.transactioncount = '0000' + (data.length + 1);
+                });
+
+                this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_01';
+                this.transaction['Amount'] = String(this.refill_amount_topay);
+                this.transaction['CreditFacility'] = 'Municipality Office';
+                this.transaction['DebitFacility'] = this.currentUserRole;
+                this.transaction['Purpose'] = 'Fine for Throwing Bottle to City Dustbin';
+                this.logser.createtransaction(this.transaction).subscribe(
+                  data => {
+                    data = this.transaction;
+                  });
+
+              },
+              error => {
+                console.log(error);
+              });
+
+
+
+
+            this.logser.getcashboxmunicipality().subscribe(data => {
+              (data[0]['Cashbox'] == '') ? this.municipalcashbox = 0 : this.municipalcashbox = parseInt(data[0]['Cashbox']);
+              this.municipalcashbox += amount_fine;
+              this.logser.updatecashboxmunicipality(String(this.municipalcashbox)).subscribe(data => { });
+            });
+
+
+
+          }
 
         });
 
@@ -2058,7 +2209,37 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
     }
   }
+  netfine = 0.0;
+  netpurchase = 0.0;
+  taxpaid = 0.0;
+  netrefund = 0.0;
+  calculatenetfine() {
+    this.logser.gettransactions().subscribe(data => {
+      this.netfine = 0.0;
+      this.netpurchase = 0.0;
+      this.taxpaid = 0.0;
+      this.netrefund = 0.0;
+      for (let t = 0; t < data.length; t++) {
+        let getcityId = data[t]['TransactionId'].split("_")[0];
+        console.log(data[t]['DebitFacility'], getcityId, data[t]['Purpose'].includes("tax"), data[t]['Purpose'], data[t]['Amount'])
+        if (data[t]['DebitFacility'] == this.currentUserRole && getcityId == this.currentusercityId && data[t]['Purpose'].includes("Fine")) {
+          this.netfine += parseFloat(data[t]['Amount']);
+        }
+        if (data[t]['DebitFacility'] == this.currentUserRole && getcityId == this.currentusercityId && data[t]['Purpose'].includes("Purchasing")) {
+          this.netpurchase += parseFloat(data[t]['Amount']);
+        }
+        if (data[t]['DebitFacility'] == this.currentUserRole && data[t]['CreditFacility'] == 'Municipality Office' && getcityId == this.currentusercityId && data[t]['Purpose'].includes("tax")) {
+          this.taxpaid += parseFloat(data[t]['Amount']);
+        }
 
+        if (data[t]['CreditFacility'] == this.currentUserRole && getcityId == this.currentusercityId && data[t]['Purpose'].includes("Refund")) {
+          this.netrefund += parseFloat(data[t]['Amount']);
+        }
+      }
+      console.log(data);
+    });
+
+  }
   returndrop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(
@@ -2071,11 +2252,58 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
       let currentlyDroped = event.item.element.nativeElement.id;
       let currentDropzone = event.container.element.nativeElement.classList;
+      let amount_refund = 0.0;
+
+
       if (currentDropzone.contains('bottle_list')) {
         this.updatebottlereturn['currentitem'] = currentlyDroped.split('City')[1].split("at")[0];
         this.updatebottlereturn['fromfacility'] = this.currentUserRole;
+        for (let i = 0; i < this.bottlePrice.length; i++) {
+          if (this.bottlePrice[i]['BottleType'] == currentlyDroped.split('id')[0].split('_')[2] + '.' + currentlyDroped.split('id')[1].split('_')[0]) {
+            amount_refund = (parseFloat(this.bottlePrice[i]['OriginalPrice']) * (this.bottlePrice[i]['percentReturnGood'] / 100));
+            break;
+          }
+        }
+
         this.logser.updateConveyorAssets(this.updatebottlereturn).subscribe((data) => {
           console.log("bottle location update to Return Conveyor");
+
+          this.currentwallet = this.currentwallet + amount_refund;
+          this.logser.currentuser.wallet = this.currentwallet;
+
+          this.logser.updatewallet().subscribe(
+            data => {
+              data = this.currentwallet;
+              this.logser.gettransactions().subscribe(data => {
+                this.transactioncount = '0000' + (data.length + 1);
+              });
+
+              this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_01';
+              this.transaction['Amount'] = String(amount_refund);
+              this.transaction['CreditFacility'] = this.currentUserRole;
+              this.transaction['DebitFacility'] = 'Return Conveyor';
+              this.transaction['Purpose'] = 'Refund for returning Bottle';
+              this.logser.createtransaction(this.transaction).subscribe(
+                data => {
+                  data = this.transaction;
+                  this.playAudioElement(this.Thanksreturning.nativeElement, 0.8);
+                  alert("Thanks for returning the bottle. ₹ " + amount_refund + " has been credited to your wallet");
+                  // let disapper;
+                  // clearTimeout(disapper);
+                  // disapper = setTimeout(function () { $(".bottle_list").empty(); }, 500);
+
+                });
+
+            },
+            error => {
+              console.log(error);
+            });
+
+          this.logser.getsupermarketcashbox().subscribe(data => {
+            (data[0]['Cashbox'] == '') ? this.supermarketcashbox = 0 : this.supermarketcashbox = parseInt(data[0]['Cashbox']);
+            this.supermarketcashbox -= amount_refund;
+            this.logser.updatesupermarketcashbox(String(this.supermarketcashbox)).subscribe(data => { });
+          });
         });
       }
       else if (currentDropzone.contains('cart_bottle_list')) {
@@ -2088,10 +2316,23 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     }
   }
   currentlyrefillingBottle = '';
-  refilldrop(event: CdkDragDrop<string[]>) {
+  private isProcessingDrop: boolean = false;
+  refilldrop(event: CdkDragDrop<string[]>, dropZone: any) {
+    const targetDropZone = dropZone.element.nativeElement.classList;
+
+    // Check if the drop target is 'refilllist' and ensure only one item
+    if (targetDropZone.contains('refilllist')) {
+      // Only allow the drop if the drop zone is empty
+      if (dropZone.data.length > 0) {
+        console.log('Cannot drop more than one item in this zone.');
+        return; // Prevent the drop
+      }
+    }
+
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data, event.previousIndex, event.currentIndex,);
+
     } else {
       transferArrayItem(event.previousContainer.data,
         event.container.data,
@@ -2105,7 +2346,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         that.droppedbottle = true;
         if (that.resetanimation == true) {
           that.initiateanimation(currentlyDroped);
-          that.bottledroppeded.nativeElement.play();
+          that.playAudioElement(that.bottledroppeded.nativeElement, 0.8);
         }
         this.updateonlyloc['currentbottle'] = currentlyDroped.split('City')[1].split("at")[0];
         this.updateonlyloc['Bottleloc'] = "Refilling";
@@ -2144,10 +2385,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             this.currentbottle['currentbottle'] = currentlyDroped.split('City')[1].split("at")[0];
             this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => {
               $(".displayboard").html('Thank you. Visit again. Please press Continue button to refill another bottle');
-              that.thankyou.nativeElement.play();
-              that.refillbrandselected = '';
+              this.playAudioElement(this.thankyou.nativeElement, 0.8);
+              this.refillbrandselected = '';
               $(".refilldropper").css({ 'left': '8px' }).hide();
-              that.resetanimation = false;
+              this.resetanimation = false;
               $(".continue").show();
             }
             );
@@ -2262,7 +2503,9 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     setTimeout(function () {
       $(".supermarketcart").animate({ 'left': '400px' }, 1000, () => {
         that.opensuperflag = 0;
+        that.bottletaken.length = 0;
         let w = that;
+        $('#innerdoor3').animate({ 'height': '1030px' }, 300);
         setTimeout(function () {
           w.dopanzoom(-885, -2343, '1');
           $(".maincity .cart").css({ 'top': '3019px', 'left': '1557px' });
@@ -2283,63 +2526,60 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       if (this.assetdataset[i]['Bottle_loc'] == this.currentUserCartId || this.assetdataset[i]['Bottle_loc'] == 'House@' + this.currentUserCartId && this.assetdataset[i]['purchased'] == true) {
         this.currentusertransaction.push(this.assetdataset[i]);
       }
-      else if (this.assetdataset[i]['Bottle_loc'] == 'In' + this.currentUserCartId && this.assetdataset[i]['purchased'] == false && this.assetdataset[i]['dragged'] == true) {
-        this.updateDragged['dragged'] = false;
-        this.updateDragged['purchased'] = false;
-        this.updateDragged['Bottleloc'] = 'Supermarket shelf';
-        for (let i = 0; i < this.bottletaken.length; i++) {
-          this.updateDragged['currentbottle'] = this.bottletaken[i].split("at")[0].split('City')[1];
-          this.logser.updatethisAssets(this.updateDragged).subscribe((data) => { });
-        }
-      }
+      // else if (this.assetdataset[i]['Bottle_loc'] == 'In' + this.currentUserCartId && this.assetdataset[i]['purchased'] == false && this.assetdataset[i]['dragged'] == true) {
+      //   this.updateDragged['dragged'] = false;
+      //   this.updateDragged['purchased'] = false;
+      //   this.updateDragged['Bottleloc'] = 'Supermarket shelf';
+      //   for (let i = 0; i < this.bottletaken.length; i++) {
+      //     this.updateDragged['currentbottle'] = this.bottletaken[i].split("at")[0].split('City')[1];
+      //     this.logser.updatethisAssets(this.updateDragged).subscribe((data) => { });
+      //   }
+      // }
     }
   }
   showbutton = false;
   selectedbottle = '';
-  loadbottledata() {
-    this.loadledgerdata();
-    for (let i = 0; i < this.currentusertransaction.length; i++) {
-      if (this.currentusertransaction[i]['Content_Code'] == "B1.Shiny" && this.currentusertransaction[i]['Bottle_Code'] == "UB.V" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'atU' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
-      }
-      else if (this.currentusertransaction[i]['Content_Code'] == "B1.Shiny" && this.currentusertransaction[i]['Bottle_Code'] == "B1.V" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'at' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
-      }
-      else if (this.currentusertransaction[i]['Content_Code'] == "B2.Spiky" && this.currentusertransaction[i]['Bottle_Code'] == "B2.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'at' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
-      }
-      else if (this.currentusertransaction[i]['Content_Code'] == "B2.Spiky" && this.currentusertransaction[i]['Bottle_Code'] == "B2.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'at' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
-      }
-      else if (this.currentusertransaction[i]['Content_Code'] == "B3.Bouncy" && this.currentusertransaction[i]['Bottle_Code'] == "B3.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'at' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
-      }
-      else if (this.currentusertransaction[i]['Content_Code'] == "B3.Bouncy" && this.currentusertransaction[i]['Bottle_Code'] == "UB.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'atU' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
-      }
-      else if (this.currentusertransaction[i]['Content_Code'] == "B4.Wavy" && this.currentusertransaction[i]['Bottle_Code'] == "UB.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'atU' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
-      }
-      else if (this.currentusertransaction[i]['Content_Code'] == "B4.Wavy" && this.currentusertransaction[i]['Bottle_Code'] == "UB.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'atU' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
-      }
-      else if (this.currentusertransaction[i]['Content_Code'] == "B5.Silky" && this.currentusertransaction[i]['Bottle_Code'] == "B5.V" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-        this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'at' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
-      }
-    }
+  // loadbottledata() {
+  //   this.loadledgerdata();
+  //   for (let i = 0; i < this.currentusertransaction.length; i++) {
+  //     if (this.currentusertransaction[i]['Content_Code'] == "B1.Shiny" && this.currentusertransaction[i]['Bottle_Code'] == "UB.V" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
+  //       this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'atU' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+  //     }
+  //     else if (this.currentusertransaction[i]['Content_Code'] == "B1.Shiny" && this.currentusertransaction[i]['Bottle_Code'] == "B1.V" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
+  //       this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'at' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+  //     }
+  //     else if (this.currentusertransaction[i]['Content_Code'] == "B2.Spiky" && this.currentusertransaction[i]['Bottle_Code'] == "B2.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
+  //       this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'at' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+  //     }
+  //     else if (this.currentusertransaction[i]['Content_Code'] == "B2.Spiky" && this.currentusertransaction[i]['Bottle_Code'] == "B2.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
+  //       this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'at' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+  //     }
+  //     else if (this.currentusertransaction[i]['Content_Code'] == "B3.Bouncy" && this.currentusertransaction[i]['Bottle_Code'] == "B3.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
+  //       this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'at' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+  //     }
+  //     else if (this.currentusertransaction[i]['Content_Code'] == "B3.Bouncy" && this.currentusertransaction[i]['Bottle_Code'] == "UB.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
+  //       this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'atU' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+  //     }
+  //     else if (this.currentusertransaction[i]['Content_Code'] == "B4.Wavy" && this.currentusertransaction[i]['Bottle_Code'] == "UB.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
+  //       this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'atU' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+  //     }
+  //     else if (this.currentusertransaction[i]['Content_Code'] == "B4.Wavy" && this.currentusertransaction[i]['Bottle_Code'] == "UB.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
+  //       this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'atU' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+  //     }
+  //     else if (this.currentusertransaction[i]['Content_Code'] == "B5.Silky" && this.currentusertransaction[i]['Bottle_Code'] == "B5.V" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
+  //       this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'at' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
+  //     }
+  //   }
 
-  }
+  // }
   openwhyshorter(whyshorter: any) {
-    $("body").removeClass('cartcontent').addClass('frontpage');
-    this.modalService.open(whyshorter);
+    this.modalService.open(whyshorter, { windowClass: "frontpage" });
   }
   openaboutshorter(aboutshorter: any) {
-    $("body").removeClass('cartcontent').addClass('frontpage');
-    this.modalService.open(aboutshorter);
+    this.modalService.open(aboutshorter, { windowClass: "frontpage" });
   }
   opennavshorter(navigation: any) {
-    $("body").removeClass('cartcontent').addClass('frontpage');
-    this.modalService.open(navigation);
+    this.modalService.open(navigation, { windowClass: "frontpage" });
   }
   private intervalId: any;
   private isMoving = false;
@@ -2569,12 +2809,17 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   }
   makeitEmpty() {
     this.currentbottle['Quantity'] = 0;
-    $(".Inhouseshelf_bottles #" + this.selectedBottleatStage).addClass('zero-empty');
-    this.currentbottle['Bottle_Status'] = "Empty-Dirty";
+    $("." + this.selectedBottleatStage.split("at")[1] + ".shampoolevel").css('height', '0px');
+    if (this.currentbottle['Bottle_Status'] != 'Damaged') {
+      $(".Inhouseshelf_bottles #" + this.selectedBottleatStage).addClass('zero-empty');
+      this.currentbottle['Bottle_Status'] = "Empty-Dirty";
+    }
     this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => {
-      let index = this.currentUserPurhcased.findIndex(item => item === this.currentbottle['currentbottle'])
-      this.currentUserPurhcased.splice(index, 1);
-      this.refillbottles.push(this.currentbottle['currentbottle']);
+      if (this.currentbottle['Bottle_Status'] != 'Damaged') {
+        let index = this.currentUserPurhcased.findIndex(item => item === this.currentbottle['currentbottle'])
+        this.currentUserPurhcased.splice(index, 1);
+        this.refillbottles.push(this.currentbottle['currentbottle']);
+      }
     });
   }
   makeitDamaged() {
@@ -2583,24 +2828,93 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => { });
   }
   makeitThrown() {
-    $("#" + this.selectedBottleatStage).addClass('street');
-    this.currentbottle['Bottle_Status'] = "Street";
-    this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => { });
+    console.log(this.selectedBottleatStage);
+    $('.btncont,.shampoolevel').hide();
+    console.log(this.selectedBottleatStage.split('id')[0].split('_')[2])
+    console.log(this.selectedBottleatStage.split('id')[1].split('_')[0])
+    let amount_fine = 0.0;
+    for (let i = 0; i < this.bottlePrice.length; i++) {
+      if (this.bottlePrice[i]['BottleType'] == this.selectedBottleatStage.split('id')[0].split('_')[2] + '.' + this.selectedBottleatStage.split('id')[1].split('_')[0]) {
+        amount_fine = parseFloat(this.bottlePrice[i]['OriginalPrice']) * 0.5;
+        break;
+      }
+    }
+    if (this.currentwallet > amount_fine) {
+      alert("A fine of ₹" + amount_fine + " has been charged for this offense");
+      this.currentwallet = this.currentwallet - amount_fine;
+      this.logser.currentuser.wallet = this.currentwallet;
+
+      this.logser.updatewallet().subscribe(
+        data => {
+          data = this.currentwallet;
+          this.playAudioElement(this.Fine.nativeElement, 0.8);
+          this.logser.gettransactions().subscribe(data => {
+            this.transactioncount = '0000' + (data.length + 1);
+          });
+
+          this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_01';
+          this.transaction['Amount'] = String(amount_fine);
+          this.transaction['CreditFacility'] = 'Municipality Office';
+          this.transaction['Purpose'] = 'Fine for Throwing Bottle';
+          this.logser.createtransaction(this.transaction).subscribe(
+            data => {
+              data = this.transaction;
+
+            });
+
+        },
+        error => {
+          console.log(error);
+        });
+
+
+
+
+      this.logser.getcashboxmunicipality().subscribe(data => {
+        (data[0]['Cashbox'] == '') ? this.municipalcashbox = 0 : this.municipalcashbox = parseInt(data[0]['Cashbox']);
+        this.municipalcashbox += amount_fine;
+        this.logser.updatecashboxmunicipality(String(this.municipalcashbox)).subscribe(data => { });
+      });
+
+
+
+    }
+    $("#" + this.selectedBottleatStage.split("at")[0].split("City")[1]).addClass('Street');
+    this.currentbottle['Location'] = "Street";
+    this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => {
+      if (this.currentbottle['Location'] != 'Street') {
+        let index = this.currentUserPurhcased.findIndex(item => item === this.currentbottle['currentbottle'])
+        this.currentUserPurhcased.splice(index, 1);
+        this.refillbottles.push(this.currentbottle['currentbottle']);
+      }
+    });
   }
   reduceCapacity() {
     if (this.currentbottle['Quantity'] >= 20) {
       this.currentbottle['Quantity'] -= 20;
+      let getheight = $("." + this.selectedBottleatStage.split("at")[1] + ".shampoolevel").css('height').split("px")[0];
+      let reducedheight = parseFloat(getheight) - this.stepheight;
+      $("." + this.selectedBottleatStage.split("at")[1] + ".shampoolevel").css('height', reducedheight + 'px');
+
+      this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => { });
       if (this.currentbottle['Quantity'] == 0) {
         this.currentbottle['Bottle_Status'] = "Empty-Dirty";
+        this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => {
+          let index = this.currentUserPurhcased.findIndex(item => item === this.currentbottle['currentbottle'])
+          this.currentUserPurhcased.splice(index, 1);
+          this.refillbottles.push(this.currentbottle['currentbottle']);
+        });
       }
+
     }
-    this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => { });
+
   }
   currentbottle = {
     'currentbottle': '',
     'Quantity': 0,
     'Bottle_Status': "InUse",
-    'Current_Refill_Count': 0
+    'Current_Refill_Count': 0,
+    'Location': ''
   }
   selectedBottleatStage: string = '';
   sldBottleData: any;
@@ -2608,39 +2922,78 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     let element = event.target || event.srcElement || event.currentTarget;
     this.selectedBottleatStage = element.id;
     this.currentbottle['currentbottle'] = element.id.split("at")[0].split("City")[1];
-
-    $("body").removeClass('frontpage').addClass('cartcontent');
+    this.calculatenetfine();
     if (this.opensuperflag == 0) {
       this.altertab = 2;
     }
-    this.modalService.open(cartcontent);
-    this.logser.getthisAssets(this.currentbottle['currentbottle']).subscribe((data) => {
-      this.sldBottleData = data;
-      if (data[0]['remQuantity'] == '') {
-        data[0]['remQuantity'] = 500;
-      }
-      this.currentbottle['Quantity'] = data[0]['remQuantity'];
-      this.currentbottle['Bottle_Status'] = data[0]['Bottle_Status'];
 
+    this.modalService.open(cartcontent, { windowClass: "cartcontent" });
+    this.checkthebottlestatusfordisplay();
 
-    });
 
 
 
   }
+  checkthebottlestatusfordisplay() {
+    if (this.currentbottle['currentbottle'] != '') {
+      this.logser.getthisAssets(this.currentbottle['currentbottle']).subscribe((data) => {
+        this.sldBottleData = data;
+        console.log(this.sldBottleData);
+        if (data[0]['remQuantity'] == '') {
+          data[0]['remQuantity'] = 500;
+        }
+        this.currentbottle['Quantity'] = data[0]['remQuantity'];
+        this.currentbottle['Bottle_Status'] = data[0]['Bottle_Status'];
+        this.currentbottle['Location'] = data[0]['Bottle_loc'];
+        if (this.currentbottle['Location'] !== "Street") {
+          let getheight = parseFloat($("." + this.selectedBottleatStage.split("at")[1] + ".shampoolevel").css('height').split("px")[0]);
+          this.stepheight = getheight / 25;
+          let unitreduction = 500 - (this.currentbottle['Quantity']);
+          let reductionpropo = unitreduction / 500;
+          let heightred = getheight * reductionpropo;
+          let reducedheight = getheight - heightred;
+          $("." + this.selectedBottleatStage.split("at")[1] + ".shampoolevel").css('height', reducedheight + 'px');
+          let checkuniversal = this.sldBottleData[0]['Bottle_Code'].split(".")[0];
+          this.shapooprice = parseFloat(this.sldBottleData[0]['Content_Price']) / parseFloat(this.sldBottleData[0]['Quantity']);
+          this.totalamount = parseFloat(this.sldBottleData[0]['Bottle_Price']) + parseFloat(this.sldBottleData[0]['Content_Price']) + parseFloat(this.sldBottleData[0]['Env_Tax'])
+          if (checkuniversal == 'UB') {
+            this.leblfound = true;
+            this.bottleclass = "universal";
+            this.frontlabel = this.sldBottleData[0]['Content_Code'].split(".")[1].toString().toLowerCase() + "_label";
+          }
+          else {
+            this.leblfound = false;
+            this.bottleclass = this.sldBottleData[0]['Content_Code'].split(".")[1];
+          }
 
+
+        }
+        else {
+          $(".btncont,.shampoolevel").hide();
+          $("#" + this.selectedBottleatStage.split("at")[0].split("City")[1]).addClass('Street');
+        }
+      });
+    }
+    else {
+
+    }
+  }
   checksBottleStatus(item: CdkDrag<string>) {
-    if (!item.element.nativeElement.classList.contains('zero-empty') && !item.element.nativeElement.classList.contains('damaged') && !item.element.nativeElement.classList.contains('street')) { return true; }
+    if (!item.element.nativeElement.classList.contains('zero-empty') && !item.element.nativeElement.classList.contains('damaged') && !item.element.nativeElement.classList.contains('Street')) { return true; }
     else { return false; }
   }
 
   checksBottleempty(item: CdkDrag<string>) {
-    if (item.element.nativeElement.classList.contains('zero-empty') && !item.element.nativeElement.classList.contains('damaged') && !item.element.nativeElement.classList.contains('street')) { return true; }
+    if (item.element.nativeElement.classList.contains('zero-empty') && !item.element.nativeElement.classList.contains('damaged') && !item.element.nativeElement.classList.contains('Street')) { return true; }
     else { return false; }
   }
 
-
+  playAudioElement(audioElement: HTMLAudioElement, volume: number) {
+    audioElement.volume = volume;
+    audioElement.muted = false;
+    audioElement.play().then(() => {
+    }).catch(error => {
+      console.error(`Error playing ${audioElement.src}:`, error);
+    });
+  }
 }
-
-
-

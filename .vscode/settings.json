@@ -7,5 +7,6 @@
     "notebook.markup.fontSize": 12,
     "notebook.output.fontSize": 12,
     "chat.editor.fontSize": 12,
-    "editor.lineHeight": 0
+    "editor.lineHeight": 0,
+    "python.pythonPath": "venv\\Scripts\\python.exe"
 }

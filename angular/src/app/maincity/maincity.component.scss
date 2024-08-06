@@ -82,6 +82,17 @@
             display: none;
         }
 
+        .reverseBoard {
+            width: 115px;
+            height: 145px;
+            position: absolute;
+            left: 6231px;
+            top: 2053px;
+            font-size: 18px;
+            text-align: center;
+            color: #ff0;
+        }
+
         #clock {
             font-family: sans-serif;
             color: #fff;
@@ -164,8 +175,8 @@
 }
 
 ::ng-deep .modal-dialog {
-    max-width: 81%;
-    width: 81%;
+    max-width: 84%;
+    width: 84%;
 }
 
 
@@ -322,6 +333,15 @@
 
     }
 
+    .cashflow {
+        div {
+            height: 318px;
+            overflow: auto;
+        }
+
+        @extend .commontablecss;
+    }
+
     .aligntable {
         display: flex;
         justify-content: center;
@@ -410,10 +430,13 @@
     }
 
     .imgclass {
-        width: 102px !important;
-        height: 263px !important;
+        width: 102px;
+        height: 263px;
         margin-top: 10px !important;
         margin: 0 auto;
+        background-size: cover;
+        position: absolute;
+        background-repeat: no-repeat;
 
         &.B1 {
             width: 127px !important;
@@ -429,20 +452,89 @@
 
     .btncont {
         position: absolute;
-        bottom: 0px;
+        top: 109px;
         display: flex;
-        width: 279px;
+        width: 66px;
         justify-content: space-around;
         align-items: flex-end;
-        left: 0;
+        left: 111px;
         right: 0;
         margin: auto;
+        flex-direction: column;
 
+    }
+
+    .textin {
+        color: #fff;
+        position: absolute;
+        left: 521px;
+        top: 32px;
     }
 
     .whole {
         padding: 5px;
         display: flex;
+        justify-content: center;
+    }
+
+    .shampoolevel {
+        position: absolute;
+        width: 11px;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+
+
+        &.B1,
+        &.UB1 {
+            background: #dddd57;
+            height: 190px;
+            bottom: 10px;
+            left: 28px;
+        }
+
+        &.B2,
+        &.UB2 {
+            background: #987edf;
+            height: 177px;
+            bottom: 10px;
+            left: 22px;
+        }
+
+        &.B3,
+        &.UB3 {
+            background: #a3008c;
+            left: 22px;
+            bottom: 10px;
+            height: 185px;
+        }
+
+
+        &.B4,
+        &.U0B4,
+        &.U1B4 {
+            background: #99c29f;
+            left: 17px;
+            bottom: 10px;
+            height: 193px;
+        }
+
+
+        &.B5,
+        &.UB5 {
+            background: #d84d5d;
+            bottom: 10px;
+            left: 17px;
+            height: 185px;
+        }
+
+    }
+
+
+
+
+    .currentbottleshow {
+        display: flex;
+
         justify-content: center;
     }
 
@@ -463,6 +555,11 @@
         margin-bottom: 10px;
     }
 
+}
+
+.savebtn {
+    position: fixed;
+    right: 10%;
 }
 
 .icon_container {
@@ -504,6 +601,14 @@
         height: 40px;
         background-image: url('./../../assets/img/ledgerbook.png');
         background-size: cover;
+        cursor: pointer;
+    }
+
+    .basket {
+        width: 56px;
+        height: 40px;
+        background-image: url('./../../assets/img/basket.png');
+        background-size: 100% 100%;
         cursor: pointer;
     }
 
@@ -570,4 +675,17 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.variableholder{
+    position: relative;
+    left: 228px;
+    font-size: 9px;
+    top: 9px;
+    .topic{
+        font-weight: bold;
+    }
+}
+.bottlecontent{
+    position: absolute;
+    top: 20px;
 }

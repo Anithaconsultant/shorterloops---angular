@@ -4,7 +4,9 @@
     background-image: url('./../../assets/img/landingpage.png');
     background-size: cover;
     font-family: 'poppin';
-
+    .form-control.is-invalid {
+        background-image: none !important;
+      }
     .topright {
         position: absolute;
         width: 100px;

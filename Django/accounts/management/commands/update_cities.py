@@ -9,5 +9,6 @@ class Command(BaseCommand):
         cities = City.objects.all()
         for city in cities:
             start_timer_for_city(city)
+            
 
         self.stdout.write(self.style.SUCCESS("City timers started successfully."))

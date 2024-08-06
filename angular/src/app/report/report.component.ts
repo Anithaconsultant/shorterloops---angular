@@ -1,5 +1,7 @@
+import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { LoginserviceService } from '../services/loginservice.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'app-report',
   templateUrl: './report.component.html',
@@ -11,16 +13,23 @@ export class ReportComponent implements OnInit {
   selectedAsset = '';
   selectedUser = '';
   auditLogs: any[] = [];
-  constructor(private logser: LoginserviceService) { }
+  constructor(private router: Router, private logser: LoginserviceService, private modalService: NgbModal) { }
   ngOnInit(): void {
-    this.logser.getAllAssets()
-      .subscribe((logs: any) => {
-        for (let y = 0; y < logs.length; y++) {
-          this.options.push(logs[y]['AssetId']);
-          if(logs[y]['Tofacility']!='' && !this.users.includes(logs[y]['Tofacility']))
-          this.users.push(logs[y]['Tofacility'])
-        }
-      });
+
+    if (this.logser.currentuser.Username != '') {
+
+      this.logser.getAllAssets()
+        .subscribe((logs: any) => {
+          for (let y = 0; y < logs.length; y++) {
+            this.options.push(logs[y]['AssetId']);
+            if (logs[y]['Tofacility'] != '' && !this.users.includes(logs[y]['Tofacility']))
+              this.users.push(logs[y]['Tofacility'])
+          }
+        });
+    }
+    else {
+      this.router.navigate(['/login']);
+    }
   }
   onAssetSelectChange() {
     if (this.selectedAsset != '') {
@@ -45,5 +54,12 @@ export class ReportComponent implements OnInit {
         console.log(this.auditLogs)
       });
   }
+  gotocity(){
+    this.router.navigate(["maincity"]);
+  }
 
+
+showsample(report: any) {
+  this.modalService.open(report, { windowClass : "reportclass"});
+}
 }

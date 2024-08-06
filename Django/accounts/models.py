@@ -132,6 +132,7 @@ class audit_log(models.Model):
     id = models.AutoField(primary_key=True)
     action = models.CharField(max_length=70, blank=False)
     AssetId = models.CharField(max_length=100, blank=False)
+    CityId= models.CharField(max_length=100, blank=True)
     Bottle_loc = models.CharField(max_length=100, blank=False,default="Supermarket shelf")
     TransactionId = models.CharField(max_length=100, blank=True)
     TransactionDate= models.CharField(max_length=100, blank=True)

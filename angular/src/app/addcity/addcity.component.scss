@@ -18,14 +18,29 @@
         border: 2px solid gray;
     }
 }
-
+.maskholder{
+    display: none;
+}
+.mask{
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.8);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 36px;
+}
 .landingpage {
 
     width: 100%;
     height: 100vh;
     background-image: url('./../../assets/img/register.png');
     background-size: cover;
-
+    .form-control.is-invalid {
+        background-image: none !important;
+      }
     .topalign {
         margin-top: -8%;
     }
