@@ -50,6 +50,18 @@
     <audio #cartdisplay preload="auto">
         <source src="assets/audio/cartdisplay.mp3" type="audio/mp3" />
     </audio>
+    <audio #StopEntry preload="auto">
+        <source src="assets/audio/StopEntry.mp3" type="audio/mp3" />
+    </audio>
+    <audio #Supermarket_Return preload="auto">
+        <source src="assets/audio/Supermarket_Return.mp3" type="audio/mp3" />
+    </audio>
+    <audio #Thanksreturning preload="auto">
+        <source src="assets/audio/Thanksreturning.mp3" type="audio/mp3" />
+    </audio>
+    <audio #Fine preload="auto">
+        <source src="assets/audio/Fine.mp3" type="audio/mp3" />
+    </audio>
     <div class="maincity" #maincity id="maincity" [hidden]="opensuperflag!=0">
         <div class="truck side">
             <div class="holder">
@@ -67,7 +79,7 @@
                 (touchend)="opensuperflag=1;opensupermarket();">
 
             </div>
-            <div class="cartid" (click)="opencart(cartcontent,$event)"></div>
+            <div class="cartid" (click)="opencart(cartcontent,$event);calculatenetfine();showcashflow();"></div>
             <div class="loadinglogo">Loading...</div>
             <div class="topbasketholder">
                 <div cdkDropList #customercartList="cdkDropList"
@@ -101,9 +113,10 @@
             <div class="Plastic commoncls">CLOSED</div>
             <div class="Ubottle commoncls">CLOSED</div>
             <div class="Making commoncls">CLOSED</div>
-            <!-- <div class="Refilling commoncls">CLOSE</div> -->
+            <div class="Refilling commoncls">CLOSE</div>
         </div>
         <div class="mayorflag"></div>
+        <div class="reverseBoard">Opening Soon..</div>
         <div id="clock">Time {{citytiming['CurrentTime']}}</div>
         <div id="day">Day :{{citytiming['CurrentDay']}}</div>
         <div class="mayorofzboard">{{cityname | uppercase}} MUNICIPAL OFFICE</div>
@@ -281,7 +294,7 @@
                 <div class="cartid"></div>
                 <div class="refilledholder">
                     <div cdkDropList #bottlerefilled="cdkDropList" [cdkDropListConnectedTo]="[refillingMachine]"
-                        [cdkDropListData]="refilledbottles" (cdkDropListDropped)="refilldrop($event)"
+                        [cdkDropListData]="refilledbottles" (cdkDropListDropped)="refilldrop($event,bottlerefilled)"
                         class="refilled_list" [cdkDropListEnterPredicate]="checkrefilledcondition">
                         <div *ngFor="let item of refilledbottles" id="{{item}}"
                             class=" {{item.split('at')[1]}} refillbtl " (dragstart)="onDragStart($event)" cdkdrag
@@ -290,8 +303,8 @@
                 </div>
                 <div class="refillbottleholder">
                     <div cdkDropList #bottlestoberefilled="cdkDropList" [cdkDropListConnectedTo]="[refillingMachine]"
-                        [cdkDropListData]="refillbottles" (cdkDropListDropped)="refilldrop($event)" class="refill_list"
-                        [cdkDropListEnterPredicate]="checkrefillcondition">
+                        [cdkDropListData]="refillbottles" (cdkDropListDropped)="refilldrop($event,bottlestoberefilled)"
+                        class="refill_list" [cdkDropListEnterPredicate]="checkrefillcondition">
                         <div *ngFor="let item of refillbottles" id="{{item}}"
                             class="{{item}} {{item.split('at')[1]}} refillbtl toberefilled" cdkDrag longPressDrag
                             [cdkDragStartDelay]="250"></div>
@@ -365,8 +378,8 @@
                 <div class="refilldropper">
                     <div cdkDropList #refillingMachine="cdkDropList"
                         [cdkDropListConnectedTo]="[bottlestoberefilled,bottlerefilled]"
-                        [cdkDropListData]="atRefillingMchn" (cdkDropListDropped)="refilldrop($event)" class="refilllist"
-                        [cdkDropListEnterPredicate]="checkrefilledbottle">
+                        [cdkDropListData]="atRefillingMchn" (cdkDropListDropped)="refilldrop($event,refillingMachine)"
+                        class="refilllist" [cdkDropListEnterPredicate]="checkrefilledbottle">
                         <div *ngFor="let item of atRefillingMchn" class="{{item.split('at')[1]}} refillbtl"
                             id="{{item}}" (dragstart)="onDragStart($event)" cdkdrag longPressDrag
                             [cdkDragStartDelay]="250">
@@ -414,21 +427,34 @@
         <div ngbDropdown class="picholder">
             <div type="button" class="displaypic" id="dropdown" ngbDropdownToggle></div>
             <div ngbDropdownMenu aria-labelledby="dropdown">
-                <button ngbDropdownItem *ngIf="currentrole=='Customer'" (click)="switchrole()">Switch Role</button>
-                <button ngbDropdownItem *ngIf="currentrole=='Mayor'" (click)="switchcustomerrole()">Switch Role as
-                    Customer</button>
-                <button ngbDropdownItem *ngIf="currentrole=='Mayor'">Check the municipality office cashbox
-                    status</button>
-                <button ngbDropdownItem *ngIf="currentrole=='Mayor'">Check the office ledger book</button>
-                <button ngbDropdownItem *ngIf="currentrole=='Mayor'">Run the garbage truck daily</button>
-                <button ngbDropdownItem *ngIf="currentrole=='Mayor'">Update the City Rule Book</button>
-                <button ngbDropdownItem *ngIf="currentrole=='Mayor'">Update Notices and Announcements</button>
-                <button ngbDropdownItem *ngIf="currentrole=='Mayor'" (click)="showNewComponent()">Generate
-                    Reports</button>
-                <button ngbDropdownItem *ngIf="currentrole=='Mayor'">Set the City Clock Tower Tick rate</button>
-                <button ngbDropdownItem *ngIf="currentrole=='Mayor'">Audit the universal bottle cleaning
-                    process</button>
-                <button ngbDropdownItem *ngIf="currentrole=='Mayor'">Audit the refilling station</button>
+                <div *ngIf="this.switchyesorno==1">
+                    <button ngbDropdownItem (click)="switchcustomerrole()">Switch Role as {{currentrole}}
+                    </button>
+                </div>
+                <div *ngIf="this.switchyesorno==2">
+                    <button ngbDropdownItem (click)="switchcustomerrole()">Switch Role as Customer</button>
+
+                    <button ngbDropdownItem [disabled]="true" *ngIf="currentrole=='Mayor'">Check the municipality office
+                        cashbox
+                        status</button>
+                    <button ngbDropdownItem [disabled]="true" *ngIf="currentrole=='Mayor'">Check the office ledger
+                        book</button>
+                    <button ngbDropdownItem [disabled]="true" *ngIf="currentrole=='Mayor'">Run the garbage truck
+                        daily</button>
+                    <button ngbDropdownItem [disabled]="true" *ngIf="currentrole=='Mayor'">Update the City Rule
+                        Book</button>
+                    <button ngbDropdownItem [disabled]="true" *ngIf="currentrole=='Mayor'">Update Notices and
+                        Announcements</button>
+                    <button ngbDropdownItem *ngIf="currentrole=='Mayor'" (click)="showNewComponent()">Show Asset Audit
+                        Trail</button>
+                    <button ngbDropdownItem [disabled]="true" *ngIf="currentrole=='Mayor'">Set the City Clock Tower Tick
+                        rate</button>
+                    <button ngbDropdownItem [disabled]="true" *ngIf="currentrole=='Mayor'">Audit the universal bottle
+                        cleaning
+                        process</button>
+                    <button ngbDropdownItem [disabled]="true" *ngIf="currentrole=='Mayor'">Audit the refilling
+                        station</button>
+                </div>
 
                 <div ngbDropdown class="d-inline-block">
                     <div type="button" class="btn" id="dropdownBasic1" ngbDropdownToggle>
@@ -449,14 +475,18 @@
 <ng-template #content let-modal>
     <div class="modal-header">
         <h4 class="modal-title" id="modal-basic-title">Select Your Avatar</h4>
+
         <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
-        <div *ngFor="let in of newmale" class="pics pic_{{in}}" (click)="selectphoto(in)"></div>
+        <button type="button" class="btn btn-primary savebtn"
+            (click)="modal.close('Save click');saveavatar();">Save</button>
+        <div class="profilepic_cont">
+            <div *ngFor="let in of newmale" class="pics pic_{{in}}" (click)="selectphoto(in)"></div>
+        </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark"
-            (click)="modal.close('Save click');saveavatar();">Save</button>
+        <button type="button" class="btn btn-primary" (click)="modal.close('Save click');saveavatar();">Save</button>
     </div>
 </ng-template>
 
@@ -515,24 +545,24 @@
                             <td>&#x20B9; {{currentwallet | number : '1.2-2'}}</td>
                         </tr>
                         <tr>
-                            <td>Allowances</td>
+                            <td>Monthly Allowance</td>
                             <td>&#x20B9; 2000</td>
                         </tr>
                         <tr>
                             <td>Purchases</td>
-                            <td>&#x20B9;</td>
+                            <td>&#x20B9; {{netpurchase| number : '1.2-2'}}</td>
                         </tr>
                         <tr>
                             <td>Earning from Returns</td>
-                            <td>&#x20B9;</td>
+                            <td>&#x20B9; {{netrefund | number : '1.2-2'}}</td>
                         </tr>
                         <tr>
                             <td>Taxes</td>
-                            <td>&#x20B9;</td>
+                            <td>&#x20B9; {{taxpaid| number : '1.2-2'}}</td>
                         </tr>
                         <tr>
                             <td>Fines</td>
-                            <td>&#x20B9;</td>
+                            <td>&#x20B9; {{netfine| number : '1.2-2'}}</td>
                         </tr>
                     </table>
                 </div>
@@ -614,12 +644,30 @@
                 <div class="emptycontent" *ngIf="bottletaken.length==0">There is no item added to cart</div>
             </div>
             <div *ngIf="altertab==2 && opensuperflag==0">
-                <div class="currentbottleshow">
+                <div class="currentbottleshow" *ngIf="selectedBottleatStage!=''">
                     <div id="{{selectedBottleatStage.split('at')[0].split('City')[1]}}"
                         class="{{selectedBottleatStage.split('at')[1] }}_{{currentbottle['Bottle_Status']}} imgclass">
                         <div class="shampoolevel {{selectedBottleatStage.split('at')[1] }}"></div>
                     </div>
-                   
+                    <div class="backside">
+                        <div class="variableholder">
+                            <div class="topic">Bottle Data:</div>
+                            <div class="DOM">Date of Manufacture: {{sldBottleData[0].DOM}}</div>
+                            <div class="Quantity">Quantity: {{sldBottleData[0].Quantity}} {{sldBottleData[0].Units}}</div>
+                            <div class="Current_Refill_Count">Current Refill Count: {{sldBottleData[0].Current_Refill_Count}}</div>
+                            <div class="Latest_Refill_Date">Latest Refill Date: {{sldBottleData[0].Latest_Refill_Date}}</div>
+                            <div class="Shampoo_Price">Shampoo Price: &#8377;{{shapooprice}}</div>
+                            <div class="Content_Price">Content Price: &#8377; {{sldBottleData[0].Content_Price}}</div>
+                            <div class="Bottle_Price">Bottle Price: &#8377; {{sldBottleData[0].Bottle_Price}}</div>
+                            <div class="Discount_RefillB">Discount For Refill Bottle: &#8377; {{sldBottleData[0].Discount_RefillB}}</div>
+                            <div class="Redeem_Good">Discount for Redeem Good: &#8377; {{sldBottleData[0].Redeem_Good}}</div>
+                            <div class="Discard_fine">Discard Fine: &#8377; {{sldBottleData[0].Discard_fine}}</div>
+                            <div class="Env_Tax">Environmental Tax: &#8377; {{sldBottleData[0].Env_Tax}}</div>
+                            <div class="Total_price">Net Price: &#8377; {{totalamount}}</div>
+                            <div class="AssetId">Asset Id: {{sldBottleData[0].AssetId}}</div>
+                        </div>
+                    </div>
+
                     <div class="btncont">
                         <div class="use" (click)="reduceCapacity()">Use</div>
                         <div class="dent" (click)="makeitDamaged()">Dent</div>
@@ -627,29 +675,61 @@
                         <div class="throw" (click)="makeitThrown()">Throw</div>
                     </div>
                 </div>
-                <div class="bottlecontent">
+                <div class="bottlecontent" *ngIf="selectedBottleatStage!=''">
                     <div> "Bottle Status :" {{currentbottle['Bottle_Status']}}</div>
                     <div>"Sampoo Quantity :" {{currentbottle['Quantity']}}</div>
-                    <div>"Bottle ID:" {{currentbottle['currentbottle'] }}</div> 
-                    <div>"Bottle Location:" {{currentbottle['Location'] }}</div> 
+                    <div>"Bottle ID:" {{currentbottle['currentbottle'] }}</div>
+                    <div>"Bottle Location:" {{currentbottle['Location'] }}</div>
                 </div>
+                <div *ngIf="selectedBottleatStage==''">Please Select any bottle in your Cart</div>
             </div>
 
             <div *ngIf="altertab==3">
-                <div class="quotientimg"></div>
+                <div class="quotientimg">
+                    <div class="textin">(Dummy Data)</div>
+                </div>
+            </div>
+            <div *ngIf="altertab==4">
+                <div class="cashflow">
+                    <div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th>Amount</th>
+                                    <th>Debit Facility </th>
+                                    <th>Credit Facility</th>
+                                    <th>Purpose</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of cashflowdata;">
+                                    <td>{{ item.TransactionId}}</td>
+                                    <td>{{ item.Amount | number : '1.2-2'}}</td>
+                                    <td>{{ item.DebitFacility}}</td>
+                                    <td>{{ item.CreditFacility}}</td>
+                                    <td>{{ item.Purpose}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <div class="modal-footer">
         <div class="icon_container">
+            <div class="icncon" [ngClass]="{'highlighttab': altertab == 4}">
+                <div class="ledger" (click)="altertab=4;showcashflow();"></div>
+            </div>
             <div class="icncon" [ngClass]="{'highlighttab': altertab == 0}">
-                <div class="wallet" (click)="altertab=0;"></div>
+                <div class="wallet" (click)="altertab=0;calculatenetfine()"></div>
             </div>
             <div class="icncon" [ngClass]="{'highlighttab': altertab == 1}">
-                <div class="ledger" (click)="altertab=1;loadledgerdata();"></div>
+                <div class="basket" (click)="altertab=1;loadledgerdata();"></div>
             </div>
             <div class="icncon" [ngClass]="{'highlighttab': altertab == 2}">
-                <div class="bottle" (click)="altertab=2; loadbottledata();"></div>
+                <div class="bottle" (click)="altertab=2;checkthebottlestatusfordisplay(); "></div>
             </div>
             <div class="icncon" [ngClass]="{'highlighttab': altertab == 3}">
                 <div class="recyclebtn" (click)="altertab=3;"></div>

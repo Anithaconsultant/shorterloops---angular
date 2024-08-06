@@ -50,7 +50,6 @@ export class HomeComponent implements OnInit {
       this.user = data;
       
     })
-    $("body").addClass('frontpage').removeClass('cartcontent');
   }
   setList: any[] = [];
   selectedcityid = '';
@@ -123,15 +122,15 @@ export class HomeComponent implements OnInit {
     });
   }  openwhyshorter(whyshorter:any){
   
-    this.modalService.open(whyshorter);
+    this.modalService.open(whyshorter,{windowClass:'frontpage'});
   }
   openaboutshorter(aboutshorter:any){
   
-    this.modalService.open(aboutshorter);
+    this.modalService.open(aboutshorter,{windowClass:'frontpage'});
   }
   opennavshorter(navigation: any) {
 
-    this.modalService.open(navigation);
+    this.modalService.open(navigation,{windowClass:'frontpage'});
   }
 
   dochanges() {

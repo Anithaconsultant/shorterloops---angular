@@ -166,7 +166,6 @@ export class AddcityComponent implements OnInit {
     if (this.logser.currentuser.Username == '') {
       this.router.navigate(["login"])
     }
-    $("body").addClass('frontpage').removeClass('cartcontent');
   }
   selectcity(ind: any) {
     $(".city").css('border', '2px solid transparent');
@@ -187,6 +186,7 @@ export class AddcityComponent implements OnInit {
       return;
     }
     if (this.submitted) {
+      $(".maskholder").show();
       if (this.selectedavatar == 0) {
         alert("kindly select your Avatar")
       }
@@ -272,12 +272,12 @@ export class AddcityComponent implements OnInit {
     }
   }
   openwhyshorter(whyshorter: any) {
-    this.modalService.open(whyshorter);
+    this.modalService.open(whyshorter,{windowClass:'frontpage'});
   }
   openaboutshorter(aboutshorter: any) {
-    this.modalService.open(aboutshorter);
+    this.modalService.open(aboutshorter,{windowClass:'frontpage'});
   }
   opennavshorter(navigation: any) {
-    this.modalService.open(navigation);
+    this.modalService.open(navigation,{windowClass:'frontpage'});
   }
 }

@@ -1,6 +1,7 @@
 import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { LoginserviceService } from '../services/loginservice.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'app-report',
   templateUrl: './report.component.html',
@@ -12,7 +13,7 @@ export class ReportComponent implements OnInit {
   selectedAsset = '';
   selectedUser = '';
   auditLogs: any[] = [];
-  constructor(private router: Router, private logser: LoginserviceService) { }
+  constructor(private router: Router, private logser: LoginserviceService, private modalService: NgbModal) { }
   ngOnInit(): void {
 
     if (this.logser.currentuser.Username != '') {
@@ -53,5 +54,12 @@ export class ReportComponent implements OnInit {
         console.log(this.auditLogs)
       });
   }
+  gotocity(){
+    this.router.navigate(["maincity"]);
+  }
 
+
+showsample(report: any) {
+  this.modalService.open(report, { windowClass : "reportclass"});
+}
 }

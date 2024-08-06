@@ -12,7 +12,7 @@ export class LoginserviceService {
     'UserId': '',
     'CityId': '',
     'Role': '',
-    'wallet': 0,
+    'wallet': 0.0,
     'cartId': '',
     'gender': '',
     'avatar': '',
@@ -23,8 +23,8 @@ export class LoginserviceService {
     'cityrate': '',
     'cityavatar': ''
   };
-  // baseurl = "https://dbl.iihs.in/api/";
-  baseurl = "http://127.0.0.1:8000/api/";
+  baseurl = "https://dbl.iihs.in/api/";
+  //baseurl = "http://127.0.0.1:8000/api/";
   authorizationData = 'Basic ' + btoa(this.username + ':' + this.password);
   httpHeaders = new HttpHeaders({
     'Content-Type': 'application/json',
@@ -115,12 +115,15 @@ export class LoginserviceService {
   }
 
   updatethisAssetQuantity(currentbottle: any): Observable<any> {
-    const body = {
+    const body: { [key: string]: any } = {
       remQuantity: currentbottle.Quantity,
       Bottle_Status: currentbottle.Bottle_Status,
       Current_Refill_Count:currentbottle.Current_Refill_Count
 
     };
+    if (currentbottle.Location !== '') {
+      body['Bottle_loc'] = currentbottle.Location;
+    }
 
     return this.http.put(this.baseurl + 'assets/' + currentbottle.currentbottle, body,
       { headers: this.httpHeaders });

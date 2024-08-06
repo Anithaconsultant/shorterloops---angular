@@ -1,7 +1,7 @@
 <div class="report_maincontainer">
     <div class="reportWrapper">
         <div class="row">
-            <div class="text">Report Generation</div>
+            <div class="text">Journey of Shampoo Bottles</div>
             <div class="formcls">
                 <div class="element">
                     <div for="assetSelect">Select Asset</div>
@@ -23,8 +23,10 @@
                 </div>
            
             </div>
+            <div class="navtocity" (click)="gotocity()">&#10006;</div>
+            <div class="sample" (click)="showsample(report)">Sample Video</div>
         </div>
-        <div class="row">
+        <div class="row commontablecss">
             <table>
                 <thead>
                     <tr>
@@ -59,5 +61,14 @@
             </table>
         </div>
     </div>
-
+    <ng-template #report let-modal>
+        <div class="modal-header">
+            <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+        </div>
+        <div class="modal-body">
+            <div class="innderdivvidoe">
+                <div class="loadvideo"><video src="./assets/video/ReportExamples_V03.mp4" width="100%" height="100%" controls></video></div>
+            </div>
+        </div>
+    </ng-template>
 </div>

@@ -23,7 +23,6 @@ export class LoginComponent implements OnInit {
       username: [''],
       password: ['']
     })
-    $("body").addClass('frontpage').removeClass('cartcontent');
   }
   login() {
     this.submitted = true;
@@ -81,14 +80,14 @@ export class LoginComponent implements OnInit {
   }
   openwhyshorter(whyshorter: any) {
 
-    this.modalService.open(whyshorter);
+    this.modalService.open(whyshorter,{windowClass:'frontpage'});
   }
   openaboutshorter(aboutshorter: any) {
 
-    this.modalService.open(aboutshorter);
+    this.modalService.open(aboutshorter,{windowClass:'frontpage'});
   }
   opennavshorter(navigation: any) {
 
-    this.modalService.open(navigation);
+    this.modalService.open(navigation,{windowClass:'frontpage'});
   }
 }

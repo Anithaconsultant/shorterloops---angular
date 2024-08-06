@@ -82,6 +82,17 @@
             display: none;
         }
 
+        .reverseBoard {
+            width: 115px;
+            height: 145px;
+            position: absolute;
+            left: 6231px;
+            top: 2053px;
+            font-size: 18px;
+            text-align: center;
+            color: #ff0;
+        }
+
         #clock {
             font-family: sans-serif;
             color: #fff;
@@ -164,8 +175,8 @@
 }
 
 ::ng-deep .modal-dialog {
-    max-width: 81%;
-    width: 81%;
+    max-width: 84%;
+    width: 84%;
 }
 
 
@@ -322,6 +333,15 @@
 
     }
 
+    .cashflow {
+        div {
+            height: 318px;
+            overflow: auto;
+        }
+
+        @extend .commontablecss;
+    }
+
     .aligntable {
         display: flex;
         justify-content: center;
@@ -410,8 +430,8 @@
     }
 
     .imgclass {
-        width: 102px ;
-        height: 263px ;
+        width: 102px;
+        height: 263px;
         margin-top: 10px !important;
         margin: 0 auto;
         background-size: cover;
@@ -442,6 +462,13 @@
         margin: auto;
         flex-direction: column;
 
+    }
+
+    .textin {
+        color: #fff;
+        position: absolute;
+        left: 521px;
+        top: 32px;
     }
 
     .whole {
@@ -480,16 +507,17 @@
             bottom: 10px;
             height: 185px;
         }
-        
+
 
         &.B4,
-        &.U0B4,&.U1B4 {
+        &.U0B4,
+        &.U1B4 {
             background: #99c29f;
             left: 17px;
             bottom: 10px;
             height: 193px;
         }
-        
+
 
         &.B5,
         &.UB5 {
@@ -527,6 +555,11 @@
         margin-bottom: 10px;
     }
 
+}
+
+.savebtn {
+    position: fixed;
+    right: 10%;
 }
 
 .icon_container {
@@ -568,6 +601,14 @@
         height: 40px;
         background-image: url('./../../assets/img/ledgerbook.png');
         background-size: cover;
+        cursor: pointer;
+    }
+
+    .basket {
+        width: 56px;
+        height: 40px;
+        background-image: url('./../../assets/img/basket.png');
+        background-size: 100% 100%;
         cursor: pointer;
     }
 
@@ -634,4 +675,17 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.variableholder{
+    position: relative;
+    left: 228px;
+    font-size: 9px;
+    top: 9px;
+    .topic{
+        font-weight: bold;
+    }
+}
+.bottlecontent{
+    position: absolute;
+    top: 20px;
 }
