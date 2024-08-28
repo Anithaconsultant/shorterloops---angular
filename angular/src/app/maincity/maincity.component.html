@@ -176,6 +176,15 @@
                         (dragstart)="onDragStart($event)" cdkdrag longPressDrag [cdkDragStartDelay]="250"></div>
                 </div>
             </div>
+            <div class="scanner_cont">
+                <div class="scanner1"></div>
+                <div class="scanner2"></div>
+                <div class="scanner3"></div>
+                <div class="scanner4"></div>
+                <div class="scanner5"></div>
+                <div class="scanner6"></div>
+                <div class="scanner7"></div>
+            </div>
             <div class="cart supermarketcart">
                 <div class="cartavatar"></div>
                 <div class="displaycallout"></div>
@@ -183,7 +192,7 @@
                 <div class="bottleholder">
                     <div cdkDropList #bottleList="cdkDropList" [cdkDropListConnectedTo]="[droppedList]"
                         [cdkDropListData]="refillbottles" (cdkDropListDropped)="returndrop($event)"
-                        class="cart_bottle_list">
+                        class="cart_bottle_list" [cdkDropListEnterPredicate]="checkamountdetect">
                         <div *ngFor="let item of refillbottles" id="{{item}}" class="bottle {{item.split('at')[1]}} "
                             cdkDrag (dragstart)="onDragStart($event)" longPressDrag [cdkDragStartDelay]="250">
                         </div>
@@ -416,45 +425,11 @@
 
     </div>
     <div class="topbar">
+        <app-hamburger-menu></app-hamburger-menu>
         <div class="iihslogo"></div>
-        <div class="shorterloopslogo" (click)="openwhyshorter(whyshorterloop)"></div>
-        <div class="topright">
-            <div class="navigation" (click)="opennavshorter(navigation)"></div>
-            <div class="information" (click)="openaboutshorter(aboutshorterloop)"></div>
-        </div>
-        <div class="displayrole">{{currentusername | titlecase}}</div>
-
         <div ngbDropdown class="picholder">
             <div type="button" class="displaypic" id="dropdown" ngbDropdownToggle></div>
             <div ngbDropdownMenu aria-labelledby="dropdown">
-                <div *ngIf="this.switchyesorno==1">
-                    <button ngbDropdownItem (click)="switchcustomerrole()">Switch Role as {{currentrole}}
-                    </button>
-                </div>
-                <div *ngIf="this.switchyesorno==2">
-                    <button ngbDropdownItem (click)="switchcustomerrole()">Switch Role as Customer</button>
-
-                    <button ngbDropdownItem [disabled]="true" *ngIf="currentrole=='Mayor'">Check the municipality office
-                        cashbox
-                        status</button>
-                    <button ngbDropdownItem [disabled]="true" *ngIf="currentrole=='Mayor'">Check the office ledger
-                        book</button>
-                    <button ngbDropdownItem [disabled]="true" *ngIf="currentrole=='Mayor'">Run the garbage truck
-                        daily</button>
-                    <button ngbDropdownItem [disabled]="true" *ngIf="currentrole=='Mayor'">Update the City Rule
-                        Book</button>
-                    <button ngbDropdownItem [disabled]="true" *ngIf="currentrole=='Mayor'">Update Notices and
-                        Announcements</button>
-                    <button ngbDropdownItem *ngIf="currentrole=='Mayor'" (click)="showNewComponent()">Show Asset Audit
-                        Trail</button>
-                    <button ngbDropdownItem [disabled]="true" *ngIf="currentrole=='Mayor'">Set the City Clock Tower Tick
-                        rate</button>
-                    <button ngbDropdownItem [disabled]="true" *ngIf="currentrole=='Mayor'">Audit the universal bottle
-                        cleaning
-                        process</button>
-                    <button ngbDropdownItem [disabled]="true" *ngIf="currentrole=='Mayor'">Audit the refilling
-                        station</button>
-                </div>
 
                 <div ngbDropdown class="d-inline-block">
                     <div type="button" class="btn" id="dropdownBasic1" ngbDropdownToggle>
@@ -525,6 +500,7 @@
 <ng-template #cartcontent let-modal>
     <div class="modal-header headpart">
         <div class="topbar">
+
             <div class="welcome">Welcome {{currentusername}}</div>
             <div class="role">Role: {{currentUserRole}}</div>
             <div class="cartId">Cart ID: {{currentUserCartId}}</div>
@@ -644,43 +620,95 @@
                 <div class="emptycontent" *ngIf="bottletaken.length==0">There is no item added to cart</div>
             </div>
             <div *ngIf="altertab==2 && opensuperflag==0">
+                <div class="loading">Loading Bottle...</div>
                 <div class="currentbottleshow" *ngIf="selectedBottleatStage!=''">
                     <div id="{{selectedBottleatStage.split('at')[0].split('City')[1]}}"
                         class="{{selectedBottleatStage.split('at')[1] }}_{{currentbottle['Bottle_Status']}} imgclass">
                         <div class="shampoolevel {{selectedBottleatStage.split('at')[1] }}"></div>
                     </div>
+                    <div class="bottlecontent" *ngIf="selectedBottleatStage!=''">
+                        <div> "Bottle Status :" {{currentbottle['Bottle_Status']}}</div>
+                        <div>"Sampoo Quantity :" {{currentbottle['currentQuantity']}}</div>
+                        <div>"Bottle ID:" {{currentbottle['currentbottle'] }}</div>
+                        <div>"Bottle Location:" {{currentbottle['Location'] }}</div>
+                    </div>
                     <div class="backside">
                         <div class="variableholder">
                             <div class="topic">Bottle Data:</div>
-                            <div class="DOM">Date of Manufacture: {{sldBottleData[0].DOM}}</div>
-                            <div class="Quantity">Quantity: {{sldBottleData[0].Quantity}} {{sldBottleData[0].Units}}</div>
-                            <div class="Current_Refill_Count">Current Refill Count: {{sldBottleData[0].Current_Refill_Count}}</div>
-                            <div class="Latest_Refill_Date">Latest Refill Date: {{sldBottleData[0].Latest_Refill_Date}}</div>
-                            <div class="Shampoo_Price">Shampoo Price: &#8377;{{shapooprice}}</div>
-                            <div class="Content_Price">Content Price: &#8377; {{sldBottleData[0].Content_Price}}</div>
-                            <div class="Bottle_Price">Bottle Price: &#8377; {{sldBottleData[0].Bottle_Price}}</div>
-                            <div class="Discount_RefillB">Discount For Refill Bottle: &#8377; {{sldBottleData[0].Discount_RefillB}}</div>
-                            <div class="Redeem_Good">Discount for Redeem Good: &#8377; {{sldBottleData[0].Redeem_Good}}</div>
-                            <div class="Discard_fine">Discard Fine: &#8377; {{sldBottleData[0].Discard_fine}}</div>
-                            <div class="Env_Tax">Environmental Tax: &#8377; {{sldBottleData[0].Env_Tax}}</div>
-                            <div class="Total_price">Net Price: &#8377; {{totalamount}}</div>
-                            <div class="AssetId">Asset Id: {{sldBottleData[0].AssetId}}</div>
+                            <!-- Check if sldBottleData exists and has at least one element -->
+                            <div *ngIf="sldBottleData && sldBottleData.length > 0">
+                                <div *ngIf="sldBottleData[0]?.DOM">
+                                    <div class="DOM">Date of Manufacture: {{sldBottleData[0].DOM}}</div>
+                                </div>
+
+                                <div *ngIf="sldBottleData[0]?.Quantity && sldBottleData[0]?.Units">
+                                    <div class="Quantity">Quantity: {{sldBottleData[0].Quantity}}
+                                        {{sldBottleData[0].Units}}</div>
+                                </div>
+
+                                <div *ngIf="sldBottleData[0]?.Current_Refill_Count">
+                                    <div class="Current_Refill_Count">Current Refill Count:
+                                        {{sldBottleData[0].Current_Refill_Count}}</div>
+                                </div>
+
+                                <div *ngIf="sldBottleData[0]?.Latest_Refill_Date">
+                                    <div class="Latest_Refill_Date">Latest Refill Date:
+                                        {{sldBottleData[0].Latest_Refill_Date}}</div>
+                                </div>
+
+                                <div *ngIf="shapooprice !== undefined">
+                                    <div class="Shampoo_Price">Shampoo Price: &#8377;{{shapooprice}}</div>
+                                </div>
+
+                                <div *ngIf="sldBottleData[0]?.Content_Price !== undefined">
+                                    <div class="Content_Price">Content Price: &#8377; {{sldBottleData[0].Content_Price}}
+                                    </div>
+                                </div>
+
+                                <div *ngIf="sldBottleData[0]?.Bottle_Price !== undefined">
+                                    <div class="Bottle_Price">Bottle Price: &#8377; {{sldBottleData[0].Bottle_Price}}
+                                    </div>
+                                </div>
+
+                                <div *ngIf="sldBottleData[0]?.Discount_RefillB !== undefined">
+                                    <div class="Discount_RefillB">Discount For Refill Bottle: &#8377;
+                                        {{sldBottleData[0].Discount_RefillB}}</div>
+                                </div>
+
+                                <div *ngIf="sldBottleData[0]?.Redeem_Good !== undefined">
+                                    <div class="Redeem_Good">Discount for Redeem Good: &#8377;
+                                        {{sldBottleData[0].Redeem_Good}}</div>
+                                </div>
+
+                                <div *ngIf="sldBottleData[0]?.Discard_fine !== undefined">
+                                    <div class="Discard_fine">Discard Fine: &#8377; {{sldBottleData[0].Discard_fine}}
+                                    </div>
+                                </div>
+
+                                <div *ngIf="sldBottleData[0]?.Env_Tax !== undefined">
+                                    <div class="Env_Tax">Environmental Tax: &#8377; {{sldBottleData[0].Env_Tax}}</div>
+                                </div>
+
+                                <div *ngIf="totalamount !== undefined">
+                                    <div class="Total_price">Net Price: &#8377; {{totalamount}}</div>
+                                </div>
+
+                                <div *ngIf="sldBottleData[0]?.AssetId">
+                                    <div class="AssetId">Asset Id: {{sldBottleData[0].AssetId}}</div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
 
                     <div class="btncont">
-                        <div class="use" (click)="reduceCapacity()">Use</div>
-                        <div class="dent" (click)="makeitDamaged()">Dent</div>
-                        <div class="empty" (click)="makeitEmpty()">Empty</div>
-                        <div class="throw" (click)="makeitThrown()">Throw</div>
+                        <div class="use" (click)="reduceCapacity()" [ngClass]="{'disabled': isDisabled}">Use</div>
+                        <div class="dent" (click)="makeitDamaged()" [ngClass]="{'disabled': isDamaged}">Dent</div>
+                        <div class="empty" (click)="makeitEmpty()" [ngClass]="{'disabled': isDisabled}">Empty</div>
+                        <div class="throw" (click)="makeitThrown()" [ngClass]="{'disabled': isThrown}">Throw</div>
                     </div>
                 </div>
-                <div class="bottlecontent" *ngIf="selectedBottleatStage!=''">
-                    <div> "Bottle Status :" {{currentbottle['Bottle_Status']}}</div>
-                    <div>"Sampoo Quantity :" {{currentbottle['Quantity']}}</div>
-                    <div>"Bottle ID:" {{currentbottle['currentbottle'] }}</div>
-                    <div>"Bottle Location:" {{currentbottle['Location'] }}</div>
-                </div>
+            
                 <div *ngIf="selectedBottleatStage==''">Please Select any bottle in your Cart</div>
             </div>
 

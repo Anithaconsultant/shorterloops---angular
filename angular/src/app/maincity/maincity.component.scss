@@ -207,9 +207,13 @@
     justify-content: center;
     width: 100%;
 }
-
+.disabled {
+    pointer-events: none; /* Prevents any mouse events, including clicks */
+    opacity: 0.5; /* Optional: makes the element look visually disabled */
+  }
+  
 .innerdrop {
-    width: 310px !important;
+    width: 170x !important;
     border: 0px solid !important;
     background: rgba(255, 255, 255, 0.4) !important;
     margin-top: -11px !important;
@@ -434,8 +438,10 @@
         height: 263px;
         margin-top: 10px !important;
         margin: 0 auto;
-        background-size: cover;
         position: absolute;
+        left:0;
+        right:0;
+        background-size: cover;
         background-repeat: no-repeat;
 
         &.B1 {
@@ -491,7 +497,10 @@
             bottom: 10px;
             left: 28px;
         }
-
+        &.UB1,&.UB2,&.UB3,&.U0B4,
+        &.U1B4{
+            left:20px !important;
+        }
         &.B2,
         &.UB2 {
             background: #987edf;
@@ -533,9 +542,23 @@
 
 
     .currentbottleshow {
-        display: flex;
+        position: absolute;
+        width: 100%;
+        margin: 0 auto;
+        display: none;
+        .backside{
+            position: absolute;
+            top: 6px;
+            right: 46px;
+            font-size: 11px;
+        }
+    }
 
+    .loading {
+        display: flex;
         justify-content: center;
+        align-items: center;
+        text-align: center;
     }
 
     .use,
@@ -561,7 +584,28 @@
     position: fixed;
     right: 10%;
 }
+.scanner_cont{
+    position:absolute;
+    top:2534px;
+    left:1886px;
+    .scanimg{
+        background-image: url('./../../assets/img/scannerbox.png');
+        width: 212px;
+        height: 267px;
+        position: absolute;
+        background-size: cover;
+        z-index:2;
+        
 
+    }
+    .scanner1{@extend .scanimg;left:18px;}
+    .scanner2{@extend .scanimg;left:407px;}
+    .scanner3{@extend .scanimg;left:800px;}
+    .scanner4{@extend .scanimg;left:1191px;}
+    .scanner5{@extend .scanimg;left:1584px;}
+    .scanner6{@extend .scanimg;left:1974px;}
+    .scanner7{@extend .scanimg;left:2344px;}
+}
 .icon_container {
     display: flex;
     width: 60%;
@@ -676,16 +720,17 @@
     justify-content: center;
     align-items: center;
 }
-.variableholder{
-    position: relative;
-    left: 228px;
-    font-size: 9px;
-    top: 9px;
-    .topic{
+
+.variableholder {
+    
+
+    .topic {
         font-weight: bold;
     }
 }
-.bottlecontent{
+
+.bottlecontent {
     position: absolute;
-    top: 20px;
+    top: 10px;
+    left: 10px;
 }

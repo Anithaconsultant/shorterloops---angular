@@ -255,7 +255,7 @@ input::placeholder {
     display: block;
     background: rgba(255, 255, 255, 0.7);
     transform: translate(20px, 52px) !important;
-    width: 310px !important;
+    width: 170px !important;
     font-size: 12px;
 }
 
@@ -339,7 +339,7 @@ app-signup {
             top: unset !important;
             background-image: url('./assets/img/iihs.png');
             background-size: cover;
-            left: 10px;
+            left: 56px;
             position: absolute;
         }
 
@@ -611,8 +611,8 @@ app-signup {
 
         .Refilling {
             @extend .commoncls;
-            left: 5622px;
-            top: 2487px;
+            left: 5818px;
+            top: 2430px;
         }
     }
 
@@ -1235,7 +1235,7 @@ app-signup {
 
 }
 
-.B1_Damaged {
+.B1_Damaged-Empty,.B1_Damaged-InUse {
     background-image: url('./assets/img/B1_dmg.png');
 
 }
@@ -1246,7 +1246,7 @@ app-signup {
 
 }
 
-.B2_Damaged {
+.B2_Damaged-Empty,.B2_Damaged-InUse {
     background-image: url('./assets/img/B2_dmg.png');
 
 }
@@ -1257,7 +1257,7 @@ app-signup {
 
 }
 
-.B3_Damaged {
+.B3_Damaged-Empty,.B3_Damaged-InUse {
     background-image: url('./assets/img/B3_dmg.png');
 
 }
@@ -1267,7 +1267,7 @@ app-signup {
     background-image: url('./assets/img/B5_use.png');
 }
 
-.B5_Damaged {
+.B5_Damaged-Empty,.B5_Damaged-InUse {
     background-image: url('./assets/img/B5_dmg.png');
 
 }
@@ -1292,12 +1292,12 @@ app-signup {
 
 }
 
-.UB1_Damaged,
-.UB2_Damaged,
-.UB3_Damaged,
-.U0B4_Damaged,
-.U1B4_Damaged,
-.UB5_Damaged {
+.UB1_Damaged-Empty,.UB1_Damaged-InUse,
+.UB2_Damaged-Empty,.UB2_Damaged-InUse,
+.UB3_Damaged-Empty,.UB3_Damaged-InUse,
+.U0B4_Damaged-Empty,.U0B4_Damaged-InUse,
+.U1B4_Damaged-Empty,.U1B4_Damaged-InUse,
+.UB5_Damaged-Empty,.UB5_Damaged-InUse {
     background-image: url('./assets/img/UB_dmg.png');
     width: 96px !important;
     height: 253px !important;
@@ -1574,6 +1574,7 @@ app-signup {
     background-size: contain;
     margin-left: 541px;
 }
+
 .chotaback {
 
     background-size: contain;
@@ -1655,6 +1656,7 @@ app-signup {
         left: 192px;
     }
 }
+
 .shinyback_small {
     background-image: url('./assets/img/shiny_backside.png');
     width: 362px;
@@ -1691,7 +1693,7 @@ app-signup {
     .labelholder {
         top: 189px;
         color: #633cce;
-        left:126px;
+        left: 126px;
     }
 }
 
@@ -1959,7 +1961,7 @@ body {
 
     .loadimg {
         position: absolute;
-        background-image: url('./assets/img/supermarket.jpg');
+        background-image: url('./assets/img/supermarket.png');
         background-repeat: no-repeat;
         background-size: cover;
         width: 12000px;
@@ -2091,6 +2093,60 @@ body {
         }
     }
 }
+.play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    font-size: 24px;
+    text-align: center;
+    line-height: 60px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    /* Ensure button is above video */
+}
+
+.play-button span {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 52px;
+    margin-left: 9px;
+}
+
+.introvideo {
+    position: relative;
+    width: 896px;
+    left: 449px;
+    top: -391px;
+    display: inline-block;
+
+
+    .templates {}
+}
+.template {
+    .loadcontent {
+        background-image: url('./assets/img/Pyramidcontent.png');
+        background-size: cover;
+        width: 100%;
+        height: 1732px;
+        background-repeat: no-repeat
+    }
+
+    .logoclkcls {
+        position: absolute;
+        top: 200px;
+        margin: 0 auto;
+        left: 0;
+        right: 0;
+        width: 600px;
+    }
+
+}
 
 .innderdiv {
     width: 90%;
@@ -2120,6 +2176,44 @@ body {
         background-repeat: no-repeat
     }
 
+}
+
+.hamburger {
+    .logocls {
+        width: 20px;
+        height: 20px;
+        background-size: cover;
+        cursor: pointer;
+        margin: 0px 10px;
+    }
+
+    .navigation {
+        background-image: url('./assets/img/navigation.png');
+        @extend .logocls;
+    }
+
+    .information {
+        background-image: url('./assets/img/information.png');
+        @extend .logocls;
+    }
+
+    .hamburger-menu {
+        font-weight: 500;
+        color: #000;
+        font-size: 14px;
+
+        .ham-menuitem {
+            display: flex;
+            padding: 10px;
+            align-items: center;
+            cursor: pointer;
+
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.5);
+                color: #fff;
+            }
+        }
+    }
 }
 
 .topright {
@@ -2157,10 +2251,10 @@ body {
 
     .iihslogo {
         background-image: url('./assets/img/iihs.png');
-        width: 64px;
-        height: 50px;
+        width: 45px;
+        height: 40px;
         position: absolute;
-        left: 10px;
+        left: 54px;
         top: 10px;
         background-size: cover;
     }
@@ -2276,4 +2370,10 @@ $align-space: 14px;
         border-radius: 0;
         cursor: pointer;
     }
+}
+
+.menu-container {
+    position: absolute !important;
+    left: -62px !important;
+    top: 30px !important;
 }

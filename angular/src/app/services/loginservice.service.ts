@@ -23,8 +23,8 @@ export class LoginserviceService {
     'cityrate': '',
     'cityavatar': ''
   };
-  baseurl = "https://dbl.iihs.in/api/";
-  //baseurl = "http://127.0.0.1:8000/api/";
+  // baseurl = "https://dbl.iihs.in/api/";
+  baseurl = "http://127.0.0.1:8000/api/";
   authorizationData = 'Basic ' + btoa(this.username + ':' + this.password);
   httpHeaders = new HttpHeaders({
     'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ export class LoginserviceService {
       { headers: this.httpHeaders });
   }
   createAsset(asset: any): Observable<any> {
-    const body = { AssetId: asset.AssetId, Asset_CityId: asset.Asset_CityId, CategoryCode: asset.CategoryCode, Bottle_Code: asset.Bottle_Code, Content_Code: asset.Content_Code, Quantity: asset.Quantity,remQuantity: asset.remQuantity, Units: asset.Units, Bottle_loc: asset.Bottle_loc, Bottle_Status: asset.Bottle_Status, DOM: asset.DOM, Max_Refill_Count: asset.Max_Refill_Count, Current_Refill_Count: asset.Current_Refill_Count, Latest_Refill_Date: asset.Latest_Refill_Date, Retirement_Date: asset.Retirement_Date, Retire_Reason: asset.Retire_Reason, Content_Price: asset.Content_Price, Bottle_Price: asset.Bottle_Price, Redeem_Good: asset.Redeem_Good, Redeem_Damaged: asset.Redeem_Damaged, Discount_RefillB: asset.Discount_RefillB, Env_Tax: asset.Env_Tax, Discard_fine: asset.Discard_fine, Transaction_Id: asset.Transaction_Id, Transaction_Date: asset.Transaction_Date, Fromfacility: asset.Fromfacility, Tofacility: asset.Tofacility };
+    const body = { AssetId: asset.AssetId, Asset_CityId: asset.Asset_CityId, CategoryCode: asset.CategoryCode, Bottle_Code: asset.Bottle_Code, Content_Code: asset.Content_Code, Quantity: asset.Quantity, remQuantity: asset.remQuantity, Units: asset.Units, Bottle_loc: asset.Bottle_loc, Bottle_Status: asset.Bottle_Status, DOM: asset.DOM, Max_Refill_Count: asset.Max_Refill_Count, Current_Refill_Count: asset.Current_Refill_Count, Latest_Refill_Date: asset.Latest_Refill_Date, Retirement_Date: asset.Retirement_Date, Retire_Reason: asset.Retire_Reason, Content_Price: asset.Content_Price, Bottle_Price: asset.Bottle_Price, Redeem_Good: asset.Redeem_Good, Redeem_Damaged: asset.Redeem_Damaged, Discount_RefillB: asset.Discount_RefillB, Env_Tax: asset.Env_Tax, Discard_fine: asset.Discard_fine, Transaction_Id: asset.Transaction_Id, Transaction_Date: asset.Transaction_Date, Fromfacility: asset.Fromfacility, Tofacility: asset.Tofacility };
     return this.http.post(this.baseurl + 'asset/' + this.currentuser.CityId, body,
       { headers: this.httpHeaders });
   }
@@ -87,24 +87,24 @@ export class LoginserviceService {
       Transaction_Id: currentitem.transactionid, Transaction_Date: currentitem.transactiondate,
       Fromfacility: currentitem.fromfacility,
       Tofacility: currentitem.tofacility,
-      dragged: currentitem.dragged  
+      dragged: currentitem.dragged
 
     };
     if (currentitem.contentCode !== '') {
       body['Content_Code'] = currentitem.contentCode;
     }
-  
+
     if (currentitem.purchased !== '') {
       body['purchased'] = currentitem.purchased;
     }
-  
-    
+
+
     return this.http.put(this.baseurl + 'assets/' + currentitem.currentitem, body,
       { headers: this.httpHeaders });
   }
   updateConveyorAssets(currentitem: any): Observable<any> {
     const body = {
-      Bottle_loc: 'ReturnConveyor', 
+      Bottle_loc: 'ReturnConveyor',
       Bottle_Status: 'Empty-Dirty',
       Fromfacility: currentitem.fromfacility,
       Tofacility: 'ReturnConveyor'
@@ -116,9 +116,9 @@ export class LoginserviceService {
 
   updatethisAssetQuantity(currentbottle: any): Observable<any> {
     const body: { [key: string]: any } = {
-      remQuantity: currentbottle.Quantity,
+      remQuantity: currentbottle.currentQuantity,
       Bottle_Status: currentbottle.Bottle_Status,
-      Current_Refill_Count:currentbottle.Current_Refill_Count
+      Current_Refill_Count: currentbottle.Current_Refill_Count
 
     };
     if (currentbottle.Location !== '') {
@@ -261,18 +261,18 @@ export class LoginserviceService {
     return this.http.post(url, {}, { headers: headers });
   }
   getAuditLogs(assetId: any) {
-    return this.http.get(this.baseurl + 'audit-log/' + assetId+'&'+this.currentuser.CityId,
+    return this.http.get(this.baseurl + 'audit-log/' + assetId + '&' + this.currentuser.CityId,
       { headers: this.httpHeaders });
   }
   getAuditLogsuser(user: any) {
-    return this.http.get(this.baseurl + 'audit-logs/' + user+'&'+this.currentuser.CityId,
+    return this.http.get(this.baseurl + 'audit-logs/' + user + '&' + this.currentuser.CityId,
       { headers: this.httpHeaders });
   }
-  getBottlePrice(){
+  getBottlePrice() {
     return this.http.get(this.baseurl + 'bottleprice/',
       { headers: this.httpHeaders });
   }
-  getShampooPrice(){
+  getShampooPrice() {
     return this.http.get(this.baseurl + 'shampooprice/',
       { headers: this.httpHeaders });
   }

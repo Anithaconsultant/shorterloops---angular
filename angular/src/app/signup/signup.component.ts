@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,ViewChild,ElementRef } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginserviceService } from './../services/loginservice.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -87,8 +87,19 @@ export class SignupComponent implements OnInit {
     }
 
   }
+  @ViewChild('videoPlayer') videoPlayer!: ElementRef<HTMLVideoElement>;
+  showImage = false;
 
+  // Called when the video ends
+  onVideoEnded() {
+    this.showImage = false;
+  }
+  playVideo() {
 
+    this.showImage=true;
+    const video = this.videoPlayer.nativeElement;
+    video.play();
+  }
   navigate() {
     this.router.navigate(["login"])
   }

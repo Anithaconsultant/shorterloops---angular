@@ -4,36 +4,15 @@
     background-image: url('./../../assets/img/landingpage.png');
     background-size: cover;
     font-family: 'poppin';
+    overflow-x:hidden;
+    overflow-y:auto;
+
     .form-control.is-invalid {
         background-image: none !important;
-      }
-    .topright {
-        position: absolute;
-        width: 100px;
-        right: 10px;
-        top: 10px;
-        height: 30px;
-        display: flex;
-        justify-content: space-between;
-
-        .navigation {
-            background-image: url('./../../assets/img/navigation.png');
-            width: 30px;
-            height: 30px;
-            background-size: cover;
-            cursor: pointer;
-        }
-
-        .information {
-            background-image: url('./../../assets/img/information.png');
-            width: 30px;
-            height: 30px;
-            background-size: cover;
-            cursor: pointer;
-        }
     }
 
 
+ 
 
     .loginblock {
         margin-top: 1%;
@@ -88,4 +67,3 @@
         }
     }
 }
-

@@ -186,18 +186,17 @@ export class AddcityComponent implements OnInit {
       return;
     }
     if (this.submitted) {
-      $(".maskholder").show();
+      
       if (this.selectedavatar == 0) {
         alert("kindly select your Avatar")
       }
-      // if (parseInt(this.city.Clocktickrate) == 0) {
-      //   alert("kindly select your Avatar")
-      // }
-      if (isNaN(parseInt(this.city.Clocktickrate))) {
+     
+     else if (isNaN(parseInt(this.city.Clocktickrate))) {
         alert('Clock Tick rate is number.')
       }
-      if (!isNaN(parseInt(this.city.Clocktickrate)) && this.selectedavatar != 0 && parseInt(this.city.Clocktickrate) > 0) {
+      else if (!isNaN(parseInt(this.city.Clocktickrate)) && this.selectedavatar != 0 && parseInt(this.city.Clocktickrate) > 0) {
         this.city.cityavatar = String(this.selectedavatar);
+        $(".maskholder").show();
         this.logser.createcity(this.city).subscribe(
           data => {
             this.city = data;

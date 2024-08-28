@@ -1,14 +1,11 @@
 <div class="container-fluid landingpage">
     <div class="row">
         <div class="logocontainer">
+            <app-hamburger-menu></app-hamburger-menu>
             <div class="iihslogo"></div>
             <div class="shorterloopslogo" (click)="openwhyshorter(whyshorterloop)"></div>
         </div>
 
-        <div class="topright" style="width:100px;">
-            <div class="navigation" (click)="opennavshorter(navigation)"></div>
-            <div class="information" (click)="openaboutshorter(aboutshorterloop)"></div>
-        </div>
     </div>
     <div class="row topalign">
         <h3>Welcome to Shorter Loops, {{setusername | titlecase}}</h3>
