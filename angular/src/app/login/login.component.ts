@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginserviceService } from './../services/loginservice.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -17,6 +17,22 @@ export class LoginComponent implements OnInit {
   }
   userobj = {
     'login': '0'
+  }
+  @ViewChild('videoPlayer') videoPlayer!: ElementRef<HTMLVideoElement>;
+
+  showImage = false;
+
+  // Called when the video ends
+  onVideoEnded() {
+    this.showImage = false;
+  }
+
+  // Called when the Skip button is clicked
+  onSkip() {
+    $("video").hide();
+    this.showImage = true;
+    // You can implement additional logic here if needed
+    console.log('Skip button clicked');
   }
   ngOnInit(): void {
     this.loginForm = this.formbuilder.group({
@@ -71,23 +87,29 @@ export class LoginComponent implements OnInit {
             alert("Kindly Check your Credentials");
           } else {
             alert("User not Found. Kindly Register.");
-          } 
           }
-        }, err => {
-          alert("Something went wrong")
-        })
+        }
+      }, err => {
+        alert("Something went wrong")
+      })
     }
+  }
+  playVideo() {
+
+    this.showImage=true;
+    const video = this.videoPlayer.nativeElement;
+    video.play();
   }
   openwhyshorter(whyshorter: any) {
 
-    this.modalService.open(whyshorter,{windowClass:'frontpage'});
+    this.modalService.open(whyshorter, { windowClass: 'frontpage' });
   }
   openaboutshorter(aboutshorter: any) {
 
-    this.modalService.open(aboutshorter,{windowClass:'frontpage'});
+    this.modalService.open(aboutshorter, { windowClass: 'frontpage' });
   }
   opennavshorter(navigation: any) {
 
-    this.modalService.open(navigation,{windowClass:'frontpage'});
+    this.modalService.open(navigation, { windowClass: 'frontpage' });
   }
 }

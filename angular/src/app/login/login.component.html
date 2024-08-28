@@ -1,14 +1,11 @@
 <div class="container-fluid landingpage">
     <div class="row">
         <div class="logocontainer">
+            <app-hamburger-menu></app-hamburger-menu>
             <div class="iihslogo"></div>
-            <div class="shorterloopslogo" (click)="openwhyshorter(whyshorterloop)"></div>
+
         </div>
 
-        <div class="topright" style="width:100px;">
-            <div class="navigation" (click)="opennavshorter(navigation)"></div>
-            <div class="information" (click)="openaboutshorter(aboutshorterloop)"></div>
-        </div>
     </div>
     <div class="row">
 
@@ -17,7 +14,7 @@
             <div class="row">
                 <div class="col-lg-6 col-xl-3 col-md-4 col-sm-4 leftblock">
                     <h3 class="displaytext">Login</h3>
-                    <h4 class="displaytext1">Welcome to Shorterloops!</h4>
+
                     <p></p>
                     <form [formGroup]="loginForm" (ngSubmit)="login()">
                         <div class="form-group mb-2">
@@ -37,6 +34,25 @@
                 </div>
             </div>
         </div><!-- End -->
+        <div class="introvideo">
+            <div class="template">
+                <div class='loadcontent'>
+                    <div  *ngIf="showImage==true" class="logoclkcls ">
+                        <video src="./assets/video/Pyramid_Animation.mp4" width="100%" height="100%" #videoPlayer
+                            (ended)="onVideoEnded()" [attr.controls]="false" autoplay></video>
+                      
+                    </div>
+                    <div  *ngIf="showImage==false" class="logoclkcls">
+                        <img src="./assets/img/lastframe.png" alt="End Image" width="600">
+                        <div class="play-button" (click)="playVideo()">
+                            <span>&#9658;</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
 
     </div>
 </div>

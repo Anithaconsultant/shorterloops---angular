@@ -21,7 +21,8 @@ import {MatButtonModule} from '@angular/material/button';
 import { AuthService } from './auth.service';
 import { ReportComponent } from './report/report.component'; 
 import { LongPressDragDirective } from './app-longpress.directive';
-import { PreventDoubleClickDirective } from './prevent-double-click.directive'
+import { PreventDoubleClickDirective } from './prevent-double-click.directive';
+import { HamburgerMenuComponent } from './hamburger-menu/hamburger-menu.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -32,7 +33,8 @@ import { PreventDoubleClickDirective } from './prevent-double-click.directive'
     AddcityComponent,
     ReportComponent,
     LongPressDragDirective,
-    PreventDoubleClickDirective
+    PreventDoubleClickDirective,
+    HamburgerMenuComponent
   ],
   imports: [
     BrowserModule,

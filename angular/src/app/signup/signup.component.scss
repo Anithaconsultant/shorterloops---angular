@@ -1,8 +1,11 @@
 .landingpage {
     width: 100%;
     height: 100%;
-    background-image: url('./../../assets/img/register.png');
+    background-image: url('./../../assets/img/landingpage.png');
     background-size: cover;
+    font-family: 'poppin';
+    overflow-x:hidden;
+    overflow-y:auto;
 
     .form-control.is-invalid {
         background-image: none !important;
@@ -13,7 +16,7 @@
     }
 
     .signupblock {
-        margin-top: 4%;
+        margin-top: -5%;
     }
 
     .innerblk {
@@ -21,7 +24,7 @@
     }
 
     .displaytext {
-        font-size: 32px;
+        font-size: 26px;
         color: #fff;
         text-align: center;
         font-family: 'poppin' !important;
@@ -55,27 +58,24 @@
 
     .success {
         background-image: url('./../../assets/img/registersuccess.png');
-        width: 332px;
-        height: 284px;
+        width: 291px;
+        height: 192px;
         position: absolute;
         display: flex;
         justify-content: center;
         align-items: center;
         background-size: cover;
-        margin: auto;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
+        top: 406px;
+        left: 133px;
         display: none;
 
         .continue {
             width: 107px;
             height: 29px;
             position: absolute;
-            bottom: 21px;
+            bottom: 14px;
             cursor: pointer;
-            left: 111px;
+            left: 93px;
         }
     }
 }

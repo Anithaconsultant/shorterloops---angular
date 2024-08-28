@@ -1,6 +1,7 @@
 import { Component, HostListener, ViewChild, AfterViewInit, ElementRef, OnInit, OnDestroy } from '@angular/core';
 import panzoom from "panzoom";
 import { LoginserviceService } from '../services/loginservice.service';
+import { SharedServiceService } from '../services/shared-service.service';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import * as $ from 'jquery';
@@ -203,7 +204,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   }
   currentUserPurhcased: any[] = [];
   //houseshelfList: string | CdkDropList<any> ='';
-  constructor(private logser: LoginserviceService, private router: Router, private modalService: NgbModal) {
+  constructor(private logser: LoginserviceService, private router: Router, private modalService: NgbModal, private shared: SharedServiceService) {
     this.currentUserRole = this.logser.currentuser.Role;
     this.currentUserCartId = this.logser.currentuser.cartId;
     this.currentusername = this.logser.currentuser.Username;
@@ -321,10 +322,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     event.preventDefault();
   }
 
-  showNewComponent() {
-    // Navigate to the new component route
-    this.router.navigate(['/report']);
-  }
+
 
   convertSeconds(seconds: number) {
     const hours = Math.floor(seconds / 3600);
@@ -416,8 +414,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       for (let y = 0; y < data.length; y++) {
         this.assetdataset.push(data[y]);
         let isDragged = data[y]['dragged'];
-        let isPurchased = data[y]['purchased'];
         let bottleloc = data[y]['Bottle_loc'];
+        let isPurchased = data[y]['purchased'];
         let bottle_status = data[y]['Bottle_Status'];
         let bottle_remquantity = data[y]['remQuantity'];
 
@@ -525,10 +523,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       }
 
     }
-    if (bottle_status == 'Empty-Dirty' && bottleloc == this.currentUserCartId) {
+    if (bottleloc == this.currentUserCartId && bottle_remquantity == 0 ) {
       this.refillbottles.push(cat);
     }
-    else if (bottleloc == this.currentUserCartId && (bottle_status == 'InUse' || bottle_status == 'Damaged')) {
+    else if (bottleloc == this.currentUserCartId && bottle_remquantity > 0 ) {
       this.currentUserPurhcased.push(cat);
     }
     if (bottleloc == "City Dustbin") {
@@ -540,16 +538,21 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     if (bottleloc == 'House@' + this.currentUserCartId) {
       this.BottleInHouseList.push(cat);
     }
-    if (bottle_status == 'Empty-Dirty' && bottleloc == 'House@' + this.currentUserCartId) {
-      $(".Inhouseshelf_bottles #" + cat).addClass('zero-empty');
-    }
-    if (bottle_status == 'Damaged') {
-      $(".Inhouseshelf_bottles #" + cat).addClass('damaged');
-    }
-    if (bottleloc == 'Street') {
-      $(".Inhouseshelf_bottles #" + cat).addClass('Street');
-    }
+    if (bottleloc == 'House@' + this.currentUserCartId) {
+      if (bottle_status == 'Empty-Dirty') {
+        $(".Inhouseshelf_bottles #" + cat).addClass('zero-empty');
+      }
+      if (bottle_status == 'Damaged-Empty') {
+        $(".Inhouseshelf_bottles #" + cat).addClass('Damaged-Empty');
+      }
+      if (bottle_status == 'Damaged-InUse') {
+        $(".Inhouseshelf_bottles #" + cat).addClass('Damaged-InUse');
+      }
 
+      // if (bottleloc == 'Street') {
+      //   $(".Inhouseshelf_bottles #" + cat).addClass('Street');
+      // }
+    }
 
 
 
@@ -1119,7 +1122,12 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       else if ((topValue < 3089 && topValue > 1040 && leftValue > 930 && leftValue < 1130)) {
         this.cartlocmarket = "exiting";
         this.setmarkettrue();
+        if (leftValue < 1120 && topValue < 1100) {
+          this.closesupermarket()
+
+        }
       }
+
       else {
         this.markettop = false;
         this.marketleft = false;
@@ -1256,6 +1264,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         if (leftValue < 5200) {
           $("#innerdoor2").animate({ 'height': '1030px' }, 200);
         }
+        if (leftValue <= 1070) {
+          this.closesupermarket()
+
+        }
       }
 
       else if (topValue > 1005 && topValue < 1270 && leftValue < 1000) {
@@ -1379,20 +1391,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         }
       }
     }
+    console.log(this.cartlocmarket)
   }
 
 
-  switchcustomerrole() {
-    if (this.currentrole == 'Mayor' && this.switchyesorno == 1) {
-      this.switchyesorno = 2;
-      this.dopanzoom(-3341, -2150, '1');
-      $(".cart").hide();
-    }
-    else {
-      this.loadinginitialState();
-      $(".cart").show();
-    }
-  }
   movetomaincity() {
     this.opensuperflag = 0;
     let where = this;
@@ -1565,6 +1567,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       this.loadinginitialState();
 
 
+
     }
   }
   loadinginitialState() {
@@ -1578,16 +1581,11 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     $(".cart").css({ 'left': x1 + 'px', 'top': y1 + 'px' });
     $(".houselite").hide();
     $(".cartid").html(this.currentUserCartId);
-    this.currentrole = this.currentUserRole;
-    if (this.currentrole == 'Mayor') {
-      this.switchyesorno = 1;
-    }
-    else if (this.currentrole.includes('House')) {
-      this.switchyesorno = 0;
-    }
-    else {
-      this.switchyesorno = 2;
-    }
+    let that = this;
+    setTimeout(function () {
+      that.shared.initialstate();
+    }, 1000);
+
   }
 
 
@@ -1619,6 +1617,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   }
   checkshinyuniver(item: CdkDrag<string>) {
     if (item.element.nativeElement.classList.contains('UB1')) { return true; }
+    else { return false; }
+  }
+  checkamountdetect(item: CdkDrag<string>) {
+    if (!item.element.nativeElement.classList.contains('Amountcredited')) { return true; }
     else { return false; }
   }
   checkconditionrefill(item: CdkDrag<string>) {
@@ -1857,29 +1859,53 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       this.playAudioElement(this.selectbrand.nativeElement, 0.8);
       this.refillbrandselected = '';
       $(".displaylight").removeClass('off').addClass('on');
-      let getbrand = placedBottle.split("at")[1];
-      if (getbrand == 'UB1' || getbrand == 'B1') {
-        this.getcurrentplacedbrand = 'B1.Shiny';
-      }
-      else if (getbrand == 'UB2' || getbrand == 'B2') {
-        this.getcurrentplacedbrand = 'B2.Spiky';
-      }
-      else if (getbrand == 'UB3' || getbrand == 'B3') {
-        this.getcurrentplacedbrand = 'B3.Bouncy';
-      }
-      else if (getbrand == 'UB4' || getbrand == 'B4') {
-        this.getcurrentplacedbrand = 'B4.Wavy';
-      }
-      else if (getbrand == 'UB5' || getbrand == 'B5') {
-        this.getcurrentplacedbrand = 'B5.Silky';
-      }
-
+      this.getbrandfunction(placedBottle);
       $(".displayboard").html("Your bottle's brand =" + this.getcurrentplacedbrand + "<br/>Select shampoo brand for refill.")
       this.brandselected = true;
 
     }
   }
+  getdetailbrandfunction(placedBottle: string) {
 
+    let getbrand = placedBottle.split("at")[1];
+    if (getbrand == 'B1') {
+      this.getcurrentplacedbrand = 'B1.Shiny';
+    }
+    else if (getbrand == 'B2') {
+      this.getcurrentplacedbrand = 'B2.Spiky';
+    }
+    else if (getbrand == 'B3') {
+      this.getcurrentplacedbrand = 'B3.Bouncy';
+    }
+    else if (getbrand == 'B4') {
+      this.getcurrentplacedbrand = 'B4.Wavy';
+    }
+    else if (getbrand == 'B5') {
+      this.getcurrentplacedbrand = 'B5.Silky';
+    }
+    else if (getbrand == 'UB1' || getbrand == 'UB2' || getbrand == 'UB3' || getbrand == 'UB4' || getbrand == 'UB5') {
+      this.getcurrentplacedbrand = 'Universal';
+    }
+
+  }
+  getbrandfunction(placedBottle: string) {
+    let getbrand = placedBottle.split("at")[1];
+    if (getbrand == 'UB1' || getbrand == 'B1') {
+      this.getcurrentplacedbrand = 'B1.Shiny';
+    }
+    else if (getbrand == 'UB2' || getbrand == 'B2') {
+      this.getcurrentplacedbrand = 'B2.Spiky';
+    }
+    else if (getbrand == 'UB3' || getbrand == 'B3') {
+      this.getcurrentplacedbrand = 'B3.Bouncy';
+    }
+    else if (getbrand == 'UB4' || getbrand == 'B4') {
+      this.getcurrentplacedbrand = 'B4.Wavy';
+    }
+    else if (getbrand == 'UB5' || getbrand == 'B5') {
+      this.getcurrentplacedbrand = 'B5.Silky';
+    }
+  }
   increament() {
     if (this.refillbrandselected != '') {
       if (this.selectquantity < 500) {
@@ -2076,6 +2102,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     this.droppedbottle = false;
     this.brandselected = false;
     this.quantityselected = false;
+    this.getcurrentplacedbrand = '';
     this.confirmpressed = false;
     this.selectquantity = 0;
     this.refillbrandselected = '';
@@ -2221,7 +2248,6 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       this.netrefund = 0.0;
       for (let t = 0; t < data.length; t++) {
         let getcityId = data[t]['TransactionId'].split("_")[0];
-        console.log(data[t]['DebitFacility'], getcityId, data[t]['Purpose'].includes("tax"), data[t]['Purpose'], data[t]['Amount'])
         if (data[t]['DebitFacility'] == this.currentUserRole && getcityId == this.currentusercityId && data[t]['Purpose'].includes("Fine")) {
           this.netfine += parseFloat(data[t]['Amount']);
         }
@@ -2240,6 +2266,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     });
 
   }
+  getBottleStatus = '';
+  getBottleCode = '';
   returndrop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(
@@ -2261,9 +2289,14 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         for (let i = 0; i < this.bottlePrice.length; i++) {
           if (this.bottlePrice[i]['BottleType'] == currentlyDroped.split('id')[0].split('_')[2] + '.' + currentlyDroped.split('id')[1].split('_')[0]) {
             amount_refund = (parseFloat(this.bottlePrice[i]['OriginalPrice']) * (this.bottlePrice[i]['percentReturnGood'] / 100));
+
             break;
           }
         }
+        this.logser.getthisAssets(this.updatebottlereturn['currentitem']).subscribe((data) => {
+          this.getBottleStatus = data[0]['Bottle_Status'];
+          this.getBottleCode = data[0]['Bottle_Code'].split('.')[1];
+        });
 
         this.logser.updateConveyorAssets(this.updatebottlereturn).subscribe((data) => {
           console.log("bottle location update to Return Conveyor");
@@ -2288,10 +2321,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
                   data = this.transaction;
                   this.playAudioElement(this.Thanksreturning.nativeElement, 0.8);
                   alert("Thanks for returning the bottle. ₹ " + amount_refund + " has been credited to your wallet");
-                  // let disapper;
-                  // clearTimeout(disapper);
-                  // disapper = setTimeout(function () { $(".bottle_list").empty(); }, 500);
-
+                  $("#" + currentlyDroped).addClass('Amountcredited');
+                  this.startreturnanimation(currentlyDroped);
                 });
 
             },
@@ -2315,6 +2346,107 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       }
     }
   }
+  // startreturnanimation(currentlyDroped: string) {
+  //   console.log(currentlyDroped)
+  //   this.getbrandfunction(currentlyDroped);
+  //   if (this.getcurrentplacedbrand == 'B1.Shiny') {
+  //     console.log("Shiny");
+  //     $(".conveyorbottledropper").animate({ 'left': '1913px' }, 2000, () => {
+  //       if (this.getBottleCode == 'R') {
+  //         $(".conveyorbottledropper").animate({ 'top': '2960px' }, 2000, () => { $(".conveyorbottledropper").empty().css({ 'left': '1694px', 'top': '2579px' }); });
+  //       }
+  //       else {
+  //         $(".conveyorbottledropper").animate({ 'top': '2260px' }, 2000, () => { $(".conveyorbottledropper").empty().css({ 'left': '1694px', 'top': '2579px' }); });
+  //       }
+
+  //     });
+  //   }
+  //   if (this.getcurrentplacedbrand == 'B2.Spiky') {
+  //     console.log("Spiky");
+  //     $(".conveyorbottledropper").animate({ 'left': '2313px' }, 2000, () => {
+  //       if (this.getBottleCode == 'R') {
+  //         $(".conveyorbottledropper").animate({ 'top': '2960px' }, 2000, () => { $(".conveyorbottledropper").empty().css({ 'left': '1694px', 'top': '2579px' });  });
+  //       }
+  //       else {
+  //         $(".conveyorbottledropper").animate({ 'top': '2260px' }, 2000, () => {$(".conveyorbottledropper").empty().css({ 'left': '1694px', 'top': '2579px' });  });
+  //       }
+  //     });
+  //   }
+  //   if (this.getcurrentplacedbrand == 'B4.Wavy') {
+  //     console.log("Wavy");
+  //     $(".conveyorbottledropper").animate({ 'left': '3091px' }, 2000, () => {
+  //       if (this.getBottleCode == 'R') {
+  //         $(".conveyorbottledropper").animate({ 'top': '2960px' }, 2000, () => { $(".conveyorbottledropper").empty().css({ 'left': '1694px', 'top': '2579px' }); });
+  //       }
+  //       else {
+  //         $(".conveyorbottledropper").animate({ 'top': '2260px' }, 2000, () => {$(".conveyorbottledropper").empty().css({ 'left': '1694px', 'top': '2579px' }); });
+  //       }
+  //     });
+  //   }
+  //   if (this.getcurrentplacedbrand == 'B5.Silky') {
+  //     console.log("Silky");
+  //     $(".conveyorbottledropper").animate({ 'left': '3482px' }, 2000, () => {
+  //       if (this.getBottleCode == 'R') {
+  //         $(".conveyorbottledropper").animate({ 'top': '2960px' }, 2000, () => { $(".conveyorbottledropper").empty().css({ 'left': '1694px', 'top': '2579px' });  });
+  //       }
+  //       else {
+  //         $(".conveyorbottledropper").animate({ 'top': '2260px' }, 2000, () => { $(".conveyorbottledropper").empty().css({ 'left': '1694px', 'top': '2579px' });  });
+  //       }
+  //     });
+  //   }
+  //   if (this.getcurrentplacedbrand == 'B3.Bouncy') {
+  //     console.log("Bouncy");
+  //     $(".conveyorbottledropper").animate({ 'left': '2704px' }, 2000, () => {
+  //       if (this.getBottleCode == 'R') {
+  //         $(".conveyorbottledropper").animate({ 'top': '2960px' }, 2000, () => { $(".conveyorbottledropper").empty().css({ 'left': '1694px', 'top': '2579px' }); });
+  //       }
+  //       else {
+  //         $(".conveyorbottledropper").animate({ 'top': '2260px' }, 2000, () => { $(".conveyorbottledropper").empty().css({ 'left': '1694px', 'top': '2579px' });  });
+  //       }
+  //     });
+  //   }
+  //   if (this.getcurrentplacedbrand.includes('U') || this.getcurrentplacedbrand.includes('U1B')) {
+  //     console.log("universal");
+  //     $(".conveyorbottledropper").animate({ 'left': '3873px' }, 2000, () => {
+  //       if (this.getBottleCode == 'R') {
+  //         $(".conveyorbottledropper").animate({ 'top': '2960px' }, 2000, () => { $(".conveyorbottledropper").empty().css({ 'left': '1694px', 'top': '2579px' }); });
+  //       }
+  //       else {
+  //         $(".conveyorbottledropper").animate({ 'top': '2260px' }, 2000, () => { $(".conveyorbottledropper").empty().css({ 'left': '1694px', 'top': '2579px' }); });
+  //       }
+  //     });
+  //   }
+
+  // }
+  startreturnanimation(currentlyDropped: string) {
+    console.log(currentlyDropped);
+    this.getdetailbrandfunction(currentlyDropped);
+
+    const positions: { [key: string]: { left: string; topR: string; topOther: string; speed: number } } = {
+      'B1.Shiny': { left: '1913px', topR: '2960px', topOther: '2260px', speed: 2000 },
+      'B2.Spiky': { left: '2313px', topR: '2960px', topOther: '2260px', speed: 4000 },
+      'B4.Wavy': { left: '3091px', topR: '2960px', topOther: '2260px', speed: 6000 },
+      'B5.Silky': { left: '3482px', topR: '2960px', topOther: '2260px', speed: 10000 },
+      'B3.Bouncy': { left: '2704px', topR: '2960px', topOther: '2260px', speed: 8000 },
+      'Universal': { left: '3873px', topR: '2960px', topOther: '2260px', speed: 12000 },
+      'Damaged': { left: '3873px', topR: '2960px', topOther: '2260px', speed: 12000 }
+    };
+
+    const defaultPosition = { left: '1694px', top: '2579px' };
+    const position = positions[this.getcurrentplacedbrand] || positions['Universal'];
+
+    console.log(this.getcurrentplacedbrand);
+
+    if (position) {
+      $(".conveyorbottledropper").animate({ 'left': position.left }, position.speed, () => {
+        const topPosition = this.getBottleCode == 'R' ? position.topR : position.topOther;
+        $(".conveyorbottledropper").animate({ 'top': topPosition }, 2000, () => {
+          $(".conveyorbottledropper").empty().css(defaultPosition);
+        });
+      });
+    }
+  }
+
   currentlyrefillingBottle = '';
   private isProcessingDrop: boolean = false;
   refilldrop(event: CdkDragDrop<string[]>, dropZone: any) {
@@ -2380,7 +2512,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             let index = this.refillbottles.findIndex(item => item === currentlyDroped)
             this.refillbottles.splice(index, 1);
             this.currentbottle['Current_Refill_Count'] = this.currentbottle['Current_Refill_Count'] + 1;
-            this.currentbottle['Quantity'] = this.selectquantity;
+            this.currentbottle['currentQuantity'] = this.selectquantity;
             this.currentbottle['Bottle_Status'] = 'InUse';
             this.currentbottle['currentbottle'] = currentlyDroped.split('City')[1].split("at")[0];
             this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => {
@@ -2539,48 +2671,11 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   }
   showbutton = false;
   selectedbottle = '';
-  // loadbottledata() {
-  //   this.loadledgerdata();
-  //   for (let i = 0; i < this.currentusertransaction.length; i++) {
-  //     if (this.currentusertransaction[i]['Content_Code'] == "B1.Shiny" && this.currentusertransaction[i]['Bottle_Code'] == "UB.V" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-  //       this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'atU' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
-  //     }
-  //     else if (this.currentusertransaction[i]['Content_Code'] == "B1.Shiny" && this.currentusertransaction[i]['Bottle_Code'] == "B1.V" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-  //       this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'at' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
-  //     }
-  //     else if (this.currentusertransaction[i]['Content_Code'] == "B2.Spiky" && this.currentusertransaction[i]['Bottle_Code'] == "B2.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-  //       this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'at' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
-  //     }
-  //     else if (this.currentusertransaction[i]['Content_Code'] == "B2.Spiky" && this.currentusertransaction[i]['Bottle_Code'] == "B2.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-  //       this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'at' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
-  //     }
-  //     else if (this.currentusertransaction[i]['Content_Code'] == "B3.Bouncy" && this.currentusertransaction[i]['Bottle_Code'] == "B3.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-  //       this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'at' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
-  //     }
-  //     else if (this.currentusertransaction[i]['Content_Code'] == "B3.Bouncy" && this.currentusertransaction[i]['Bottle_Code'] == "UB.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-  //       this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'atU' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
-  //     }
-  //     else if (this.currentusertransaction[i]['Content_Code'] == "B4.Wavy" && this.currentusertransaction[i]['Bottle_Code'] == "UB.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-  //       this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'atU' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
-  //     }
-  //     else if (this.currentusertransaction[i]['Content_Code'] == "B4.Wavy" && this.currentusertransaction[i]['Bottle_Code'] == "UB.R" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-  //       this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'atU' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
-  //     }
-  //     else if (this.currentusertransaction[i]['Content_Code'] == "B5.Silky" && this.currentusertransaction[i]['Bottle_Code'] == "B5.V" && this.currentusertransaction[i]['Bottle_Status'] == 'InUse') {
-  //       this.currentusertransaction[i]['value'] = this.currentusertransaction[i]['AssetId'] + 'at' + this.currentusertransaction[i]['Content_Code'].split('.')[0];
-  //     }
-  //   }
 
-  // }
   openwhyshorter(whyshorter: any) {
     this.modalService.open(whyshorter, { windowClass: "frontpage" });
   }
-  openaboutshorter(aboutshorter: any) {
-    this.modalService.open(aboutshorter, { windowClass: "frontpage" });
-  }
-  opennavshorter(navigation: any) {
-    this.modalService.open(navigation, { windowClass: "frontpage" });
-  }
+
   private intervalId: any;
   private isMoving = false;
 
@@ -2807,31 +2902,45 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       this.intervalId = null;
     }
   }
+
   makeitEmpty() {
-    this.currentbottle['Quantity'] = 0;
+    this.isDisabled = true;
+
+    this.currentbottle['currentQuantity'] = 0;
     $("." + this.selectedBottleatStage.split("at")[1] + ".shampoolevel").css('height', '0px');
-    if (this.currentbottle['Bottle_Status'] != 'Damaged') {
-      $(".Inhouseshelf_bottles #" + this.selectedBottleatStage).addClass('zero-empty');
+    if (this.currentbottle['Bottle_Status'] == 'InUse') {
+     $(".Inhouseshelf_bottles #" + this.selectedBottleatStage).addClass('Empty-Dirty');
       this.currentbottle['Bottle_Status'] = "Empty-Dirty";
     }
+    else if (this.currentbottle['Bottle_Status'] == 'Damaged') {
+      this.currentbottle['Bottle_Status'] = "Damaged-Empty";
+      $(".Inhouseshelf_bottles #" + this.selectedBottleatStage).addClass('Damaged-Empty');
+    }
     this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => {
-      if (this.currentbottle['Bottle_Status'] != 'Damaged') {
+      if (this.currentbottle['Bottle_Status'] == 'InUse') {
         let index = this.currentUserPurhcased.findIndex(item => item === this.currentbottle['currentbottle'])
         this.currentUserPurhcased.splice(index, 1);
         this.refillbottles.push(this.currentbottle['currentbottle']);
       }
     });
   }
+  isDamaged: boolean = false;
   makeitDamaged() {
-    $("#" + this.selectedBottleatStage).addClass('damaged');
-    this.currentbottle['Bottle_Status'] = "Damaged";
+    this.isDamaged = true;
+    if (this.currentbottle['currentQuantity'] > 0) {
+      this.currentbottle['Bottle_Status'] = "Damaged-InUse"
+      $(".Inhouseshelf_bottles #" + this.selectedBottleatStage).addClass('Damaged-InUse');
+    }
+    else {
+      this.currentbottle['Bottle_Status'] = "Damaged-Empty";
+      $(".Inhouseshelf_bottles #" + this.selectedBottleatStage).addClass('Damaged-Empty');
+    }
     this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => { });
   }
+  isThrown: boolean = false;
   makeitThrown() {
-    console.log(this.selectedBottleatStage);
     $('.btncont,.shampoolevel').hide();
-    console.log(this.selectedBottleatStage.split('id')[0].split('_')[2])
-    console.log(this.selectedBottleatStage.split('id')[1].split('_')[0])
+    this.isThrown = true;
     let amount_fine = 0.0;
     for (let i = 0; i < this.bottlePrice.length; i++) {
       if (this.bottlePrice[i]['BottleType'] == this.selectedBottleatStage.split('id')[0].split('_')[2] + '.' + this.selectedBottleatStage.split('id')[1].split('_')[0]) {
@@ -2881,23 +2990,31 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     }
     $("#" + this.selectedBottleatStage.split("at")[0].split("City")[1]).addClass('Street');
     this.currentbottle['Location'] = "Street";
-    this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => {
-      if (this.currentbottle['Location'] != 'Street') {
-        let index = this.currentUserPurhcased.findIndex(item => item === this.currentbottle['currentbottle'])
-        this.currentUserPurhcased.splice(index, 1);
-        this.refillbottles.push(this.currentbottle['currentbottle']);
-      }
+    this.updateonlyloc['currentbottle'] = this.currentbottle['currentbottle'];
+    this.updateonlyloc['Bottleloc'] = "Street";
+    this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
+      console.log("bottle location update to Street");
+      let index = this.currentUserPurhcased.findIndex(item => item === this.currentbottle['currentbottle'])
+      this.currentUserPurhcased.splice(index, 1);
+
     });
+    // this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => {
+    //   if (this.currentbottle['Location'] != 'Street') {
+    //     let index = this.currentUserPurhcased.findIndex(item => item === this.currentbottle['currentbottle'])
+    //     this.currentUserPurhcased.splice(index, 1);
+    //     this.refillbottles.push(this.currentbottle['currentbottle']);
+    //   }
+    // });
   }
   reduceCapacity() {
-    if (this.currentbottle['Quantity'] >= 20) {
-      this.currentbottle['Quantity'] -= 20;
+    if (this.currentbottle['currentQuantity'] >= 20) {
+      this.currentbottle['currentQuantity'] -= 20;
       let getheight = $("." + this.selectedBottleatStage.split("at")[1] + ".shampoolevel").css('height').split("px")[0];
       let reducedheight = parseFloat(getheight) - this.stepheight;
       $("." + this.selectedBottleatStage.split("at")[1] + ".shampoolevel").css('height', reducedheight + 'px');
 
       this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => { });
-      if (this.currentbottle['Quantity'] == 0) {
+      if (this.currentbottle['currentQuantity'] == 0) {
         this.currentbottle['Bottle_Status'] = "Empty-Dirty";
         this.logser.updatethisAssetQuantity(this.currentbottle).subscribe((data) => {
           let index = this.currentUserPurhcased.findIndex(item => item === this.currentbottle['currentbottle'])
@@ -2911,7 +3028,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   }
   currentbottle = {
     'currentbottle': '',
-    'Quantity': 0,
+    'currentQuantity': 0,
     'Bottle_Status': "InUse",
     'Current_Refill_Count': 0,
     'Location': ''
@@ -2926,7 +3043,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     if (this.opensuperflag == 0) {
       this.altertab = 2;
     }
-
+   
     this.modalService.open(cartcontent, { windowClass: "cartcontent" });
     this.checkthebottlestatusfordisplay();
 
@@ -2934,21 +3051,25 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
 
   }
+
+  isDisabled: boolean = false;
   checkthebottlestatusfordisplay() {
     if (this.currentbottle['currentbottle'] != '') {
       this.logser.getthisAssets(this.currentbottle['currentbottle']).subscribe((data) => {
         this.sldBottleData = data;
         console.log(this.sldBottleData);
+        $(".loading").hide();
+        console.log(this.sldBottleData);
         if (data[0]['remQuantity'] == '') {
           data[0]['remQuantity'] = 500;
         }
-        this.currentbottle['Quantity'] = data[0]['remQuantity'];
+        this.currentbottle['currentQuantity'] = data[0]['remQuantity'];
         this.currentbottle['Bottle_Status'] = data[0]['Bottle_Status'];
         this.currentbottle['Location'] = data[0]['Bottle_loc'];
         if (this.currentbottle['Location'] !== "Street") {
           let getheight = parseFloat($("." + this.selectedBottleatStage.split("at")[1] + ".shampoolevel").css('height').split("px")[0]);
           this.stepheight = getheight / 25;
-          let unitreduction = 500 - (this.currentbottle['Quantity']);
+          let unitreduction = 500 - (this.currentbottle['currentQuantity']);
           let reductionpropo = unitreduction / 500;
           let heightred = getheight * reductionpropo;
           let reducedheight = getheight - heightred;
@@ -2972,19 +3093,35 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           $(".btncont,.shampoolevel").hide();
           $("#" + this.selectedBottleatStage.split("at")[0].split("City")[1]).addClass('Street');
         }
+        $(".currentbottleshow").fadeIn(2000);
+        if (this.currentbottle['Bottle_Status'] == 'Damaged-Empty') {
+          this.isDamaged = true;
+          this.isDisabled = true;
+
+        }
+        else if (this.currentbottle['Bottle_Status'] == 'Damaged-InUse') {
+          this.isDamaged = true;
+
+        }
+        else if (this.currentbottle['Bottle_Status'] == 'Empty-Dirty') {
+          this.isDisabled = true;
+        }
+
       });
     }
     else {
 
     }
+
+
   }
   checksBottleStatus(item: CdkDrag<string>) {
-    if (!item.element.nativeElement.classList.contains('zero-empty') && !item.element.nativeElement.classList.contains('damaged') && !item.element.nativeElement.classList.contains('Street')) { return true; }
+    if (!item.element.nativeElement.classList.contains('Empty-Dirty') && !item.element.nativeElement.classList.contains('Damaged-Empty') && !item.element.nativeElement.classList.contains('Street')) { return true; }
     else { return false; }
   }
 
   checksBottleempty(item: CdkDrag<string>) {
-    if (item.element.nativeElement.classList.contains('zero-empty') && !item.element.nativeElement.classList.contains('damaged') && !item.element.nativeElement.classList.contains('Street')) { return true; }
+    if (item.element.nativeElement.classList.contains('Empty-Dirty') || item.element.nativeElement.classList.contains('Damaged-Empty') && !item.element.nativeElement.classList.contains('Street')) { return true; }
     else { return false; }
   }
 
