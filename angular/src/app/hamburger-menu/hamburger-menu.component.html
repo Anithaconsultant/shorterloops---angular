@@ -1,4 +1,4 @@
-<div class="menu-container hamburger" [ngClass]="{'open': menuOpen}">
+<div class="menu-container hamburger" [ngClass]="{'open': menuOpen}" appClickOutside (clickOutside)="closeMenu()">
     <div class="hambergerbutton">
         <div class="hamburger" (click)="toggleMenu()">
             <div class="dot"></div>
@@ -15,35 +15,55 @@
     <nav class="slide-menu">
         <div class="profilemenu">
 
-    
 
-            <div ngbAccordion #accordion="ngbAccordion" *ngIf="currentrole!=''">
+
+            <div ngbAccordion #accordion="ngbAccordion" *ngIf="currentrole!='' && !currentrole.includes('House')">
                 <div ngbAccordionItem="first">
-                    <h2 ngbAccordionHeader>
+                    <div ngbAccordionHeader>
                         <button ngbAccordionButton>
-                            <div class="displaypic"></div> {{currentrole | titlecase}}
+                            <div class="displaypic ham-menuitem"></div> {{currentrole | titlecase}}
                         </button>
-                    </h2>
+                    </div>
                     <div ngbAccordionCollapse>
                         <div ngbAccordionBody>
                             <ng-template>
-                                {{this.switchyesorno}}
-                                <div *ngIf="this.switchyesorno==1">
-                                    <div (click)="callswitchcustomerrole()">Switch Role as {{currentrole}}
+                                <div class="hamburger-menu">
+                                    
+                                        <div *ngIf="this.switchyesorno==1">
+                                            <div class="ham-menuitem" (click)="onMenuItemClick();">Switch Role as
+                                                {{currentrole}}
+                                            </div>
+                                        </div>
+                                        <div *ngIf="this.switchyesorno==2">
+                                            <div type="button" class="inneracc ham-menuitem"
+                                                (click)="onMenuItemClick()">Switch
+                                                Role as Customer</div>
+                                            <div type="button" class="disabled inneracc ham-menuitem">Check the
+                                                municipality office
+                                                cashbox status</div>
+                                            <div type="button" class="disabled inneracc ham-menuitem">Check the office
+                                                ledger book</div>
+                                            <div type="button" class="disabled inneracc ham-menuitem">Run the garbage
+                                                truck daily</div>
+                                            <div type="button" class="disabled inneracc ham-menuitem">Update the City
+                                                Rule Book</div>
+                                            <div type="button" class="disabled inneracc ham-menuitem">Update Notices and
+                                                Announcements
+                                            </div>
+                                            <div type="button" class="inneracc ham-menuitem"
+                                                (click)="showNewComponent()">Show Asset
+                                                Audit Trail</div>
+                                            <div type="button" class="disabled inneracc ham-menuitem">Set the City Clock
+                                                Tower Tickrate
+                                            </div>
+                                            <div type="button" class="disabled inneracc ham-menuitem">Audit the
+                                                universal bottle cleaning
+                                                process</div>
+                                            <div type="button" class="disabled inneracc ham-menuitem">Audit the
+                                                refilling station</div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div *ngIf="this.switchyesorno==2">
-                                    <button (click)="callswitchcustomerrole()">Switch Role as Customer</button>
-                                    <div class="disabled">Check the municipality office cashbox status</div>
-                                    <div class="disabled">Check the office ledger book</div>
-                                    <div class="disabled">Run the garbage truck daily</div>
-                                    <div class="disabled">Update the City Rule Book</div>
-                                    <div class="disabled">Update Notices and Announcements</div>
-                                    <div (click)="showNewComponent()">Show Asset Audit Trail</div>
-                                    <div class="disabled">Set the City Clock Tower Tickrate</div>
-                                    <div class="disabled">Audit the universal bottle cleaning process</div>
-                                    <div class="disabled">Audit the refilling station</div>
-                                </div>
+                            
                             </ng-template>
                         </div>
                     </div>
@@ -52,8 +72,6 @@
         </div>
 
         <ul class="hamburger-menu">
-
-
             <div class="ham-menuitem" (click)="toggleMenu();opennavshorter(navigation)">
                 <div class="navigation"></div> Navigation
             </div>

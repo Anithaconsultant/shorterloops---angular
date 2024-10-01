@@ -70,6 +70,14 @@
             @extend .commmoncenter;
             left: 144px;
             top: 5px;
+
+        }
+        .Mayor{
+            &.house{
+                .roleDisplay{
+                    top: -105px !important;
+                }
+            }
         }
 
         .mayorflag {

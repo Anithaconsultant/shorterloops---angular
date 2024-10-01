@@ -94,6 +94,7 @@ class Asset(models.Model):
     CategoryCode = models.CharField(max_length=1000, blank=True)
     Bottle_Code = models.CharField(max_length=1000, blank=True)
     Content_Code = models.CharField(max_length=1000, blank=True)
+    Current_Content_Code = models.CharField(max_length=1000, blank=True)
     Quantity = models.CharField(max_length=70, blank=True)
     remQuantity = models.CharField(max_length=70, blank=True)
     Units = models.CharField(max_length=70, blank=True)

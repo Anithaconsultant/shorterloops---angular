@@ -23,7 +23,7 @@ export class LoginserviceService {
     'cityrate': '',
     'cityavatar': ''
   };
-  // baseurl = "https://dbl.iihs.in/api/";
+  //baseurl = "https://dbl.iihs.in/api/";
   baseurl = "http://127.0.0.1:8000/api/";
   authorizationData = 'Basic ' + btoa(this.username + ':' + this.password);
   httpHeaders = new HttpHeaders({
@@ -43,7 +43,7 @@ export class LoginserviceService {
       { headers: this.httpHeaders });
   }
   createAsset(asset: any): Observable<any> {
-    const body = { AssetId: asset.AssetId, Asset_CityId: asset.Asset_CityId, CategoryCode: asset.CategoryCode, Bottle_Code: asset.Bottle_Code, Content_Code: asset.Content_Code, Quantity: asset.Quantity, remQuantity: asset.remQuantity, Units: asset.Units, Bottle_loc: asset.Bottle_loc, Bottle_Status: asset.Bottle_Status, DOM: asset.DOM, Max_Refill_Count: asset.Max_Refill_Count, Current_Refill_Count: asset.Current_Refill_Count, Latest_Refill_Date: asset.Latest_Refill_Date, Retirement_Date: asset.Retirement_Date, Retire_Reason: asset.Retire_Reason, Content_Price: asset.Content_Price, Bottle_Price: asset.Bottle_Price, Redeem_Good: asset.Redeem_Good, Redeem_Damaged: asset.Redeem_Damaged, Discount_RefillB: asset.Discount_RefillB, Env_Tax: asset.Env_Tax, Discard_fine: asset.Discard_fine, Transaction_Id: asset.Transaction_Id, Transaction_Date: asset.Transaction_Date, Fromfacility: asset.Fromfacility, Tofacility: asset.Tofacility };
+    const body = { AssetId: asset.AssetId, Asset_CityId: asset.Asset_CityId, CategoryCode: asset.CategoryCode, Bottle_Code: asset.Bottle_Code, Content_Code: asset.Content_Code,Current_Content_Code: asset.Current_Content_Code, Quantity: asset.Quantity, remQuantity: asset.remQuantity, Units: asset.Units, Bottle_loc: asset.Bottle_loc, Bottle_Status: asset.Bottle_Status, DOM: asset.DOM, Max_Refill_Count: asset.Max_Refill_Count, Current_Refill_Count: asset.Current_Refill_Count, Latest_Refill_Date: asset.Latest_Refill_Date, Retirement_Date: asset.Retirement_Date, Retire_Reason: asset.Retire_Reason, Content_Price: asset.Content_Price, Bottle_Price: asset.Bottle_Price, Redeem_Good: asset.Redeem_Good, Redeem_Damaged: asset.Redeem_Damaged, Discount_RefillB: asset.Discount_RefillB, Env_Tax: asset.Env_Tax, Discard_fine: asset.Discard_fine, Transaction_Id: asset.Transaction_Id, Transaction_Date: asset.Transaction_Date, Fromfacility: asset.Fromfacility, Tofacility: asset.Tofacility };
     return this.http.post(this.baseurl + 'asset/' + this.currentuser.CityId, body,
       { headers: this.httpHeaders });
   }
@@ -91,7 +91,7 @@ export class LoginserviceService {
 
     };
     if (currentitem.contentCode !== '') {
-      body['Content_Code'] = currentitem.contentCode;
+      body['Current_Content_Code'] = currentitem.contentCode;
     }
 
     if (currentitem.purchased !== '') {
@@ -208,7 +208,7 @@ export class LoginserviceService {
 
   createtransaction(transaction: any): Observable<any> {
     const body = {
-      TransactionId: transaction.TransactionId, 'Amount': transaction.Amount, 'DebitFacility': this.currentuser.Role,
+      TransactionId: transaction.TransactionId, 'Amount': transaction.Amount, 'DebitFacility': transaction.DebitFacility,
       'CreditFacility': transaction.CreditFacility, 'Purpose': transaction.Purpose
     };
     return this.http.post(this.baseurl + 'cashflow/', body,
