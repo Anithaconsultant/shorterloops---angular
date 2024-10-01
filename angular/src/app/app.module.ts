@@ -23,6 +23,7 @@ import { ReportComponent } from './report/report.component';
 import { LongPressDragDirective } from './app-longpress.directive';
 import { PreventDoubleClickDirective } from './prevent-double-click.directive';
 import { HamburgerMenuComponent } from './hamburger-menu/hamburger-menu.component';
+import { ClickOutsideDirective } from './directives/click-outside.directive';
 @NgModule({
   declarations: [
     AppComponent,
@@ -34,7 +35,8 @@ import { HamburgerMenuComponent } from './hamburger-menu/hamburger-menu.componen
     ReportComponent,
     LongPressDragDirective,
     PreventDoubleClickDirective,
-    HamburgerMenuComponent
+    HamburgerMenuComponent,
+    ClickOutsideDirective
   ],
   imports: [
     BrowserModule,

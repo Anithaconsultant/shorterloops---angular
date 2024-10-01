@@ -109,8 +109,11 @@ class CityTimer(threading.Thread):
         print('update_wallet', city_id)
         users = CustomUser.objects.filter(User_cityid=city_id)
         for user in users:
+            
             # Assuming wallet is stored as a string, adjust if necessary
+            print(user.wallet)
             user.wallet = str(float(user.wallet) + 2000)
+            print(user.wallet)
             user.save()
 
         print(f'Successfully updated wallets for users in city ID: {city_id}')

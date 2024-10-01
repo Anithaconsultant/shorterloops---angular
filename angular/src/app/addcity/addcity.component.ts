@@ -110,6 +110,7 @@ export class AddcityComponent implements OnInit {
     'CategoryCode': 'SB',
     'Bottle_Code': '',
     'Content_Code': '',
+    'Current_Content_Code': '',
     'Quantity': '500',
     'remQuantity': '500',
     'Units': 'ml',
@@ -234,6 +235,7 @@ export class AddcityComponent implements OnInit {
               this.assettableobj['Asset_CityId'] = this.Asset_CityId;
               this.assettableobj['Bottle_Code'] = this.assetData['Bottle_Code'][count];
               this.assettableobj['Content_Code'] = this.assetData['Content_Code'][count];
+              this.assettableobj['Current_Content_Code'] = this.assetData['Content_Code'][count];
               this.assettableobj['Current_Refill_Count'] = this.assetData['Current_Refill_Count'][count];
               this.assettableobj['Latest_Refill_Date'] = this.assetData['Latest_Refill_Date'][count];
               this.assettableobj['Content_Price'] = this.assetData['Content_Price'][count];

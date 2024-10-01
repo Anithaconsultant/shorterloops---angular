@@ -172,10 +172,12 @@
             <div class="conveyorbottledropper">
                 <div cdkDropList #droppedList="cdkDropList" [cdkDropListConnectedTo]="[bottleList]"
                     [cdkDropListData]="bottledropped" (cdkDropListDropped)="returndrop($event)" class="bottle_list">
-                    <div *ngFor="let item of bottledropped" class="bottle {{item.split('at')[1]}} " id="{{item}}"
-                        (dragstart)="onDragStart($event)" cdkdrag longPressDrag [cdkDragStartDelay]="250"></div>
+                    <div *ngFor="let item of bottledropped" cdkDrag (cdkDragStarted)="dragStarted(item)"
+                        class="bottle {{item.split('at')[1]}} " id="{{item}}">
+                    </div>
                 </div>
             </div>
+            
             <div class="scanner_cont">
                 <div class="scanner1"></div>
                 <div class="scanner2"></div>
@@ -191,10 +193,10 @@
                 <div class="cartid" (click)="opencart(cartcontent,$event)"></div>
                 <div class="bottleholder">
                     <div cdkDropList #bottleList="cdkDropList" [cdkDropListConnectedTo]="[droppedList]"
-                        [cdkDropListData]="refillbottles" (cdkDropListDropped)="returndrop($event)"
+                        [cdkDropListData]="refillbottles"
                         class="cart_bottle_list" [cdkDropListEnterPredicate]="checkamountdetect">
-                        <div *ngFor="let item of refillbottles" id="{{item}}" class="bottle {{item.split('at')[1]}} "
-                            cdkDrag (dragstart)="onDragStart($event)" longPressDrag [cdkDragStartDelay]="250">
+                        <div *ngFor="let item of refillbottles; trackBy: trackByFn" id="{{item}}" class="bottle {{item.split('at')[1]}} "
+                            cdkDrag (dragstart)="onDragStart($event)" longPressDrag [cdkDragStartDelay]="250" (cdkDragStarted)="onDragStarted($event)"  (cdkDragEnded)="onDragEnded($event)">
                         </div>
                     </div>
                 </div>
@@ -624,7 +626,7 @@
                 <div class="currentbottleshow" *ngIf="selectedBottleatStage!=''">
                     <div id="{{selectedBottleatStage.split('at')[0].split('City')[1]}}"
                         class="{{selectedBottleatStage.split('at')[1] }}_{{currentbottle['Bottle_Status']}} imgclass">
-                        <div class="shampoolevel {{selectedBottleatStage.split('at')[1] }}"></div>
+                        <div class="shampoolevel "></div>
                     </div>
                     <div class="bottlecontent" *ngIf="selectedBottleatStage!=''">
                         <div> "Bottle Status :" {{currentbottle['Bottle_Status']}}</div>

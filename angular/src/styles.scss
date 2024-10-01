@@ -1256,7 +1256,13 @@ app-signup {
     background-image: url('./assets/img/B3_use.png');
 
 }
-
+.accordion-item,.accordion-header,.accordion-button{
+    background-color: transparent !important;
+    border:none !important;
+  }
+  .accordion{
+    width:100% !important;
+  }
 .B3_Damaged-Empty,.B3_Damaged-InUse {
     background-image: url('./assets/img/B3_dmg.png');
 
