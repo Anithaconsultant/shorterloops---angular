@@ -1,0 +1,121 @@
+<div class="menu-container hamburger" [ngClass]="{'open': menuOpen}" appClickOutside (clickOutside)="closeMenu()">
+    <div class="hambergerbutton">
+        <div class="hamburger" (click)="toggleMenu()">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+    <nav class="slide-menu">
+        <div class="profilemenu">
+
+
+
+            <div ngbAccordion #accordion="ngbAccordion" *ngIf="currentrole!='' && !currentrole.includes('House')">
+                <div ngbAccordionItem="first">
+                    <div ngbAccordionHeader>
+                        <button ngbAccordionButton>
+                            <div class="displaypic ham-menuitem"></div> {{currentrole | titlecase}}
+                        </button>
+                    </div>
+                    <div ngbAccordionCollapse>
+                        <div ngbAccordionBody>
+                            <ng-template>
+                                <div class="hamburger-menu">
+                                    
+                                        <div *ngIf="this.switchyesorno==1">
+                                            <div class="ham-menuitem" (click)="onMenuItemClick();">Switch Role as
+                                                {{currentrole}}
+                                            </div>
+                                        </div>
+                                        <div *ngIf="this.switchyesorno==2">
+                                            <div type="button" class="inneracc ham-menuitem"
+                                                (click)="onMenuItemClick()">Switch
+                                                Role as Customer</div>
+                                            <div type="button" class="disabled inneracc ham-menuitem">Check the
+                                                municipality office
+                                                cashbox status</div>
+                                            <div type="button" class="disabled inneracc ham-menuitem">Check the office
+                                                ledger book</div>
+                                            <div type="button" class="disabled inneracc ham-menuitem">Run the garbage
+                                                truck daily</div>
+                                            <div type="button" class="disabled inneracc ham-menuitem">Update the City
+                                                Rule Book</div>
+                                            <div type="button" class="disabled inneracc ham-menuitem">Update Notices and
+                                                Announcements
+                                            </div>
+                                            <div type="button" class="inneracc ham-menuitem"
+                                                (click)="showNewComponent()">Show Asset
+                                                Audit Trail</div>
+                                            <div type="button" class="disabled inneracc ham-menuitem">Set the City Clock
+                                                Tower Tickrate
+                                            </div>
+                                            <div type="button" class="disabled inneracc ham-menuitem">Audit the
+                                                universal bottle cleaning
+                                                process</div>
+                                            <div type="button" class="disabled inneracc ham-menuitem">Audit the
+                                                refilling station</div>
+                                        </div>
+                                    </div>
+                            
+                            </ng-template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ul class="hamburger-menu">
+            <div class="ham-menuitem" (click)="toggleMenu();opennavshorter(navigation)">
+                <div class="navigation"></div> Navigation
+            </div>
+            <div class="ham-menuitem" (click)="toggleMenu();openaboutshorter(aboutshorterloop)">
+                <div class="information"></div> About
+            </div>
+
+
+
+
+        </ul>
+    </nav>
+</div>
+<ng-template #whyshorterloop let-modal>
+    <div class="modal-header">
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="innderdiv">
+            <div class="loadcontent"></div>
+        </div>
+    </div>
+
+</ng-template>
+
+<ng-template #aboutshorterloop let-modal>
+    <div class="modal-header">
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="innderdiv">
+            <div class="loadcontent1"></div>
+        </div>
+    </div>
+
+</ng-template>
+
+<ng-template #navigation let-modal>
+    <div class="modal-header">
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="innderdiv">
+            <div class="loadcontent2"></div>
+        </div>
+    </div>
+</ng-template>

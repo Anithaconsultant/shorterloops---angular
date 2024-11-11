@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
+import { AppComponent } from './app.component'; // Ensure AppComponent is standalone
 import { DatePipe } from '@angular/common';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { LoginComponent } from './login/login.component';
@@ -16,17 +16,18 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTreeModule} from '@angular/material/tree';
-import {MatIconModule} from '@angular/material/icon';
-import {MatButtonModule} from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from './auth.service';
 import { ReportComponent } from './report/report.component'; 
 import { LongPressDragDirective } from './app-longpress.directive';
 import { PreventDoubleClickDirective } from './prevent-double-click.directive';
 import { HamburgerMenuComponent } from './hamburger-menu/hamburger-menu.component';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
+
 @NgModule({
   declarations: [
-    AppComponent,
+    // Remove standalone components here
     LoginComponent,
     SignupComponent,
     MaincityComponent,
@@ -47,10 +48,13 @@ import { ClickOutsideDirective } from './directives/click-outside.directive';
     NgbModule,
     NgbDropdownModule,
     BrowserAnimationsModule,
-    DragDropModule,MatTreeModule, MatButtonModule, MatIconModule
+    DragDropModule,
+    MatTreeModule,
+    MatButtonModule,
+    MatIconModule,
+    AppComponent // Add standalone components here in imports
   ],
-  providers: [AuthService,{ provide: LocationStrategy, useClass: HashLocationStrategy },
-    DatePipe],
+  providers: [AuthService, { provide: LocationStrategy, useClass: HashLocationStrategy }, DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

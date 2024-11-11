@@ -1,0 +1,7 @@
+{
+    "/api": {
+    "target": "https://dbl.iihs.in/api",
+    "secure": false,
+    "changeOrigin": true
+    }
+    }
