@@ -28,6 +28,7 @@ import { ClickOutsideDirective } from './directives/click-outside.directive';
 @NgModule({
   declarations: [
     // Remove standalone components here
+    AppComponent,
     LoginComponent,
     SignupComponent,
     MaincityComponent,
