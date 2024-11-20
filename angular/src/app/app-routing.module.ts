@@ -7,7 +7,7 @@ import {MaincityComponent} from './maincity/maincity.component';
 import {HomeComponent} from './home/home.component';
 import {AddcityComponent} from './addcity/addcity.component'
 import {ReportComponent} from './report/report.component';
-export const routes: Routes = [
+const routes: Routes = [
 { path: "", redirectTo: "login", pathMatch: "full" },
 { path: 'login', component: LoginComponent },
 { path: 'signup', component: SignupComponent },

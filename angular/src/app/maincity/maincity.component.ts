@@ -186,7 +186,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     'tofacility': '',
     'transactiondate': '',
     'purchased': '',
-    'contentCode': ''
+    'contentCode': '',
+    'Latest_Refill_Date':''
   }
   updatebottlereturn = {
     'currentitem': '',
@@ -307,7 +308,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         this.citycurrentday = data[0].CurrentDay;
         $(".maincity").addClass("city_" + this.cityavatar)
       });
-      console.log(this.currentusercityId);
+      //  console.log(this.currentusercityId);
       setInterval(() => { this.loadAvailableAsset() }, 10000);
       setInterval(() => { this.loadtime() }, 1000);
 
@@ -431,7 +432,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       }
     }
 
-    console.log(this.array_BottleFromConveyor)
+    //  console.log(this.array_BottleFromConveyor)
   }
   clearBounceBottles() {
     for (let i = 0; i < this.array_BottleFromConveyor.length; i++) {
@@ -736,8 +737,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   loadAvailableAsset() {
     $(".loadinglogo").hide();
     this.logser.getAllAssets().subscribe((data) => {
-      console.log("Check the city elements:")
-      console.log(data)
+      //  console.log("Check the city elements:")
+      //  console.log(data)
       this.assetdataset = [];
       this.shinyvpn = [];
       this.shinyuvpn = [];
@@ -1225,7 +1226,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       }
 
     }
-   // console.log(this.whichRoad)
+    // console.log(this.whichRoad)
   }
 
 
@@ -1819,7 +1820,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             $(".tick").show();
             this.logser.gettransactions().subscribe(data => {
               this.transactioncount = '0000' + (data.length + 1);
-            });
+            
 
             this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_01';
             this.transaction['Amount'] = String(this.totalsupermarketbill);
@@ -1838,7 +1839,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
                     data = this.transaction;
 
                     this.updatebottleasset['bottlestatus'] = 'InUse';
-                    this.updatebottleasset['transactionid'] = this.transaction['TransactionId'];
+                    this.updatebottleasset['transactionid'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_01';;
                     this.updatebottleasset['fromfacility'] = 'Supermarket Owner'
                     this.updatebottleasset['tofacility'] = this.currentUserRole;
                     this.updatebottleasset['transactiondate'] = String(this.citytiming['CurrentDay']);
@@ -1863,7 +1864,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
                 console.log(error);
               });
 
-
+            });
 
 
             this.logser.getcashboxmunicipality().subscribe(data => {
@@ -1956,7 +1957,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         this.switchYesOrNo = value;
         if (this.switchYesOrNo == 2) {
           this.dopanzoom(-3341, -2150, '1');
-        }});
+        }
+      });
       this.loadinginitialState();
 
 
@@ -1985,7 +1987,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
 
   dopanzoom(x: number, y: number, zoomlevel: string) {
-   
+
     this.instance.smoothMoveTo(x, y);
     this.instance.zoomTo(x, y, parseFloat(zoomlevel));
   }
@@ -2139,8 +2141,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
 
       }
-      console.log("Cashflow data");
-      console.log(this.cashflowdata)
+      // console.log("Cashflow data");
+      // console.log(this.cashflowdata)
     });
   }
   presentitem: any[] = []
@@ -2384,35 +2386,39 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         data => {
           data = this.currentwallet;
           this.playAudioElement(this.paymentreceived.nativeElement, 0.8);
+          let transactioncount='';
           this.logser.gettransactions().subscribe(data => {
-            this.transactioncount = '0000' + (data.length + 1);
+            transactioncount = '0000' + (data.length + 1);
+
+            this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_03';
+            this.transaction['Amount'] = String(this.refill_amount_topay);
+            this.transaction['CreditFacility'] = 'Refilling Station';
+            this.transaction['DebitFacility'] = this.currentUserRole;
+            this.transaction['Purpose'] = 'Refilling shampoo from the Refilling Station';
+            this.logser.createtransaction(this.transaction).subscribe(
+              data => {
+                data = this.transaction;
+  
+                this.updatebottleasset['bottlestatus'] = 'InUse';
+                this.updatebottleasset['transactionid'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_03';
+                this.updatebottleasset['fromfacility'] = 'Refilling Station'
+                this.updatebottleasset['tofacility'] = this.currentUserRole;
+                this.updatebottleasset['transactiondate'] = String(this.citytiming['CurrentDay']);
+                this.updatebottleasset['Latest_Refill_Date'] = String(this.citytiming['CurrentDay']);
+                this.updatebottleasset['Bottleloc'] = this.currentUserCartId;
+                this.updatebottleasset['contentCode'] = this.refillbrandselected;
+                this.updatebottleasset['currentitem'] = this.currentlyrefillingBottle.split("at")[0].split('City')[1];
+                this.logser.updatethisAssets(this.updatebottleasset).subscribe((data) => {
+                  this.playAudioElement(this.transactioncomplete.nativeElement, 0.8);
+                });
+  
+              },
+              error => {
+                console.log(error);
+              });
           });
 
-          this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_01';
-          this.transaction['Amount'] = String(this.refill_amount_topay);
-          this.transaction['CreditFacility'] = 'Refilling Station';
-          this.transaction['DebitFacility'] = this.currentUserRole;
-          this.transaction['Purpose'] = 'Refilling shampoo from the Refilling Station';
-          this.logser.createtransaction(this.transaction).subscribe(
-            data => {
-              data = this.transaction;
-
-              this.updatebottleasset['bottlestatus'] = 'InUse';
-              this.updatebottleasset['transactionid'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount;
-              this.updatebottleasset['fromfacility'] = 'Refilling Station'
-              this.updatebottleasset['tofacility'] = this.currentUserRole;
-              this.updatebottleasset['transactiondate'] = String(this.citytiming['CurrentDay']);
-              this.updatebottleasset['Bottleloc'] = this.currentUserCartId;
-              this.updatebottleasset['contentCode'] = this.refillbrandselected;
-              this.updatebottleasset['currentitem'] = this.currentlyrefillingBottle.split("at")[0].split('City')[1];
-              this.logser.updatethisAssets(this.updatebottleasset).subscribe((data) => {
-                this.playAudioElement(this.transactioncomplete.nativeElement, 0.8);
-              });
-
-            },
-            error => {
-              console.log(error);
-            });
+         
         },
         error => {
           console.log(error);
@@ -2619,19 +2625,20 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
                 // Handle the transaction for the fine
                 this.logser.gettransactions().subscribe(data => {
-                  this.transactioncount = '0000' + (data.length + 1);
+                  let transactioncount = '0000' + (data.length + 1);
+                  this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + transactioncount + '_04';
+                  this.transaction['Amount'] = String(this.refill_amount_topay);
+                  this.transaction['CreditFacility'] = 'Municipality Office';
+                  this.transaction['DebitFacility'] = this.currentUserRole;
+                  this.transaction['Purpose'] = 'Fine for Throwing Bottle to City Dustbin';
+  
+                  this.logser.createtransaction(this.transaction).subscribe(
+                    data => {
+                      data = this.transaction;
+                    });
                 });
 
-                this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_01';
-                this.transaction['Amount'] = String(this.refill_amount_topay);
-                this.transaction['CreditFacility'] = 'Municipality Office';
-                this.transaction['DebitFacility'] = this.currentUserRole;
-                this.transaction['Purpose'] = 'Fine for Throwing Bottle to City Dustbin';
-
-                this.logser.createtransaction(this.transaction).subscribe(
-                  data => {
-                    data = this.transaction;
-                  });
+               
               },
               error => {
                 console.log(error);
@@ -2657,7 +2664,53 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
         this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
           console.log("Bottle location updated to Landfill");
+          let amount_fine = 0.0;
+          // Calculate the fine
+          for (let i = 0; i < this.bottlePrice.length; i++) {
+            if (this.bottlePrice[i]['BottleType'] == currentlyDroped.split('id')[0].split('_')[2] + '.' + currentlyDroped.split('id')[1].split('_')[0]) {
+              amount_fine = parseFloat(this.bottlePrice[i]['OriginalPrice']) * 0.5;
+              break;
+            }
+          }
 
+          if (this.currentwallet > amount_fine) {
+            alert("A fine of ₹" + amount_fine + " has been charged for this offense");
+            this.currentwallet = this.currentwallet - amount_fine;
+            this.logser.currentuser.wallet = this.currentwallet;
+
+            this.logser.updatewallet().subscribe(
+              data => {
+                data = this.currentwallet;
+                this.playAudioElement(this.Fine.nativeElement, 0.8);
+
+                // Handle the transaction for the fine
+                this.logser.gettransactions().subscribe(data => {
+                  let transactioncount = '0000' + (data.length + 1);
+                  this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + transactioncount + '_05';
+                  this.transaction['Amount'] = String(this.refill_amount_topay);
+                  this.transaction['CreditFacility'] = 'Municipality Office';
+                  this.transaction['DebitFacility'] = this.currentUserRole;
+                  this.transaction['Purpose'] = 'Fine for Throwing Bottle to Garbage Truck';
+  
+                  this.logser.createtransaction(this.transaction).subscribe(
+                    data => {
+                      data = this.transaction;
+                    });
+                });
+
+               
+              },
+              error => {
+                console.log(error);
+              });
+
+            // Update the municipality cashbox
+            this.logser.getcashboxmunicipality().subscribe(data => {
+              (data[0]['Cashbox'] == '') ? this.municipalcashbox = 0 : this.municipalcashbox = parseInt(data[0]['Cashbox']);
+              this.municipalcashbox += amount_fine;
+              this.logser.updatecashboxmunicipality(String(this.municipalcashbox)).subscribe(data => { });
+            });
+          }
           // Explicitly update the truck container list
           this.truckContList = [...event.container.data];
           console.log('Updated truckContList:', this.truckContList);
@@ -2751,30 +2804,36 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         this.getBottleCode = data[0]['Bottle_Code'].split('.')[1];
         for (let i = 0; i < this.bottlePrice.length; i++) {
           const bottleType = currentlyDroped.split('id')[0].split('_')[2] + '.' + currentlyDroped.split('id')[1].split('_')[0];
+
           if (this.bottlePrice[i]['BottleType'] === bottleType && this.updatebottlereturn['bottlestatus'] == 'Empty-Dirty') {
+            //alert("Empty")
             amount_refund = parseFloat(this.bottlePrice[i]['OriginalPrice']) * (this.bottlePrice[i]['percentReturnGood'] / 100);
             break;
           }
           else if (this.bottlePrice[i]['BottleType'] === bottleType && this.updatebottlereturn['bottlestatus'] == 'Damaged-Empty') {
+            //alert("Damaged")
             amount_refund = parseFloat(this.bottlePrice[i]['OriginalPrice']) * (this.bottlePrice[i]['percentReturnDamage'] / 100);
             break;
           }
         }
 
 
-        this.logser.updateConveyorAssets(this.updatebottlereturn).subscribe((data) => {
-          console.log("Bottle location updated to Return Conveyor");
 
+
+
+
+       // alert(amount_refund)
+        if (amount_refund > 0.0) {
           this.currentwallet += amount_refund;
           this.logser.currentuser.wallet = this.currentwallet;
           this.logser.updatewallet().subscribe(
             data => {
               data = this.currentwallet;
               this.logser.gettransactions().subscribe(data => {
-                this.transactioncount = '0000' + (data.length + 1);
-              });
+                let transactioncount = '0000' + (data.length + 1);
+              
 
-              this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_01';
+              this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + transactioncount + '_06';
               this.transaction['Amount'] = String(amount_refund);
               this.transaction['CreditFacility'] = this.currentUserRole;
               this.transaction['DebitFacility'] = 'Return Conveyor';
@@ -2787,18 +2846,23 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
                   //alert("Thanks for returning the bottle. ₹ " + amount_refund + " has been credited to your wallet");
                   $("#" + currentlyDroped).addClass('Amountcredited');
                   this.startreturnanimation(currentlyDroped);
+                  this.logser.updateConveyorAssets(this.updatebottlereturn).subscribe((data) => {
+                    console.log("Bottle location updated to Return Conveyor");
+                  });
                 });
 
             },
             error => {
               console.log(error);
             });
-
-          this.logser.getsupermarketcashbox().subscribe(data => {
-            (data[0]['Cashbox'] == '') ? this.supermarketcashbox = 0 : this.supermarketcashbox = parseInt(data[0]['Cashbox']);
-            this.supermarketcashbox -= amount_refund;
-            this.logser.updatesupermarketcashbox(String(this.supermarketcashbox)).subscribe(data => { });
           });
+        }
+
+        this.logser.getsupermarketcashbox().subscribe(data => {
+          (data[0]['Cashbox'] == '') ? this.supermarketcashbox = 0 : this.supermarketcashbox = parseInt(data[0]['Cashbox']);
+          this.supermarketcashbox -= amount_refund;
+          this.logser.updatesupermarketcashbox(String(this.supermarketcashbox)).subscribe(data => { });
+
         });
       });
 
@@ -2825,7 +2889,6 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         event.currentIndex
       );
     }
-    console.log('Current container data:', event.container.data);
     let currentlyDroped = event.item.element.nativeElement.id;
     let currentDropzone = event.container.element.nativeElement.classList;
     let amount_refund = 0.0;
@@ -2877,9 +2940,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
               data = this.currentwallet;
               this.logser.gettransactions().subscribe(data => {
                 this.transactioncount = '0000' + (data.length + 1);
-              });
-
-              this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_01';
+              
+              this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_07';
               this.transaction['Amount'] = String(amount_refund);
               this.transaction['CreditFacility'] = this.currentUserRole;
               this.transaction['DebitFacility'] = 'Reverse Vending';
@@ -2900,12 +2962,12 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             error => {
               console.log(error);
             });
-
-          this.logser.getsupermarketcashbox().subscribe(data => {
-            (data[0]['Cashbox'] == '') ? this.supermarketcashbox = 0 : this.supermarketcashbox = parseInt(data[0]['Cashbox']);
-            this.supermarketcashbox -= amount_refund;
-            this.logser.updatesupermarketcashbox(String(this.supermarketcashbox)).subscribe(data => { });
           });
+          // this.logser.getsupermarketcashbox().subscribe(data => {
+          //   (data[0]['Cashbox'] == '') ? this.supermarketcashbox = 0 : this.supermarketcashbox = parseInt(data[0]['Cashbox']);
+          //   this.supermarketcashbox -= amount_refund;
+          //   this.logser.updatesupermarketcashbox(String(this.supermarketcashbox)).subscribe(data => { });
+          // });
         });
       });
 
@@ -2979,7 +3041,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           that.playAudioElement(that.bottledroppeded.nativeElement, 0.8);
         }
         this.updateonlyloc['currentbottle'] = currentlyDroped.split('City')[1].split("at")[0];
-        this.updateonlyloc['Bottleloc'] = "Refilling";
+        this.updateonlyloc['Bottleloc'] = "At Refilling Stage";
         this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
           console.log("bottle location update to Refilling Machine");
         });
@@ -3407,7 +3469,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
   makeitEmpty() {
     this.isDisabled = true;
-
+    alert(this.currentbottle['Bottle_Status'] );
     this.currentbottle['currentQuantity'] = 0;
     $("." + this.selectedBottleatStage.split("at")[1] + ".shampoolevel").css('height', '0px');
     if (this.currentbottle['Bottle_Status'] == 'InUse') {
@@ -3461,9 +3523,9 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           this.playAudioElement(this.Fine.nativeElement, 0.8);
           this.logser.gettransactions().subscribe(data => {
             this.transactioncount = '0000' + (data.length + 1);
-          });
+          
 
-          this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_01';
+          this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_08';
           this.transaction['Amount'] = String(amount_fine);
           this.transaction['CreditFacility'] = 'Municipality Office';
           this.transaction['DebitFacility'] = this.currentUserRole;
@@ -3480,7 +3542,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         });
 
 
-
+      });
 
       this.logser.getcashboxmunicipality().subscribe(data => {
         (data[0]['Cashbox'] == '') ? this.municipalcashbox = 0 : this.municipalcashbox = parseInt(data[0]['Cashbox']);
@@ -3533,7 +3595,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     'currentbottle': '',
     'currentQuantity': 0,
     'Bottle_Status': "InUse",
-    'Current_Refill_Count': 0,
+    'Current_Refill_Count': '',
     'Location': ''
   }
   selectedBottleatStage: string = '';

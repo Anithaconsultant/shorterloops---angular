@@ -43,12 +43,12 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
+                  "maximumWarning": "3mb",
                   "maximumError": "5mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "25kb",
+                  "maximumWarning": "50kb",
                   "maximumError": "50kb"
                 }
               ],
@@ -107,7 +107,7 @@
               "src/assets"
             ],
             "styles": [
-              "@angular/material/prebuilt-themes/indigo-pink.css",
+              
               "src/styles.scss"
             ],
             "scripts": [ "./node_modules/jquery/dist/jquery.min.js",
@@ -118,3 +118,4 @@
     }
   }
 }
+

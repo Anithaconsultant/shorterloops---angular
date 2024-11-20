@@ -13,6 +13,8 @@
         background: #fff;
         border-radius: 10px;
         align-items: center;
+        overflow-y: auto;
+        overflow-x: hidden;
 
         .text {
             font-size: 30px;
@@ -84,7 +86,7 @@
         justify-content: center;
         align-items: center;
         background: #ebcb15e0;
-        top: 50px;
+        top: 25px;
         border-radius: 5px;
         box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.4);
         color: #fff;
@@ -95,8 +97,6 @@
     .commontablecss {
         width: 95%;
         justify-self: center;
-        overflow-y: auto;
-        max-height: 400px;
 
         td {
             padding: 5px;
@@ -131,5 +131,35 @@
           
     }
 
+    .filter-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px; // Spacing between items
+        justify-content: center;
+    
+        // // Arrange items in two columns for medium and larger screens
+        // @media (min-width: 768px) {
+        //     > * {
+        //         flex: 1 1 15%; // Each item takes up roughly half of the container width
+        //     }
+        // }
+    
+        // // Full width for smaller screens
+        // @media (max-width: 767px) {
+        //     > * {
+        //         flex: 1 1 100%; // Each item takes up full width
+        //     }
+        // }
+    
+        // Button styling to span across both columns
+        button {
+            margin-top: 16px; // Space above the button
+        }
+    }
+ 
+    
 }
-
+.matoptioncls{
+    font-size:12px !important;
+    background:none !important;
+}
