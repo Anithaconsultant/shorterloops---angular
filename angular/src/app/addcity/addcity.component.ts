@@ -1318,7 +1318,7 @@ export class AddcityComponent implements OnInit {
     if (this.submitted) {
       
       const length = Object.keys(this.assetData).length;
-      console.log(length);  
+      //console.log(length);  
       
 
       if (this.selectedavatar == 0) {
@@ -1389,8 +1389,8 @@ export class AddcityComponent implements OnInit {
               this.logser.createAsset(this.assettableobj).subscribe(
                 data => {
                   this.assettableobj = data;
-                  console.log("From addCity");
-                  console.log(this.assettableobj);
+                 // console.log("From addCity");
+                 // console.log(this.assettableobj);
                 },
                 error => {
                   console.log(error);

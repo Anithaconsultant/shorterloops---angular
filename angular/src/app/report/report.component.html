@@ -3,29 +3,131 @@
         <div class="row">
             <div class="text">Journey of Shampoo Bottles</div>
             <div class="formcls">
-                <div class="element">
-                    <div for="assetSelect">Select Asset</div>
-                    <div>
-                        <select id="assetSelect" name="asset" [(ngModel)]="selectedAsset">
-                            <option *ngFor="let asset of options" [value]="asset">{{ asset }}</option>
-                        </select>
-                    </div>
-                  
+                <!-- filter-form.component.html -->
+                <div class="filter-container">
+                    <mat-form-field>
+                        <mat-label>City</mat-label>
+                        <mat-select class="matoptioncls" [(ngModel)]="filters.city" multiple>
+                            <mat-option class="matoptioncls" *ngFor="let city of cityOptions" [value]="city">{{ city
+                                }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Brand</mat-label>
+                        <mat-select class="matoptioncls" [(ngModel)]="filters.brand" multiple>
+                            <mat-option class="matoptioncls" *ngFor="let brand of brandOptions" [value]="brand">{{ brand
+                                }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Bottle Location</mat-label>
+                        <mat-select class="matoptioncls" [(ngModel)]="filters.current_location" multiple>
+                            <mat-option class="matoptioncls" *ngFor="let currentlocation of current_locationOptions"
+                                [value]="currentlocation">{{ currentlocation }}</mat-option>
+                        </mat-select>
+                    </mat-form-field> <mat-form-field>
+                        <mat-label>Entry Location</mat-label>
+                        <mat-select class="matoptioncls" [(ngModel)]="filters.entry_location" multiple>
+                            <mat-option class="matoptioncls" *ngFor="let entrylocation of entry_locationOptions"
+                                [value]="entrylocation">{{ entrylocation }}</mat-option>
+                        </mat-select>
+                    </mat-form-field> <mat-form-field>
+                        <mat-label>Exit Location</mat-label>
+                        <mat-select class="matoptioncls" [(ngModel)]="filters.exit_location" multiple>
+                            <mat-option class="matoptioncls" *ngFor="let exitloc of exit_locationOptions"
+                                [value]="exitloc">{{ exitloc }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>Current Refill Count </mat-label>
+                        <mat-select class="matoptioncls" [(ngModel)]="filters.current_refill" multiple>
+                            <mat-option class="matoptioncls" *ngFor="let currentrefill of currentRefillOptions"
+                                [value]="currentrefill">{{ currentrefill }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Bottle Type</mat-label>
+                        <mat-select class="matoptioncls" [(ngModel)]="filters.bottle_type" multiple>
+                            <mat-option class="matoptioncls" *ngFor="let bottletype of BottleTypeOptions"
+                                [value]="bottletype">{{ bottletype
+                                }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Transaction Id</mat-label>
+                        <mat-select class="matoptioncls" [(ngModel)]="filters.TransactionId" multiple>
+                            <mat-option class="matoptioncls" *ngFor="let location of TransactionIdOptions"
+                                [value]="location">{{ location
+                                }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Asset ID</mat-label>
+                        <mat-select class="matoptioncls" [(ngModel)]="filters.assetID" multiple>
+                            <mat-option class="matoptioncls" *ngFor="let location of assetIdOptions"
+                                [value]="location">{{ location
+                                }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Day</mat-label>
+                        <mat-select class="matoptioncls" [(ngModel)]="filters.day" multiple>
+                            <mat-option class="matoptioncls" *ngFor="let day of dayOptions" [value]="day">{{
+                                day
+                                }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Start Day</mat-label>
+                        <mat-select class="matoptioncls" [(ngModel)]="filters.startDay">
+                            <mat-option class="matoptioncls" *ngFor="let startday of dayOptions" [value]="startday">{{ startday }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                
+                    <!-- End Day Filter -->
+                    <mat-form-field>
+                        <mat-label>End Day</mat-label>
+                        <mat-select class="matoptioncls" [(ngModel)]="filters.endDay">
+                            <mat-option class="matoptioncls" *ngFor="let endday of dayOptions" [value]="endday">{{ endday }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    
+                    <mat-form-field>
+                        <mat-label>Status</mat-label>
+                        <mat-select class="matoptioncls" [(ngModel)]="filters.status" multiple>
+                            <mat-option class="matoptioncls" *ngFor="let status of statusOptions" [value]="status">{{
+                                status }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Role / User</mat-label>
+                        <mat-select [(ngModel)]="filters.role_user" multiple>
+                            <mat-option class="matoptioncls" *ngFor="let role of roleOptions" [value]="role">{{ role
+                                }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <button mat-raised-button color="primary" (click)="applyFilters()">Apply Filters</button>
                 </div>
-                <div class="element">
-                    <div for="assetSelect">Select User</div>
-                    <div>
-                        <select id="assetSelect" name="asset" [(ngModel)]="selectedUser">
-                            <option *ngFor="let asset of users" [value]="asset">{{ asset }}</option>
-                        </select>
-                    </div>
-                    <div id="search" (click)="onAssetSelectChange()">Search</div>
-                </div>
-           
+
+
+
             </div>
             <div class="navtocity" (click)="gotocity()">&#10006;</div>
             <div class="sample" (click)="showsample(report)">Sample Video</div>
         </div>
+        <div class="numdisplay">
+            <p>Total Records Retrieved: {{ auditLogs.length }}</p>
+        </div>
+        <button (click)="exportToExcel()">Download Excel</button>
         <div class="row commontablecss overflowcss">
             <table>
                 <thead>
@@ -45,8 +147,8 @@
                         <th>Current Refill Count</th>
                         <th>Current Content Code</th>
                         <th>Remaining Quantity</th>
-                        <th>Day of Latest Refill </th>
-                        <th>Refill Location </th>
+                        <th>Day of Latest Refill</th>
+                        <th>Refill Location</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -60,16 +162,14 @@
                         <td>{{ log.assetStatus }}</td>
                         <td>{{ log.TransactionId }}</td>
                         <td>{{ log.TransactionDate }}</td>
-                        
                         <td>{{ log.FromFacility }}</td>
                         <td>{{ log.ToFacility }}</td>
-                        
                         <td>{{ log.refillCount }}</td>
                         <td>{{ log.currentrefillCount }}</td>
                         <td>{{ log.Current_Content_Code }}</td>
                         <td>{{ log.remQuantity }}</td>
                         <td>{{ log.LatestFillDate }}</td>
-                        <td>--</td>
+                        <td>--</td> <!-- Placeholder if no data for refill location -->
                     </tr>
                 </tbody>
             </table>
@@ -81,7 +181,8 @@
         </div>
         <div class="modal-body">
             <div class="innderdivvidoe">
-                <div class="loadvideo"><video src="./assets/video/ReportExamples_V03.mp4" width="100%" height="100%" controls></video></div>
+                <div class="loadvideo"><video src="./assets/video/ReportExamples_V03.mp4" width="100%" height="100%"
+                        controls></video></div>
             </div>
         </div>
     </ng-template>

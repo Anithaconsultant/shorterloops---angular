@@ -1,7 +1,7 @@
 
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
-from .models import Asset, audit_log, CustomUser
+from .models import Asset, Auditlog, CustomUser
 from django.dispatch import Signal
 from .userData import UserData
 import threading
@@ -20,10 +20,10 @@ def record_audit_trail_on_save(sender, instance, created,  **kwargs):
     # user_data = UserData.get_instance()
 
     if created:
-        audit_log.objects.create(
+        Auditlog.objects.create(
             action='INSERT',
             AssetId=instance.AssetId,
-            CityId=instance.Asset_CityId,
+            CityId=instance.Asset_CityId_id,
             ContentCode=instance.Content_Code,
             Bottle_Code=instance.Bottle_Code,
             Bottle_loc=instance.Bottle_loc,
@@ -44,10 +44,10 @@ def record_audit_trail_on_save(sender, instance, created,  **kwargs):
             RetireReason=instance.Retire_Reason,
         )
     else:
-        audit_log.objects.create(
+        Auditlog.objects.create(
             action='Update',
             AssetId=instance.AssetId,
-            CityId=instance.Asset_CityId,
+            CityId=instance.Asset_CityId_id,
             ContentCode=instance.Content_Code,
             Bottle_Code=instance.Bottle_Code,
             Bottle_loc=instance.Bottle_loc,

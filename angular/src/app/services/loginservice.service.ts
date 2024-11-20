@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders,HttpParams  } from '@angular/common/http';
 import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
 export class LoginserviceService {
   username = "admin";
-  password = "admin123";
+  password = "admin@123";
   currentuser = {
     'Username': '',
     'UserId': '',
@@ -23,8 +23,8 @@ export class LoginserviceService {
     'cityrate': '',
     'cityavatar': ''
   };
- // baseurl = "https://dbl.iihs.in/api/";
-  baseurl = "http://127.0.0.1:8000/api/";
+   baseurl = "https://dbl.iihs.in/api/";
+ // baseurl = "http://127.0.0.1:8000/api/";
   authorizationData = 'Basic ' + btoa(this.username + ':' + this.password);
   httpHeaders = new HttpHeaders({
     'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ export class LoginserviceService {
       { headers: this.httpHeaders });
   }
   getAllAssets(): Observable<any> {
-    console.log("From Allassets Service :"+this.currentuser.CityId)
+    console.log("From Allassets Service :" + this.currentuser.CityId)
     return this.http.get(this.baseurl + 'asset/' + this.currentuser.CityId,
       { headers: this.httpHeaders });
   }
@@ -88,7 +88,8 @@ export class LoginserviceService {
       Transaction_Id: currentitem.transactionid, Transaction_Date: currentitem.transactiondate,
       Fromfacility: currentitem.fromfacility,
       Tofacility: currentitem.tofacility,
-      dragged: currentitem.dragged
+      dragged: currentitem.dragged,
+      Latest_Refill_Date:currentitem.Latest_Refill_Date
 
     };
     if (currentitem.contentCode !== '') {
@@ -182,7 +183,7 @@ export class LoginserviceService {
   }
   updatewallet(): Observable<any> {
     let body = { wallet: this.currentuser.wallet };
-    
+
     return this.http.put(this.baseurl + 'updateusercity/' + this.currentuser.UserId, body,
       { headers: this.httpHeaders });
   }
@@ -276,4 +277,19 @@ export class LoginserviceService {
     return this.http.get(this.baseurl + 'shampooprice/',
       { headers: this.httpHeaders });
   }
+
+  getFilterOptions(): Observable<any> {
+    return this.http.get(this.baseurl + 'filter-options/');
+  }
+
+  getFilteredLogs(filters: any): Observable<any> {
+    let params = new HttpParams();
+    Object.keys(filters).forEach(key => {
+      if (filters[key]) {
+        params = params.append(key, filters[key]);
+      }
+    });
+    return this.http.get(this.baseurl + 'filter-audit-logs/',{ headers: this.httpHeaders ,params});
+   }
+
 }

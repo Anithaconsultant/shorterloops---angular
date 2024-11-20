@@ -1235,7 +1235,8 @@ app-signup {
 
 }
 
-.B1_Damaged-Empty,.B1_Damaged-InUse {
+.B1_Damaged-Empty,
+.B1_Damaged-InUse {
     background-image: url('./assets/img/B1_dmg.png');
 
 }
@@ -1246,7 +1247,8 @@ app-signup {
 
 }
 
-.B2_Damaged-Empty,.B2_Damaged-InUse {
+.B2_Damaged-Empty,
+.B2_Damaged-InUse {
     background-image: url('./assets/img/B2_dmg.png');
 
 }
@@ -1256,14 +1258,20 @@ app-signup {
     background-image: url('./assets/img/B3_use.png');
 
 }
-.accordion-item,.accordion-header,.accordion-button{
+
+.accordion-item,
+.accordion-header,
+.accordion-button {
     background-color: transparent !important;
-    border:none !important;
-  }
-  .accordion{
-    width:100% !important;
-  }
-.B3_Damaged-Empty,.B3_Damaged-InUse {
+    border: none !important;
+}
+
+.accordion {
+    width: 100% !important;
+}
+
+.B3_Damaged-Empty,
+.B3_Damaged-InUse {
     background-image: url('./assets/img/B3_dmg.png');
 
 }
@@ -1273,7 +1281,8 @@ app-signup {
     background-image: url('./assets/img/B5_use.png');
 }
 
-.B5_Damaged-Empty,.B5_Damaged-InUse {
+.B5_Damaged-Empty,
+.B5_Damaged-InUse {
     background-image: url('./assets/img/B5_dmg.png');
 
 }
@@ -1298,12 +1307,18 @@ app-signup {
 
 }
 
-.UB1_Damaged-Empty,.UB1_Damaged-InUse,
-.UB2_Damaged-Empty,.UB2_Damaged-InUse,
-.UB3_Damaged-Empty,.UB3_Damaged-InUse,
-.U0B4_Damaged-Empty,.U0B4_Damaged-InUse,
-.U1B4_Damaged-Empty,.U1B4_Damaged-InUse,
-.UB5_Damaged-Empty,.UB5_Damaged-InUse {
+.UB1_Damaged-Empty,
+.UB1_Damaged-InUse,
+.UB2_Damaged-Empty,
+.UB2_Damaged-InUse,
+.UB3_Damaged-Empty,
+.UB3_Damaged-InUse,
+.U0B4_Damaged-Empty,
+.U0B4_Damaged-InUse,
+.U1B4_Damaged-Empty,
+.U1B4_Damaged-InUse,
+.UB5_Damaged-Empty,
+.UB5_Damaged-InUse {
     background-image: url('./assets/img/UB_dmg.png');
     width: 96px !important;
     height: 253px !important;
@@ -2099,6 +2114,7 @@ body {
         }
     }
 }
+
 .play-button {
     position: absolute;
     top: 50%;
@@ -2134,6 +2150,7 @@ body {
 
     .templates {}
 }
+
 .template {
     .loadcontent {
         background-image: url('./assets/img/Pyramidcontent.png');
@@ -2382,4 +2399,12 @@ $align-space: 14px;
     position: absolute !important;
     left: -62px !important;
     top: 30px !important;
+}
+
+:host {
+    ::ng-deep {
+        .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+            background-color: none !important;
+        }
+    }
 }

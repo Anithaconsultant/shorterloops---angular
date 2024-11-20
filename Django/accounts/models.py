@@ -127,7 +127,7 @@ class Asset(models.Model):
 
 
 
-class audit_log(models.Model):
+class Auditlog(models.Model):
     class Meta:
         db_table = "audit_log"
     id = models.AutoField(primary_key=True)

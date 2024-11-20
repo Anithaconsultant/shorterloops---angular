@@ -1,6 +1,6 @@
 from .userData import UserData
-from .models import City, CustomUser, Facility, FACILITY_CHOICES, Cityrule, Asset, Cashflow,audit_log,Bottleprice,Shampooprice
-from .serializers import userSerializer, citySerializer, facilitySerializer, cityRuleSerializer, AssetSerializer, cashflowSerializer,AuditSerializer,BottleSerializer,shampooSerializer
+from .models import City, CustomUser, Facility, FACILITY_CHOICES, Cityrule, Asset, Cashflow, Auditlog, Bottleprice, Shampooprice
+from .serializers import userSerializer, citySerializer, facilitySerializer, cityRuleSerializer, AssetSerializer, cashflowSerializer, AuditSerializer, BottleSerializer, shampooSerializer
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from rest_framework import status
@@ -9,6 +9,7 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 import json
+from django.db.models import QuerySet
 from django.core.exceptions import ObjectDoesNotExist
 from .signals import user_data_received
 from django.db.models.signals import post_save
@@ -114,6 +115,7 @@ def addcity(request):
         serializer = citySerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
 
+
 def update_city_threads(request):
     # Assuming you have a list of city IDs
     city_data = City.objects.values_list('id', 'Clocktickrate')
@@ -124,6 +126,7 @@ def update_city_threads(request):
         city_thread.start()
 
     return HttpResponse("City threads update started successfully.")
+
 
 @api_view(['GET', 'POST', 'PUT'])
 def updatecurrent(request, cityid):
@@ -154,7 +157,7 @@ def createasset(request, cityid):
             print("invalid data")
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
     if request.method == 'GET':
-        data = Asset.objects.filter(Asset_CityId=cityid)        
+        data = Asset.objects.filter(Asset_CityId=cityid)
         serializer = AssetSerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
 
@@ -190,12 +193,14 @@ def get_BottlePrice(request):
         serializer = BottleSerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
 
+
 @api_view(['GET', 'PUT'])
 def get_ShampooPrice(request):
     if request.method == 'GET':
         data = Shampooprice.objects.all()
         serializer = shampooSerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
+
 
 @api_view(['GET', 'PUT'])
 def returnasset(request, itemid):
@@ -418,17 +423,133 @@ def updateusercity(request, userid):
 
 @api_view(['GET'])
 def get_audit_logs(request, asset_id):
-    assetid=asset_id.split("&")[0]
-    cityid=asset_id.split("&")[1]
-    data = audit_log.objects.filter(AssetId=asset_id,CityId=cityid)
+    assetid = asset_id.split("&")[0]
+    cityid = asset_id.split("&")[1]
+    data = Auditlog.objects.filter(AssetId=asset_id, CityId=cityid)
     serializer = AuditSerializer(data, many=True)
     return JsonResponse(serializer.data, safe=False)
 
+
 @api_view(['GET'])
 def get_audit_logsuser(request, user):
-    username=user.split("&")[0]
-    cityid=user.split("&")[1]
-    data = audit_log.objects.filter(userName=username)
+    username = user.split("&")[0]
+    cityid = user.split("&")[1]
+    data = Auditlog.objects.filter(userName=username)
     serializer = AuditSerializer(data, many=True)
     print(serializer.data)
     return JsonResponse(serializer.data, safe=False)
+
+
+def filter_audit_logs(request):
+    filters = {}
+
+    # Parse comma-separated values for multi-select fields
+    city = request.GET.get('city')
+    if city:
+        filters['CityId__in'] = city.split(',')
+
+    brand = request.GET.get('brand')
+    if brand:
+        filters['ContentCode__in'] = brand.split(',')
+
+    current_location = request.GET.get('current_location')
+    if current_location:
+        filters['Bottle_loc__in'] = current_location.split(',')
+
+    exit_location = request.GET.get('exit_location')
+    if exit_location:
+        filters['ToFacility__in'] = exit_location.split(',')
+
+    entry_location = request.GET.get('entry_location')
+    if entry_location:
+        filters['FromFacility__in'] = entry_location.split(',')
+
+    status = request.GET.get('status')
+    if status:
+        filters['assetStatus__in'] = status.split(',')
+
+    role_user = request.GET.get('role_user')
+    if role_user:
+        filters['userName__in'] = role_user.split(',')
+
+    bottle_type = request.GET.get('bottle_type')
+    if bottle_type:
+        filters['Bottle_Code__in'] = bottle_type.split(',')
+
+    current_refill = request.GET.get('current_refill')
+    if current_refill:
+        filters['currentrefillCount__in'] = current_refill.split(',')
+
+    TransactionId = request.GET.get('TransactionId')
+    if TransactionId:
+        filters['TransactionId__in'] = TransactionId.split(',')
+
+    assetID = request.GET.get('assetID')
+    if assetID:
+        filters['AssetId__in'] = assetID.split(',')
+
+    day = request.GET.get('day')
+    if day:
+        filters['TransactionDate__in'] = day.split(',')
+
+     # Filter based on TransactionDate between start_day and end_day
+    startDay = request.GET.get('startDay')
+    endDay = request.GET.get('endDay')
+
+    if startDay and endDay:
+        # Filter for records where the day of TransactionDate is between start_day and end_day
+        filters['TransactionDate__range'] = [startDay, endDay]
+    
+    filtered_logs = Auditlog.objects.filter(**filters)
+
+    if isinstance(filtered_logs, QuerySet):
+        print(filtered_logs.query)
+    data = list(filtered_logs.values())
+
+    return JsonResponse(data, safe=False)
+
+
+def get_filter_options(request):
+    city_options = list(Auditlog.objects.values_list(
+        'CityId', flat=True).distinct())
+    brand_options = list(Auditlog.objects.values_list(
+        'ContentCode', flat=True).distinct())
+    current_locationOptions = list(
+        Auditlog.objects.values_list('Bottle_loc', flat=True).distinct())
+    exit_locationOptions = list(Auditlog.objects.values_list(
+        'ToFacility', flat=True).distinct())
+    entry_locationOptions = list(Auditlog.objects.values_list(
+        'FromFacility', flat=True).distinct())
+    status_options = list(Auditlog.objects.values_list(
+        'assetStatus', flat=True).distinct())
+    role_options = list(Auditlog.objects.values_list(
+        'userName', flat=True).distinct())
+    BottleTypeOptions = list(Auditlog.objects.values_list(
+        'Bottle_Code', flat=True).distinct())
+    currentRefillOptions = list(Auditlog.objects.values_list(
+        'currentrefillCount', flat=True).distinct())
+    TransactionIdOptions = list(Auditlog.objects.values_list(
+        'TransactionId', flat=True).distinct())
+    assetIdOptions = list(Auditlog.objects.values_list(
+        'AssetId', flat=True).distinct())
+    dayOptions = list(Auditlog.objects.values_list(
+        'TransactionDate', flat=True).distinct())
+
+    data = {
+        'cityOptions': city_options,
+        'brandOptions': brand_options,
+        'current_locationOptions': current_locationOptions,
+        'exit_locationOptions': exit_locationOptions,
+        'entry_locationOptions': entry_locationOptions,
+        'statusOptions': status_options,
+        'roleOptions': role_options,
+        'BottleTypeOptions': BottleTypeOptions,
+        'currentRefillOptions': currentRefillOptions,
+        'TransactionIdOptions': TransactionIdOptions,
+        'assetIdOptions': assetIdOptions,
+        'dayOptions': dayOptions,
+        'startDay': dayOptions,
+        'endDay': dayOptions
+
+    }
+    return JsonResponse(data)

@@ -63,7 +63,7 @@ export class SignupComponent implements OnInit {
   signup() {
     this.submitted = true;
     if (this.signupForm.invalid) {
-      alert("invalid");
+      alert("Please fill all the Fields");
       return;
     }
 

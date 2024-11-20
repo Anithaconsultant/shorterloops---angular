@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from accounts.models import City, CustomUser, Facility, Cityrule, Asset, Shampooprice, Bottleprice, Cashflow,audit_log
+from accounts.models import City, CustomUser, Facility, Cityrule, Asset, Shampooprice, Bottleprice, Cashflow,Auditlog
 
 
 class userSerializer(serializers.ModelSerializer):
@@ -51,5 +51,5 @@ class AssetSerializer(serializers.ModelSerializer):
         
 class AuditSerializer(serializers.ModelSerializer):
     class Meta:
-        model = audit_log
+        model = Auditlog
         fields = '__all__'
