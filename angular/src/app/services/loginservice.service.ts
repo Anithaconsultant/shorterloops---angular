@@ -23,8 +23,8 @@ export class LoginserviceService {
     'cityrate': '',
     'cityavatar': ''
   };
-   baseurl = "https://dbl.iihs.in/api/";
- // baseurl = "http://127.0.0.1:8000/api/";
+  // baseurl = "https://dbl.iihs.in/api/";
+baseurl = "http://127.0.0.1:8000/api/";
   authorizationData = 'Basic ' + btoa(this.username + ':' + this.password);
   httpHeaders = new HttpHeaders({
     'Content-Type': 'application/json',
@@ -55,7 +55,9 @@ export class LoginserviceService {
 
   }
   updatecurrenttime(): Observable<any> {
+   
     return this.http.get(this.baseurl + 'updatetime/' + this.currentuser.CityId, { headers: this.httpHeaders });
+    
   }
   getAllCities(): Observable<any> {
     return this.http.get(this.baseurl + 'addcity/',
@@ -109,7 +111,8 @@ export class LoginserviceService {
       Bottle_loc: currentitem.Bottleloc,
       Bottle_Status: currentitem.bottlestatus,
       Fromfacility: currentitem.fromfacility,
-      Tofacility: currentitem.Bottleloc
+      Tofacility: currentitem.Bottleloc,
+      Transaction_Id: currentitem.transactionid, Transaction_Date: currentitem.transactiondate,
     };
 
     return this.http.put(this.baseurl + 'assets/' + currentitem.currentitem, body,
@@ -118,15 +121,26 @@ export class LoginserviceService {
 
   updatethisAssetQuantity(currentbottle: any): Observable<any> {
     const body: { [key: string]: any } = {
-      remQuantity: currentbottle.currentQuantity,
+      remQuantity: String(currentbottle.currentQuantity),
       Bottle_Status: currentbottle.Bottle_Status,
-      Current_Refill_Count: currentbottle.Current_Refill_Count
-
+      
     };
     if (currentbottle.Location !== '') {
       body['Bottle_loc'] = currentbottle.Location;
     }
     return this.http.put(this.baseurl + 'assets/' + currentbottle.currentbottle, body,
+      { headers: this.httpHeaders });
+  }
+
+  updateRefillData(bottleDataatRefill: any): Observable<any> {
+    const body: { [key: string]: any } = {
+      remQuantity: String(bottleDataatRefill.currentQuantity),
+      Bottle_Status: bottleDataatRefill.Bottle_Status,
+      Current_Refill_Count: bottleDataatRefill.Current_Refill_Count
+
+    };
+  
+    return this.http.put(this.baseurl + 'assets/' + bottleDataatRefill.RefillingBottle, body,
       { headers: this.httpHeaders });
   }
   updatedragged(currentbottle: any): Observable<any> {

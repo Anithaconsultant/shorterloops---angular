@@ -113,7 +113,7 @@ class Asset(models.Model):
     Discount_RefillB = models.CharField(max_length=70, blank=True)
     Env_Tax = models.CharField(max_length=70, blank=True)
     Discard_fine = models.CharField(max_length=70, blank=True)
-    Transaction_Id = models.CharField(max_length=70, blank=True)
+    Transaction_Id = models.CharField(max_length=70, blank=True,default='')
     Transaction_Date = models.CharField(max_length=70, blank=True)
     Fromfacility = models.CharField(max_length=70, blank=True)
     Tofacility = models.CharField(max_length=70, blank=True)
@@ -124,6 +124,11 @@ class Asset(models.Model):
         if not self.correlation_id:
             self.correlation_id = str(uuid.uuid4())
         super(Asset, self).save(*args, **kwargs)
+    def reset_attributes(self):
+        """Reset the instance attributes to their current database state."""
+        db_instance = type(self).objects.get(pk=self.pk)
+        for field in self._meta.fields:
+            setattr(self, field.name, getattr(db_instance, field.name))
 
 
 
@@ -131,7 +136,7 @@ class Auditlog(models.Model):
     class Meta:
         db_table = "audit_log"
     id = models.AutoField(primary_key=True)
-    action = models.CharField(max_length=70, blank=False)
+    action = models.CharField(max_length=2000, blank=False)
     AssetId = models.CharField(max_length=100, blank=False)
     CityId= models.CharField(max_length=100, blank=True)
     Bottle_loc = models.CharField(max_length=100, blank=False,default="Supermarket shelf")

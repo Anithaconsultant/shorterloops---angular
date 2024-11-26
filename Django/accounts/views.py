@@ -11,8 +11,10 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.db.models import QuerySet
 from django.core.exceptions import ObjectDoesNotExist
-from .signals import user_data_received
 from django.db.models.signals import post_save
+from .signals import user_data_received
+
+
 data1 = list()
 currentuser = ''
 cartcount = 100

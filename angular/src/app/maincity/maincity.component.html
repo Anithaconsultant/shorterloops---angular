@@ -1,4 +1,5 @@
 <div class="maincity_container" preventDoubleClick>
+    <app-alert-modal #alertModal></app-alert-modal>
     <audio #welcomemarket preload="auto">
         <source src="assets/audio/welcomesupermarket.mp3" type="audio/mp3" />
     </audio>
@@ -651,14 +652,14 @@
                 <div class="loading">Loading Bottle...</div>
                 <div class="currentbottleshow" *ngIf="selectedBottleatStage!=''">
                     <div id="{{selectedBottleatStage.split('at')[0].split('City')[1]}}"
-                        class="{{selectedBottleatStage.split('at')[1] }}_{{currentbottle['Bottle_Status']}} imgclass">
+                        class="{{selectedBottleatStage.split('at')[1] }}_{{bottleStatus_Display['Bottle_Status']}} imgclass">
                         <div class="shampoolevel "></div>
                     </div>
                     <div class="bottlecontent" *ngIf="selectedBottleatStage!=''">
-                        <div> "Bottle Status :" {{currentbottle['Bottle_Status']}}</div>
-                        <div>"Sampoo Quantity :" {{currentbottle['currentQuantity']}}</div>
-                        <div>"Bottle ID:" {{currentbottle['currentbottle'] }}</div>
-                        <div>"Bottle Location:" {{currentbottle['Location'] }}</div>
+                        <div> "Bottle Status :" {{bottleStatus_Display['Bottle_Status']}}</div>
+                        <div>"Shampoo Quantity :" {{bottleStatus_Display['currentQuantity']}}</div>
+                        <div>"Bottle ID:" {{bottleStatus_Display['currentbottle'] }}</div>
+                        <div>"Bottle Location:" {{bottleStatus_Display['Location'] }}</div>
                     </div>
                     <div class="backside">
                         <div class="variableholder">
@@ -790,8 +791,7 @@
             <div class="icncon" [ngClass]="{'highlighttab': altertab == 3}">
                 <div class="recyclebtn" (click)="altertab=3;"></div>
             </div>
-            <div class="btn btn-outline-dark pay" *ngIf="billpaid==false" (click)="payamount();">Pay</div>
-            <div class="btn btn-outline-dark paydummy" *ngIf="billpaid==true">Pay</div>
+            <div class="btn btn-outline-dark pay" [ngClass]="{'disabled': billpaid}" (click)="payamount();">Pay</div>
             <div class="btn btn-outline-dark cancel" (click)="modal.close('Save click');">Close</div>
         </div>
     </div>
