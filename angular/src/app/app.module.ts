@@ -27,6 +27,7 @@ import { ClickOutsideDirective } from './directives/click-outside.directive';
 
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { AlertModalComponent } from './alert-modal/alert-modal.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -39,7 +40,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     LongPressDragDirective,
     PreventDoubleClickDirective,
     HamburgerMenuComponent,
-    ClickOutsideDirective
+    ClickOutsideDirective,
+    AlertModalComponent
   ],
   imports: [
     BrowserModule,
