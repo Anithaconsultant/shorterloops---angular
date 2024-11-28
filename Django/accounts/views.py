@@ -441,7 +441,7 @@ def get_audit_logsuser(request, user):
     print(serializer.data)
     return JsonResponse(serializer.data, safe=False)
 
-
+from django.db.models import Q
 def filter_audit_logs(request):
     filters = {}
 
@@ -471,8 +471,10 @@ def filter_audit_logs(request):
         filters['assetStatus__in'] = status.split(',')
 
     role_user = request.GET.get('role_user')
+    role_user_filters = None
     if role_user:
-        filters['userName__in'] = role_user.split(',')
+        usernames = role_user.split(',')
+        role_user_filters = Q(userName__in=usernames) | Q(FromFacility__in=usernames) | Q(ToFacility__in=usernames)
 
     bottle_type = request.GET.get('bottle_type')
     if bottle_type:
@@ -502,7 +504,11 @@ def filter_audit_logs(request):
         # Filter for records where the day of TransactionDate is between start_day and end_day
         filters['TransactionDate__range'] = [startDay, endDay]
     
-    filtered_logs = Auditlog.objects.filter(**filters)
+    if role_user_filters:
+        filtered_logs = Auditlog.objects.filter(Q(**filters) & role_user_filters)
+    else:
+        filtered_logs = Auditlog.objects.filter(**filters)
+
 
     if isinstance(filtered_logs, QuerySet):
         print(filtered_logs.query)

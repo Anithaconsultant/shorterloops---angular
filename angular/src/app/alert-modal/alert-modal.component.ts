@@ -1,26 +1,25 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-alert-modal',
   templateUrl: './alert-modal.component.html',
-  styleUrls: ['./alert-modal.component.scss']
+  styleUrls: ['./alert-modal.component.scss'],
 })
 export class AlertModalComponent {
-  @Input() isVisible: boolean = false; // Controls the visibility of the modal
-  @Input() content: string = ''; // Dynamic message
+  isVisible: boolean = false;
+  content: string = '';
+  callback?: () => void; // Optional callback function
 
-  /**
-   * Method to open the modal with dynamic content.
-   */
-  openModal(content: string): void {
-    this.content = content;
+  openModal(message: string, callback?: () => void): void {
+    this.content = message;
+    this.callback = callback; // Store the callback
     this.isVisible = true;
   }
 
-  /**
-   * Method to close the modal.
-   */
   closeModal(): void {
     this.isVisible = false;
+    if (this.callback) {
+      this.callback(); // Execute the callback if provided
+    }
   }
 }
