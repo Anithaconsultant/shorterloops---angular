@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders,HttpParams  } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
@@ -24,7 +24,7 @@ export class LoginserviceService {
     'cityavatar': ''
   };
   // baseurl = "https://dbl.iihs.in/api/";
-baseurl = "http://127.0.0.1:8000/api/";
+  baseurl = "http://127.0.0.1:8000/api/";
   authorizationData = 'Basic ' + btoa(this.username + ':' + this.password);
   httpHeaders = new HttpHeaders({
     'Content-Type': 'application/json',
@@ -55,16 +55,15 @@ baseurl = "http://127.0.0.1:8000/api/";
 
   }
   updatecurrenttime(): Observable<any> {
-   
+
     return this.http.get(this.baseurl + 'updatetime/' + this.currentuser.CityId, { headers: this.httpHeaders });
-    
+
   }
   getAllCities(): Observable<any> {
     return this.http.get(this.baseurl + 'addcity/',
       { headers: this.httpHeaders });
   }
   getAllAssets(): Observable<any> {
-    console.log("From Allassets Service :" + this.currentuser.CityId)
     return this.http.get(this.baseurl + 'asset/' + this.currentuser.CityId,
       { headers: this.httpHeaders });
   }
@@ -90,8 +89,7 @@ baseurl = "http://127.0.0.1:8000/api/";
       Transaction_Id: currentitem.transactionid, Transaction_Date: currentitem.transactiondate,
       Fromfacility: currentitem.fromfacility,
       Tofacility: currentitem.tofacility,
-      dragged: currentitem.dragged,
-      Latest_Refill_Date:currentitem.Latest_Refill_Date
+      Latest_Refill_Date: currentitem.Latest_Refill_Date
 
     };
     if (currentitem.contentCode !== '') {
@@ -100,6 +98,9 @@ baseurl = "http://127.0.0.1:8000/api/";
 
     if (currentitem.purchased !== '') {
       body['purchased'] = currentitem.purchased;
+    }
+    if (currentitem.dragged !== '') {
+      body['dragged'] = currentitem.dragged;
     }
 
 
@@ -123,7 +124,7 @@ baseurl = "http://127.0.0.1:8000/api/";
     const body: { [key: string]: any } = {
       remQuantity: String(currentbottle.currentQuantity),
       Bottle_Status: currentbottle.Bottle_Status,
-      
+
     };
     if (currentbottle.Location !== '') {
       body['Bottle_loc'] = currentbottle.Location;
@@ -139,7 +140,7 @@ baseurl = "http://127.0.0.1:8000/api/";
       Current_Refill_Count: bottleDataatRefill.Current_Refill_Count
 
     };
-  
+
     return this.http.put(this.baseurl + 'assets/' + bottleDataatRefill.RefillingBottle, body,
       { headers: this.httpHeaders });
   }
@@ -303,7 +304,7 @@ baseurl = "http://127.0.0.1:8000/api/";
         params = params.append(key, filters[key]);
       }
     });
-    return this.http.get(this.baseurl + 'filter-audit-logs/',{ headers: this.httpHeaders ,params});
-   }
+    return this.http.get(this.baseurl + 'filter-audit-logs/', { headers: this.httpHeaders, params });
+  }
 
 }
