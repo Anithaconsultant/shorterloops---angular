@@ -104,9 +104,9 @@
             </div>
             <div class="bottombasketholder">
                 <div cdkDropList #customercartBottomList="cdkDropList"
-                    [cdkDropListConnectedTo]="[houseshelfList,DustbinList,truckList,reverseVendingList]" [cdkDropListData]="refillbottles"
-                    (cdkDropListDropped)="boughtdrop($event)" [cdkDropListEnterPredicate]="checksBottleempty"
-                    class="cart_bottle_list">
+                    [cdkDropListConnectedTo]="[houseshelfList,DustbinList,truckList,reverseVendingList]"
+                    [cdkDropListData]="refillbottles" (cdkDropListDropped)="boughtdrop($event)"
+                    [cdkDropListEnterPredicate]="checksBottleempty" class="cart_bottle_list">
                     <div *ngFor="let item of refillbottles" id="{{item}}" class="bottle {{item.split('at')[1]}} "
                         cdkDrag (dragstart)="onDragStart($event)" longPressDrag [cdkDragStartDelay]="250"
                         (click)="openbottelstages(cartcontent,$event)">
@@ -126,7 +126,7 @@
             <div class="Refilling commoncls">CLOSE</div>
         </div>
         <div class="mayorflag"></div>
-        
+
         <div id="clock">Time {{citytiming['CurrentTime']}}</div>
         <div id="day">Day :{{citytiming['CurrentDay']}}</div>
         <div class="mayorofzboard">{{cityname | uppercase}} MUNICIPAL OFFICE</div>
@@ -164,18 +164,16 @@
         <div class="reverseVending">
             <div class="reverseDropper">
                 <div cdkDropList #reverseVendingList="cdkDropList" [cdkDropListConnectedTo]="[customercartBottomList]"
-                    [cdkDropListData]="reversedBottles" (cdkDropListDropped)="returnreverse($event)" class="vending_list">
-                    <div *ngFor="let item of reversedBottles" class="bottle {{item.split('at')[1]}} reversed" id="{{item}}">
+                    [cdkDropListData]="reversedBottles" (cdkDropListDropped)="returnreverse($event)"
+                    class="vending_list">
+                    <div *ngFor="let item of reversedBottles" class="bottle {{item.split('at')[1]}} reversed"
+                        id="{{item}}">
                     </div>
                 </div>
-
-
-             
-
             </div>
             <div class="reverseBoard">Place your Bottle on the Placeholder</div>
         </div>
-        
+
         <div class="supermarketentry" (click)="rungarbagetruck()"></div>
     </div>
     <div class="supermarketstage" [hidden]="opensuperflag!=1">
@@ -222,8 +220,7 @@
                         [cdkDropListEnterPredicate]="checkamountdetect">
                         <div *ngFor="let item of refillbottles; trackBy: trackByFn" id="{{item}}"
                             class="bottle {{item.split('at')[1]}} " cdkDrag (dragstart)="onDragStart($event)"
-                            longPressDrag [cdkDragStartDelay]="250" (cdkDragStarted)="onDragStarted($event)"
-                            (cdkDragEnded)="onDragEnded($event)">
+                            longPressDrag [cdkDragStartDelay]="250" (cdkDragEnded)="onDragEnded($event)">
                         </div>
                     </div>
                 </div>
@@ -443,7 +440,7 @@
         <div>
             <div (click)="movedown($event)" (mousedown)="moveDownbtn($event)" (touchstart)="moveDownbtn($event)"
                 (touchend)="clearMovement()" class="button bottom"></div>
-            <button (click)="recenter()" (touchend)="recenter()" class="button center"
+            <button (click)="recente=0;recenter()" (touchend)="recente=0;recenter()" class="button center"
                 [disabled]="this.opensuperflag == 2"></button>
         </div>
 
@@ -509,6 +506,7 @@
                     <div class="DOM">{{assetdata[0].DOM}}</div>
                     <div class="Quantity">{{assetdata[0].Quantity}} {{assetdata[0].Units}}</div>
                     <div class="Current_Refill_Count">{{assetdata[0].Current_Refill_Count}}</div>
+      
                     <div class="Latest_Refill_Date">{{assetdata[0].Latest_Refill_Date}}</div>
                     <div class="Shampoo_Price">&#8377;{{shapooprice}}</div>
                     <div class="Content_Price">&#8377; {{assetdata[0].Content_Price}}</div>
@@ -519,6 +517,7 @@
                     <div class="Env_Tax">&#8377; {{assetdata[0].Env_Tax}}</div>
                     <div class="Total_price">&#8377; {{totalamount}}</div>
                     <div class="AssetId">{{assetdata[0].AssetId}}</div>
+                    <div class="Max_Refill_Count">Maximum Refill Count :{{assetdata[0].Max_Refill_Count}}</div>
                 </div>
             </div>
         </div>
@@ -674,8 +673,11 @@
                                     <div class="Quantity">Quantity: {{sldBottleData[0].Quantity}}
                                         {{sldBottleData[0].Units}}</div>
                                 </div>
-
-                                <div *ngIf="sldBottleData[0]?.Current_Refill_Count">
+                                <div >
+                                    <div class="MaxCount">Maximum Refill Count: {{sldBottleData[0].Max_Refill_Count}}
+                                       </div>
+                                </div>
+                                <div >
                                     <div class="Current_Refill_Count">Current Refill Count:
                                         {{sldBottleData[0].Current_Refill_Count}}</div>
                                 </div>
@@ -725,6 +727,7 @@
                                 <div *ngIf="sldBottleData[0]?.AssetId">
                                     <div class="AssetId">Asset Id: {{sldBottleData[0].AssetId}}</div>
                                 </div>
+                
                             </div>
 
                         </div>
