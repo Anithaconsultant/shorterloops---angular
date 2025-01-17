@@ -844,14 +844,14 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
               }
               this.updateobjects(cat2, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
               break;
-            case data[y]['Content_Code'] == "B2.Spiky" && data[y]['Bottle_Code'] == "B2.R" && data[y]['Current_Refill_Count'] > 0:
+            case data[y]['Content_Code'] == "B2.Spiky" && data[y]['Bottle_Code'] == "B2.R" && data[y]['Current_PlantRefill_Count'] > 0:
               let cat3 = "City" + data[y]['AssetId'] + 'at' + data[y]['Content_Code'].split('.')[0];
               if (isDragged == false && bottleloc == 'Supermarket shelf') {
                 this.spikyrpr.push(cat3);
               }
               this.updateobjects(cat3, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
               break;
-            case data[y]['Content_Code'] == "B2.Spiky" && data[y]['Bottle_Code'] == "B2.R" && data[y]['Current_Refill_Count'] == 0:
+            case data[y]['Content_Code'] == "B2.Spiky" && data[y]['Bottle_Code'] == "B2.R" && data[y]['Current_PlantRefill_Count'] == 0:
               let cat4 = "City" + data[y]['AssetId'] + 'at' + data[y]['Content_Code'].split('.')[0];
               if (isDragged == false && bottleloc == 'Supermarket shelf') {
                 this.spikyrpn.push(cat4);
@@ -872,14 +872,14 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
               }
               this.updateobjects(cat6, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
               break;
-            case data[y]['Content_Code'] == "B4.Wavy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Current_Refill_Count'] > 0:
+            case data[y]['Content_Code'] == "B4.Wavy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Current_PlantRefill_Count'] > 0:
               let cat7 = "City" + data[y]['AssetId'] + 'atU' + data[y]['Content_Code'].split('.')[0];
               if (isDragged == false && bottleloc == 'Supermarket shelf') {
                 this.wavyurpr.push(cat7);
               }
               this.updateobjects(cat7, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
               break;
-            case data[y]['Content_Code'] == "B4.Wavy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Current_Refill_Count'] == 0:
+            case data[y]['Content_Code'] == "B4.Wavy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Current_PlantRefill_Count'] == 0:
               let cat8 = "City" + data[y]['AssetId'] + 'atU' + data[y]['Content_Code'].split('.')[0];
               if (isDragged == false && bottleloc == 'Supermarket shelf') {
                 this.wavyurpn.push(cat8);
@@ -2037,20 +2037,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       }
       else {
         this.alertModal.openModal("Your Balance is : Rs." + this.currentwallet.toFixed(2) + "You have insufficient balance.Return some bottles as per your Balance");
-        //this.billpaid = true;
-        // alert("You have insufficient balance.Your cart is going to be empty");
 
-        // this.updateDragged['dragged'] = false;
-        // this.updateDragged['purchased'] = false;
-        // this.updateDragged['Bottleloc'] = 'Supermarket shelf';
-        // for (let i = 0; i < this.bottletaken.length; i++) {
-        //   this.updateDragged['currentbottle'] = this.bottletaken[i].split("at")[0].split('City')[1];
-        //   this.logser.updatedragged(this.updateDragged).subscribe((data) => {
-        //     $(".pay").hide();
-        //     $(".close").show();
-        //     this.bottletaken.length = 0;
-        //   });
-        // }
       }
     }
 
@@ -2153,7 +2140,6 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
 
   dopanzoom(x: number, y: number, zoomlevel: string) {
-    console.log(this.instance.getTransform())
     this.instance.smoothMoveTo(x, y);
     this.instance.zoomTo(x, y, parseFloat(zoomlevel));
   }
@@ -2316,49 +2302,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     });
   }
   presentitem: any[] = []
-  // docalculation() {
-  //   this.boughtbottledata = [];
-  //   this.netamount = 0;
-  //   this.totalenv = 0;
-  //   this.totalsupermarketbill = 0;
 
-  //   if (this.bottletaken.length > 0) {
-  //     this.billpaid = false;
-  //     for (let i = 0; i < this.bottletaken.length; i++) {
-  //       let existingItem = this.commonobj.findIndex(item => item.id === this.bottletaken[i]);
-  //       if (this.commonobj[existingItem]['location'] == 'In' + this.currentUserCartId) {
-  //         let getcurrent = this.bottletaken[i].split("at")[0].split('City')[1];
-  //         this.logser.getthisAssets(getcurrent).subscribe((data) => {
-  //           let calc = parseInt(data[0]['Content_Price']) + parseInt(data[0]['Bottle_Price']);
-  //           let discount = calc * (parseInt(data[0]['Discount_RefillB']) / 100);
-  //           let env = calc * (parseInt(data[0]['Env_Tax']) / 100);
-  //           this.totalenv += env;
-  //           let totalvalue = (calc + env) - discount;
-  //           data[0]['Totalvalue'] = totalvalue;
-  //           this.totalsupermarketbill += totalvalue - env;
-  //           this.netamount += totalvalue;
-  //           this.boughtbottledata.push(data[0]);
-  //         })
-  //       }
-  //       else {
-  //         this.alertModal.openModal(this.bottletaken[i] + ' This Item has been picked by someone Else.');
-  //         this.presentitem.push(this.bottletaken[i])
-
-  //       }
-  //     }
-  //     console.log( this.netamount )
-  //     for (let r = 0; r < this.presentitem.length; r++) {
-  //       let existingItem = this.bottletaken.findIndex(item => item === this.presentitem[r]);
-  //       this.bottletaken.splice(existingItem, 1);
-  //     }
-  //   }
-  //   else {
-
-  //     this.billpaid = true;
-  //   }
-
-
-  // }
 
 
   docalculation() {
@@ -2628,7 +2572,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
                 this.updatebottleasset['bottlestatus'] = 'InUse';
                 this.updatebottleasset['transactionid'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_03';
-                this.updatebottleasset['fromfacility'] = 'Refilling Station'
+                this.updatebottleasset['fromfacility'] = 'Shampoo Refilling Station '
                 this.updatebottleasset['tofacility'] = this.currentUserRole;
                 this.updatebottleasset['transactiondate'] = String(this.citytiming['CurrentDay']);
                 this.updatebottleasset['Latest_Refill_Date'] = String(this.citytiming['CurrentDay']);
@@ -3052,7 +2996,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         this.getBottleCode = data[0]['Bottle_Code'].split('.')[1];
         let getMaxRefillCount, getCurrentRefillCount;
         getMaxRefillCount = data[0]['Max_Refill_Count'];
-        getCurrentRefillCount = data[0]['Current_Refill_Count'];
+        getCurrentRefillCount = data[0]['Current_PlantRefill_Count'];
         if (getMaxRefillCount == 0) {
 
           amount_refund = 0.0;
@@ -3110,6 +3054,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     }
   }
   returnCashTransactions(amount_refund: any, currentlyDroped: any, fromreturncon: any, transactionnum: any, debitFacilty: any) {
+    alert(amount_refund)
     if (amount_refund > 0.0) {
       this.currentwallet += amount_refund;
       this.logser.currentuser.wallet = this.currentwallet;
@@ -3156,6 +3101,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
                 });
               });
 
+
+
           },
             error => {
               console.log(error);
@@ -3169,9 +3116,19 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
         });
       }
+      else {
+        this.logser.getReverseVendingCashbox().subscribe(data => {
+
+          (data[0]['Cashbox'] == '') ? this.getReverseVendingCashbox = 0 : this.getReverseVendingCashbox = parseInt(data[0]['Cashbox']);
+          alert(this.getReverseVendingCashbox);
+          this.getReverseVendingCashbox -= amount_refund;
+          this.logser.updatereversecashbox(String(this.getReverseVendingCashbox)).subscribe(data => { });
+        });
+      }
     }
     else {
       if (fromreturncon == false) {
+
         this.playAudioElement(this.Thanksreturning.nativeElement, 0.8);
         $(".reverseBoard").html("Credited ₹ " + amount_refund.toFixed(2));
         let that = this;
@@ -3182,6 +3139,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       }
     }
   }
+  getReverseVendingCashbox = 0;
   calculateReturnCreditAmount(currentlyDroped: any, amount_refund: any) {
     for (let i = 0; i < this.bottlePrice.length; i++) {
       const bottleType = currentlyDroped.split('id')[0].split('_')[2] + '.' + currentlyDroped.split('id')[1].split('_')[0];
@@ -3226,81 +3184,17 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       // Perform refund and other logic related to bottle_list
       this.updatebottlereturn['currentitem'] = currentlyDroped.split('City')[1].split("at")[0];
       this.updatebottlereturn['fromfacility'] = this.currentUserRole;
-      this.updatebottlereturn['Bottleloc'] = "ReverseVending";
-      this.updatebottlereturn['tofacility'] = "ReverseVending";
+      this.updatebottlereturn['Bottleloc'] = "Bottle Reverse Vending Machine";
+      this.updatebottlereturn['tofacility'] = "Bottle Reverse Vending Machine";
 
 
-
-      // Logic to update bottle status, wallet, and perform refund
-      // this.logser.getthisAssets(this.updatebottlereturn['currentitem']).subscribe((data) => {
-      //   this.getBottleStatus = data[0]['Bottle_Status'];
-      //   this.updatebottlereturn['bottlestatus'] = data[0]['Bottle_Status'];
-      //   this.getBottleCode = data[0]['Bottle_Code'].split('.')[1];
-
-      //   for (let i = 0; i < this.bottlePrice.length; i++) {
-      //     const bottleType = currentlyDroped.split('id')[0].split('_')[2] + '.' + currentlyDroped.split('id')[1].split('_')[0];
-      //     if (this.bottlePrice[i]['BottleType'] === bottleType && this.updatebottlereturn['bottlestatus'] == 'Empty-Dirty') {
-      //       amount_refund = parseFloat(this.bottlePrice[i]['OriginalPrice']) * (this.bottlePrice[i]['percentReturnGood'] / 100);
-      //       break;
-      //     }
-      //     else if (this.bottlePrice[i]['BottleType'] === bottleType && this.updatebottlereturn['bottlestatus'] == 'Damaged-Empty') {
-      //       amount_refund = parseFloat(this.bottlePrice[i]['OriginalPrice']) * (this.bottlePrice[i]['percentReturnDamage'] / 100);
-      //       break;
-      //     }
-      //   }
-
-      //   this.currentwallet += amount_refund;
-      //   this.logser.currentuser.wallet = this.currentwallet;
-      //   this.logser.updatewallet().subscribe(
-      //     data => {
-      //       data = this.currentwallet;
-      //       this.logser.gettransactions().subscribe(data => {
-      //         let transactioncount = '0000' + (data.length + 1);
-
-      //         this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + transactioncount + '_07';
-      //         this.transaction['Amount'] = String(amount_refund);
-      //         this.transaction['CreditFacility'] = this.currentUserRole;
-      //         this.transaction['DebitFacility'] = 'Reverse Vending';
-      //         this.transaction['Purpose'] = 'Refund from Reverse Vending Machine';
-      //         this.logser.createtransaction(this.transaction).subscribe(
-      //           data => {
-      //             data = this.transaction;
-      //             this.updatebottlereturn['transactionid'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + transactioncount + '_07';
-      //             this.updatebottlereturn['transactiondate'] = String(this.citytiming['CurrentDay']);
-
-
-      //             this.logser.updateConveyorAssets(this.updatebottlereturn).subscribe((data) => {
-      //               console.log("Bottle location updated to ReverseVending Machine");
-
-      //               this.playAudioElement(this.Thanksreturning.nativeElement, 0.8);
-      //               $(".reverseBoard").html("Credited ₹ " + amount_refund.toFixed(2));
-      //               let that = this;
-      //               setTimeout(function () {
-      //                 that.reversedBottles.length = 0;
-      //                 $(".reverseBoard").html("Place your Bottle on the Placeholder");
-      //               }, 6000)
-      //             });
-      //           });
-
-      //       },
-      //         error => {
-      //           console.log(error);
-      //         });
-
-      //       // this.logser.getsupermarketcashbox().subscribe(data => {
-      //       //   (data[0]['Cashbox'] == '') ? this.supermarketcashbox = 0 : this.supermarketcashbox = parseInt(data[0]['Cashbox']);
-      //       //   this.supermarketcashbox -= amount_refund;
-      //       //   this.logser.updatesupermarketcashbox(String(this.supermarketcashbox)).subscribe(data => { });
-      //       // });
-      //     });
-      // });
       this.logser.getthisAssets(this.updatebottlereturn['currentitem']).subscribe((data) => {
 
         this.updatebottlereturn['bottlestatus'] = data[0]['Bottle_Status'];
         this.getBottleCode = data[0]['Bottle_Code'].split('.')[1];
         let getMaxRefillCount, getCurrentRefillCount;
         getMaxRefillCount = data[0]['Max_Refill_Count'];
-        getCurrentRefillCount = data[0]['Current_Refill_Count'];
+        getCurrentRefillCount = data[0]['Current_PlantRefill_Count'];
         if (getMaxRefillCount == 0) {
 
           amount_refund = 0.0;
@@ -3321,6 +3215,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         else if (getCurrentRefillCount >= getMaxRefillCount) {
 
           amount_refund = this.calculateReturnCreditAmount(currentlyDroped, amount_refund);
+
           this.alertModal.openModal("Thanks for returning the bottle. This bottle has reached the Max-Refill count limit. We will be sending this bottle to the recycling plant. An amount of ₹ " + amount_refund.toFixed(2) + " has been credited to your wallet.", () => {
             this.bottleStatus_Display['Bottle_Status'] = 'Damaged-Empty';
             this.getBottleStatus = 'Damaged-Empty';
@@ -3338,6 +3233,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         else {
           this.getBottleStatus = data[0]['Bottle_Status'];
           amount_refund = this.calculateReturnCreditAmount(currentlyDroped, amount_refund)
+          alert(amount_refund);
           this.returnCashTransactions(amount_refund, currentlyDroped, false, '07', 'ReverseVending');
         }
 
@@ -3406,7 +3302,6 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       this.currentlyrefillingBottle = event.item.element.nativeElement.id;
       let currentlyDroped = event.item.element.nativeElement.id;
       let currentDropzone = event.container.element.nativeElement.classList;
-      let that = this;
       if (currentDropzone.contains('refilllist')) {
 
         this.atRefillingMchn.length = 0;
@@ -3417,25 +3312,25 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
           console.log("bottle location update to Refilling Machine");
         });
-        let getMaxRefillCount, getCurrentRefillCount;
+        let getMaxRefillCount, getCurrentPlantRefillCount;
         this.logser.getthisAssets(this.updateonlyloc['currentbottle']).subscribe((data) => {
           getMaxRefillCount = data[0]['Max_Refill_Count'];
-          getCurrentRefillCount = data[0]['Current_Refill_Count'];
-          if (getMaxRefillCount == 0 || getCurrentRefillCount >= getMaxRefillCount) {
+          getCurrentPlantRefillCount = data[0]['Current_PlantRefill_Count'];
+          if (getMaxRefillCount == 0 || getCurrentPlantRefillCount >= getMaxRefillCount) {
             this.alertModal.openModal("This bottle has reached/exceeded the recommended Max refill limit. However, you may continue to refill if you wish")
-            this.droppedbottle = true;
-            if (this.resetanimation == true) {
-              this.initiateanimation(currentlyDroped);
-              this.playAudioElement(this.bottledroppeded.nativeElement, 0.8);
-            }
+            // this.droppedbottle = true;
+            // if (this.resetanimation == true) {
+            //   this.initiateanimation(currentlyDroped);
+            //   this.playAudioElement(this.bottledroppeded.nativeElement, 0.8);
+            // }
           }
-          else {
-            this.droppedbottle = true;
-            if (this.resetanimation == true) {
-              this.initiateanimation(currentlyDroped);
-              this.playAudioElement(this.bottledroppeded.nativeElement, 0.8);
-            }
+
+          this.droppedbottle = true;
+          if (this.resetanimation == true) {
+            this.initiateanimation(currentlyDroped);
+            this.playAudioElement(this.bottledroppeded.nativeElement, 0.8);
           }
+
 
         });
       }
@@ -3457,7 +3352,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             for (let i = 0; i < this.assetdataset.length; i++) {
 
               if (this.assetdataset[i]['AssetId'] == this.updateonlyloc['currentbottle']) {
-                this.bottleDataatRefill['Current_Refill_Count'] = this.assetdataset[i]['Current_Refill_Count'];
+                this.bottleDataatRefill['Current_SelfRefill_Count'] = this.assetdataset[i]['Current_SelfRefill_Count'];
                 break;
               }
             }
@@ -3465,7 +3360,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             this.currentUserPurhcased.push(currentlyDroped);
             let index = this.refillbottles.findIndex(item => item === currentlyDroped)
             this.refillbottles.splice(index, 1);
-            this.bottleDataatRefill['Current_Refill_Count'] = this.bottleDataatRefill['Current_Refill_Count'] + 1;
+            this.bottleDataatRefill['Current_SelfRefill_Count'] = this.bottleDataatRefill['Current_SelfRefill_Count'] + 1;
             this.bottleDataatRefill['currentQuantity'] = this.selectquantity;
             this.bottleDataatRefill['Bottle_Status'] = 'InUse';
             this.bottleDataatRefill['RefillingBottle'] = currentlyDroped.split('City')[1].split("at")[0];
@@ -3486,59 +3381,6 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     }
   }
 
-  // drop(event: CdkDragDrop<string[]>) {
-
-  //   if (event.previousContainer === event.container) {
-  //     moveItemInArray(
-  //       event.container.data, event.previousIndex, event.currentIndex,);
-  //   } else {
-  //     transferArrayItem(event.previousContainer.data,
-  //       event.container.data,
-  //       event.previousIndex,
-  //       event.currentIndex);
-
-  //     let currentlyDroped = event.item.element.nativeElement.id;
-  //     let currentDropzone = event.container.element.nativeElement.classList;
-  //     let itemid = currentlyDroped.split("at")[0].split('City')[1];
-  //     console.log(currentDropzone);
-  //     console.log(itemid);
-  //     if (currentDropzone.contains('newbottle_list')) {
-
-
-  //       this.logser.getthisAssets(itemid).subscribe((data) => {
-  //         if (data[0]['dragged'] == false && data[0]['purchased'] == false) {
-  //           this.logser.lockthisAsset(itemid).subscribe(
-  //             response => {
-  //               if (response['success'] == true) {
-  //                 this.updateonlyloc['currentbottle'] = itemid;
-  //                 this.updateonlyloc['Bottleloc'] = 'In' + this.currentUserCartId;
-  //                 this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
-  //                   this.updateStatus(currentlyDroped, 'blocked', this.currentUserCartId);
-  //                 });
-  //               }
-  //             },
-  //             error => {
-  //               console.error(error);
-  //             }
-  //           );
-  //         }
-  //       });
-  //     }
-  //     else if (currentDropzone.contains('shinyuvpn_list') || currentDropzone.contains('shinyvpn_list') || currentDropzone.contains('spikyrpr_list') ||
-  //       currentDropzone.contains('spikyrpn_list') || currentDropzone.contains('bouncyrpn_list') || currentDropzone.contains('bouncyurpn_list') ||
-  //       currentDropzone.contains('wavyurpr_list') || currentDropzone.contains('wavyurpn_list') || currentDropzone.contains('silkyvpn_list')) {
-  //         alert(itemid);
-  //       this.logser.getthisAssets(itemid).subscribe((data) => {
-  //         this.updateDragged['currentbottle'] = itemid;
-  //         this.updateDragged['Bottleloc'] = 'Supermarket shelf';
-  //         this.updateDragged['dragged'] = false;
-  //         this.logser.updatedragged(this.updateDragged).subscribe((data) => {
-  //           this.updateStatus(currentlyDroped, 'available', 'Supermarket shelf');
-  //         });
-  //       });
-  //     }
-  //   }
-  // }
 
   drop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
@@ -3677,15 +3519,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       if (this.assetdataset[i]['Bottle_loc'] == this.currentUserCartId || this.assetdataset[i]['Bottle_loc'] == 'House@' + this.currentUserCartId && this.assetdataset[i]['purchased'] == true) {
         this.currentusertransaction.push(this.assetdataset[i]);
       }
-      // else if (this.assetdataset[i]['Bottle_loc'] == 'In' + this.currentUserCartId && this.assetdataset[i]['purchased'] == false && this.assetdataset[i]['dragged'] == true) {
-      //   this.updateDragged['dragged'] = false;
-      //   this.updateDragged['purchased'] = false;
-      //   this.updateDragged['Bottleloc'] = 'Supermarket shelf';
-      //   for (let i = 0; i < this.bottletaken.length; i++) {
-      //     this.updateDragged['currentbottle'] = this.bottletaken[i].split("at")[0].split('City')[1];
-      //     this.logser.updatethisAssets(this.updateDragged).subscribe((data) => { });
-      //   }
-      // }
+
     }
   }
   showbutton = false;
@@ -4054,7 +3888,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
   }
   bottleDataatRefill = {
-    'Current_Refill_Count': 0,
+    'Current_SelfRefill_Count': 0,
     'currentQuantity': 0,
     'RefillingBottle': '',
     'Bottle_Status': "InUse",

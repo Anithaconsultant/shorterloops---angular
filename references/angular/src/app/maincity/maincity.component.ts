@@ -804,14 +804,14 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             }
             this.updateobjects(cat6, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
             break;
-          case data[y]['Content_Code'] == "B4.Wavy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Current_Refill_Count'] == 1:
+          case data[y]['Content_Code'] == "B4.Wavy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Current_PlantRefill_Count'] == 1:
             let cat7 = "City" + data[y]['AssetId'] + 'atU1' + data[y]['Content_Code'].split('.')[0];
             if (isDragged == false && bottleloc == 'Supermarket shelf') {
               this.wavyurpr.push(cat7);
             }
             this.updateobjects(cat7, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
             break;
-          case data[y]['Content_Code'] == "B4.Wavy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Current_Refill_Count'] == 0:
+          case data[y]['Content_Code'] == "B4.Wavy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Current_PlantRefill_Count'] == 0:
             let cat8 = "City" + data[y]['AssetId'] + 'atU0' + data[y]['Content_Code'].split('.')[0];
             if (isDragged == false && bottleloc == 'Supermarket shelf') {
               this.wavyurpn.push(cat8);
@@ -2391,16 +2391,16 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
           this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_01';
           this.transaction['Amount'] = String(this.refill_amount_topay);
-          this.transaction['CreditFacility'] = 'Refilling Station';
+          this.transaction['CreditFacility'] = 'Shampoo Refilling Station';
           this.transaction['DebitFacility'] = this.currentUserRole;
-          this.transaction['Purpose'] = 'Refilling shampoo from the Refilling Station';
+          this.transaction['Purpose'] = 'Refilling shampoo from the Shampoo Refilling Station';
           this.logser.createtransaction(this.transaction).subscribe(
             data => {
               data = this.transaction;
 
               this.updatebottleasset['bottlestatus'] = 'InUse';
               this.updatebottleasset['transactionid'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount;
-              this.updatebottleasset['fromfacility'] = 'Refilling Station'
+              this.updatebottleasset['fromfacility'] = 'Shampoo Refilling Station '
               this.updatebottleasset['tofacility'] = this.currentUserRole;
               this.updatebottleasset['transactiondate'] = String(this.citytiming['CurrentDay']);
               this.updatebottleasset['Bottleloc'] = this.currentUserCartId;
@@ -2741,8 +2741,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       // Perform refund and other logic related to bottle_list
       this.updatebottlereturn['currentitem'] = currentlyDroped.split('City')[1].split("at")[0];
       this.updatebottlereturn['fromfacility'] = this.currentUserRole;
-      this.updatebottlereturn['tofacility'] = "ReturnConveyor";
-      this.updatebottlereturn['Bottleloc'] = "ReturnConveyor";
+      this.updatebottlereturn['tofacility'] = "Return Conveyor";
+      this.updatebottlereturn['Bottleloc'] = "Return Conveyor";
 
       for (let i = 0; i < this.bottlePrice.length; i++) {
         const bottleType = currentlyDroped.split('id')[0].split('_')[2] + '.' + currentlyDroped.split('id')[1].split('_')[0];
@@ -2854,8 +2854,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       // Perform refund and other logic related to bottle_list
       this.updatebottlereturn['currentitem'] = currentlyDroped.split('City')[1].split("at")[0];
       this.updatebottlereturn['fromfacility'] = this.currentUserRole;
-      this.updatebottlereturn['Bottleloc'] = "ReverseVending";
-      this.updatebottlereturn['tofacility'] = "ReverseVending";
+      this.updatebottlereturn['Bottleloc'] = "Bottle Reverse Vending Machine";
+      this.updatebottlereturn['tofacility'] = "Bottle Reverse Vending Machine";
 
 
 
@@ -2893,7 +2893,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
               this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_01';
               this.transaction['Amount'] = String(amount_refund);
               this.transaction['CreditFacility'] = this.currentUserRole;
-              this.transaction['DebitFacility'] = 'Reverse Vending';
+              this.transaction['DebitFacility'] = 'Bottle Reverse Vending Machine';
               this.transaction['Purpose'] = 'Refund from Reverse Vending Machine';
               this.logser.createtransaction(this.transaction).subscribe(
                 data => {
@@ -3013,14 +3013,15 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             for (let i = 0; i < this.assetdataset.length; i++) {
 
               if (this.assetdataset[i]['AssetId'] == this.currentbottle['currentbottle']) {
-                this.currentbottle['Current_Refill_Count'] = this.assetdataset[i]['Current_Refill_Count'];
+                this.currentbottle['Current_SelfRefill_Count'] = this.assetdataset[i]['Current_SelfRefill_Count'];
+                this.currentbottle['Current_PlantRefill_Count'] = this.assetdataset[i]['Current_PlantRefill_Count'];
                 break;
               }
             }
             this.currentUserPurhcased.push(currentlyDroped);
             let index = this.refillbottles.findIndex(item => item === currentlyDroped)
             this.refillbottles.splice(index, 1);
-            this.currentbottle['Current_Refill_Count'] = this.currentbottle['Current_Refill_Count'] + 1;
+            this.currentbottle['Current_SelfRefill_Count'] = this.currentbottle['Current_SelfRefill_Count'] + 1;
             this.currentbottle['currentQuantity'] = this.selectquantity;
             this.currentbottle['Bottle_Status'] = 'InUse';
             this.currentbottle['currentbottle'] = currentlyDroped.split('City')[1].split("at")[0];
@@ -3544,7 +3545,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     'currentbottle': '',
     'currentQuantity': 0,
     'Bottle_Status': "InUse",
-    'Current_Refill_Count': 0,
+    'Current_SelfRefill_Count': 0,
+    'Current_PlantRefill_Count': 0,
     'Location': ''
   }
   selectedBottleatStage: string = '';

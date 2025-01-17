@@ -19,45 +19,13 @@ export class ReportComponent implements OnInit {
 
     if (this.logser.currentuser.Username != '') {
       this.loadFilterOptions();
-      // this.logser.getAllAssets()
-      //   .subscribe((logs: any) => {
-      //     console.log("Report :")
-      //     console.log(logs)
-      //     for (let y = 0; y < logs.length; y++) {
-      //       this.options.push(logs[y]['AssetId']);
-      //       if (logs[y]['Tofacility'] != '' && !this.users.includes(logs[y]['Tofacility']))
-      //         this.users.push(logs[y]['Tofacility'])
-      //     }
-      //   });
+
     }
     else {
       this.router.navigate(['/login']);
     }
   }
-  // onAssetSelectChange() {
-  //   if (this.selectedAsset != '') {
-  //     this.fetchAuditLogs(this.selectedAsset);
-  //   }
-  //   if (this.selectedUser != '') {
-  //     this.fetchAuditLogsUsers(this.selectedUser);
-  //   }
 
-  // }
-
-  // fetchAuditLogs(assetId: string) {
-  //   this.logser.getAuditLogs(this.selectedAsset)
-  //     .subscribe((logs: any) => {
-  //       this.auditLogs = logs;
-  //     });
-  // }
-  // fetchAuditLogsUsers(userId: string) {
-  //   this.logser.getAuditLogsuser(this.selectedUser)
-  //     .subscribe((logs: any) => {
-  //       this.auditLogs = logs;
-  //       console.log("audit Logs")
-  //       console.log(this.auditLogs)
-  //     });
-  // }
   gotocity() {
     this.router.navigate(["maincity"]);
   }
@@ -75,14 +43,15 @@ export class ReportComponent implements OnInit {
   statusOptions: string[] = [];
   roleOptions: string[] = [];
   BottleTypeOptions: string[] = [];
-  currentRefillOptions: string[] = [];
+  currentSelfRefillOptions: string[] = [];
+  currentPlantRefillOptions: string[] = [];
   TransactionIdOptions: string[] = [];
   assetIdOptions: string[] = [];
   dayOptions: string[] = [];
   startDay: string | null = null;
   endDay: string | null = null;
 
-
+  filteredValue: any;
   filters = {
     city: [],
     brand: [],
@@ -92,7 +61,8 @@ export class ReportComponent implements OnInit {
     status: [],
     role_user: [],
     bottle_type: [],
-    current_refill: [],
+    current_selfrefill: [],
+    current_plantrefill: [],
     TransactionId: [],
     assetID: [],
     day: [],
@@ -114,7 +84,8 @@ export class ReportComponent implements OnInit {
       this.statusOptions = data.statusOptions;
       this.roleOptions = data.roleOptions;
       this.BottleTypeOptions = data.BottleTypeOptions;
-      this.currentRefillOptions = data.currentRefillOptions;
+      this.currentSelfRefillOptions = data.currentSelfRefillOptions;
+      this.currentPlantRefillOptions = data.currentPlantRefillOptions;
       this.TransactionIdOptions = data.TransactionIdOptions;
       this.assetIdOptions = data.assetIdOptions;
       this.dayOptions = data.dayOptions;
@@ -126,11 +97,9 @@ export class ReportComponent implements OnInit {
   applyFilters() {
    //alert("Calling")
     this.auditLogs = [];
-    console.log("Filters", this.filters)
-    this.logser.getFilteredLogs(this.filters).subscribe(data => {
+   this.logser.getFilteredLogs(this.filters).subscribe(data => {
       this.auditLogs = data;  // Store filtered data in auditLogs for table display
-      console.log(this.auditLogs)
-
+     
     });
   }
   exportToExcel(): void {

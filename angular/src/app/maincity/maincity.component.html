@@ -505,8 +505,8 @@
                 <div class="labelholder">
                     <div class="DOM">{{assetdata[0].DOM}}</div>
                     <div class="Quantity">{{assetdata[0].Quantity}} {{assetdata[0].Units}}</div>
-                    <div class="Current_Refill_Count">{{assetdata[0].Current_Refill_Count}}</div>
-      
+                    <div class="Current_PlantRefill_Count">{{assetdata[0].Current_PlantRefill_Count}}</div>
+
                     <div class="Latest_Refill_Date">{{assetdata[0].Latest_Refill_Date}}</div>
                     <div class="Shampoo_Price">&#8377;{{shapooprice}}</div>
                     <div class="Content_Price">&#8377; {{assetdata[0].Content_Price}}</div>
@@ -631,7 +631,7 @@
                                         <td>{{ item.AssetId}}</td>
                                         <td>{{ item.Bottle_Code}}</td>
                                         <td>{{ item.Content_Code}}</td>
-                                        <td>{{ item.Current_Refill_Count}}</td>
+                                        <td>{{ item.Current_PlantRefill_Count}}</td>
                                         <td>{{ item.Content_Price}}</td>
                                         <td>{{ item.Bottle_Price}}</td>
                                         <td>{{ item.Discount_RefillB}}</td>
@@ -673,13 +673,18 @@
                                     <div class="Quantity">Quantity: {{sldBottleData[0].Quantity}}
                                         {{sldBottleData[0].Units}}</div>
                                 </div>
-                                <div >
+                                <div>
                                     <div class="MaxCount">Maximum Refill Count: {{sldBottleData[0].Max_Refill_Count}}
-                                       </div>
+                                    </div>
                                 </div>
-                                <div >
-                                    <div class="Current_Refill_Count">Current Refill Count:
-                                        {{sldBottleData[0].Current_Refill_Count}}</div>
+                                <div>
+                                    <div class="Current_PlantRefill_Count">Current Plant Refill Count:
+                                        {{sldBottleData[0].Current_PlantRefill_Count}}</div>
+                                </div>
+
+                                <div>
+                                    <div class="Current_SelfRefill_Count">Current Self Refill Count:
+                                        {{sldBottleData[0].Current_SelfRefill_Count}}</div>
                                 </div>
 
                                 <div *ngIf="sldBottleData[0]?.Latest_Refill_Date">
@@ -727,7 +732,7 @@
                                 <div *ngIf="sldBottleData[0]?.AssetId">
                                     <div class="AssetId">Asset Id: {{sldBottleData[0].AssetId}}</div>
                                 </div>
-                
+
                             </div>
 
                         </div>

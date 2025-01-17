@@ -29,7 +29,10 @@ export class HamburgerMenuComponent implements OnInit {
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
   }
-
+  currentwallet=0.0;
+  netrefund=0.0;
+  netfine=0.0;
+  currentusertransaction:any[]=[];
   currentrole = "";
   userobj = {
     'login': '1'
@@ -52,6 +55,57 @@ export class HamburgerMenuComponent implements OnInit {
     this.modalService.open(navigation, { windowClass: "frontpage" });
   }
 
+  openCashbox(cashBox: any) {
+    this.modalService.open(cashBox, { windowClass: "cartcontent" });
+  }
+  openCashboxLedger(legderBook: any) {
+    this.modalService.open(legderBook, { windowClass: "cartcontent" });
+  }
+
+  fineTotal = 0.0;
+  environmentTaxTotal = 0.0;
+  cashflowdata:any[]=[];
+  currentWalletMunis = 0.0
+
+  calculateSums() {
+    this.logser.getcashboxmunicipality().subscribe(data => {
+      this.currentWalletMunis=data[0]['Cashbox'] ;
+      });
+    this.logser.gettransactions().subscribe(data => {
+      this.cashflowdata = [];
+      if (this.cashflowdata.length == 0) {
+        for (let t = 0; t < data.length; t++) {
+          let getcityId = data[t]['TransactionId'].split("_")[0];
+
+          if (getcityId == this.currentusercityId && ( data[t]['CreditFacility'] == 'Municipality Office')) {
+            this.cashflowdata.push(data[t]);
+          }
+        }
+      }
+      console.log(this.cashflowdata)
+      if(this.cashflowdata){
+          const environmentTaxRecords = this.cashflowdata
+          .filter(record => record.Purpose.includes("Environment tax"));
+
+         
+          this.environmentTaxTotal = environmentTaxRecords
+          .reduce((sum, record) => sum + parseFloat(record.Amount), 0);
+
+          // Calculate and display matched Fine records
+          const fineRecords = this.cashflowdata
+          .filter(record => record.Purpose.includes("Fine for Throwing Bottle"));
+
+          
+          this.fineTotal = fineRecords
+          .reduce((sum, record) => sum + parseFloat(record.Amount), 0);
+
+        
+      }
+    });
+
+// Calculate and display matched Environment Tax records
+
+  }
 
   onMenuItemClick() {
     const newValue = 1;  // Set this to the appropriate number value based on your logic

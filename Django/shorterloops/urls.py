@@ -33,6 +33,7 @@ urlpatterns = [
     path('api/getsupermarketcash/<cityid>',views.getsupermarketcash, name='getsupermarketcash'),
     path('api/getmunicipalitycash/<cityid>',views.getmunicipalitycash, name='getmunicipalitycash'),
     path('api/getrefillingstationcash/<cityid>',views.getrefillingstationcash, name='getrefillingstationcash'),
+    path('api/getreversevendingcash/<cityid>',views.getreversevendingcash, name='getreversevendingcash'),
     path('api/filter-audit-logs/', views.filter_audit_logs, name='filter_audit_logs'),
     path('api/filter-options/', views.get_filter_options, name='get_filter_options'),
 ]

@@ -227,33 +227,89 @@ def returnasset(request, itemid):
 def facility(request, mayorid):
     if request.method == 'POST':
         data = JSONParser().parse(request)
-        for value in range(len(FACILITY_CHOICES)):
-            global cartcount
-            faciname = FACILITY_CHOICES[value][1]
-            if (faciname == 'Municipality Office' or faciname == 'Clock Tower' or faciname == 'Public Dustbin' or faciname == 'Municipality Landfill' or faciname == 'Garbage Truck'):
-                if (faciname == 'Municipality Office'):
-                    cartIds = str(data['Facility_cityid']
-                                  )+'_'+str(cartcount)
-                    serval = {'Facilityname': faciname, 'Facility_cityid': data['Facility_cityid'],
-                              'Owner_status': 'Active', 'Owner_id': mayorid, 'Cashbox': '', 'LedgerId': '0', 'cartId': cartIds}
+        global cartcount
+
+        # Loop through FACILITY_CHOICES to process each facility
+        for code, faciname, cashbox_value in FACILITY_CHOICES:
+            if faciname in ['Municipality Office', 'Clock Tower', 'Public Dustbin', 'Municipality Landfill', 'Garbage Truck']:
+                if faciname == 'Municipality Office':
+                    cartIds = str(data['Facility_cityid']) + '_' + str(cartcount)
+                    serval = {
+                        'Facilityname': faciname,
+                        'Facility_cityid': data['Facility_cityid'],
+                        'Owner_status': 'Active',
+                        'Owner_id': mayorid,
+                        'Cashbox': cashbox_value,
+                        'LedgerId': '0',
+                        'cartId': cartIds
+                    }
                 else:
-                    serval = {'Facilityname': faciname, 'Facility_cityid': data['Facility_cityid'],
-                              'Owner_status': 'Active', 'Owner_id': mayorid, 'Cashbox': '', 'LedgerId': '0', 'cartId': '0'}
+                    serval = {
+                        'Facilityname': faciname,
+                        'Facility_cityid': data['Facility_cityid'],
+                        'Owner_status': 'Active',
+                        'Owner_id': mayorid,
+                        'Cashbox': cashbox_value,
+                        'LedgerId': '0',
+                        'cartId': '0'
+                    }
             else:
-                cartcount = cartcount+1
-                cartIds = str(data['Facility_cityid'])+'_'+str(cartcount)
-                serval = {'Facilityname': faciname, 'Facility_cityid': data['Facility_cityid'],
-                          'Owner_status': '', 'Owner_id': '', 'Cashbox': '', 'LedgerId': '0', 'cartId': cartIds}
+                cartcount += 1
+                cartIds = str(data['Facility_cityid']) + '_' + str(cartcount)
+                serval = {
+                    'Facilityname': faciname,
+                    'Facility_cityid': data['Facility_cityid'],
+                    'Owner_status': '',
+                    'Owner_id': '',
+                    'Cashbox': cashbox_value,
+                    'LedgerId': '0',
+                    'cartId': cartIds
+                }
+
+            # Serialize and save the data
             serializer = facilitySerializer(data=serval)
             if serializer.is_valid():
                 serializer.save()
             else:
                 print("invalid data")
+
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+
     if request.method == 'GET':
         data = Facility.objects.all()
         serializer = facilitySerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
+
+# def facility(request, mayorid):
+#     if request.method == 'POST':
+#         data = JSONParser().parse(request)
+#         for value in range(len(FACILITY_CHOICES)):
+#             global cartcount
+#             faciname = FACILITY_CHOICES[value][1]
+#             if (faciname == 'Municipality Office' or faciname == 'Clock Tower' or faciname == 'Public Dustbin' or faciname == 'Municipality Landfill' or faciname == 'Garbage Truck'):
+#                 if (faciname == 'Municipality Office'):
+#                     cartIds = str(data['Facility_cityid']
+#                                   )+'_'+str(cartcount)
+#                     serval = {'Facilityname': faciname, 'Facility_cityid': data['Facility_cityid'],
+#                               'Owner_status': 'Active', 'Owner_id': mayorid, 'Cashbox': '', 'LedgerId': '0', 'cartId': cartIds}
+#                 else:
+#                     serval = {'Facilityname': faciname, 'Facility_cityid': data['Facility_cityid'],
+#                               'Owner_status': 'Active', 'Owner_id': mayorid, 'Cashbox': '', 'LedgerId': '0', 'cartId': '0'}
+#             else:
+#                 cartcount = cartcount+1
+#                 cartIds = str(data['Facility_cityid'])+'_'+str(cartcount)
+#                 serval = {'Facilityname': faciname, 'Facility_cityid': data['Facility_cityid'],
+#                           'Owner_status': '', 'Owner_id': '', 'Cashbox': '', 'LedgerId': '0', 'cartId': cartIds}
+#             serializer = facilitySerializer(data=serval)
+#             if serializer.is_valid():
+#                 serializer.save()
+#             else:
+#                 print("invalid data")
+#         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+#     if request.method == 'GET':
+#         data = Facility.objects.all()
+#         serializer = facilitySerializer(data, many=True)
+#         return JsonResponse(serializer.data, safe=False)
 
 
 @api_view(['GET', 'POST', 'PUT'])
@@ -330,14 +386,35 @@ def getmunicipalitycash(request, cityid):
 def getrefillingstationcash(request, cityid):
     if request.method == 'GET':
         data = Facility.objects.filter(
-            Facilityname='Refilling Van Owner', Facility_cityid=cityid)
+            Facilityname='Refilling Station Owner', Facility_cityid=cityid)
         serializer = facilitySerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
     if request.method == 'PUT':
         data = JSONParser().parse(request)
         serval = {'Cashbox': data['Cashbox']}
         getfacility = Facility.objects.filter(
-            Facilityname='Refilling Van Owner', Facility_cityid=cityid).first()
+            Facilityname='Refilling Station Owner', Facility_cityid=cityid).first()
+        serializer = facilitySerializer(getfacility, data=serval, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            print("invalid data")
+        return JsonResponse(serializer.data, safe=False)
+
+
+@api_view(['GET', 'PUT'])
+def getreversevendingcash(request, cityid):
+    if request.method == 'GET':
+        data = Facility.objects.filter(
+            Facilityname='Reverse Vending Machine Owner', Facility_cityid=cityid)
+        serializer = facilitySerializer(data, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    if request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serval = {'Cashbox': data['Cashbox']}
+        print(serval)
+        getfacility = Facility.objects.filter(
+            Facilityname='Reverse Vending Machine Owner', Facility_cityid=cityid).first()
         serializer = facilitySerializer(getfacility, data=serval, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -480,9 +557,13 @@ def filter_audit_logs(request):
     if bottle_type:
         filters['Bottle_Code__in'] = bottle_type.split(',')
 
-    current_refill = request.GET.get('current_refill')
-    if current_refill:
-        filters['currentrefillCount__in'] = current_refill.split(',')
+    current_selfrefill = request.GET.get('current_selfrefill')
+    if current_selfrefill:
+        filters['Current_SelfRefill_Count__in'] = current_selfrefill.split(',')
+    
+    current_plantrefill = request.GET.get('current_plantrefill')
+    if current_plantrefill:
+        filters['Current_PlantRefill_Count__in'] = current_plantrefill.split(',')
 
     TransactionId = request.GET.get('TransactionId')
     if TransactionId:
@@ -534,8 +615,11 @@ def get_filter_options(request):
         'userName', flat=True).distinct())
     BottleTypeOptions = list(Auditlog.objects.values_list(
         'Bottle_Code', flat=True).distinct())
-    currentRefillOptions = list(Auditlog.objects.values_list(
-        'currentrefillCount', flat=True).distinct())
+    currentSelfRefillOptions = list(Auditlog.objects.values_list(
+        'currentselfrefillCount', flat=True).distinct())
+   
+    currentPlantRefillOptions = list(Auditlog.objects.values_list(
+        'currentplantrefillCount', flat=True).distinct())
     TransactionIdOptions = list(Auditlog.objects.values_list(
         'TransactionId', flat=True).distinct())
     assetIdOptions = list(Auditlog.objects.values_list(
@@ -552,7 +636,8 @@ def get_filter_options(request):
         'statusOptions': status_options,
         'roleOptions': role_options,
         'BottleTypeOptions': BottleTypeOptions,
-        'currentRefillOptions': currentRefillOptions,
+        'currentSelfRefillOptions': currentSelfRefillOptions,
+        'currentRefillOptions': currentPlantRefillOptions,
         'TransactionIdOptions': TransactionIdOptions,
         'assetIdOptions': assetIdOptions,
         'dayOptions': dayOptions,

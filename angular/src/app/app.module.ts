@@ -24,10 +24,12 @@ import { LongPressDragDirective } from './app-longpress.directive';
 import { PreventDoubleClickDirective } from './prevent-double-click.directive';
 import { HamburgerMenuComponent } from './hamburger-menu/hamburger-menu.component';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
-
+import { NgChartsModule } from 'ng2-charts';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { AlertModalComponent } from './alert-modal/alert-modal.component';
+import { ChartComponent } from './report/chart/chart.component';
+import { CityruleComponent } from './cityrule/cityrule.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -41,7 +43,9 @@ import { AlertModalComponent } from './alert-modal/alert-modal.component';
     PreventDoubleClickDirective,
     HamburgerMenuComponent,
     ClickOutsideDirective,
-    AlertModalComponent
+    AlertModalComponent,
+    ChartComponent,
+    CityruleComponent
   ],
   imports: [
     BrowserModule,
@@ -53,7 +57,7 @@ import { AlertModalComponent } from './alert-modal/alert-modal.component';
     NgbDropdownModule,
     BrowserAnimationsModule,
     DragDropModule, MatTreeModule, MatButtonModule, MatIconModule, MatSelectModule,
-    MatFormFieldModule,
+    MatFormFieldModule,NgChartsModule 
   ],
   providers: [AuthService, { provide: LocationStrategy, useClass: HashLocationStrategy },
     DatePipe],

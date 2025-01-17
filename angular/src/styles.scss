@@ -1632,20 +1632,21 @@ app-signup {
             left: -278px;
             top: 27px;
         }
+
         .Env_Tax {
             top: 189px;
         }
-    
+
         .Total_price {
             top: 204px;
         }
-    
+
         .Max_Refill_Count {
             top: 221px;
         }
     }
 
-    
+
 }
 
 .silkyback {
@@ -1711,7 +1712,8 @@ app-signup {
         color: #fff;
         top: 471px;
         left: 221px;
-        .AssetId{
+
+        .AssetId {
             left: -277px;
             top: 37px;
         }
@@ -1728,7 +1730,8 @@ app-signup {
         color: #000;
         top: 475px;
         left: 192px;
-        .AssetId{
+
+        .AssetId {
             left: -249px;
             top: 72px;
         }
@@ -2277,6 +2280,11 @@ body {
         background-repeat: no-repeat
     }
 
+}
+
+.displayheader {
+    display: flex !important;
+    justify-content: end !important;
 }
 
 .hamburger {

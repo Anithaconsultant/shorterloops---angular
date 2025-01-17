@@ -28,42 +28,43 @@
                         <div ngbAccordionBody>
                             <ng-template>
                                 <div class="hamburger-menu">
-                                    
-                                        <div *ngIf="this.switchyesorno==1">
-                                            <div class="ham-menuitem" (click)="onMenuItemClick();">Switch Role as
-                                                {{currentrole}}
-                                            </div>
-                                        </div>
-                                        <div *ngIf="this.switchyesorno==2">
-                                            <div type="button" class="inneracc ham-menuitem"
-                                                (click)="onMenuItemClick()">Switch
-                                                Role as Customer</div>
-                                            <div type="button" class="disabled inneracc ham-menuitem">Check the
-                                                municipality office
-                                                cashbox status</div>
-                                            <div type="button" class="disabled inneracc ham-menuitem">Check the office
-                                                ledger book</div>
-                                            <div type="button" class="disabled inneracc ham-menuitem">Run the garbage
-                                                truck daily</div>
-                                            <div type="button" class="disabled inneracc ham-menuitem">Update the City
-                                                Rule Book</div>
-                                            <div type="button" class="disabled inneracc ham-menuitem">Update Notices and
-                                                Announcements
-                                            </div>
-                                            <div type="button" class="inneracc ham-menuitem"
-                                                (click)="showNewComponent()">Show Asset
-                                                Audit Trail</div>
-                                            <div type="button" class="disabled inneracc ham-menuitem">Set the City Clock
-                                                Tower Tickrate
-                                            </div>
-                                            <div type="button" class="disabled inneracc ham-menuitem">Audit the
-                                                universal bottle cleaning
-                                                process</div>
-                                            <div type="button" class="disabled inneracc ham-menuitem">Audit the
-                                                refilling station</div>
+
+                                    <div *ngIf="this.switchyesorno==1">
+                                        <div class="ham-menuitem" (click)="onMenuItemClick();">Switch Role as
+                                            {{currentrole}}
                                         </div>
                                     </div>
-                            
+                                    <div *ngIf="this.switchyesorno==2">
+                                        <div type="button" class="inneracc ham-menuitem" (click)="onMenuItemClick()">
+                                            Switch
+                                            Role as Customer</div>
+                                        <div type="button" class=" inneracc ham-menuitem"
+                                            (click)=" calculateSums() ;openCashbox(cashBox)">Check the Municipality
+                                            Office Cashbox Status</div>
+                                        <div type="button" class=" inneracc ham-menuitem"
+                                            (click)=" calculateSums() ;openCashboxLedger(legderBook)">Check the Office
+                                            Ledger book</div>
+                                        <div type="button" class="disabled inneracc ham-menuitem">Run the garbage
+                                            truck daily</div>
+                                        <div type="button" class="disabled inneracc ham-menuitem">Update the City
+                                            Rule Book</div>
+                                        <div type="button" class="disabled inneracc ham-menuitem">Update Notices and
+                                            Announcements
+                                        </div>
+                                        <div type="button" class="inneracc ham-menuitem" (click)="showNewComponent()">
+                                            Show Asset
+                                            Audit Trail</div>
+                                        <div type="button" class="disabled inneracc ham-menuitem">Set the City Clock
+                                            Tower Tickrate
+                                        </div>
+                                        <div type="button" class="disabled inneracc ham-menuitem">Audit the
+                                            universal bottle cleaning
+                                            process</div>
+                                        <div type="button" class="disabled inneracc ham-menuitem">Audit the
+                                            refilling station</div>
+                                    </div>
+                                </div>
+
                             </ng-template>
                         </div>
                     </div>
@@ -118,4 +119,65 @@
             <div class="loadcontent2"></div>
         </div>
     </div>
+</ng-template>
+<ng-template #legderBook let-modal>
+    <div class="modal-header displayheader">
+        <button type="button" class="btn-close closebtn" aria-label="Close"
+            (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="cashboxDisplay">
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+
+                            <th>Transaction ID</th>
+                            <th>Amount (&#x20B9; )</th>
+                            <th>Credit Facility </th>
+                            <th>Debit Facility</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of cashflowdata;">
+                            <td>{{ item.TransactionId}}</td>
+                            <td>{{ item.Amount | number : '1.2-2'}}</td>
+                            <td>{{ item.CreditFacility}}</td>
+                            <td>{{ item.DebitFacility}}</td>
+                            <td>{{ item.Purpose}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</ng-template>
+<ng-template #cashBox let-modal>
+    <div class="modal-header displayheader">
+        <button type="button" class="btn-close closebtn" aria-label="Close"
+            (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+
+        <div class="ledgerDisplay">
+            <div class="cashboxHeader" style="margin-bottom: 15px;">Municipality Cashbox Status</div>
+            <table class="cashboxTable">
+                <tr>
+                    <td class="tbllabel">Current Cash</td>
+                    <td class="value">&#x20B9; {{ currentWalletMunis | number : '1.2-2' }}</td>
+                </tr>
+                <tr>
+                    <td class="tbllabel">Earning from Taxes</td>
+                    <td class="value">&#x20B9; {{ environmentTaxTotal | number : '1.2-2' }}</td>
+                </tr>
+                <tr>
+                    <td class="tbllabel">Earning from Fines</td>
+                    <td class="value">&#x20B9; {{ fineTotal | number : '1.2-2' }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
 </ng-template>

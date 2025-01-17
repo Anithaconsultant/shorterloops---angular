@@ -41,10 +41,17 @@
                         </mat-select>
                     </mat-form-field>
                     <mat-form-field>
-                        <mat-label>Current Refill Count </mat-label>
-                        <mat-select class="matoptioncls" [(ngModel)]="filters.current_refill" multiple>
-                            <mat-option class="matoptioncls" *ngFor="let currentrefill of currentRefillOptions"
-                                [value]="currentrefill">{{ currentrefill }}</mat-option>
+                        <mat-label>Current Self Refill Count </mat-label>
+                        <mat-select class="matoptioncls" [(ngModel)]="filters.current_selfrefill" multiple>
+                            <mat-option class="matoptioncls" *ngFor="let currenselfrefill of currentSelfRefillOptions"
+                                [value]="currenselfrefill">{{ currenselfrefill }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>Current Plant Refill Count </mat-label>
+                        <mat-select class="matoptioncls" [(ngModel)]="filters.current_plantrefill" multiple>
+                            <mat-option class="matoptioncls" *ngFor="let currentplantrefill of currentPlantRefillOptions"
+                                [value]="currentplantrefill">{{ currentplantrefill }}</mat-option>
                         </mat-select>
                     </mat-form-field>
 
@@ -126,6 +133,10 @@
         </div>
         <div class="numdisplay">
             <p>Total Records Retrieved: {{ auditLogs.length }}</p>
+        </div>
+        <div>
+            <app-chart [filteredData]="filters"></app-chart>
+
         </div>
         <button (click)="exportToExcel()">Download Excel</button>
         <div class="row commontablecss overflowcss">

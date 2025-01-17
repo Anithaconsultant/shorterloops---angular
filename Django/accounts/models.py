@@ -2,29 +2,32 @@
 from django.db import models
 import datetime
 import uuid
-FACILITY_CHOICES = (('mun', 'Municipality Office'),
-                    ('sup', 'Supermarket Owner'),
-                    ('clk', 'Clock Tower'),
-                    ('btl', 'Universal bottle Plant Owner'),
-                    ('rev', 'Reverse Vending Machine Owner'),
-                    ('rec', 'Plastic Recycling plant Owner'),
-                    ('ref', 'Refilling Van Owner'),
-                    ('dus', 'Public Dustbin'),
-                    ('lnd', 'Municipality Landfill'),
-                    ('grt', 'Garbage Truck'),
-                    ('bct', 'Bottle Collection Truck'),
-                    ('ret', 'Recycling Truck Owner'),
-                    ('hs1', 'House1 Owner'),
-                    ('hs2', 'House2 Owner'),
-                    ('hs3', 'House3 Owner'),
-                    ('hs4', 'House4 Owner'),
-                    ('hs5', 'House5 Owner'),
-                    ('hs6', 'House6 Owner'),
-                    ('hs7', 'House7 Owner'),
-                    ('hs8', 'House8 Owner'),
-                    ('hs9', 'House9 Owner'),
-                    ('hs10', 'House10 Owner'))
+FACILITY_CHOICES = (
+    ('mun', 'Municipality Office', '100000'),
+    ('b1p', 'B1 Shampoo Producer', '500000'),
+    ('b2p', 'B2 Shampoo Producer', '500000'),
+    ('b3p', 'B3 Shampoo Producer', '500000'),
+    ('b4p', 'B4 Shampoo Producer', '500000'),
+    ('b5p', 'B5 Shampoo Producer', '500000'),
+    ('sup', 'Supermarket Owner', '500000'),
+    ('btl', 'Universal Bottle Manufacturing Plant owner', '200000'),
+    ('rev', 'Bottle Reverse Vending Machine Owner', '100000'),
+    ('rec', 'Plastic Recycling Plant Owner', '200000'),
+    ('ref', 'Shampoo Refilling Station Owner', '200000'),
+    ('ubc', 'Universal Bottle Cleaning Plant Owner', '200000'),
+    ('rgp', 'Rag picker', '2000'),
 
+    ('hs1', 'House1 Owner', ''),
+    ('hs2', 'House2 Owner', ''),
+    ('hs3', 'House3 Owner', ''),
+    ('hs4', 'House4 Owner', ''),
+    ('hs5', 'House5 Owner', ''),
+    ('hs6', 'House6 Owner', ''),
+    ('hs7', 'House7 Owner', ''),
+    ('hs8', 'House8 Owner', ''),
+    ('hs9', 'House9 Owner', ''),
+    ('hs10', 'House10 Owner', '')
+)
 
 class Shampooprice(models.Model):
     class Meta:
@@ -102,7 +105,8 @@ class Asset(models.Model):
     Bottle_Status = models.CharField(max_length=1000, blank=True)
     DOM = models.CharField(max_length=70, blank=True)
     Max_Refill_Count = models.IntegerField(default=5, blank=True)
-    Current_Refill_Count = models.IntegerField(default=5, blank=True)
+    Current_PlantRefill_Count = models.IntegerField(default=0, blank=True)
+    Current_SelfRefill_Count = models.IntegerField(default=0, blank=True)
     Latest_Refill_Date = models.CharField(max_length=70, blank=True)
     Retirement_Date = models.CharField(max_length=70, blank=True)
     Retire_Reason = models.CharField(max_length=70, blank=True)
@@ -152,7 +156,8 @@ class Auditlog(models.Model):
     Unit = models.CharField(max_length=100, blank=True)
     ManufactureDate = models.CharField(max_length=100, blank=True)
     refillCount = models.CharField(max_length=100, blank=True)
-    currentrefillCount = models.CharField(max_length=100, blank=True)
+    currentselfrefillCount = models.CharField(max_length=100, blank=True)
+    currentplantrefillCount = models.CharField(max_length=100, blank=True)
     LatestFillDate = models.CharField(max_length=100, blank=True)
     bottleRetireDate = models.CharField(max_length=100, blank=True)
     RetireReason= models.CharField(max_length=100, blank=True)
