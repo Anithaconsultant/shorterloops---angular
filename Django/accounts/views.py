@@ -181,6 +181,22 @@ def createtransaction(request):
 
 
 @api_view(['GET', 'POST'])
+def add_Cityrule(request):
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = cityRuleSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            print("invalid data")
+        return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+    if request.method == 'GET':
+        data = Cityrule.objects.all()
+        serializer = cityRuleSerializer(data, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+
+@api_view(['GET', 'POST'])
 def getfacility(request, cityid):
     if request.method == 'GET':
         data = Facility.objects.filter(Facility_cityid=cityid)

@@ -1347,7 +1347,7 @@ export class AddcityComponent implements OnInit {
                         this.userobj['cityid'] = length.toString();
                         this.firstfacility['CityId'] = length.toString();
                         this.logser.currentuser.Role = 'Mayor';
-                        this.logser.currentuser.CityId = length.toString();
+                        this.logser.currentuser.CityId = (length+1).toString();
                         this.Asset_CityId = length.toString();
                         this.logser.updateuser(this.userobj).subscribe(
                             data => {

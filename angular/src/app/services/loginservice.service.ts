@@ -23,7 +23,7 @@ export class LoginserviceService {
     'cityrate': '',
     'cityavatar': ''
   };
-  // baseurl = "https://dbl.iihs.in/api/";
+// baseurl = "https://dbl.iihs.in/api/";
   baseurl = "http://127.0.0.1:8000/api/";
   authorizationData = 'Basic ' + btoa(this.username + ':' + this.password);
   httpHeaders = new HttpHeaders({
@@ -54,6 +54,13 @@ export class LoginserviceService {
       { headers: this.httpHeaders });
 
   }
+
+  createcityrule(cityrule: any): Observable<any> {
+
+    return this.http.post(this.baseurl + 'addRule/'+ this.currentuser.CityId, cityrule,
+      { headers: this.httpHeaders });
+
+  }
   updatecurrenttime(): Observable<any> {
 
     return this.http.get(this.baseurl + 'updatetime/' + this.currentuser.CityId, { headers: this.httpHeaders });
@@ -65,6 +72,10 @@ export class LoginserviceService {
   }
   getAllAssets(): Observable<any> {
     return this.http.get(this.baseurl + 'asset/' + this.currentuser.CityId,
+      { headers: this.httpHeaders });
+  }
+  getFilteredCityAssets(cityId:any): Observable<any> {
+    return this.http.get(this.baseurl + 'asset/' + cityId,
       { headers: this.httpHeaders });
   }
 

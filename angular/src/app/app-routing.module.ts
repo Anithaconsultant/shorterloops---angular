@@ -7,6 +7,7 @@ import {MaincityComponent} from './maincity/maincity.component';
 import {HomeComponent} from './home/home.component';
 import {AddcityComponent} from './addcity/addcity.component'
 import {ReportComponent} from './report/report.component';
+import {CityruleComponent} from './cityrule/cityrule.component';
 const routes: Routes = [
 { path: "", redirectTo: "login", pathMatch: "full" },
 { path: 'login', component: LoginComponent },
@@ -14,7 +15,8 @@ const routes: Routes = [
 { path: 'addcity', component: AddcityComponent },
 { path: 'maincity', component: MaincityComponent,canActivate: [AuthGuard] },
 { path: 'home', component: HomeComponent },
-{ path: 'report', component: ReportComponent }
+{ path: 'report', component: ReportComponent },
+{ path: 'cityrule', component: CityruleComponent }
 ];
 
 @NgModule({

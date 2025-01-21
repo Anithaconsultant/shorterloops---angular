@@ -1,8 +1,9 @@
 import { Router } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { LoginserviceService } from '../services/loginservice.service';
 import { ExcelExportService } from '../services/excel-export.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ChartComponent } from './chart/chart.component'
 @Component({
   selector: 'app-report',
   templateUrl: './report.component.html',
@@ -12,6 +13,7 @@ export class ReportComponent implements OnInit {
   options: string[] = [];
   users: string[] = [];
   selectedAsset = '';
+  @ViewChild(ChartComponent, { static: false }) chartComponent: ChartComponent | undefined
   selectedUser = '';
   auditLogs: any[] = [];
   constructor(private router: Router, private logser: LoginserviceService, private modalService: NgbModal, private ExcelExportService: ExcelExportService) { }
@@ -95,12 +97,13 @@ export class ReportComponent implements OnInit {
   }
 
   applyFilters() {
-   //alert("Calling")
+    //alert("Calling")
     this.auditLogs = [];
-   this.logser.getFilteredLogs(this.filters).subscribe(data => {
+    this.logser.getFilteredLogs(this.filters).subscribe(data => {
       this.auditLogs = data;  // Store filtered data in auditLogs for table display
-     
+
     });
+    if (this.chartComponent) { this.chartComponent.loadChartData(); }
   }
   exportToExcel(): void {
     this.ExcelExportService.exportAsExcelFile(this.auditLogs, 'AuditLogs');

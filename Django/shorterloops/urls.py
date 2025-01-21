@@ -36,4 +36,5 @@ urlpatterns = [
     path('api/getreversevendingcash/<cityid>',views.getreversevendingcash, name='getreversevendingcash'),
     path('api/filter-audit-logs/', views.filter_audit_logs, name='filter_audit_logs'),
     path('api/filter-options/', views.get_filter_options, name='get_filter_options'),
+    path('api/addRule/', views.add_Cityrule, name='add_Cityrule'),
 ]
