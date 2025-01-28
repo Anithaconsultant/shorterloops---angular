@@ -137,7 +137,7 @@ class CityTimer(threading.Thread):
                     city.CurrentDay = 0
 
                 # Check if 30 days have passed and update wallets if needed
-                if city.CurrentDay % 30 == 0 and city.CurrentDay != self.last_update_day:
+                if city.CurrentDay != 0 and city.CurrentDay % 30 == 0 and city.CurrentDay != self.last_update_day:
                     self.update_wallets(city.CityId)
                     self.last_update_day = city.CurrentDay
 
@@ -146,6 +146,8 @@ class CityTimer(threading.Thread):
     def update_wallets(self, city_id):
         CustomUser.objects.filter(User_cityid=city_id).update(
             wallet=F('wallet') + 2000)
+        CustomUser.objects.filter(User_cityid=city_id).update(
+            update_count=F('update_count') + 1)
         print(f'Successfully updated wallets for users in city ID: {city_id}')
 
     def stop(self):

@@ -16,7 +16,6 @@ FACILITY_CHOICES = (
     ('ref', 'Shampoo Refilling Station Owner', '200000'),
     ('ubc', 'Universal Bottle Cleaning Plant Owner', '200000'),
     ('rgp', 'Rag picker', '2000'),
-
     ('hs1', 'House1 Owner', ''),
     ('hs2', 'House2 Owner', ''),
     ('hs3', 'House3 Owner', ''),
@@ -200,49 +199,6 @@ class Auditlog(models.Model):
     userName = models.CharField(max_length=100, blank=False,default="")
 
 
-# class Cityrule(models.Model):
-#     class Meta:
-#         db_table = "Cityrule"
-#     rule_city = models.IntegerField(blank=True)
-#     ruleId = models.AutoField(primary_key=True)
-#     Date_create = models.DateField(default=datetime.date.today, blank=True)
-#     Time = models.TimeField()
-#     virginplastic_cost = models.IntegerField(blank=True)
-#     recycledplastic_cost = models.IntegerField(blank=True)
-#     EnvTx_P_shampoo = models.IntegerField(blank=True)
-#     EnvTx_P_beverage = models.IntegerField(blank=True)
-#     EnvTx_P_cleaner = models.IntegerField(blank=True)
-#     EnvTx_P_pickle = models.IntegerField(blank=True)
-#     EnvTx_P_Bvb = models.IntegerField(blank=True)
-#     EnvTx_P_Brcb = models.IntegerField(blank=True)
-#     EnvTx_P_Brfb = models.IntegerField(blank=True)
-#     EnvTx_P_Uvb = models.IntegerField(blank=True)
-#     EnvTx_P_Urcb = models.IntegerField(blank=True)
-#     EnvTx_P_Urfb = models.IntegerField(blank=True)
-#     EnvTx_UB_v_m = models.IntegerField(blank=True)
-#     EnvTx_UB_rc_m = models.IntegerField(blank=True)
-#     EnvTx_UB_xx_c = models.IntegerField(blank=True)
-#     EnvTx_R_Bvb = models.IntegerField(blank=True)
-#     EnvTx_R_Brcb = models.IntegerField(blank=True)
-#     EnvTx_R_Brfb = models.IntegerField(blank=True)
-#     EnvTx_R_Uvb = models.IntegerField(blank=True)
-#     EnvTx_R_Urcb = models.IntegerField(blank=True)
-#     EnvTx_R_Urfb = models.IntegerField(blank=True)
-#     EnvTx_C_Bvb = models.IntegerField(blank=True)
-#     EnvTx_C_Brcb = models.IntegerField(blank=True)
-#     EnvTx_C_Brfb = models.IntegerField(blank=True)
-#     EnvTx_C_Uvb = models.IntegerField(blank=True)
-#     EnvTx_C_Urcb = models.IntegerField(blank=True)
-#     EnvTx_C_Urfb = models.IntegerField(blank=True)
-#     Return_B_G = models.IntegerField(blank=True)
-#     Return_U_G = models.IntegerField(blank=True)
-#     Return_U_B = models.IntegerField(blank=True)
-#     Return_B_B = models.IntegerField(blank=True)
-#     Dustbin_penalty = models.IntegerField(blank=True)
-#     Dustbin_display = models.BooleanField(default=0, blank=True)
-#     Carbage_display = models.BooleanField(default=0, blank=True)
-
-
 class CustomUser(models.Model):
     class Meta:
         db_table = 'usertable'
@@ -259,3 +215,4 @@ class CustomUser(models.Model):
     avatar = models.CharField(max_length=30, blank=True)
     gender = models.CharField(max_length=30, blank=True)
     login = models.CharField(max_length=30, blank=False, default=0)
+    update_count = models.IntegerField(default=0)

@@ -189,6 +189,7 @@ def add_Cityrule(request):
             serializer.save()
         else:
             print("invalid data")
+        print(data)
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
     if request.method == 'GET':
         data = Cityrule.objects.all()

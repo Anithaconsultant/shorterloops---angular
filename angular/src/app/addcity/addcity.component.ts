@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit ,ViewChild} from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginserviceService } from './../services/loginservice.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
+import { AlertModalComponent } from '../alert-modal/alert-modal.component';
 
 interface Asset {
     Bottle_Code: string;
@@ -43,7 +43,7 @@ export class AddcityComponent implements OnInit {
 
     }
 
-
+ @ViewChild('alertModal') alertModal!: AlertModalComponent;
     assetData: AssetData = {
         'SB_B1idV_00001': {
             'Bottle_Code': 'B1.V',
@@ -1313,7 +1313,7 @@ export class AddcityComponent implements OnInit {
     addcity() {
         this.submitted = true;
         if (this.addcityForm.invalid) {
-            alert("invalid");
+            this.alertModal.openModal("invalid");
             return;
         }
         if (this.submitted) {
@@ -1323,11 +1323,11 @@ export class AddcityComponent implements OnInit {
 
 
             if (this.selectedavatar == 0) {
-                alert("kindly select your Avatar")
+                this.alertModal.openModal("kindly select your Avatar")
             }
 
             else if (isNaN(parseInt(this.city.Clocktickrate))) {
-                alert('Clock Tick rate is number.')
+                this.alertModal.openModal('Clock Tick rate is number.')
             }
             else if (!isNaN(parseInt(this.city.Clocktickrate)) && this.selectedavatar != 0 && parseInt(this.city.Clocktickrate) > 0) {
                 this.city.cityavatar = String(this.selectedavatar);

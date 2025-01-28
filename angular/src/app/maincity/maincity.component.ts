@@ -1,4 +1,4 @@
-import { Component, HostListener, ViewChild, AfterViewInit, ElementRef, OnInit, OnDestroy } from '@angular/core';
+import { Component, HostListener, ViewChild, AfterViewInit, ElementRef, OnInit, OnDestroy ,Renderer2 } from '@angular/core';
 import panzoom from "panzoom";
 import { forkJoin } from 'rxjs';
 import { LoginserviceService } from '../services/loginservice.service';
@@ -214,7 +214,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
   //houseshelfList: string | CdkDropList<any> ='';
   constructor(private logser: LoginserviceService, private router: Router,
-    private modalService: NgbModal, private sharedService: SharedServiceService) {
+    private modalService: NgbModal, private sharedService: SharedServiceService,private renderer:Renderer2 ) {
     this.currentUserRole = this.logser.currentuser.Role;
     this.currentUserCartId = this.logser.currentuser.cartId;
     this.currentusername = this.logser.currentuser.Username;
@@ -925,8 +925,18 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     if (this.logser.currentuser.Username != '' && this.logser.currentuser.CityId != '') {
       this.logser.updatecurrenttime().subscribe(
         data => {
+          console.log(data)
           this.citytiming['CurrentTime'] = this.convertSeconds(data[0]['CurrentTime']);
           this.citytiming['CurrentDay'] = data[0].CurrentDay;
+         // if (this.citytiming['CurrentDay']==225){
+          if (this.citytiming['CurrentDay'] %   100 === 0 && this.currentrole=="Mayor") {
+            this.alertModal.openModal("Remainder !!! <br/><div class='cssalignment'>You may edit the City Rules If you Wish. Please Click on the Below link to Proceed</div",
+              () => {
+                console.log('Callback executed!'); // Your callback logic here
+                this.router.navigate(['/cityrule']); // Example: Navigate to another route
+              });
+       
+          }
 
         },
         error => {
@@ -984,9 +994,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         $(".Inhouseshelf_bottles #" + cat).addClass('Damaged-InUse');
       }
       this.workonflags();
-      // if (bottleloc == 'Street') {
-      //   $(".Inhouseshelf_bottles #" + cat).addClass('Street');
-      // }
+
     }
 
 
@@ -2114,11 +2122,15 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       });
       this.loadinginitialState();
 
-
+  
 
     }
-  }
 
+  }
+  showCityRuleComponent() {
+    // Navigate to the new component route
+    this.router.navigate(['/cityrule']);
+  }
   loadinginitialState() {
     let a = this.currentUserRole.split(" ")[0];
     let x = this.positionObject[a as keyof typeof this.positionObject][0][0];
@@ -3054,7 +3066,6 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     }
   }
   returnCashTransactions(amount_refund: any, currentlyDroped: any, fromreturncon: any, transactionnum: any, debitFacilty: any) {
-    alert(amount_refund)
     if (amount_refund > 0.0) {
       this.currentwallet += amount_refund;
       this.logser.currentuser.wallet = this.currentwallet;
@@ -3120,7 +3131,6 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         this.logser.getReverseVendingCashbox().subscribe(data => {
 
           (data[0]['Cashbox'] == '') ? this.getReverseVendingCashbox = 0 : this.getReverseVendingCashbox = parseInt(data[0]['Cashbox']);
-          alert(this.getReverseVendingCashbox);
           this.getReverseVendingCashbox -= amount_refund;
           this.logser.updatereversecashbox(String(this.getReverseVendingCashbox)).subscribe(data => { });
         });
@@ -3233,8 +3243,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         else {
           this.getBottleStatus = data[0]['Bottle_Status'];
           amount_refund = this.calculateReturnCreditAmount(currentlyDroped, amount_refund)
-          alert(amount_refund);
-          this.returnCashTransactions(amount_refund, currentlyDroped, false, '07', 'ReverseVending');
+         this.returnCashTransactions(amount_refund, currentlyDroped, false, '07', 'ReverseVending');
         }
 
 

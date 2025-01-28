@@ -56,8 +56,8 @@ export class LoginserviceService {
   }
 
   createcityrule(cityrule: any): Observable<any> {
-
-    return this.http.post(this.baseurl + 'addRule/'+ this.currentuser.CityId, cityrule,
+  console.log(cityrule)
+    return this.http.post(this.baseurl + 'addRule/', cityrule,
       { headers: this.httpHeaders });
 
   }

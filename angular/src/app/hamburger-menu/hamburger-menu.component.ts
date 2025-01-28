@@ -48,8 +48,7 @@ export class HamburgerMenuComponent implements OnInit {
     this.router.navigate(['/report']);
   }
   showCityRuleComponent() {
-    // Navigate to the new component route
-    this.router.navigate(['/cityrule']);
+   this.router.navigate(['/cityrule']);
   }
 
   openaboutshorter(aboutshorter: any) {

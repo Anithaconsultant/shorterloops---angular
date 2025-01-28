@@ -2281,7 +2281,23 @@ body {
     }
 
 }
-
+.cityruleLink{
+    cursor: pointer;
+    color: #fff;
+    padding-top: 13px;
+    background: #555;
+    padding: 5px;
+    width: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px auto;
+    border-radius: 5px;
+    text-align: center;
+}
+.cssalignment{
+    text-align: left;;
+}
 .displayheader {
     display: flex !important;
     justify-content: end !important;
