@@ -45,10 +45,15 @@ export class HamburgerMenuComponent implements OnInit {
   }
   showNewComponent() {
     // Navigate to the new component route
+
     this.router.navigate(['/report']);
   }
   showCityRuleComponent() {
-   this.router.navigate(['/cityrule']);
+    this.logser.pauseTimer().subscribe(response => {
+      //console.log('Timer paused:', response);
+      this.router.navigate(['/cityrule']);
+    });
+
   }
 
   openaboutshorter(aboutshorter: any) {
@@ -85,7 +90,7 @@ export class HamburgerMenuComponent implements OnInit {
           }
         }
       }
-      console.log(this.cashflowdata)
+      //console.log(this.cashflowdata)
       if(this.cashflowdata){
           const environmentTaxRecords = this.cashflowdata
           .filter(record => record.Purpose.includes("Environment tax"));
@@ -106,7 +111,6 @@ export class HamburgerMenuComponent implements OnInit {
       }
     });
 
-// Calculate and display matched Environment Tax records
 
   }
 
@@ -127,16 +131,4 @@ export class HamburgerMenuComponent implements OnInit {
   }
 
 
-  // setTimeout(() => {
-      
-  //   if (that.logser.currentuser.Role == 'Mayor') {
-  //     that.switchYesOrNo = 1;
-  //   }
-  //   else if (that.currentrole.includes('House')) {
-  //     that.switchYesOrNo = 0;
-  //   }
-  //   else {
-  //     that.switchYesOrNo = 2;
-  //   }
-  //  this.sharedService.setSwitchYesOrNo(this.switchYesOrNo);
-  // }, 2000)
+ 

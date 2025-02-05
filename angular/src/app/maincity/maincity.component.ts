@@ -1,4 +1,4 @@
-import { Component, HostListener, ViewChild, AfterViewInit, ElementRef, OnInit, OnDestroy ,Renderer2 } from '@angular/core';
+import { Component, HostListener, ViewChild, AfterViewInit, ElementRef, OnInit, OnDestroy, Renderer2 } from '@angular/core';
 import panzoom from "panzoom";
 import { forkJoin } from 'rxjs';
 import { LoginserviceService } from '../services/loginservice.service';
@@ -214,7 +214,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
   //houseshelfList: string | CdkDropList<any> ='';
   constructor(private logser: LoginserviceService, private router: Router,
-    private modalService: NgbModal, private sharedService: SharedServiceService,private renderer:Renderer2 ) {
+    private modalService: NgbModal, private sharedService: SharedServiceService, private renderer: Renderer2) {
     this.currentUserRole = this.logser.currentuser.Role;
     this.currentUserCartId = this.logser.currentuser.cartId;
     this.currentusername = this.logser.currentuser.Username;
@@ -293,29 +293,35 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           }
         }
         this.newmale = this.maleset.slice(0);
+        this.logser.getcitynames().subscribe((data) => {
+          console.log(data)
+          console.log(data[0])
+          setTimeout(() => {
+            if (data[0].MayorId != 0) {
+              $(".mayorflag").show();
+            }
+
+            this.logser.currentuser.cityname = data[0].CityName;
+            this.logser.currentuser.CurrentTime = (this.convertSeconds(data[0]['CurrentTime'].toString()));
+            this.logser.currentuser.currentday = data[0].CurrentDay;
+            this.logser.currentuser.cityrate = data[0].cityrate;
+            this.logser.currentuser.cityavatar = data[0].cityavatar;
+            this.cityrate = data[0].cityrate;
+            this.cityavatar = data[0].cityavatar;
+            this.cityname = this.logser.currentuser.cityname;
+            this.cityCurrentTime = (this.convertSeconds(data[0].CurrentTime));
+            this.citycurrentday = data[0].CurrentDay;
+            $(".maincity").addClass("city_" + this.cityavatar);
+            setInterval(() => { this.loadtime() }, 1000);
+            setInterval(async () => {
+              await this.loadAvailableAsset();
+              await this.checkArrayLengthAndAnimate();
+            }, 10000);
+          }, 500)
+        });
 
       });
-      this.logser.getcitynames().subscribe((data) => {
 
-        setTimeout(() => {
-          if (data[0].MayorId != 0) {
-            $(".mayorflag").show();
-          }
-        }, 500)
-        this.logser.currentuser.cityname = data[0].CityName;
-        this.logser.currentuser.CurrentTime = (this.convertSeconds(data[0]['CurrentTime'].toString()));
-        this.logser.currentuser.currentday = data[0].CurrentDay;
-        this.logser.currentuser.cityrate = data[0].cityrate;
-        this.logser.currentuser.cityavatar = data[0].cityavatar;
-        this.cityrate = data[0].cityrate;
-        this.cityavatar = data[0].cityavatar;
-        this.cityname = this.logser.currentuser.cityname;
-        this.cityCurrentTime = (this.convertSeconds(data[0].CurrentTime));
-        this.citycurrentday = data[0].CurrentDay;
-        $(".maincity").addClass("city_" + this.cityavatar)
-      });
-      setInterval(() => { this.loadAvailableAsset(); this.checkArrayLengthAndAnimate(); }, 10000);
-      setInterval(() => { this.loadtime() }, 1000);
 
       this.logser.getBottlePrice().subscribe((data: any) => {
         this.bottlePrice = data;
@@ -443,7 +449,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         this.updateonlyloc['currentbottle'] = this.assetdataset[i]['AssetId'];
         this.updateonlyloc['Bottleloc'] = 'PlantReturnTruck';
         this.logser.updatelocation(this.updateonlyloc).subscribe(() => {
-          console.log(`Bottle location updated to ${location}`);
+          //console.log(`Bottle location updated to ${location}`);
         });
       }
     }
@@ -458,7 +464,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         this.updateonlyloc['currentbottle'] = this.assetdataset[i]['AssetId'];
         this.updateonlyloc['Bottleloc'] = 'PlantReturnTruck';
         this.logser.updatelocation(this.updateonlyloc).subscribe(() => {
-          console.log(`Bottle location updated to PlantReturnTruck`);
+          //console.log(`Bottle location updated to PlantReturnTruck`);
         });
       }
     }
@@ -515,7 +521,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     this.updateonlyloc['currentbottle'] = assetId;
     this.updateonlyloc['Bottleloc'] = location;
     this.logser.updatelocation(this.updateonlyloc).subscribe(() => {
-      console.log(`Bottle location updated to ${location}`);
+      //console.log(`Bottle location updated to ${location}`);
     });
   }
 
@@ -910,37 +916,36 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   private animationInProgress: boolean = false;
   async checkArrayLengthAndAnimate(): Promise<void> {
     // Only proceed if no animation is running and the condition is met
-    console.log(this.totalReturnedBottles.length, this.animationInProgress);
-    if (!this.animationInProgress && this.totalReturnedBottles.length >= 10) {
+    if (this.animationInProgress == false && this.totalReturnedBottles.length >= 2) {
       this.animationInProgress = true; // Lock
-      console.log('Array length exceeded. Running animations...');
-
       await this.rungarbagetruck(); // Await the animation to complete
 
       this.totalReturnedBottles.length = 0; // Clear the array or handle it as needed
       this.animationInProgress = false; // Unlock
     }
   }
+  consolecount = 0;
   loadtime() {
+
     if (this.logser.currentuser.Username != '' && this.logser.currentuser.CityId != '') {
       this.logser.updatecurrenttime().subscribe(
         data => {
-          console.log(data)
+          //console.log("this.consolecount")
           this.citytiming['CurrentTime'] = this.convertSeconds(data[0]['CurrentTime']);
           this.citytiming['CurrentDay'] = data[0].CurrentDay;
-         // if (this.citytiming['CurrentDay']==225){
-          if (this.citytiming['CurrentDay'] %   100 === 0 && this.currentrole=="Mayor") {
-            this.alertModal.openModal("Remainder !!! <br/><div class='cssalignment'>You may edit the City Rules If you Wish. Please Click on the Below link to Proceed</div",
+          //console.log(this.citytiming['CurrentTime'])
+          // if (this.citytiming['CurrentDay']==225){
+          if (this.citytiming['CurrentDay'] % 100 === 0 && this.currentrole == "Mayor") {
+            this.alertModal.openModal("Remainder !!! <br/><div class='cssalignment'>You may edit the City Rules If you Wish. Please Click on the Below link to Proceed</div", true,
               () => {
-                console.log('Callback executed!'); // Your callback logic here
                 this.router.navigate(['/cityrule']); // Example: Navigate to another route
               });
-       
+
           }
 
         },
         error => {
-          console.log(error);
+          //console.log(error);
         }
       );
     }
@@ -1010,7 +1015,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       this.setTrue();
       if (this.currentUserPurhcased.length > 0) {
         this.playAudioElement(this.StopEntry.nativeElement, 0.8);
-        this.alertModal.openModal("Sorry!  You are allowed to take only empty shampoo bottles inside this facility.     Please leave your non-empty bottles on the shelf at your house and come. You may also empty the bottle or throw the bottle if you wish, before entering.  Mind you! You may have to pay a fine if you throw the bottle.");
+        this.alertModal.openModal("Sorry!  You are allowed to take only empty shampoo bottles inside this facility.     Please leave your non-empty bottles on the shelf at your house and come. You may also empty the bottle or throw the bottle if you wish, before entering.  Mind you! You may have to pay a fine if you throw the bottle.", false);
         this.canMoveRight = false;
       }
       else {
@@ -1024,7 +1029,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       this.setTrue();
       if (this.currentUserPurhcased.length > 0) {
         this.playAudioElement(this.StopEntry.nativeElement, 0.8);
-        this.alertModal.openModal("Sorry!  You are allowed to take only empty shampoo bottles inside this facility.     Please leave your non-empty bottles on the shelf at your house and come. You may also empty the bottle or throw the bottle if you wish, before entering.  Mind you! You may have to pay a fine if you throw the bottle.");
+        this.alertModal.openModal("Sorry!  You are allowed to take only empty shampoo bottles inside this facility.     Please leave your non-empty bottles on the shelf at your house and come. You may also empty the bottle or throw the bottle if you wish, before entering.  Mind you! You may have to pay a fine if you throw the bottle.", false);
         this.canMoveRight = false;
       }
       else {
@@ -1042,7 +1047,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       if (topValue < 2720) {
         if (this.currentUserPurhcased.length > 0) {
           this.playAudioElement(this.StopEntry.nativeElement, 0.8);
-          this.alertModal.openModal("Sorry!  You are allowed to take only empty shampoo bottles inside this facility.     Please leave your non-empty bottles on the shelf at your house and come. You may also empty the bottle or throw the bottle if you wish, before entering.  Mind you! You may have to pay a fine if you throw the bottle.");
+          this.alertModal.openModal("Sorry!  You are allowed to take only empty shampoo bottles inside this facility.     Please leave your non-empty bottles on the shelf at your house and come. You may also empty the bottle or throw the bottle if you wish, before entering.  Mind you! You may have to pay a fine if you throw the bottle.", false);
 
         }
         else {
@@ -1458,7 +1463,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   recente = 0;
   recenter() {
 
-    console.log(this.instance1.getTransform())
+    //console.log(this.instance1.getTransform())
     if (this.opensuperflag == 0) {
       // Target zoom level
       const zoomLevel = 1;
@@ -1734,7 +1739,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           $("#innerdoor1").css('background-color', '#bc0000');
 
           if (this.setflag == 0) {
-            this.alertModal.openModal("Please place all items you intend to return at the mouth of the conveyor");
+            this.alertModal.openModal("Please place all items you intend to return at the mouth of the conveyor", false);
             this.setflag = 1;
           }
         }
@@ -1802,7 +1807,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           $("#innerdoor2").animate({ 'height': '100px' }, 200);
         }
         else if (this.billpaid == false && this.bottletaken.length > 0) {
-          this.alertModal.openModal("Please pay the amount for your Purchase");
+          this.alertModal.openModal("Please pay the amount for your Purchase", false);
         }
       }
       else if (topValue > 1005 && topValue < 1270 && leftValue <= 5700 && leftValue > 1000) {
@@ -1940,7 +1945,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         }
       }
     }
-    //console.log(this.cartlocmarket)
+    ////console.log(this.cartlocmarket)
   }
 
 
@@ -2015,11 +2020,11 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
                       }
                     },
                     error => {
-                      console.log(error);
+                      //console.log(error);
                     });
                 },
                 error => {
-                  console.log(error);
+                  //console.log(error);
                 });
 
             });
@@ -2039,12 +2044,12 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
           },
           error => {
-            console.log(error);
+            //console.log(error);
           }
         );
       }
       else {
-        this.alertModal.openModal("Your Balance is : Rs." + this.currentwallet.toFixed(2) + "You have insufficient balance.Return some bottles as per your Balance");
+        this.alertModal.openModal("Your Balance is : Rs." + this.currentwallet.toFixed(2) + "You have insufficient balance.Return some bottles as per your Balance", false);
 
       }
     }
@@ -2122,14 +2127,20 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       });
       this.loadinginitialState();
 
-  
+
 
     }
 
   }
   showCityRuleComponent() {
     // Navigate to the new component route
-    this.router.navigate(['/cityrule']);
+
+    this.logser.pauseTimer().subscribe(response => {
+      //console.log('Timer paused:', response);
+      this.router.navigate(['/cityrule']);
+    });
+
+
   }
   loadinginitialState() {
     let a = this.currentUserRole.split(" ")[0];
@@ -2231,12 +2242,12 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             this.router.navigate(["home"]);
           },
           (error) => {
-            console.log(error);
+            //console.log(error);
           }
         );
       },
       (error) => {
-        console.log(error);
+        //console.log(error);
       }
     );
 
@@ -2249,7 +2260,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         this.router.navigate(["login"]);
       },
       (error) => {
-        console.log(error);
+        //console.log(error);
       }
     );
   }
@@ -2309,8 +2320,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
         }
       }
-      console.log("Cashflow data");
-      console.log(this.cashflowdata)
+      //console.log("Cashflow data");
+      //console.log(this.cashflowdata)
     });
   }
   presentitem: any[] = []
@@ -2322,7 +2333,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     this.netamount = 0.0;
     this.totalenv = 0.0;
     this.totalsupermarketbill = 0;
-    console.log("How many times? ")
+    //console.log("How many times? ")
     if (this.bottletaken.length > 0) {
       this.billpaid = false;
       const assetObservables = [];
@@ -2334,7 +2345,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           let getcurrent = this.bottletaken[i].split("at")[0].split('City')[1];
           assetObservables.push(this.logser.getthisAssets(getcurrent));
         } else {
-          this.alertModal.openModal(this.bottletaken[i] + ' This Item has been picked by someone else.');
+          this.alertModal.openModal(this.bottletaken[i] + ' This Item has been picked by someone else.', false);
           invalidItems.push(this.bottletaken[i]);
         }
       }
@@ -2344,10 +2355,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         results.forEach((data, index) => {
           let calc = parseInt(data[0]['Content_Price']) + parseInt(data[0]['Bottle_Price']);
           let discount = calc * (parseInt(data[0]['Discount_RefillB']) / 100);
-          let env = calc * (parseInt(data[0]['Env_Tax']) / 100);
+          let env = calc * (parseInt(data[0]['Env_Tax_Customer']) / 100);
 
           this.totalenv += env;
-          console.log(discount, env, this.totalenv);
+          //console.log(discount, env, this.totalenv);
           let totalvalue = (calc + env) - discount;
           data[0]['Totalvalue'] = totalvalue;
           this.totalsupermarketbill += totalvalue - env;
@@ -2355,7 +2366,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           this.boughtbottledata.push(data[0]);
         });
 
-        console.log(this.netamount); // This will now log the final calculated net amount
+        //console.log(this.netamount); // This will now log the final calculated net amount
       });
 
       // Remove invalid items from bottletaken
@@ -2382,7 +2393,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       this.frontclass = elementClass.split(" ")[1] + "_big";
       let checkuniversal = this.assetdata[0]['Bottle_Code'].split(".")[0];
       this.shapooprice = parseFloat(this.assetdata[0]['Content_Price']) / parseFloat(this.assetdata[0]['Quantity']);
-      this.totalamount = parseFloat(this.assetdata[0]['Bottle_Price']) + parseFloat(this.assetdata[0]['Content_Price']) + parseFloat(this.assetdata[0]['Env_Tax'])
+      this.totalamount = parseFloat(this.assetdata[0]['Bottle_Price']) + parseFloat(this.assetdata[0]['Content_Price']) + parseFloat(this.assetdata[0]['Env_Tax_Customer'])
       if (checkuniversal == 'UB') {
         this.leblfound = true;
         this.bottleclass = "universal";
@@ -2410,7 +2421,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   }
   saveavatar() {
     if (this.currentuseravatar == '') {
-      this.alertModal.openModal("kindly select your Avatar")
+      this.alertModal.openModal("kindly select your Avatar", false)
     }
     else {
       this.logser.updateuseravatar(this.currentuseravatar).subscribe(
@@ -2419,7 +2430,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           $(".displaypic,.cartavatar").addClass('pic_' + this.logser.currentuser.avatar);
         },
         (error) => {
-          //console.log(error);
+          ////console.log(error);
         }
       );
     }
@@ -2597,14 +2608,14 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
               },
               error => {
-                console.log(error);
+                //console.log(error);
               });
           });
 
 
         },
         error => {
-          console.log(error);
+          //console.log(error);
         });
 
 
@@ -2763,7 +2774,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         this.updateonlyloc['Bottleloc'] = 'House@' + this.currentUserCartId;
 
         this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
-          console.log("Bottle location updated to house");
+          //console.log("Bottle location updated to house");
 
           // Explicitly update the dropzone list
           this.Inhouseshelf_bottles = [...event.container.data];
@@ -2777,7 +2788,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
           // Explicitly update the relevant dropzone list
           (this as any)[event.container.element.nativeElement.classList[0]] = [...event.container.data];
-          console.log('Updated dropzone list:', (this as any)[event.container.element.nativeElement.classList[0]]);
+          //console.log('Updated dropzone list:', (this as any)[event.container.element.nativeElement.classList[0]]);
 
         });
 
@@ -2827,7 +2838,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
 
                       this.logser.updateConveyorAssets(this.updatebottlereturn).subscribe((data) => {
-                        console.log("Bottle location updated to City Dustbin");
+                        //console.log("Bottle location updated to City Dustbin");
                         this.playAudioElement(this.Fine.nativeElement, 0.8);
                       });
 
@@ -2837,7 +2848,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
               },
               error => {
-                console.log(error);
+                //console.log(error);
               });
 
             // Update the municipality cashbox
@@ -2898,7 +2909,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
 
                       this.logser.updateConveyorAssets(this.updatebottlereturn).subscribe((data) => {
-                        console.log("Bottle location updated to Garbage Truck");
+                        //console.log("Bottle location updated to Garbage Truck");
                         this.playAudioElement(this.Fine.nativeElement, 0.8);
                       });
                     });
@@ -2907,7 +2918,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
               },
               error => {
-                console.log(error);
+                //console.log(error);
               });
 
             // Update the municipality cashbox
@@ -2988,7 +2999,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     if (event.container.element.nativeElement.classList.contains('bottle_list')) {
       this.bottledropped.length = 0;
       this.bottledropped.push(currentlyDroped);
-      console.log('Updated Bottle Dropped List:', this.bottledropped);
+      //console.log('Updated Bottle Dropped List:', this.bottledropped);
     }
 
 
@@ -3013,7 +3024,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
           amount_refund = 0.0;
 
-          this.alertModal.openModal("Thanks for returning the bottle.Unfortunately, producer of this shampoo brand is NOT entertaining empty bottle returns. We will be sending this bottle to the recycling plant. An amount of ₹00.00 has been credited to your wallet. Remember to check the \"Max refill count\" on the bottle lable  next time you buy or return.However, you may refill such bottle at the refilling station if you wish.(next time) ", () => {
+          this.alertModal.openModal("Thanks for returning the bottle.Unfortunately, producer of this shampoo brand is NOT entertaining empty bottle returns. We will be sending this bottle to the recycling plant. An amount of ₹00.00 has been credited to your wallet. Remember to check the \"Max refill count\" on the bottle lable  next time you buy or return.However, you may refill such bottle at the refilling station if you wish.(next time) ", false, () => {
             this.bottleStatus_Display['Bottle_Status'] = 'Damaged-Empty';
             this.bottleStatus_Display['currentQuantity'] = 0;
             this.bottleStatus_Display['Location'] = 'Return Conveyor';
@@ -3029,7 +3040,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         else if (getCurrentRefillCount >= getMaxRefillCount) {
 
           amount_refund = this.calculateReturnCreditAmount(currentlyDroped, amount_refund);
-          this.alertModal.openModal("Thanks for returning the bottle. This bottle has reached the Max-Refill count limit. We will be sending this bottle to the recycling plant. An amount of ₹ " + amount_refund.toFixed(2) + " has been credited to your wallet.", () => {
+          this.alertModal.openModal("Thanks for returning the bottle. This bottle has reached the Max-Refill count limit. We will be sending this bottle to the recycling plant. An amount of ₹ " + amount_refund.toFixed(2) + " has been credited to your wallet.", false, () => {
             this.bottleStatus_Display['Bottle_Status'] = 'Damaged-Empty';
             this.getBottleStatus = 'Damaged-Empty';
             this.bottleStatus_Display['currentQuantity'] = 0;
@@ -3061,7 +3072,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       this.updateonlyloc['currentbottle'] = currentlyDroped.split('City')[1].split("at")[0];
       this.updateonlyloc['Bottleloc'] = this.currentUserCartId;
       this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
-        console.log("Bottle location updated back to cart");
+        //console.log("Bottle location updated back to cart");
       });
     }
   }
@@ -3116,7 +3127,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
           },
             error => {
-              console.log(error);
+              //console.log(error);
             });
         });
       if (fromreturncon == true) {
@@ -3209,7 +3220,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
           amount_refund = 0.0;
 
-          this.alertModal.openModal("Thanks for returning the bottle.Unfortunately, producer of this shampoo brand is NOT entertaining empty bottle returns. We will be sending this bottle to the recycling plant. An amount of ₹00.00 has been credited to your wallet. Remember to check the \"Max refill count\" on the bottle lable  next time you buy or return.However, you may refill such bottle at the refilling station if you wish.(next time) ", () => {
+          this.alertModal.openModal("Thanks for returning the bottle.Unfortunately, producer of this shampoo brand is NOT entertaining empty bottle returns. We will be sending this bottle to the recycling plant. An amount of ₹00.00 has been credited to your wallet. Remember to check the \"Max refill count\" on the bottle lable  next time you buy or return.However, you may refill such bottle at the refilling station if you wish.(next time) ", false, () => {
             this.bottleStatus_Display['Bottle_Status'] = 'Damaged-Empty';
             this.bottleStatus_Display['currentQuantity'] = 0;
             this.bottleStatus_Display['Location'] = 'ReverseVending';
@@ -3226,7 +3237,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
           amount_refund = this.calculateReturnCreditAmount(currentlyDroped, amount_refund);
 
-          this.alertModal.openModal("Thanks for returning the bottle. This bottle has reached the Max-Refill count limit. We will be sending this bottle to the recycling plant. An amount of ₹ " + amount_refund.toFixed(2) + " has been credited to your wallet.", () => {
+          this.alertModal.openModal("Thanks for returning the bottle. This bottle has reached the Max-Refill count limit. We will be sending this bottle to the recycling plant. An amount of ₹ " + amount_refund.toFixed(2) + " has been credited to your wallet.", false, () => {
             this.bottleStatus_Display['Bottle_Status'] = 'Damaged-Empty';
             this.getBottleStatus = 'Damaged-Empty';
             this.bottleStatus_Display['currentQuantity'] = 0;
@@ -3243,7 +3254,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         else {
           this.getBottleStatus = data[0]['Bottle_Status'];
           amount_refund = this.calculateReturnCreditAmount(currentlyDroped, amount_refund)
-         this.returnCashTransactions(amount_refund, currentlyDroped, false, '07', 'ReverseVending');
+          this.returnCashTransactions(amount_refund, currentlyDroped, false, '07', 'ReverseVending');
         }
 
 
@@ -3294,7 +3305,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       // Only allow the drop if the drop zone is empty
       if (dropZone.data.length > 0) {
         this.alertModal.openModal('Cannot drop more than one item in this zone.')
-        // console.log('Cannot drop more than one item in this zone.');
+        // //console.log('Cannot drop more than one item in this zone.');
         return; // Prevent the drop
       }
     }
@@ -3319,7 +3330,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         this.updateonlyloc['currentbottle'] = currentlyDroped.split('City')[1].split("at")[0];
         this.updateonlyloc['Bottleloc'] = "At Refilling Stage";
         this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
-          console.log("bottle location update to Refilling Machine");
+          //console.log("bottle location update to Refilling Machine");
         });
         let getMaxRefillCount, getCurrentPlantRefillCount;
         this.logser.getthisAssets(this.updateonlyloc['currentbottle']).subscribe((data) => {
@@ -3350,7 +3361,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           this.updateonlyloc['currentbottle'] = currentlyDroped.split('City')[1].split("at")[0];
           this.updateonlyloc['Bottleloc'] = this.currentUserCartId;
           this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
-            console.log("bottle location update to Cart Again!", data);
+            //console.log("bottle location update to Cart Again!", data);
           });
         }
 
@@ -3855,7 +3866,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
           },
             error => {
-              console.log(error);
+              //console.log(error);
             });
 
 
@@ -3940,8 +3951,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
       this.logser.getthisAssets(this.bottleStatus_Display['currentbottle']).subscribe((data) => {
         this.sldBottleData = data;
-        console.log("sldBottleData");
-        console.log(this.sldBottleData)
+        //console.log("sldBottleData");
+        //console.log(this.sldBottleData)
         $(".loading").hide();
         if (data[0]['remQuantity'] == '') {
           data[0]['remQuantity'] = 500;
@@ -3972,7 +3983,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
           let checkuniversal = this.sldBottleData[0]['Bottle_Code'].split(".")[0];
           this.shapooprice = unitprice;
-          this.totalamount = parseFloat(this.sldBottleData[0]['Bottle_Price']) + parseFloat(this.sldBottleData[0]['Content_Price']) + parseFloat(this.sldBottleData[0]['Env_Tax'])
+          this.totalamount = parseFloat(this.sldBottleData[0]['Bottle_Price']) + parseFloat(this.sldBottleData[0]['Content_Price']) + parseFloat(this.sldBottleData[0]['Env_Tax_Customer'])
           if (checkuniversal == 'UB') {
             this.leblfound = true;
             this.bottleclass = "universal";

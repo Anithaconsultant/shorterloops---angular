@@ -96,7 +96,7 @@ DATABASES = {
     'default':
         {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'newfresh',
+        'NAME': 'shorterloop',
         'USER': 'root',
         'PASSWORD': 'Admin@123',
         'HOST': '127.0.0.1',

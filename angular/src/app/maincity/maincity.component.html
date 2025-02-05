@@ -514,7 +514,7 @@
                     <div class="Discount_RefillB">&#8377; {{assetdata[0].Discount_RefillB}}</div>
                     <div class="Redeem_Good">&#8377; {{assetdata[0].Redeem_Good}}</div>
                     <div class="Discard_fine">&#8377; {{assetdata[0].Discard_fine}}</div>
-                    <div class="Env_Tax">&#8377; {{assetdata[0].Env_Tax}}</div>
+                    <div class="Env_Tax_Customer">&#8377; {{assetdata[0].Env_Tax_Customer}}</div>
                     <div class="Total_price">&#8377; {{totalamount}}</div>
                     <div class="AssetId">{{assetdata[0].AssetId}}</div>
                     <div class="Max_Refill_Count">Maximum Refill Count :{{assetdata[0].Max_Refill_Count}}</div>
@@ -635,7 +635,7 @@
                                         <td>{{ item.Content_Price}}</td>
                                         <td>{{ item.Bottle_Price}}</td>
                                         <td>{{ item.Discount_RefillB}}</td>
-                                        <td>{{ item.Env_Tax}}</td>
+                                        <td>{{ item.Env_Tax_Customer}}</td>
                                         <td>{{ item.Redeem_Good}}</td>
                                         <td>Purchase</td>
                                         <td>{{ item.Totalvalue}}</td>
@@ -721,8 +721,8 @@
                                     </div>
                                 </div>
 
-                                <div *ngIf="sldBottleData[0]?.Env_Tax !== undefined">
-                                    <div class="Env_Tax">Environmental Tax: &#8377; {{sldBottleData[0].Env_Tax}}</div>
+                                <div *ngIf="sldBottleData[0]?.Env_Tax_Customer !== undefined">
+                                    <div class="Env_Tax_Customer">Environmental Tax: &#8377; {{sldBottleData[0].Env_Tax_Customer}}</div>
                                 </div>
 
                                 <div *ngIf="totalamount !== undefined">

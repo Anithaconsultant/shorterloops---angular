@@ -1,3 +1,4 @@
+from django.db.models import Q
 from .userData import UserData
 from .models import City, CustomUser, Facility, FACILITY_CHOICES, Cityrule, Asset, Cashflow, Auditlog, Bottleprice, Shampooprice
 from .serializers import userSerializer, citySerializer, facilitySerializer, cityRuleSerializer, AssetSerializer, cashflowSerializer, AuditSerializer, BottleSerializer, shampooSerializer
@@ -12,7 +13,7 @@ import json
 from django.db.models import QuerySet
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.signals import post_save
-from .signals import user_data_received
+from .signals import user_data_received, pause_timer_for_city, resume_timer_for_city
 
 
 data1 = list()
@@ -96,8 +97,9 @@ def signup(request):
 @api_view(['GET', 'POST'])
 def getcityname(request, cityid):
     if request.method == 'GET':
-        data = City.objects.filter(pk=cityid)
-        serializer = citySerializer(data, many=True)
+        getcity = City.objects.filter(pk=cityid)
+        serializer = citySerializer(getcity, many=True)
+        print('getcitynamr',serializer.data)
         return JsonResponse(serializer.data, safe=False)
 
 
@@ -105,7 +107,6 @@ def getcityname(request, cityid):
 def addcity(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
-        print(data)
         serializer = citySerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -189,7 +190,6 @@ def add_Cityrule(request):
             serializer.save()
         else:
             print("invalid data")
-        print(data)
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
     if request.method == 'GET':
         data = Cityrule.objects.all()
@@ -230,7 +230,7 @@ def returnasset(request, itemid):
         return JsonResponse(serializer.data, safe=False)
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
-        print(data)
+        
         getasset = Asset.objects.filter(AssetId=itemid).first()
         serializer = AssetSerializer(getasset, data=data, partial=True)
         if serializer.is_valid():
@@ -250,7 +250,8 @@ def facility(request, mayorid):
         for code, faciname, cashbox_value in FACILITY_CHOICES:
             if faciname in ['Municipality Office', 'Clock Tower', 'Public Dustbin', 'Municipality Landfill', 'Garbage Truck']:
                 if faciname == 'Municipality Office':
-                    cartIds = str(data['Facility_cityid']) + '_' + str(cartcount)
+                    cartIds = str(data['Facility_cityid']) + \
+                        '_' + str(cartcount)
                     serval = {
                         'Facilityname': faciname,
                         'Facility_cityid': data['Facility_cityid'],
@@ -429,7 +430,6 @@ def getreversevendingcash(request, cityid):
     if request.method == 'PUT':
         data = JSONParser().parse(request)
         serval = {'Cashbox': data['Cashbox']}
-        print(serval)
         getfacility = Facility.objects.filter(
             Facilityname='Reverse Vending Machine Owner', Facility_cityid=cityid).first()
         serializer = facilitySerializer(getfacility, data=serval, partial=True)
@@ -470,17 +470,28 @@ def cityrule(request):
         return JsonResponse(serializer.data, safe=False)
 
 
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'POST', 'PUT'])
 def editcity(request, cityid):
-    if request.method == 'POST':
+    
+    try:
+        city = City.objects.get(pk=cityid)  # Fetch a single city instance
+    except City.DoesNotExist:
+        return Response({"error": "City not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'POST' or request.method == 'PUT':
         data = JSONParser().parse(request)
-        getcity = City.objects.filter(pk=cityid)
-        serializer = citySerializer(getcity, data=data, partial=True)
+        print('data',data)
+        serializer = citySerializer(city, data=data, partial=True)  # Pass instance, not QuerySet
+
         if serializer.is_valid():
             serializer.save()
+            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
         else:
-            print("invalid data")
-        return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+            return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    if request.method == 'GET':
+        serializer = citySerializer(city)
+        return JsonResponse(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET', 'POST', 'PUT'])
@@ -500,23 +511,6 @@ def updateusercity(request, userid):
         return JsonResponse(serializer.data, safe=False)
 
 
-# @csrf_exempt  # Only if you're accepting POST requests without CSRF token
-# def receive_user_data(request):
-#     if request.method == 'POST':
-#         try:
-#             user_data = json.loads(request.headers.get('User-Data', '{}'))
-#             userdata = UserData.get_instance()
-#             userdata.set_data('username', user_data.get('currentuser'))
-#             userdata.set_data('CityId', user_data.get('CityId'))
-#             userdata.set_data('currentCartId', user_data.get('currentCartId'))
-#             userdata.set_data('CurrentDay', user_data.get('CurrentDay'))
-#             return JsonResponse({'message': 'User details received successfully'})
-#         except json.JSONDecodeError:
-#             return JsonResponse({'error': 'Invalid JSON data'}, status=400)
-#     else:
-#         return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
-
-
 @api_view(['GET'])
 def get_audit_logs(request, asset_id):
     assetid = asset_id.split("&")[0]
@@ -532,10 +526,9 @@ def get_audit_logsuser(request, user):
     cityid = user.split("&")[1]
     data = Auditlog.objects.filter(userName=username)
     serializer = AuditSerializer(data, many=True)
-    print(serializer.data)
     return JsonResponse(serializer.data, safe=False)
 
-from django.db.models import Q
+
 def filter_audit_logs(request):
     filters = {}
 
@@ -568,7 +561,8 @@ def filter_audit_logs(request):
     role_user_filters = None
     if role_user:
         usernames = role_user.split(',')
-        role_user_filters = Q(userName__in=usernames) | Q(FromFacility__in=usernames) | Q(ToFacility__in=usernames)
+        role_user_filters = Q(userName__in=usernames) | Q(
+            FromFacility__in=usernames) | Q(ToFacility__in=usernames)
 
     bottle_type = request.GET.get('bottle_type')
     if bottle_type:
@@ -577,10 +571,11 @@ def filter_audit_logs(request):
     current_selfrefill = request.GET.get('current_selfrefill')
     if current_selfrefill:
         filters['Current_SelfRefill_Count__in'] = current_selfrefill.split(',')
-    
+
     current_plantrefill = request.GET.get('current_plantrefill')
     if current_plantrefill:
-        filters['Current_PlantRefill_Count__in'] = current_plantrefill.split(',')
+        filters['Current_PlantRefill_Count__in'] = current_plantrefill.split(
+            ',')
 
     TransactionId = request.GET.get('TransactionId')
     if TransactionId:
@@ -601,12 +596,12 @@ def filter_audit_logs(request):
     if startDay and endDay:
         # Filter for records where the day of TransactionDate is between start_day and end_day
         filters['TransactionDate__range'] = [startDay, endDay]
-    
+
     if role_user_filters:
-        filtered_logs = Auditlog.objects.filter(Q(**filters) & role_user_filters)
+        filtered_logs = Auditlog.objects.filter(
+            Q(**filters) & role_user_filters)
     else:
         filtered_logs = Auditlog.objects.filter(**filters)
-
 
     if isinstance(filtered_logs, QuerySet):
         print(filtered_logs.query)
@@ -634,7 +629,7 @@ def get_filter_options(request):
         'Bottle_Code', flat=True).distinct())
     currentSelfRefillOptions = list(Auditlog.objects.values_list(
         'currentselfrefillCount', flat=True).distinct())
-   
+
     currentPlantRefillOptions = list(Auditlog.objects.values_list(
         'currentplantrefillCount', flat=True).distinct())
     TransactionIdOptions = list(Auditlog.objects.values_list(
@@ -663,3 +658,31 @@ def get_filter_options(request):
 
     }
     return JsonResponse(data)
+
+
+@api_view(['GET', 'POST'])
+@csrf_exempt  # Only for development; use proper authentication in production
+def manage_city_timer(request, cityid):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            action = data.get("action")  # 'pause' or 'resume'
+            print(action)
+            if not cityid or action not in ["pause", "resume"]:
+                return JsonResponse({"error": "Invalid data"}, status=400)
+
+            if not City.objects.filter(pk=cityid).exists():
+                return JsonResponse({"error": "City not found"}, status=404)
+
+            if action == "pause":
+                pause_timer_for_city(cityid)
+                return JsonResponse({"message": f"Paused timer for city {cityid}"})
+
+            elif action == "resume":
+                resume_timer_for_city(cityid)
+                return JsonResponse({"message": f"Resumed timer for city {cityid}"})
+
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
+
+    return JsonResponse({"error": "Invalid request"}, status=405)

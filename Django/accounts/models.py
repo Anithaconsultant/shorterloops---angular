@@ -72,6 +72,9 @@ class City(models.Model):
     CityCreateTime = models.TimeField(auto_now=True)
     Status = models.CharField(max_length=70, null=True)
     cityavatar = models.CharField(max_length=70, null=True)
+    display_at_dustbin = models.BooleanField(null=True, blank=True,default=False)
+    garbage_truck_announcement = models.BooleanField(null=True, blank=True,default=False)
+    timer_paused = models.BooleanField(null=True, blank=True,default=False)
    
 
 class Facility(models.Model):
@@ -114,8 +117,11 @@ class Asset(models.Model):
     Redeem_Good = models.CharField(max_length=70, blank=True)
     Redeem_Damaged = models.CharField(max_length=70, blank=True)
     Discount_RefillB = models.CharField(max_length=70, blank=True)
-    Env_Tax = models.CharField(max_length=70, blank=True)
-    Discard_fine = models.CharField(max_length=70, blank=True)
+    Env_Tax_Customer = models.CharField(max_length=70, blank=True)
+    Env_Tax_Retailer = models.CharField(max_length=70, blank=True)
+    Env_Tax_Producer = models.CharField(max_length=70, blank=True)
+    Discard_Dustbin_fine = models.CharField(max_length=70, blank=True)
+    Discard_Garbagetruck_fine = models.CharField(max_length=70, blank=True)
     Transaction_Id = models.CharField(max_length=70, blank=True,default='')
     Transaction_Date = models.CharField(max_length=70, blank=True)
     Fromfacility = models.CharField(max_length=70, blank=True)
@@ -165,8 +171,7 @@ class Cityrule(models.Model):
     envtx_c_urfB = models.FloatField(null=True, blank=True)
     fine_for_throwing_bottle = models.FloatField(null=True, blank=True)
     dustbinning_fine = models.FloatField(null=True, blank=True)
-    display_at_dustbin = models.BooleanField(null=True, blank=True)
-    garbage_truck_announcement = models.BooleanField(null=True, blank=True)
+
 
     def __str__(self):
         return f"City: {self.city_id}, Rule: {self.rule_number}"

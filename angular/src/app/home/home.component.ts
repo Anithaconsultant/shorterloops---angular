@@ -144,12 +144,12 @@ export class HomeComponent implements OnInit {
               this.router.navigate(["maincity"]);
             },
             (error) => {
-              console.log(error);
+              //console.log(error);
             }
           );
         },
         (error) => {
-          console.log(error);
+          //console.log(error);
         }
       );
     }

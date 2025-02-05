@@ -1,4 +1,4 @@
-import { Component, OnInit ,ViewChild} from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginserviceService } from './../services/loginservice.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertModalComponent } from '../alert-modal/alert-modal.component';
+import { forkJoin, switchMap } from 'rxjs';
 
 interface Asset {
     Bottle_Code: string;
@@ -15,7 +16,9 @@ interface Asset {
     Redeem_Good: string;
     Redeem_Damaged: string;
     Discount_RefillB: string;
-    Env_Tax: string;
+    Env_Tax_Customer: string;
+    Env_Tax_Producer: string;
+    Env_Tax_Retailer: string;
     Discard_fine: string;
     Current_SelfRefill_Count: number;
     Current_PlantRefill_Count: number;
@@ -43,7 +46,7 @@ export class AddcityComponent implements OnInit {
 
     }
 
- @ViewChild('alertModal') alertModal!: AlertModalComponent;
+    @ViewChild('alertModal') alertModal!: AlertModalComponent;
     assetData: AssetData = {
         'SB_B1idV_00001': {
             'Bottle_Code': 'B1.V',
@@ -53,7 +56,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1.8',
             'Redeem_Damaged': '0.9',
             'Discount_RefillB': '1.8',
-            'Env_Tax': '9',
+            'Env_Tax_Customer': '9',
+            'Env_Tax_Producer': '5',
+            'Env_Tax_Retailer': '2.5',
             'Discard_fine': '9',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -66,7 +71,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1.8',
             'Redeem_Damaged': '.9',
             'Discount_RefillB': '1.8',
-            'Env_Tax': '9',
+            'Env_Tax_Customer': '9',
+            'Env_Tax_Producer': '5',
+            'Env_Tax_Retailer': '2.5',
             'Discard_fine': '9',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -79,7 +86,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1.8',
             'Redeem_Damaged': '0.9',
             'Discount_RefillB': '1.8',
-            'Env_Tax': '9',
+            'Env_Tax_Customer': '9',
+            'Env_Tax_Producer': '5',
+            'Env_Tax_Retailer': '2.5',
             'Discard_fine': '9',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -92,7 +101,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1.8',
             'Redeem_Damaged': '0.9',
             'Discount_RefillB': '1.8',
-            'Env_Tax': '9',
+            'Env_Tax_Customer': '9',
+            'Env_Tax_Producer': '5',
+            'Env_Tax_Retailer': '2.5',
             'Discard_fine': '9',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -105,7 +116,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1.8',
             'Redeem_Damaged': '0.9',
             'Discount_RefillB': '1.8',
-            'Env_Tax': '9',
+            'Env_Tax_Customer': '9',
+            'Env_Tax_Producer': '5',
+            'Env_Tax_Retailer': '2.5',
             'Discard_fine': '9',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -118,7 +131,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1.8',
             'Redeem_Damaged': '0.9',
             'Discount_RefillB': '1.8',
-            'Env_Tax': '9',
+            'Env_Tax_Customer': '9',
+            'Env_Tax_Producer': '5',
+            'Env_Tax_Retailer': '2.5',
             'Discard_fine': '9',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -131,7 +146,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1.8',
             'Redeem_Damaged': '.9',
             'Discount_RefillB': '1.8',
-            'Env_Tax': '9',
+            'Env_Tax_Customer': '9',
+            'Env_Tax_Producer': '5',
+            'Env_Tax_Retailer': '2.5',
             'Discard_fine': '9',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -144,7 +161,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1.8',
             'Redeem_Damaged': '0.9',
             'Discount_RefillB': '1.8',
-            'Env_Tax': '9',
+            'Env_Tax_Customer': '9',
+            'Env_Tax_Producer': '5',
+            'Env_Tax_Retailer': '2.5',
             'Discard_fine': '9',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -157,7 +176,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1.8',
             'Redeem_Damaged': '0.9',
             'Discount_RefillB': '1.8',
-            'Env_Tax': '9',
+            'Env_Tax_Customer': '9',
+            'Env_Tax_Producer': '5',
+            'Env_Tax_Retailer': '2.5',
             'Discard_fine': '9',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -170,7 +191,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1.8',
             'Redeem_Damaged': '0.9',
             'Discount_RefillB': '1.8',
-            'Env_Tax': '9',
+            'Env_Tax_Customer': '9',
+            'Env_Tax_Producer': '5',
+            'Env_Tax_Retailer': '2.5',
             'Discard_fine': '9',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -183,7 +206,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.56',
             'Redeem_Damaged': '0.28',
             'Discount_RefillB': '0.8',
-            'Env_Tax': '2',
+            'Env_Tax_Customer': '2',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '0.5',
             'Discard_fine': '4',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -196,7 +221,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.56',
             'Redeem_Damaged': '0.28',
             'Discount_RefillB': '0.8',
-            'Env_Tax': '2',
+            'Env_Tax_Customer': '2',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '0.5',
             'Discard_fine': '4',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -209,7 +236,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.56',
             'Redeem_Damaged': '0.28',
             'Discount_RefillB': '0.8',
-            'Env_Tax': '2',
+            'Env_Tax_Customer': '2',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '0.5',
             'Discard_fine': '4',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -222,7 +251,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.56',
             'Redeem_Damaged': '0.28',
             'Discount_RefillB': '0.8',
-            'Env_Tax': '2',
+            'Env_Tax_Customer': '2',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '0.5',
             'Discard_fine': '4',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -235,7 +266,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.56',
             'Redeem_Damaged': '0.28',
             'Discount_RefillB': '0.8',
-            'Env_Tax': '2',
+            'Env_Tax_Customer': '2',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '0.5',
             'Discard_fine': '4',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -248,7 +281,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.56',
             'Redeem_Damaged': '0.28',
             'Discount_RefillB': '0.8',
-            'Env_Tax': '2',
+            'Env_Tax_Customer': '2',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '0.5',
             'Discard_fine': '4',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -261,7 +296,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.56',
             'Redeem_Damaged': '0.28',
             'Discount_RefillB': '0.8',
-            'Env_Tax': '2',
+            'Env_Tax_Customer': '2',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '0.5',
             'Discard_fine': '4',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -274,7 +311,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.56',
             'Redeem_Damaged': '0.28',
             'Discount_RefillB': '0.8',
-            'Env_Tax': '2',
+            'Env_Tax_Customer': '2',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '0.5',
             'Discard_fine': '4',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -287,7 +326,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.56',
             'Redeem_Damaged': '0.28',
             'Discount_RefillB': '0.8',
-            'Env_Tax': '2',
+            'Env_Tax_Customer': '2',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '0.5',
             'Discard_fine': '4',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -300,7 +341,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.56',
             'Redeem_Damaged': '0.28',
             'Discount_RefillB': '0.8',
-            'Env_Tax': '2',
+            'Env_Tax_Customer': '2',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '0.5',
             'Discard_fine': '4',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -313,7 +356,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1',
             'Redeem_Damaged': '0.5',
             'Discount_RefillB': '1',
-            'Env_Tax': '2.5',
+            'Env_Tax_Customer': '2.5',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '1',
             'Discard_fine': '5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -326,7 +371,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1',
             'Redeem_Damaged': '0.5',
             'Discount_RefillB': '1',
-            'Env_Tax': '2.5',
+            'Env_Tax_Customer': '2.5',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '1',
             'Discard_fine': '5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -339,7 +386,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1',
             'Redeem_Damaged': '0.5',
             'Discount_RefillB': '1',
-            'Env_Tax': '2.5',
+            'Env_Tax_Customer': '2.5',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '1',
             'Discard_fine': '5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -352,7 +401,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1',
             'Redeem_Damaged': '0.5',
             'Discount_RefillB': '1',
-            'Env_Tax': '2.5',
+            'Env_Tax_Customer': '2.5',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '1',
             'Discard_fine': '5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -365,7 +416,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1',
             'Redeem_Damaged': '0.5',
             'Discount_RefillB': '1',
-            'Env_Tax': '2.5',
+            'Env_Tax_Customer': '2.5',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '1',
             'Discard_fine': '5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -379,7 +432,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1',
             'Redeem_Damaged': '0.5',
             'Discount_RefillB': '1',
-            'Env_Tax': '2.5',
+            'Env_Tax_Customer': '2.5',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '1',
             'Discard_fine': '5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -392,7 +447,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1',
             'Redeem_Damaged': '0.5',
             'Discount_RefillB': '1',
-            'Env_Tax': '2.5',
+            'Env_Tax_Customer': '2.5',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '1',
             'Discard_fine': '5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -405,7 +462,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1',
             'Redeem_Damaged': '0.5',
             'Discount_RefillB': '1',
-            'Env_Tax': '2.5',
+            'Env_Tax_Customer': '2.5',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '1',
             'Discard_fine': '5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -418,7 +477,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1',
             'Redeem_Damaged': '0.5',
             'Discount_RefillB': '1',
-            'Env_Tax': '2.5',
+            'Env_Tax_Customer': '2.5',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '1',
             'Discard_fine': '5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -431,7 +492,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1',
             'Redeem_Damaged': '0.5',
             'Discount_RefillB': '1',
-            'Env_Tax': '2.5',
+            'Env_Tax_Customer': '2.5',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '1',
             'Discard_fine': '5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -444,7 +507,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1',
             'Redeem_Damaged': '0.5',
             'Discount_RefillB': '1',
-            'Env_Tax': '2',
+            'Env_Tax_Customer': '2',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '0.5',
             'Discard_fine': '5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 1,
             'Latest_Refill_Date': '4/15/2023'
@@ -457,7 +522,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1',
             'Redeem_Damaged': '0.5',
             'Discount_RefillB': '1',
-            'Env_Tax': '2',
+            'Env_Tax_Customer': '2',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '0.5',
             'Discard_fine': '5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 1,
             'Latest_Refill_Date': '4/15/2023'
@@ -470,7 +537,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1',
             'Redeem_Damaged': '0.5',
             'Discount_RefillB': '1',
-            'Env_Tax': '2',
+            'Env_Tax_Customer': '2',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '0.5',
             'Discard_fine': '5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 1,
             'Latest_Refill_Date': '4/15/2023'
@@ -483,7 +552,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1',
             'Redeem_Damaged': '0.5',
             'Discount_RefillB': '1',
-            'Env_Tax': '2',
+            'Env_Tax_Customer': '2',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '0.5',
             'Discard_fine': '5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 1,
             'Latest_Refill_Date': '4/15/2023'
@@ -496,7 +567,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1',
             'Redeem_Damaged': '0.5',
             'Discount_RefillB': '1',
-            'Env_Tax': '2',
+            'Env_Tax_Customer': '2',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '0.5',
             'Discard_fine': '5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 1,
             'Latest_Refill_Date': '4/15/2023'
@@ -510,7 +583,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1',
             'Redeem_Damaged': '0.5',
             'Discount_RefillB': '1',
-            'Env_Tax': '2',
+            'Env_Tax_Customer': '2',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '0.5',
             'Discard_fine': '5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 1,
             'Latest_Refill_Date': '4/15/2023'
@@ -523,7 +598,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1',
             'Redeem_Damaged': '0.5',
             'Discount_RefillB': '1',
-            'Env_Tax': '2',
+            'Env_Tax_Customer': '2',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '0.5',
             'Discard_fine': '5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 1,
             'Latest_Refill_Date': '4/15/2023'
@@ -536,7 +613,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1',
             'Redeem_Damaged': '0.5',
             'Discount_RefillB': '1',
-            'Env_Tax': '2',
+            'Env_Tax_Customer': '2',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '0.5',
             'Discard_fine': '5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 1,
             'Latest_Refill_Date': '4/15/2023'
@@ -549,7 +628,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1',
             'Redeem_Damaged': '0.5',
             'Discount_RefillB': '1',
-            'Env_Tax': '2',
+            'Env_Tax_Customer': '2',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '0.5',
             'Discard_fine': '5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 1,
             'Latest_Refill_Date': '4/15/2023'
@@ -562,7 +643,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1',
             'Redeem_Damaged': '0.5',
             'Discount_RefillB': '1',
-            'Env_Tax': '2',
+            'Env_Tax_Customer': '2',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '0.5',
             'Discard_fine': '5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 1,
             'Latest_Refill_Date': '4/15/2023'
@@ -575,7 +658,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1.32',
             'Redeem_Damaged': '0.66',
             'Discount_RefillB': '1.1',
-            'Env_Tax': '2.75',
+            'Env_Tax_Customer': '2.75',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '1',
             'Discard_fine': '5.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -588,7 +673,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1.32',
             'Redeem_Damaged': '0.66',
             'Discount_RefillB': '1.1',
-            'Env_Tax': '2.75',
+            'Env_Tax_Customer': '2.75',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '1',
             'Discard_fine': '5.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -601,7 +688,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1.32',
             'Redeem_Damaged': '0.66',
             'Discount_RefillB': '1.1',
-            'Env_Tax': '2.75',
+            'Env_Tax_Customer': '2.75',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '1',
             'Discard_fine': '5.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -614,7 +703,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1.32',
             'Redeem_Damaged': '0.66',
             'Discount_RefillB': '1.1',
-            'Env_Tax': '2.75',
+            'Env_Tax_Customer': '2.75',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '1',
             'Discard_fine': '5.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -627,7 +718,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1.32',
             'Redeem_Damaged': '0.66',
             'Discount_RefillB': '1.1',
-            'Env_Tax': '2.75',
+            'Env_Tax_Customer': '2.75',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '1',
             'Discard_fine': '5.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -640,7 +733,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1.32',
             'Redeem_Damaged': '0.66',
             'Discount_RefillB': '1.1',
-            'Env_Tax': '2.75',
+            'Env_Tax_Customer': '2.75',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '1',
             'Discard_fine': '5.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -653,7 +748,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1.32',
             'Redeem_Damaged': '0.66',
             'Discount_RefillB': '1.1',
-            'Env_Tax': '2.75',
+            'Env_Tax_Customer': '2.75',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '1',
             'Discard_fine': '5.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -666,7 +763,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1.32',
             'Redeem_Damaged': '0.66',
             'Discount_RefillB': '1.1',
-            'Env_Tax': '2.75',
+            'Env_Tax_Customer': '2.75',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '1',
             'Discard_fine': '5.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -679,7 +778,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1.32',
             'Redeem_Damaged': '0.66',
             'Discount_RefillB': '1.1',
-            'Env_Tax': '2.75',
+            'Env_Tax_Customer': '2.75',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '1',
             'Discard_fine': '5.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -692,7 +793,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '1.32',
             'Redeem_Damaged': '0.66',
             'Discount_RefillB': '1.1',
-            'Env_Tax': '2.75',
+            'Env_Tax_Customer': '2.75',
+            'Env_Tax_Producer': '1',
+            'Env_Tax_Retailer': '1',
             'Discard_fine': '5.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -705,7 +808,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.75',
+            'Env_Tax_Customer': '0.75',
+            'Env_Tax_Producer': '0.2',
+            'Env_Tax_Retailer': '0.2',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -718,7 +823,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.75',
+            'Env_Tax_Customer': '0.75',
+            'Env_Tax_Producer': '0.2',
+            'Env_Tax_Retailer': '0.2',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -731,7 +838,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.75',
+            'Env_Tax_Customer': '0.75',
+            'Env_Tax_Producer': '0.2',
+            'Env_Tax_Retailer': '0.2',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -744,7 +853,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.75',
+            'Env_Tax_Customer': '0.75',
+            'Env_Tax_Producer': '0.2',
+            'Env_Tax_Retailer': '0.2',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -757,7 +868,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.75',
+            'Env_Tax_Customer': '0.75',
+            'Env_Tax_Producer': '0.2',
+            'Env_Tax_Retailer': '0.2',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -770,7 +883,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.75',
+            'Env_Tax_Customer': '0.75',
+            'Env_Tax_Producer': '0.2',
+            'Env_Tax_Retailer': '0.2',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -783,7 +898,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.75',
+            'Env_Tax_Customer': '0.75',
+            'Env_Tax_Producer': '0.2',
+            'Env_Tax_Retailer': '0.2',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -796,7 +913,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.75',
+            'Env_Tax_Customer': '0.75',
+            'Env_Tax_Producer': '0.2',
+            'Env_Tax_Retailer': '0.2',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -809,7 +928,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.75',
+            'Env_Tax_Customer': '0.75',
+            'Env_Tax_Producer': '0.2',
+            'Env_Tax_Retailer': '0.2',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -822,7 +943,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.75',
+            'Env_Tax_Customer': '0.75',
+            'Env_Tax_Producer': '0.2',
+            'Env_Tax_Retailer': '0.2',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -835,7 +958,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.75',
+            'Env_Tax_Customer': '0.75',
+            'Env_Tax_Producer': '0.2',
+            'Env_Tax_Retailer': '0.2',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -848,7 +973,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.75',
+            'Env_Tax_Customer': '0.75',
+            'Env_Tax_Producer': '0.2',
+            'Env_Tax_Retailer': '0.2',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -861,7 +988,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.75',
+            'Env_Tax_Customer': '0.75',
+            'Env_Tax_Producer': '0.2',
+            'Env_Tax_Retailer': '0.2',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -874,7 +1003,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.75',
+            'Env_Tax_Customer': '0.75',
+            'Env_Tax_Producer': '0.2',
+            'Env_Tax_Retailer': '0.2',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -887,7 +1018,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.75',
+            'Env_Tax_Customer': '0.75',
+            'Env_Tax_Producer': '0.2',
+            'Env_Tax_Retailer': '0.2',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -900,7 +1033,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.75',
+            'Env_Tax_Customer': '0.75',
+            'Env_Tax_Producer': '0.2',
+            'Env_Tax_Retailer': '0.2',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -913,7 +1048,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.75',
+            'Env_Tax_Customer': '0.75',
+            'Env_Tax_Producer': '0.2',
+            'Env_Tax_Retailer': '0.2',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -926,7 +1063,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.75',
+            'Env_Tax_Customer': '0.75',
+            'Env_Tax_Producer': '0.2',
+            'Env_Tax_Retailer': '0.2',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -939,7 +1078,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.75',
+            'Env_Tax_Customer': '0.75',
+            'Env_Tax_Producer': '0.2',
+            'Env_Tax_Retailer': '0.2',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -952,7 +1093,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.75',
+            'Env_Tax_Customer': '0.75',
+            'Env_Tax_Producer': '0.2',
+            'Env_Tax_Retailer': '0.2',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -965,7 +1108,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.6',
+            'Env_Tax_Customer': '0.6',
+            'Env_Tax_Producer': '0.1',
+            'Env_Tax_Retailer': '0.1',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 1,
             'Latest_Refill_Date': '4/15/2023'
@@ -978,7 +1123,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.6',
+            'Env_Tax_Customer': '0.6',
+            'Env_Tax_Producer': '0.1',
+            'Env_Tax_Retailer': '0.1',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 1,
             'Latest_Refill_Date': '4/15/2023'
@@ -991,7 +1138,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.6',
+            'Env_Tax_Customer': '0.6',
+            'Env_Tax_Producer': '0.1',
+            'Env_Tax_Retailer': '0.1',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 1,
             'Latest_Refill_Date': '4/15/2023'
@@ -1004,7 +1153,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.6',
+            'Env_Tax_Customer': '0.6',
+            'Env_Tax_Producer': '0.1',
+            'Env_Tax_Retailer': '0.1',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 1,
             'Latest_Refill_Date': '4/15/2023'
@@ -1017,7 +1168,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.6',
+            'Env_Tax_Customer': '0.6',
+            'Env_Tax_Producer': '0.1',
+            'Env_Tax_Retailer': '0.1',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 1,
             'Latest_Refill_Date': '4/15/2023'
@@ -1030,7 +1183,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.6',
+            'Env_Tax_Customer': '0.6',
+            'Env_Tax_Producer': '0.1',
+            'Env_Tax_Retailer': '0.1',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 1,
             'Latest_Refill_Date': '4/15/2023'
@@ -1043,7 +1198,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.6',
+            'Env_Tax_Customer': '0.6',
+            'Env_Tax_Producer': '0.1',
+            'Env_Tax_Retailer': '0.1',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 1,
             'Latest_Refill_Date': '4/15/2023'
@@ -1056,7 +1213,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.6',
+            'Env_Tax_Customer': '0.6',
+            'Env_Tax_Producer': '0.1',
+            'Env_Tax_Retailer': '0.1',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 1,
             'Latest_Refill_Date': '4/15/2023'
@@ -1069,7 +1228,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.6',
+            'Env_Tax_Customer': '0.6',
+            'Env_Tax_Producer': '0.1',
+            'Env_Tax_Retailer': '0.1',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 1,
             'Latest_Refill_Date': '4/15/2023'
@@ -1082,7 +1243,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '0.21',
             'Redeem_Damaged': '0.105',
             'Discount_RefillB': '0.75',
-            'Env_Tax': '0.6',
+            'Env_Tax_Customer': '0.6',
+            'Env_Tax_Producer': '0.1',
+            'Env_Tax_Retailer': '0.1',
             'Discard_fine': '1.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 1,
             'Latest_Refill_Date': '4/15/2023'
@@ -1095,7 +1258,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '2.28',
             'Redeem_Damaged': '1.14',
             'Discount_RefillB': '1.9',
-            'Env_Tax': '9.5',
+            'Env_Tax_Customer': '9.5',
+            'Env_Tax_Producer': '2.5',
+            'Env_Tax_Retailer': '2',
             'Discard_fine': '9.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -1108,7 +1273,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '2.28',
             'Redeem_Damaged': '1.14',
             'Discount_RefillB': '1.9',
-            'Env_Tax': '9.5',
+            'Env_Tax_Customer': '9.5',
+            'Env_Tax_Producer': '2.5',
+            'Env_Tax_Retailer': '2',
             'Discard_fine': '9.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -1121,7 +1288,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '2.28',
             'Redeem_Damaged': '1.14',
             'Discount_RefillB': '1.9',
-            'Env_Tax': '9.5',
+            'Env_Tax_Customer': '9.5',
+            'Env_Tax_Producer': '2.5',
+            'Env_Tax_Retailer': '2',
             'Discard_fine': '9.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -1134,7 +1303,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '2.28',
             'Redeem_Damaged': '1.14',
             'Discount_RefillB': '1.9',
-            'Env_Tax': '9.5',
+            'Env_Tax_Customer': '9.5',
+            'Env_Tax_Producer': '2.5',
+            'Env_Tax_Retailer': '2',
             'Discard_fine': '9.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -1147,7 +1318,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '2.28',
             'Redeem_Damaged': '1.14',
             'Discount_RefillB': '1.9',
-            'Env_Tax': '9.5',
+            'Env_Tax_Customer': '9.5',
+            'Env_Tax_Producer': '2.5',
+            'Env_Tax_Retailer': '2',
             'Discard_fine': '9.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -1160,7 +1333,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '2.28',
             'Redeem_Damaged': '1.14',
             'Discount_RefillB': '1.9',
-            'Env_Tax': '9.5',
+            'Env_Tax_Customer': '9.5',
+            'Env_Tax_Producer': '2.5',
+            'Env_Tax_Retailer': '2',
             'Discard_fine': '9.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -1173,7 +1348,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '2.28',
             'Redeem_Damaged': '1.14',
             'Discount_RefillB': '1.9',
-            'Env_Tax': '9.5',
+            'Env_Tax_Customer': '9.5',
+            'Env_Tax_Producer': '2.5',
+            'Env_Tax_Retailer': '2',
             'Discard_fine': '9.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -1186,7 +1363,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '2.28',
             'Redeem_Damaged': '1.14',
             'Discount_RefillB': '1.9',
-            'Env_Tax': '9.5',
+            'Env_Tax_Customer': '9.5',
+            'Env_Tax_Producer': '2.5',
+            'Env_Tax_Retailer': '2',
             'Discard_fine': '9.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -1199,7 +1378,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '2.28',
             'Redeem_Damaged': '1.14',
             'Discount_RefillB': '1.9',
-            'Env_Tax': '9.5',
+            'Env_Tax_Customer': '9.5',
+            'Env_Tax_Producer': '2.5',
+            'Env_Tax_Retailer': '2',
             'Discard_fine': '9.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -1212,7 +1393,9 @@ export class AddcityComponent implements OnInit {
             'Redeem_Good': '2.28',
             'Redeem_Damaged': '1.14',
             'Discount_RefillB': '1.9',
-            'Env_Tax': '9.5',
+            'Env_Tax_Customer': '9.5',
+            'Env_Tax_Producer': '2.5',
+            'Env_Tax_Retailer': '2',
             'Discard_fine': '9.5',
             'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
@@ -1257,7 +1440,9 @@ export class AddcityComponent implements OnInit {
         'Redeem_Good': '',
         'Redeem_Damaged': '',
         'Discount_RefillB': '',
-        'Env_Tax': '',
+        'Env_Tax_Customer': '',
+        'Env_Tax_Producer': '',
+        'Env_Tax_Retailer': '',
         'Discard_fine': '',
         'Transaction_Id': '',
         'Transaction_Date': '',
@@ -1319,7 +1504,7 @@ export class AddcityComponent implements OnInit {
         if (this.submitted) {
 
             const length = Object.keys(this.assetData).length;
-            console.log(length);
+            //console.log(length);
 
 
             if (this.selectedavatar == 0) {
@@ -1329,88 +1514,158 @@ export class AddcityComponent implements OnInit {
             else if (isNaN(parseInt(this.city.Clocktickrate))) {
                 this.alertModal.openModal('Clock Tick rate is number.')
             }
-            else if (!isNaN(parseInt(this.city.Clocktickrate)) && this.selectedavatar != 0 && parseInt(this.city.Clocktickrate) > 0) {
+            // else if (!isNaN(parseInt(this.city.Clocktickrate)) && this.selectedavatar != 0 && parseInt(this.city.Clocktickrate) > 0) {
+            //     this.city.cityavatar = String(this.selectedavatar);
+            //     $(".maskholder").show();
+            //     this.logser.createcity(this.city).subscribe(
+            //         data => {
+            //             this.city = data;
+            //         },
+            //         error => {
+            //             //console.log(error);
+            //         }
+            //     );
+            //     setTimeout(() => {
+            //         this.logser.getAllCities().subscribe((data) => {
+            //             this.allcity = data;
+            //             let length = this.allcity.length;
+            //             this.userobj['cityid'] = length.toString();
+            //             this.firstfacility['CityId'] = length.toString();
+            //             this.logser.currentuser.Role = 'Mayor';
+            //             this.logser.currentuser.CityId = length.toString();
+            //             this.Asset_CityId = length.toString();
+            //             this.logser.updateuser(this.userobj).subscribe(
+            //                 data => {
+            //                     this.userobj = data;
+
+            //                 },
+            //                 error => {
+            //                     //console.log(error);
+            //                 }
+            //             );
+            //             this.userDetails.currentuser = this.logser.currentuser.Username;
+            //             this.userDetails.CityId = this.logser.currentuser.CityId;
+            //             this.userDetails.currentCartId = this.logser.currentuser.cartId;
+            //             this.userDetails.CurrentDay = this.logser.currentuser.currentday.toString();
+            //             let count = 0;
+
+            //             let assetIds = Object.keys(this.assetData); // Get the keys of the assetData object
+
+            //             // Loop through each asset ID in the assetData object
+            //             assetIds.forEach((assetId, count) => {
+            //                 const asset = this.assetData[assetId]; // Get the asset data for the current assetId
+
+            //                 // Prepare the assettableobj with the data
+            //                 this.assettableobj['AssetId'] = this.Asset_CityId + "_" + assetId; // Extract the numeric part from assetId
+            //                 this.assettableobj['Asset_CityId'] = this.Asset_CityId;
+            //                 this.assettableobj['Bottle_Code'] = asset['Bottle_Code'];
+            //                 this.assettableobj['Content_Code'] = asset['Content_Code'];
+            //                 this.assettableobj['Current_Content_Code'] = asset['Content_Code'];
+            //                 this.assettableobj['Current_SelfRefill_Count'] = asset['Current_SelfRefill_Count'];
+            //                 this.assettableobj['Current_PlantRefill_Count'] = asset['Current_PlantRefill_Count'];
+            //                 this.assettableobj['Latest_Refill_Date'] = asset['Latest_Refill_Date'];
+            //                 this.assettableobj['Content_Price'] = asset['Content_Price'];
+            //                 this.assettableobj['Bottle_Price'] = asset['Bottle_Price'];
+            //                 this.assettableobj['Redeem_Good'] = asset['Redeem_Good'];
+            //                 this.assettableobj['Redeem_Damaged'] = asset['Redeem_Damaged'];
+            //                 this.assettableobj['Discount_RefillB'] = asset['Discount_RefillB'];
+            //                 this.assettableobj['Env_Tax_Customer'] = asset['Env_Tax_Customer'];
+            //                 this.assettableobj['Discard_fine'] = asset['Discard_fine'];
+
+            //                 // Call the service to create the asset
+            //                 this.logser.createAsset(this.assettableobj).subscribe(
+            //                     data => {
+            //                         this.assettableobj = data;
+            //                     },
+            //                     error => {
+            //                         //console.log(error);
+            //                     }
+            //                 );
+            //             });
+            //             this.logser.createfacility(this.firstfacility).subscribe(
+            //                 data => {
+            //                     this.firstfacility = data;
+            //                     this.router.navigate(["maincity"])
+            //                 },
+            //                 error => {
+            //                     //console.log(error);
+            //                 }
+            //             );
+            //         })
+            //     }, 200)
+            // }
+            if (!isNaN(parseInt(this.city.Clocktickrate)) && this.selectedavatar != 0 && parseInt(this.city.Clocktickrate) > 0) {
                 this.city.cityavatar = String(this.selectedavatar);
                 $(".maskholder").show();
-                this.logser.createcity(this.city).subscribe(
-                    data => {
+
+                this.logser.createcity(this.city).pipe(
+                    switchMap(data => {
                         this.city = data;
-                    },
-                    error => {
-                        console.log(error);
-                    }
-                );
-                setTimeout(() => {
-                    this.logser.getAllCities().subscribe((data) => {
-                        this.allcity = data;
+                        return this.logser.getAllCities();
+                    })
+                ).subscribe(
+                    allCities => {
+                        this.allcity = allCities;
                         let length = this.allcity.length;
                         this.userobj['cityid'] = length.toString();
                         this.firstfacility['CityId'] = length.toString();
                         this.logser.currentuser.Role = 'Mayor';
-                        this.logser.currentuser.CityId = (length+1).toString();
+                        this.logser.currentuser.CityId = length.toString();
                         this.Asset_CityId = length.toString();
-                        this.logser.updateuser(this.userobj).subscribe(
-                            data => {
-                                this.userobj = data;
 
+                        this.logser.updateuser(this.userobj).pipe(
+                            switchMap(userData => {
+                                this.userobj = userData;
+                                this.userDetails.currentuser = this.logser.currentuser.Username;
+                                this.userDetails.CityId = this.logser.currentuser.CityId;
+                                this.userDetails.currentCartId = this.logser.currentuser.cartId;
+                                this.userDetails.CurrentDay = this.logser.currentuser.currentday.toString();
+
+                                let assetCreationRequests = Object.keys(this.assetData).map(assetId => {
+                                    const asset = this.assetData[assetId];// Get the asset data for the current assetId
+
+                                    // Prepare the assettableobj with the data
+                                    this.assettableobj['AssetId'] = this.Asset_CityId + "_" + assetId; // Extract the numeric part from assetId
+                                    this.assettableobj['Asset_CityId'] = this.Asset_CityId;
+                                    this.assettableobj['Bottle_Code'] = asset['Bottle_Code'];
+                                    this.assettableobj['Content_Code'] = asset['Content_Code'];
+                                    this.assettableobj['Current_Content_Code'] = asset['Content_Code'];
+                                    this.assettableobj['Current_SelfRefill_Count'] = asset['Current_SelfRefill_Count'];
+                                    this.assettableobj['Current_PlantRefill_Count'] = asset['Current_PlantRefill_Count'];
+                                    this.assettableobj['Latest_Refill_Date'] = asset['Latest_Refill_Date'];
+                                    this.assettableobj['Content_Price'] = asset['Content_Price'];
+                                    this.assettableobj['Bottle_Price'] = asset['Bottle_Price'];
+                                    this.assettableobj['Redeem_Good'] = asset['Redeem_Good'];
+                                    this.assettableobj['Redeem_Damaged'] = asset['Redeem_Damaged'];
+                                    this.assettableobj['Discount_RefillB'] = asset['Discount_RefillB'];
+                                    this.assettableobj['Env_Tax_Customer'] = asset['Env_Tax_Customer'];
+                                    this.assettableobj['Env_Tax_Producer'] = asset['Env_Tax_Customer'];
+                                    this.assettableobj['Env_Tax_Retailer'] = asset['Env_Tax_Customer'];
+                                    this.assettableobj['Discard_fine'] = asset['Discard_fine'];
+
+
+                                    return this.logser.createAsset(this.assettableobj);
+                                });
+
+                                return forkJoin(assetCreationRequests);
+                            }),
+                            switchMap(() => this.logser.createfacility(this.firstfacility))
+                        ).subscribe(
+                            facilityData => {
+                                this.firstfacility = facilityData;
+                                this.router.navigate(["maincity"]);
                             },
                             error => {
-                                console.log(error);
+                                // Handle errors
                             }
                         );
-                        this.userDetails.currentuser = this.logser.currentuser.Username;
-                        this.userDetails.CityId = this.logser.currentuser.CityId;
-                        this.userDetails.currentCartId = this.logser.currentuser.cartId;
-                        this.userDetails.CurrentDay = this.logser.currentuser.currentday.toString();
-                        let count = 0;
-
-                        let assetIds = Object.keys(this.assetData); // Get the keys of the assetData object
-
-                        // Loop through each asset ID in the assetData object
-                        assetIds.forEach((assetId, count) => {
-                            const asset = this.assetData[assetId]; // Get the asset data for the current assetId
-
-                            // Prepare the assettableobj with the data
-                            this.assettableobj['AssetId'] = this.Asset_CityId + "_" + assetId; // Extract the numeric part from assetId
-                            this.assettableobj['Asset_CityId'] = this.Asset_CityId;
-                            this.assettableobj['Bottle_Code'] = asset['Bottle_Code'];
-                            this.assettableobj['Content_Code'] = asset['Content_Code'];
-                            this.assettableobj['Current_Content_Code'] = asset['Content_Code'];
-                            this.assettableobj['Current_SelfRefill_Count'] = asset['Current_SelfRefill_Count'];
-                            this.assettableobj['Current_PlantRefill_Count'] = asset['Current_PlantRefill_Count'];
-                            this.assettableobj['Latest_Refill_Date'] = asset['Latest_Refill_Date'];
-                            this.assettableobj['Content_Price'] = asset['Content_Price'];
-                            this.assettableobj['Bottle_Price'] = asset['Bottle_Price'];
-                            this.assettableobj['Redeem_Good'] = asset['Redeem_Good'];
-                            this.assettableobj['Redeem_Damaged'] = asset['Redeem_Damaged'];
-                            this.assettableobj['Discount_RefillB'] = asset['Discount_RefillB'];
-                            this.assettableobj['Env_Tax'] = asset['Env_Tax'];
-                            this.assettableobj['Discard_fine'] = asset['Discard_fine'];
-
-                            // Call the service to create the asset
-                            this.logser.createAsset(this.assettableobj).subscribe(
-                                data => {
-                                    this.assettableobj = data;
-                                    console.log("From addCity");
-                                    console.log(this.assettableobj);
-                                },
-                                error => {
-                                    console.log(error);
-                                }
-                            );
-                        });
-                        this.logser.createfacility(this.firstfacility).subscribe(
-                            data => {
-                                this.firstfacility = data;
-                                this.router.navigate(["maincity"])
-                            },
-                            error => {
-                                console.log(error);
-                            }
-                        );
-                    })
-                }, 200)
+                    },
+                    error => {
+                        // Handle errors
+                    }
+                );
             }
+
 
         }
     }

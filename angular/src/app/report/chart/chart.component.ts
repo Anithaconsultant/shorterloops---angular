@@ -127,7 +127,7 @@ export class ChartComponent {
       for (let y = 0; y < data.length; y++) {
         this.assetdataset.push(data[y]);
       }
-      console.log(this.assetdataset);
+      //console.log(this.assetdataset);
 
       this.barChartLabels = [
         'B1.V', 'B1.R', 'B2.V', 'B2.R', 'B3.V', 'B3.R',
@@ -203,9 +203,9 @@ export class ChartComponent {
       this.aggregatedData = this.aggregateBottleCodesByLocation(this.assetdataset);
       this.drawLocationChart();
       this.roleBasedOperations = this.generateRoleBasedObject(this.roles, this.operationTypes);
-      console.log(this.roleBasedOperations);
+      //console.log(this.roleBasedOperations);
       this.aggregateBasedonOperations();
-      console.log(this.roleBasedOperations);
+      //console.log(this.roleBasedOperations);
     });
   }
   roleBasedOperations: any = {};
@@ -287,9 +287,9 @@ export class ChartComponent {
   aggregateBasedonOperations() {
 
     this.assetdataset.forEach((operation) => {
-      console.log(operation);
+      //console.log(operation);
       const { Fromfacility, Tofacility } = operation;
-      console.log(Fromfacility, Tofacility);
+      //console.log(Fromfacility, Tofacility);
       if (Fromfacility === 'Supermarket Owner' && this.isValidToFacility(Tofacility)) {
         this.incrementCategory(this.roleBasedOperations[Tofacility], 'purchased');
       } else if (
@@ -371,7 +371,7 @@ export class ChartComponent {
 oprChartdata:any;
 oprlabel:any;
   private incrementCategory(category: any, operationType: string) {
-    console.log(category, operationType)
+    //console.log(category, operationType)
     if (category.hasOwnProperty(operationType)) {
       category[operationType]++;
     }

@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit {
     $("video").hide();
     this.showImage = true;
     // You can implement additional logic here if needed
-    console.log('Skip button clicked');
+    //console.log('Skip button clicked');
   }
   ngOnInit(): void {
     this.loginForm = this.formbuilder.group({
@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit {
   login() {
     this.submitted = true;
     if (this.loginForm.invalid) {
-      this.alertModal.openModal("Please enter Username and Password");
+      this.alertModal.openModal("Please enter Username and Password",false);
       return;
     }
     if (this.submitted) {
@@ -80,19 +80,19 @@ export class LoginComponent implements OnInit {
               }
             },
             (error) => {
-              console.log(error);
+              //console.log(error);
             }
           );
 
         } else {
           if (userfound) {
-            this.alertModal.openModal("Kindly Check your Credentials");
+            this.alertModal.openModal("Kindly Check your Credentials",false);
           } else {
-            this.alertModal.openModal("User not Found. Kindly Register.");
+            this.alertModal.openModal("User not Found. Kindly Register.",false);
           }
         }
       }, err => {
-        this.alertModal.openModal("Something went wrong")
+        this.alertModal.openModal("Something went wrong",false)
       })
     }
   }
