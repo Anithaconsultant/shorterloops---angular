@@ -45,6 +45,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild('content', { static: false }) private content!: ElementRef;
   @ViewChild('bottlesticker', { static: false }) private bottlesticker!: ElementRef;
   @ViewChild('cartcontent', { static: false }) private cartcontent!: ElementRef;
+  @ViewChild('Auditing_Plastic', { static: false }) private Auditing_Plastic!: ElementRef;
+  @ViewChild('Auditing_BottleCleaning', { static: false }) private Auditing_BottleCleaning!: ElementRef;
   @ViewChild('supermarket', { static: false }) private supermarket!: ElementRef;
   @ViewChild('cartdisplay', { static: false }) private cartdisplay!: ElementRef;
   @ViewChild('StopEntry', { static: false }) private StopEntry!: ElementRef;
@@ -106,23 +108,27 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   currentusercityId = '';
   objkey = Object.keys;
   positionObject = {
-    'House6': [[-199, -3525], [694, 4010]],
-    'House7': [[-443, -3538], [1031, 4010]],
-    'House8': [[-744, -3475], [1369, 4010]],
-    'House9': [[-1053, -3468], [1708, 4010]],
-    'House10': [[-1282, -3537], [2044, 4010]],
-    'House1': [[-277, -3247], [694, 3584]],
-    'House2': [[-443, -3154], [1031, 3584]],
-    'House3': [[-744, -3154], [1369, 3584]],
-    'House4': [[-1053, -3154], [1708, 3584]],
-    'House5': [[-1282, -3154], [2044, 3584]],
-    'Recycling': [[-5641, -3623], [5931, 4010]],
-    'Supermarket': [[-5651, -3616], [6268, 4010]],
-    'Universal': [[-6360, -3606], [6604, 4010]],
-    'Reverse': [[-6635, -3154], [7279, 3584]],
-    'Plastic': [[-6254, -3154], [6943, 3584]],
-    'Refilling': [[-6158, -3154], [6604, 3584]],
-    'Bottle': [[-5762, -3154], [6268, 3584]],
+    'House6 Owner': [[-199, -3525], [694, 4010]],
+    'House7 Owner': [[-443, -3538], [1031, 4010]],
+    'House8 Owner': [[-744, -3475], [1369, 4010]],
+    'House9 Owner': [[-1053, -3468], [1708, 4010]],
+    'House10 Owner': [[-1282, -3537], [2044, 4010]],
+    'House1 Owner': [[-277, -3247], [694, 3584]],
+    'House2 Owner': [[-443, -3154], [1031, 3584]],
+    'House3 Owner': [[-744, -3154], [1369, 3584]],
+    'House4 Owner': [[-1053, -3154], [1708, 3584]],
+    'House5 Owner': [[-1282, -3154], [2044, 3584]],
+    'Plastic Recycling Plant Owner': [[-5641, -3623], [5931, 4010]],
+    'Supermarket Owner': [[-5651, -3616], [6268, 4010]],
+    'Universal Bottle Manufacturing Plant owner': [[-6956, -3606], [7590, 3584]],
+    'Bottle Reverse Vending Machine Owner': [[-6635, -3154], [7279, 3584]],
+    'B1 Shampoo Producer': [[-6135, -3562], [6943, 4010]],
+    'B2 Shampoo Producer': [[-6435, -3183], [6943, 3584]],
+    'B3 Shampoo Producer': [[-6472, -3562], [6943, 4010]],
+    'B4 Shampoo Producer': [[-6793, -3562], [7280, 4010]],
+    'B5 Shampoo Producer': [[-6956, -3562], [7590, 4010]],
+    'Shampoo Refilling Station Owner': [[-6158, -3154], [6604, 3584]],
+    'Universal Bottle Cleaning Plant Owner': [[-5762, -3154], [6268, 3584]],
     'Mayor': [[-5762, -3154], [5931, 3584]]
   }
   newmale: any[] = [];
@@ -211,7 +217,9 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
   }
   currentUserPurhcased: any[] = [];
-
+  showModal = false;
+  private modalSubscription!: Subscription;
+  private runGarbagetruck!: Subscription;
   //houseshelfList: string | CdkDropList<any> ='';
   constructor(private logser: LoginserviceService, private router: Router,
     private modalService: NgbModal, private sharedService: SharedServiceService, private renderer: Renderer2) {
@@ -315,7 +323,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             setInterval(() => { this.loadtime() }, 1000);
             setInterval(async () => {
               await this.loadAvailableAsset();
-              await this.checkArrayLengthAndAnimate();
+              // await this.checkArrayLengthAndAnimate();
             }, 10000);
           }, 500)
         });
@@ -444,7 +452,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   universalclean: any[] = [];
   loadReverseVendingBottles() {
     for (let i = 0; i < this.assetdataset.length; i++) {
-      if (this.assetdataset[i]['Bottle_loc'] == 'ReverseVending') {
+      if (this.assetdataset[i]['Bottle_loc'] == 'Bottle Reverse Vending Machine') {
         this.array_BottleFromConveyor.push(this.assetdataset[i]);
         this.updateonlyloc['currentbottle'] = this.assetdataset[i]['AssetId'];
         this.updateonlyloc['Bottleloc'] = 'PlantReturnTruck';
@@ -456,7 +464,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
   }
 
-
+  formatKey(key: string): string {
+    return key.replace(/\s+/g, '_').replace(/([a-z])([A-Z])/g, '$1_$2');
+  }
+  
   collectbottlefromreturnconveyor() {
     for (let i = 0; i < this.assetdataset.length; i++) {
       if (this.assetdataset[i]['Bottle_loc'] == 'Return Conveyor') {
@@ -563,75 +574,41 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     $(element).css({ transform });
   }
 
+
   async callUniversalBottleClean() {
     this.loadGarbageBottles();
 
-    await this.animateElement(".bottleWrapper", { width: "100%" }, 1000);
-    await this.animateElement(".bottleWrapper", { left: "-5px", top: "-202px" }, 5000);
-    await this.animateElement(".bottleWrapper", { left: "-135px" }, 2000);
+    await this.animateElement(".bottleWrapper", { width: "100%" }, 1300);
+    await this.delay(100);
+    await this.animateElement(".bottleWrapper", { left: "-5px", top: "-202px" }, 6000);
+    await this.animateElement(".bottleWrapper", { left: "-135px" }, 2800);
 
     for (let bottle of this.bottletoClean) {
       $(`#${bottle}`).removeClass().addClass("universalbottleimg bottle");
     }
 
-    await this.animateElement(".bottleWrapper", { left: "-498px" }, 2000);
-    await this.animateElement(".bottleWrapper", { left: "80px", top: "-23px" }, 2000);
-    await this.animateElement(".bottleWrapper", { width: "65%" }, 1000);
+    await this.animateElement(".bottleWrapper", { left: "-498px" }, 2800);
+    await this.animateElement(".bottleWrapper", { left: "80px", top: "-23px" }, 2800);
+    await this.animateElement(".bottleWrapper", { width: "65%" }, 1300);
+    await this.delay(100);
 
     this.applyTransform(".bottletruck", "scaleX(-1)");
-    await this.animateElement(".bottletruck", { left: "5150px" }, 2500);
+    await this.animateElement(".bottletruck", { left: "5150px" }, 3300);
 
     this.applyTransform(".bottletruck", "rotate(90deg)");
     $(".bottletruck").addClass("garbagetop").removeClass("garbageside");
-
-    await this.animateElement(".bottletruck", { top: "501px" }, 5000);
+    await this.animateElement(".bottletruck", { top: "501px" }, 6000);
 
     this.applyTransform(".bottletruck", "rotate(0deg) scaleX(-1)");
     $(".bottletruck").addClass("garbageside").removeClass("garbagetop");
-
-    await this.animateElement(".bottletruck", { left: "5683px" }, 5000);
+    await this.animateElement(".bottletruck", { left: "5683px" }, 6000);
 
     this.clearUniversalBottles();
-
-    setTimeout(async () => {
-      this.applyTransform(".bottletruck", "scaleX(1)");
-      await this.animateElement(".bottletruck", { left: "5152px" }, 2500);
-
-      this.applyTransform(".bottletruck", "rotate(-90deg)");
-      $(".bottletruck").addClass("garbagetop").removeClass("garbageside");
-
-      await this.animateElement(".bottletruck", { top: "935px" }, 1000);
-
-      this.applyTransform(".bottletruck", "rotate(0deg)");
-      $(".bottletruck").addClass("garbageside").removeClass("garbagetop");
-
-      await this.animateElement(".bottletruck", { left: "2635px" }, 5000);
-
-      this.applyTransform(".bottletruck", "rotate(-90deg)");
-      $(".bottletruck").addClass("garbagetop").removeClass("garbageside");
-
-      await this.animateElement(".bottletruck", { top: "3031px" }, 5000);
-
-      this.applyTransform(".bottletruck", "rotate(0deg)");
-      $(".bottletruck").addClass("garbageside").removeClass("garbagetop");
-
-      await this.animateElement(".bottletruck", { left: "1462px" }, 5000);
-
-      this.applyTransform(".bottletruck", "rotate(90deg)");
-      $(".bottletruck").addClass("garbagetop").removeClass("garbageside");
-
-      await this.animateElement(".bottletruck", { top: "2768px" }, 5000);
-
-      this.applyTransform(".bottletruck", "rotate(0deg)");
-      $(".bottletruck").addClass("garbageside").removeClass("garbagetop");
-
-      await this.animateElement(".bottletruck", { left: "1934px" }, 5000);
-
-
-    }, 5000);
+    await this.delay(600);
 
 
   }
+
 
   currentlystarted = 0;
   async rungarbagetruck() {
@@ -639,15 +616,15 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     this.collectbottlefromreturnconveyor();
     this.loadGarbageBottles();
     this.currentlystarted = 1;
-    const animateElement = (element: any, properties: any, duration: any) => {
+    const animateElement = (element: any, properties: any, duration: number) => {
       return new Promise<void>((resolve) => {
         $(element).animate(properties, duration, function () {
-          resolve(); // This resolves the Promise when the animation completes
+          resolve(); // Resolves when the animation completes
         });
       });
     };
 
-    const rotateElement = (element: any, angle: any, duration: any) => {
+    const rotateElement = (element: any, angle: any, duration: number) => {
       return new Promise<void>((resolve) => {
         $(element).animate(
           { deg: angle },
@@ -664,148 +641,113 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       });
     };
 
-    await animateElement(".bottletruck", { left: "1490px" }, 500);
+    await animateElement(".bottletruck", { left: "1490px" }, 800);
+    await this.delay(100);
     $(".bottletruck").addClass("garbagetop").removeClass("garbageside");
-
-    await rotateElement(".bottletruck", 90, 500);
-
-    await animateElement(".bottletruck", { top: "3052px" }, 1000);
-    $(".bottletruck")
-      .css({ transform: "rotate(0deg)" })
-      .css({ transform: "scaleX(-1)" })
-      .addClass("garbageside")
-      .removeClass("garbagetop");
-
-    await animateElement(".bottletruck", { left: "5223px" }, 3000);
-
-    $(".bottletruck")
-      .css({ transform: "rotate(90deg)" })
-      .addClass("garbagetop")
-      .removeClass("garbageside");
-
-    await animateElement(".bottletruck", { top: "2282px" }, 1500);
+    await rotateElement(".bottletruck", 90, 800);
+    await this.delay(100);
+    await animateElement(".bottletruck", { top: "3052px" }, 1800);
+    $(".bottletruck").css({ transform: "rotate(0deg) scaleX(-1)" }).addClass("garbageside").removeClass("garbagetop");
+    await animateElement(".bottletruck", { left: "5223px" }, 4000);
+    $(".bottletruck").css({ transform: "rotate(90deg)" }).addClass("garbagetop").removeClass("garbageside");
+    await animateElement(".bottletruck", { top: "2282px" }, 2200);
+    await this.delay(2000);
     this.loadReverseVendingBottles();
     this.loadGarbageBottles();
-    await animateElement(".bottletruck", { top: "1879px" }, 1500);
+    await animateElement(".bottletruck", { top: "1879px" }, 2200);
+    $(".bottletruck").css({ transform: "rotate(0deg) scaleX(1)" }).addClass("garbageside").removeClass("garbagetop");
+    await animateElement(".bottletruck", { left: "2699px" }, 4800);
+    $(".bottletruck").css({ transform: "rotate(90deg)" }).addClass("garbagetop").removeClass("garbageside");
+    await animateElement(".bottletruck", { top: "950px" }, 1300);
+    await this.delay(100);
+    $(".bottletruck").css({ transform: "rotate(0deg) scaleX(1)" }).addClass("garbageside").removeClass("garbagetop");
+    await animateElement(".bottletruck", { left: "1857px" }, 3300);
 
-    $(".bottletruck")
-      .css({ transform: "rotate(0deg)" })
-      .css({ transform: "scaleX(1)" })
-      .addClass("garbageside")
-      .removeClass("garbagetop");
-    await animateElement(".bottletruck", { left: "2699px" }, 4000);
-
-
-    $(".bottletruck")
-      .css({ transform: "rotate(90deg)" })
-      .addClass("garbagetop")
-      .removeClass("garbageside");
-
-    await animateElement(".bottletruck", { top: "950px" }, 1000);
-    $(".bottletruck")
-      .css({ transform: "rotate(0deg)" })
-      .css({ transform: "scaleX(1)" })
-      .addClass("garbageside")
-      .removeClass("garbagetop");
-
-    await animateElement(".bottletruck", { left: "1857px" }, 2500);
     this.clearDamagedBottles();
-
-    $(".bottletruck")
-      .css({ transform: "rotate(0deg)" })
-      .css({ transform: "scaleX(1)" })
-      .addClass("garbageside")
-      .removeClass("garbagetop");
-
-    await animateElement(".bottletruck", { left: "2657px" }, 2500);
-
-    $(".bottletruck")
-      .css({ transform: "rotate(90deg)" })
-      .addClass("garbagetop")
-      .removeClass("garbageside");
-
-    await animateElement(".bottletruck", { top: "482px" }, 1000);
-
-    $(".bottletruck")
-      .css({ transform: "rotate(0deg)" })
-      .css({ transform: "scaleX(1)" })
-      .addClass("garbageside")
-      .removeClass("garbagetop");
-
-    await animateElement(".bottletruck", { left: "1897px" }, 2000);
+    await this.delay(500);
+    $(".bottletruck").css({ transform: "rotate(0deg) scaleX(1)" }).addClass("garbageside").removeClass("garbagetop");
+    await animateElement(".bottletruck", { left: "2657px" }, 3300);
+    $(".bottletruck").css({ transform: "rotate(90deg)" }).addClass("garbagetop").removeClass("garbageside");
+    await animateElement(".bottletruck", { top: "482px" }, 1300);
+    await this.delay(100);
+    $(".bottletruck").css({ transform: "rotate(0deg) scaleX(1)" }).addClass("garbageside").removeClass("garbagetop");
+    await animateElement(".bottletruck", { left: "1897px" }, 2800);
     this.clearBounceBottles();
-
-    await animateElement(".bottletruck", { left: "1390px" }, 2000);
+    await this.delay(200);
+    await animateElement(".bottletruck", { left: "1390px" }, 2800);
     this.clearSpikeBottles();
-
-    await animateElement(".bottletruck", { left: "411px" }, 2000);
+    await this.delay(200);
+    await animateElement(".bottletruck", { left: "411px" }, 2800);
     this.clearShinyBottles();
-
-    await animateElement(".bottletruck", { left: "350px" }, 1000);
-
+    await this.delay(200);
+    await animateElement(".bottletruck", { left: "350px" }, 1300);
+    await this.delay(100);
     $(".bottletruck").css({ transform: "scaleX(-1)" });
-
-    await animateElement(".bottletruck", { left: "2657px" }, 3000);
-
-    $(".bottletruck")
-      .css({ transform: "rotate(-90deg)" })
-      .addClass("garbagetop")
-      .removeClass("garbageside");
-
-    await animateElement(".bottletruck", { top: "959px" }, 2000);
-
-    $(".bottletruck")
-      .css({ transform: "scaleX(-1)" })
-      .addClass("garbageside")
-      .removeClass("garbagetop");
-
-    await animateElement(".bottletruck", { left: "5150px" }, 2500);
-
-    $(".bottletruck")
-      .css({ transform: "rotate(90deg)" })
-      .addClass("garbagetop")
-      .removeClass("garbageside");
-
-    await animateElement(".bottletruck", { top: "501px" }, 2000);
-
-    $(".bottletruck")
-      .css({ transform: "rotate(0deg)" })
-      .css({ transform: "scaleX(-1)" })
-      .addClass("garbageside")
-      .removeClass("garbagetop");
-
-    await animateElement(".bottletruck", { left: "6367px" }, 2000);
-
-
-    await animateElement(".bottletruck", { left: "7292px" }, 2000);
+    await animateElement(".bottletruck", { left: "2657px" }, 3700);
+    $(".bottletruck").css({ transform: "rotate(-90deg)" }).addClass("garbagetop").removeClass("garbageside");
+    await animateElement(".bottletruck", { top: "959px" }, 2800);
+    $(".bottletruck").css({ transform: "scaleX(-1)" }).addClass("garbageside").removeClass("garbagetop");
+    await animateElement(".bottletruck", { left: "5150px" }, 3300);
+    $(".bottletruck").css({ transform: "rotate(90deg)" }).addClass("garbagetop").removeClass("garbageside");
+    await animateElement(".bottletruck", { top: "501px" }, 2800);
+    $(".bottletruck").css({ transform: "rotate(0deg) scaleX(-1)" }).addClass("garbageside").removeClass("garbagetop");
+    await animateElement(".bottletruck", { left: "6367px" }, 2800);
+    await animateElement(".bottletruck", { left: "7292px" }, 2800);
+    await this.delay(200);
     this.clearSilkyBottles();
-
     $(".bottletruck").css({ transform: "scaleX(1)" });
+    await animateElement(".bottletruck", { left: "5150px" }, 2800);
 
-    await animateElement(".bottletruck", { left: "5150px" }, 2000);
 
-    $(".bottletruck")
-      .css({ transform: "rotate(-90deg)" })
-      .addClass("garbagetop")
-      .removeClass("garbageside");
 
-    await animateElement(".bottletruck", { top: "1556px" }, 2000);
+    const hasUBBottles = this.bottletoClean.some(bottle => bottle.includes("atU"));
 
-    $(".bottletruck")
-      .css({ transform: "rotate(0deg)" })
-      .css({ transform: "scaleX(1)" })
-      .addClass("garbageside")
-      .removeClass("garbagetop");
+    if (hasUBBottles) {
+      $(".bottletruck").css({ transform: "rotate(-90deg)" }).addClass("garbagetop").removeClass("garbageside");
+      console.log("UB bottles found, proceeding with animations...");
+      await animateElement(".bottletruck", { top: "1556px" }, 2800);
+      $(".bottletruck").css({ transform: "rotate(0deg) scaleX(1)" }).addClass("garbageside").removeClass("garbagetop");
+      await animateElement(".bottletruck", { left: "4020px" }, 2200);
+      await this.delay(300);
+      await this.callUniversalBottleClean();
+      await this.delay(100);
+      this.applyTransform(".bottletruck", "scaleX(1)");
+      await this.animateElement(".bottletruck", { left: "5152px" }, 3300);
+    }
 
-    await animateElement(".bottletruck", { left: "4020px" }, 1000);
 
-    await this.callUniversalBottleClean();
+    this.applyTransform(".bottletruck", "rotate(-90deg)");
+    $(".bottletruck").addClass("garbagetop").removeClass("garbageside");
+    await this.animateElement(".bottletruck", { top: "935px" }, 1300);
+    await this.delay(100);
+
+    this.applyTransform(".bottletruck", "rotate(0deg)");
+    $(".bottletruck").addClass("garbageside").removeClass("garbagetop");
+    await this.animateElement(".bottletruck", { left: "2635px" }, 6000);
+
+    this.applyTransform(".bottletruck", "rotate(-90deg)");
+    $(".bottletruck").addClass("garbagetop").removeClass("garbageside");
+    await this.animateElement(".bottletruck", { top: "3031px" }, 6000);
+
+    this.applyTransform(".bottletruck", "rotate(0deg)");
+    $(".bottletruck").addClass("garbageside").removeClass("garbagetop");
+    await this.animateElement(".bottletruck", { left: "1462px" }, 6000);
+
+    this.applyTransform(".bottletruck", "rotate(90deg)");
+    $(".bottletruck").addClass("garbagetop").removeClass("garbageside");
+    await this.animateElement(".bottletruck", { top: "2768px" }, 2000);
+
+    this.applyTransform(".bottletruck", "rotate(0deg)");
+    $(".bottletruck").addClass("garbageside").removeClass("garbagetop");
+    await this.animateElement(".bottletruck", { left: "1934px" }, 2000);
+
 
   }
+
   totalReturnedBottles: any[] = [];
   maxRefill: string = '';
   async loadAvailableAsset() {
-    if (this.logser.currentuser.Username != '') {
+    if (this.logser.currentuser.Username != '' && this.currentusercityId!='') {
       $(".loadinglogo").hide();
       this.logser.getAllAssets().subscribe((data) => {
         this.assetdataset = [];
@@ -916,12 +858,16 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   private animationInProgress: boolean = false;
   async checkArrayLengthAndAnimate(): Promise<void> {
     // Only proceed if no animation is running and the condition is met
-    if (this.animationInProgress == false && this.totalReturnedBottles.length >= 2) {
+    console.log(this.totalReturnedBottles.length)
+    if (this.animationInProgress == false) {
       this.animationInProgress = true; // Lock
       await this.rungarbagetruck(); // Await the animation to complete
 
       this.totalReturnedBottles.length = 0; // Clear the array or handle it as needed
       this.animationInProgress = false; // Unlock
+    }
+    else {
+      this.alertModal.openModal("Animation is already in Progress. Please wait till it is completed");
     }
   }
   consolecount = 0;
@@ -933,7 +879,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           //console.log("this.consolecount")
           this.citytiming['CurrentTime'] = this.convertSeconds(data[0]['CurrentTime']);
           this.citytiming['CurrentDay'] = data[0].CurrentDay;
-          //console.log(this.citytiming['CurrentTime'])
+          console.log(this.citytiming['CurrentTime'])
           // if (this.citytiming['CurrentDay']==225){
           if (this.citytiming['CurrentDay'] % 100 === 0 && this.currentrole == "Mayor") {
             this.alertModal.openModal("Remainder !!! <br/><div class='cssalignment'>You may edit the City Rules If you Wish. Please Click on the Below link to Proceed</div", true,
@@ -954,17 +900,17 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   updateobjects(cat: any, isDragged: any, isPurchased: any, bottleloc: any, bottle_status: any, bottle_remquantity: any) {
     let existingItem = this.commonobj.findIndex(item => item.id === cat);
     if (existingItem == -1) {
-      this.commonobj.push({ 'id': cat, 'status': 'available', 'location': 'Supermarket shelf' });
+      this.commonobj.push({ 'id': cat, 'status': 'available', 'Bottle_loc': 'Supermarket shelf' });
     }
     else {
       let currentItem = this.commonobj.findIndex(item => item.id === cat);
       if (isDragged == true && isPurchased == false && bottleloc !== 'Supermarket shelf') {
         this.commonobj[currentItem]['status'] = 'blocked';
-        this.commonobj[currentItem]['location'] = bottleloc;
+        this.commonobj[currentItem]['Bottle_loc'] = bottleloc;
       }
       if (isDragged == true && isPurchased == true && bottleloc !== 'Supermarket shelf') {
         this.commonobj[currentItem]['status'] = 'purchased';
-        this.commonobj[currentItem]['location'] = bottleloc;
+        this.commonobj[currentItem]['Bottle_loc'] = bottleloc;
       }
 
     }
@@ -984,7 +930,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       this.BottleInHouseList.push(cat);
     }
     if (this.animationInProgress == false && this.totalReturnedBottles.length < 10) {
-      if (bottleloc == 'ReverseVending' || bottleloc == 'Return Conveyor') {
+      if (bottleloc == 'Bottle Reverse Vending Machine' || bottleloc == 'Return Conveyor') {
         this.totalReturnedBottles.push(cat);
       }
     }
@@ -1963,7 +1909,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   updateDragged: any = {
     'dragged': false,
     'purchased': false,
-    'location': '',
+    'Bottle_loc': '',
     'currentbottle': ''
   };
   payamount() {
@@ -2030,12 +1976,12 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             });
 
 
-            this.logser.getcashboxmunicipality().subscribe(data => {
+            this.logser.getsupermarketcashbox('Municipality Office').subscribe(data => {
               (data[0]['Cashbox'] == '') ? this.municipalcashbox = 0 : this.municipalcashbox = parseInt(data[0]['Cashbox']);
               this.municipalcashbox += this.totalenv;
               this.logser.updatecashboxmunicipality(String(this.municipalcashbox)).subscribe(data => { });
             });
-            this.logser.getsupermarketcashbox().subscribe(data => {
+            this.logser.getsupermarketcashbox('Supermarket Owner').subscribe(data => {
               (data[0]['Cashbox'] == '') ? this.supermarketcashbox = 0 : this.supermarketcashbox = parseInt(data[0]['Cashbox']);
               this.supermarketcashbox += this.totalsupermarketbill;
               this.logser.updatesupermarketcashbox(String(this.supermarketcashbox)).subscribe(data => { });
@@ -2121,9 +2067,30 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       });
       this.subscription = this.sharedService.switchYesOrNo$.subscribe(value => {
         this.switchYesOrNo = value;
+
         if (this.switchYesOrNo == 2) {
-          this.dopanzoom(-3341, -2150, '1');
+          if (this.currentUserRole == 'Mayor') {
+            this.dopanzoom(-3341, -2150, '1');
+          }
+          else if (this.currentUserRole == 'Supermarket Owner') {
+            this.dopanzoom(-1079.58, -2257.31, '1');
+          }
+
         }
+        else if (this.switchYesOrNo == 0) {
+
+          this.loadinginitialState();
+        }
+      });
+
+      this.modalSubscription = this.sharedService.auditPlasticVideoModal$.subscribe(() => {
+        this.openAuditPlasticVideoModal();
+      });
+      this.modalSubscription = this.sharedService.auditBottleCleaningVideoModal$ .subscribe(() => {
+        this.openAuditBottleVideoModal();
+      });
+      this.runGarbagetruck = this.sharedService.rungarbagetruck$.subscribe(() => {
+        this.rungarbagetruck();
       });
       this.loadinginitialState();
 
@@ -2132,6 +2099,13 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     }
 
   }
+  openAuditPlasticVideoModal(): void {
+    this.modalService.open(this.Auditing_Plastic, { size: 'lg' });
+  }
+  openAuditBottleVideoModal(): void {
+    this.modalService.open(this.Auditing_BottleCleaning, { size: 'lg' });
+  }
+
   showCityRuleComponent() {
     // Navigate to the new component route
 
@@ -2143,12 +2117,14 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
   }
   loadinginitialState() {
-    let a = this.currentUserRole.split(" ")[0];
+    let a = this.currentUserRole;
     let x = this.positionObject[a as keyof typeof this.positionObject][0][0];
     let y = this.positionObject[a as keyof typeof this.positionObject][0][1];
     let x1 = this.positionObject[a as keyof typeof this.positionObject][1][0];
     let y1 = this.positionObject[a as keyof typeof this.positionObject][1][1];
-    this.dopanzoom(x, y, '1');
+    if (this.switchYesOrNo == 0) {
+      this.dopanzoom(x, y, '1');
+    }
     //this.dopanzoom(-1057.16, -2306.8, '1');
     $("." + a + ".bottleStore").css({ 'left': (x1 - 31) + 'px', 'top': (y1 - 87) + 'px' });
     $(".cart").css({ 'left': x1 + 'px', 'top': y1 + 'px' });
@@ -2341,7 +2317,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
       for (let i = 0; i < this.bottletaken.length; i++) {
         let existingItem = this.commonobj.findIndex(item => item.id === this.bottletaken[i]);
-        if (this.commonobj[existingItem]['location'] === 'In' + this.currentUserCartId) {
+        if (this.commonobj[existingItem]['Bottle_loc'] === 'In' + this.currentUserCartId) {
           let getcurrent = this.bottletaken[i].split("at")[0].split('City')[1];
           assetObservables.push(this.logser.getthisAssets(getcurrent));
         } else {
@@ -2605,6 +2581,13 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
                 this.logser.updatethisAssets(this.updatebottleasset).subscribe((data) => {
                   this.playAudioElement(this.transactioncomplete.nativeElement, 0.8);
                 });
+                this.logser.getsupermarketcashbox('Shampoo Refilling Station Owner').subscribe(data => {
+                  console.log("data from refilling", data);
+                  (data[0]['Cashbox'] == '') ? this.getrefillingstationcashbox = 0 : this.getrefillingstationcashbox = parseInt(data[0]['Cashbox']);
+                  this.getrefillingstationcashbox -= this.refill_amount_topay;
+                  this.logser.updaterefillingcashbox(String(this.getrefillingstationcashbox)).subscribe(data => { });
+                });
+
 
               },
               error => {
@@ -2621,12 +2604,6 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
 
 
-      this.logser.getrefillingstationcashbox().subscribe(data => {
-
-        (data[0]['Cashbox'] == '') ? this.getrefillingstationcashbox = 0 : this.getrefillingstationcashbox = parseInt(data[0]['Cashbox']);
-        this.getrefillingstationcashbox += this.refill_amount_topay;
-        this.logser.updaterefillingcashbox(String(this.getrefillingstationcashbox)).subscribe(data => { });
-      });
 
 
 
@@ -2852,7 +2829,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
               });
 
             // Update the municipality cashbox
-            this.logser.getcashboxmunicipality().subscribe(data => {
+            this.logser.getsupermarketcashbox('Municipality Office').subscribe(data => {
               (data[0]['Cashbox'] == '') ? this.municipalcashbox = 0 : this.municipalcashbox = parseInt(data[0]['Cashbox']);
               this.municipalcashbox += amount_fine;
               this.logser.updatecashboxmunicipality(String(this.municipalcashbox)).subscribe(data => { });
@@ -2922,7 +2899,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
               });
 
             // Update the municipality cashbox
-            this.logser.getcashboxmunicipality().subscribe(data => {
+            this.logser.getsupermarketcashbox('Municipality Office').subscribe(data => {
               (data[0]['Cashbox'] == '') ? this.municipalcashbox = 0 : this.municipalcashbox = parseInt(data[0]['Cashbox']);
               this.municipalcashbox += amount_fine;
               this.logser.updatecashboxmunicipality(String(this.municipalcashbox)).subscribe(data => { });
@@ -2951,7 +2928,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         if (data[t]['DebitFacility'] == this.currentUserRole && getcityId == this.currentusercityId && data[t]['Purpose'].includes("Fine")) {
           this.netfine += parseFloat(data[t]['Amount']);
         }
-        if (data[t]['DebitFacility'] == this.currentUserRole && getcityId == this.currentusercityId && data[t]['Purpose'].includes("Purchasing")) {
+        if (data[t]['DebitFacility'] == this.currentUserRole && getcityId == this.currentusercityId && (data[t]['Purpose'].includes("Purchasing") || data[t]['Purpose'].includes("Refilling"))) {
           this.netpurchase += parseFloat(data[t]['Amount']);
         }
         if (data[t]['DebitFacility'] == this.currentUserRole && data[t]['CreditFacility'] == 'Municipality Office' && getcityId == this.currentusercityId && data[t]['Purpose'].includes("tax")) {
@@ -3027,7 +3004,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           this.alertModal.openModal("Thanks for returning the bottle.Unfortunately, producer of this shampoo brand is NOT entertaining empty bottle returns. We will be sending this bottle to the recycling plant. An amount of ₹00.00 has been credited to your wallet. Remember to check the \"Max refill count\" on the bottle lable  next time you buy or return.However, you may refill such bottle at the refilling station if you wish.(next time) ", false, () => {
             this.bottleStatus_Display['Bottle_Status'] = 'Damaged-Empty';
             this.bottleStatus_Display['currentQuantity'] = 0;
-            this.bottleStatus_Display['Location'] = 'Return Conveyor';
+            this.bottleStatus_Display['Bottle_loc'] = 'Return Conveyor';
             this.bottleStatus_Display['currentbottle'] = this.updatebottlereturn['currentitem'];
             this.getBottleStatus = 'Damaged-Empty'
             this.logser.updatethisAssetQuantity(this.bottleStatus_Display).subscribe((data) => {
@@ -3131,7 +3108,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             });
         });
       if (fromreturncon == true) {
-        this.logser.getsupermarketcashbox().subscribe(data => {
+        this.logser.getsupermarketcashbox('Supermarket Owner').subscribe(data => {
           (data[0]['Cashbox'] == '') ? this.supermarketcashbox = 0 : this.supermarketcashbox = parseInt(data[0]['Cashbox']);
           this.supermarketcashbox -= amount_refund;
           this.logser.updatesupermarketcashbox(String(this.supermarketcashbox)).subscribe(data => { });
@@ -3139,8 +3116,9 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         });
       }
       else {
-        this.logser.getReverseVendingCashbox().subscribe(data => {
-
+        //alert("returning")
+        this.logser.getsupermarketcashbox('Bottle Reverse Vending Machine Owner').subscribe(data => {
+          console.log(data[0]);
           (data[0]['Cashbox'] == '') ? this.getReverseVendingCashbox = 0 : this.getReverseVendingCashbox = parseInt(data[0]['Cashbox']);
           this.getReverseVendingCashbox -= amount_refund;
           this.logser.updatereversecashbox(String(this.getReverseVendingCashbox)).subscribe(data => { });
@@ -3223,12 +3201,12 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           this.alertModal.openModal("Thanks for returning the bottle.Unfortunately, producer of this shampoo brand is NOT entertaining empty bottle returns. We will be sending this bottle to the recycling plant. An amount of ₹00.00 has been credited to your wallet. Remember to check the \"Max refill count\" on the bottle lable  next time you buy or return.However, you may refill such bottle at the refilling station if you wish.(next time) ", false, () => {
             this.bottleStatus_Display['Bottle_Status'] = 'Damaged-Empty';
             this.bottleStatus_Display['currentQuantity'] = 0;
-            this.bottleStatus_Display['Location'] = 'ReverseVending';
+            this.bottleStatus_Display['Bottle_loc'] = 'Bottle Reverse Vending Machine';
             this.bottleStatus_Display['currentbottle'] = this.updatebottlereturn['currentitem'];
             this.getBottleStatus = 'Damaged-Empty'
             this.logser.updatethisAssetQuantity(this.bottleStatus_Display).subscribe((data) => {
 
-              this.returnCashTransactions(amount_refund, currentlyDroped, false, '07', 'ReverseVending');
+              this.returnCashTransactions(amount_refund, currentlyDroped, false, '07', 'Bottle Reverse Vending Machine');
             });
           });
 
@@ -3244,7 +3222,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             this.bottleStatus_Display['currentbottle'] = this.updatebottlereturn['currentitem'];
             this.logser.updatethisAssetQuantity(this.bottleStatus_Display).subscribe((data) => {
 
-              this.returnCashTransactions(amount_refund, currentlyDroped, false, '07', 'ReverseVending');
+              this.returnCashTransactions(amount_refund, currentlyDroped, false, '07', 'Bottle Reverse Vending Machine');
             });
 
           });
@@ -3254,7 +3232,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         else {
           this.getBottleStatus = data[0]['Bottle_Status'];
           amount_refund = this.calculateReturnCreditAmount(currentlyDroped, amount_refund)
-          this.returnCashTransactions(amount_refund, currentlyDroped, false, '07', 'ReverseVending');
+          this.returnCashTransactions(amount_refund, currentlyDroped, false, '07', 'Bottle Reverse Vending Machine');
         }
 
 
@@ -3468,7 +3446,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     const existingIdIndex = this.commonobj.findIndex(item => item.id === itemid);
     if (existingIdIndex > 0) {
       this.commonobj[existingIdIndex]['status'] = status;
-      this.commonobj[existingIdIndex]['location'] = loc;
+      this.commonobj[existingIdIndex]['Bottle_loc'] = loc;
     }
   }
   opensupermarket() {
@@ -3856,7 +3834,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
 
                 this.logser.updateConveyorAssets(this.updatebottlereturn).subscribe((data) => {
-                  this.bottleStatus_Display['Location'] = "Street";
+                  this.bottleStatus_Display['Bottle_loc'] = "Street";
                   this.playAudioElement(this.Fine.nativeElement, 0.8);
                   let index = this.currentUserPurhcased.findIndex(item => item === this.bottleStatus_Display['currentbottle'])
                   this.currentUserPurhcased.splice(index, 1);
@@ -3872,7 +3850,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
         });
 
-      this.logser.getcashboxmunicipality().subscribe(data => {
+      this.logser.getsupermarketcashbox('Municipality Office').subscribe(data => {
         (data[0]['Cashbox'] == '') ? this.municipalcashbox = 0 : this.municipalcashbox = parseInt(data[0]['Cashbox']);
         this.municipalcashbox += amount_fine;
         this.logser.updatecashboxmunicipality(String(this.municipalcashbox)).subscribe(data => { });
@@ -3917,7 +3895,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     'currentbottle': '',
     'currentQuantity': 0,
     'Bottle_Status': "InUse",
-    'Location': '',
+    'Bottle_loc': '',
     'contentCode': ''
   }
   selectedBottleatStage: string = '';
@@ -3960,9 +3938,9 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         this.bottleStatus_Display['contentCode'] = data[0]['Current_Content_Code'].split(".")[0];
         this.bottleStatus_Display['currentQuantity'] = data[0]['remQuantity'];
         this.bottleStatus_Display['Bottle_Status'] = data[0]['Bottle_Status'];
-        this.bottleStatus_Display['Location'] = data[0]['Bottle_loc'];
+        this.bottleStatus_Display['Bottle_loc'] = data[0]['Bottle_loc'];
         let content = this.sldBottleData[0]['Current_Content_Code'].split(".")[0];
-        if (this.bottleStatus_Display['Location'] !== "Street") {
+        if (this.bottleStatus_Display['Bottle_loc'] !== "Street") {
           $(".shampoolevel").addClass(content);
           let getheight = parseFloat($("." + content + ".shampoolevel").css('height').split("px")[0]);
           this.stepheight = getheight / 25;

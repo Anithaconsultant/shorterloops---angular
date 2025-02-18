@@ -294,7 +294,7 @@ export class ChartComponent {
         this.incrementCategory(this.roleBasedOperations[Tofacility], 'purchased');
       } else if (
         (Fromfacility.includes("Owner") || Fromfacility === 'Mayor') &&
-        (Tofacility === 'ReverseVending' || Tofacility === 'Return Conveyor' || Tofacility === 'Reverse Vending' || Tofacility === 'ReturnConveyor')
+        (Tofacility === 'Bottle Reverse Vending Machine' || Tofacility === 'Return Conveyor' || Tofacility === 'Reverse Vending' || Tofacility === 'ReturnConveyor')
       ) {
         this.incrementCategory(this.roleBasedOperations[Fromfacility], 'returned');
       } else if (Fromfacility.includes('Refilling Station') && this.isValidToFacility(Tofacility)) {

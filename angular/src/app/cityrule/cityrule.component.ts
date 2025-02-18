@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router,ActivatedRoute  } from '@angular/router';
 import { LoginserviceService } from './../services/loginservice.service';
 import { AlertModalComponent } from '../alert-modal/alert-modal.component';
 @Component({
@@ -13,8 +13,12 @@ export class CityruleComponent implements OnInit {
   @ViewChild('alertModal') alertModal!: AlertModalComponent;
 
 
-  cityRuleForm: FormGroup;
-  constructor(private fb: FormBuilder, private logser: LoginserviceService, private route: Router) {
+  cityRuleForm: FormGroup;notificationForm!: FormGroup;
+  constructor(private fb: FormBuilder, private logser: LoginserviceService, private route: Router,private activateroute: ActivatedRoute) {
+    this.notificationForm = this.fb.group({
+      display_at_dustbin: [false],
+      garbage_truck_announcement: [false]
+    });
     this.cityRuleForm = this.fb.group({
       cityId: [this.logser.currentuser.CityId || '', Validators.required],
       rule_number: [null, Validators.required],
@@ -43,54 +47,81 @@ export class CityruleComponent implements OnInit {
       envtx_c_urfB: ['', [Validators.min(0), Validators.max(100)]],
       fine_for_throwing_bottle: ['', [Validators.min(0)]],
       dustbinning_fine: ['', [Validators.min(0)]],
-      display_at_dustbin: [false],
-      garbage_truck_announcement: [false]
+
     });
   }
-
+currentOption:any='';
   ngOnInit(): void {
 
     if (this.logser.currentuser.Username == '') {
       this.route.navigate(['/login']);
     }
+    else {
+      this.loadLastCityRule();
+    }
+
+    this.activateroute.queryParams.subscribe(params => {
+      this.currentOption = params['option'];
+      console.log('Received option:', this.currentOption);
+    });
   }
+  loadLastCityRule() {
+    const cityId = this.cityRuleForm.get('cityId')?.value; // Get cityId from the form
 
-  onSubmit(): void {
-    alert(this.cityRuleForm.valid)
-    if (this.cityRuleForm.valid) {
-
-
-      const formData = this.cityRuleForm.value;
-
-      // Extracting the fields for City Table
-      const cityUpdateData = {
-        display_at_dustbin: formData.display_at_dustbin,
-        garbage_truck_announcement: formData.garbage_truck_announcement
-      };
-
-      // Extracting the fields for CityRule Table
-      let cityRuleData = { ...formData };
-      delete cityRuleData.display_at_dustbin;
-      delete cityRuleData.garbage_truck_announcement;
-
-      // Perform the two separate API calls
-      //console.log("City notice Data");
-      //console.log(cityUpdateData);
-      //console.log("Cityrule Data");
-      //console.log(cityRuleData);
+    if (cityId) {
+      this.logser.getLastCityRule().subscribe(
+        (data) => {
+          if (data) {
+            this.cityRuleForm.patchValue(data); // Populate form with API response
+          }
+        },
+        (error) => {
+          console.error("Error fetching last city rule", error);
+        }
+      );
+    }
+  }
+  notificationSubmit():void{
+  //  alert("dag")
+    if (this.notificationForm.valid) {
+      const notificationData = this.notificationForm.value;
+      let cityUpdateData = { ...notificationData };
+      console.log(cityUpdateData)
       this.updateCityTable(cityUpdateData);
+      this.notificationForm.reset();
+      this.alertModal.openModal("Notification Updated",false,()=>{this.gotocity();})
+    }
+  }
+  onSubmit(): void {
+    if (this.cityRuleForm.valid) {
+      const formData = this.cityRuleForm.value;
+      // const cityUpdateData = {
+      //   display_at_dustbin: formData.display_at_dustbin,
+      //   garbage_truck_announcement: formData.garbage_truck_announcement
+      // };
+      let cityRuleData = { ...formData };
+      // delete cityRuleData.display_at_dustbin;
+      // delete cityRuleData.garbage_truck_announcement;
+
+
+    //  
       this.insertIntoCityRuleTable(cityRuleData);
+      this.cityRuleForm.reset();
+      this.alertModal.openModal("New Rule is Created",false,()=>{this.gotocity();})
     }
     else {
       alert("invalid");
     }
   }
-
+  activeInfo: string | null = null;
+  toggleInfo(field: string) {
+    this.activeInfo = this.activeInfo === field ? null : field;
+  }
   updateCityTable(data: any) {
     this.logser.updateNoticeonCityTable(data).subscribe(
 
       (response) => {
-        //console.log('City Table Updated:', response);
+        console.log('City Table Updated:', response);
       },
       (error) => {
         console.error('Error updating City Table:', error);
@@ -108,9 +139,19 @@ export class CityruleComponent implements OnInit {
   }
 
   gotocity() {
-    this.logser.resumeTimer().subscribe(response => {
+
+    this.logser.toggleTimer(false).subscribe(
+      response => {
+        console.log('Timer resumed:', response);
+        this.route.navigate(["/maincity"]);
+      },
+      error => {
+        console.error('Error updating timer:', error);
+      }
+    );
+  //  this.logser.resumeTimer().subscribe(response => {
       //console.log('Timer resumed:', response);
-      this.route.navigate(["/maincity"]);
-    });
+      
+ //   });
   }
 }

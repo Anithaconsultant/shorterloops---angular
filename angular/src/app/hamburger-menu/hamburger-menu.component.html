@@ -29,39 +29,162 @@
                             <ng-template>
                                 <div class="hamburger-menu">
 
-                                    <div *ngIf="this.switchyesorno==1">
+                                    <div *ngIf="this.switchYesOrNo==0">
                                         <div class="ham-menuitem" (click)="onMenuItemClick();">Switch Role as
                                             {{currentrole}}
                                         </div>
                                     </div>
-                                    <div *ngIf="this.switchyesorno==2">
+                                    <div *ngIf="this.switchYesOrNo==2 && currentrole=='Mayor'">
                                         <div type="button" class="inneracc ham-menuitem" (click)="onMenuItemClick()">
-                                            Switch
-                                            Role as Customer</div>
+                                            Switch Role as Customer</div>
                                         <div type="button" class=" inneracc ham-menuitem"
-                                            (click)=" calculateSums() ;openCashbox(cashBox)">Check the Municipality
-                                            Office Cashbox Status</div>
+                                            (click)=" calculateSums() ;openCashbox(cashBox)">Check the Office Cashbox
+                                            Status</div>
                                         <div type="button" class=" inneracc ham-menuitem"
-                                            (click)=" calculateSums() ;openCashboxLedger(legderBook)">Check the Office
-                                            Ledger book</div>
-                                        <div type="button" class="disabled inneracc ham-menuitem">Run the garbage
-                                            truck daily</div>
-                                        <div type="button" class="inneracc ham-menuitem"
-                                            (click)="showCityRuleComponent()">Update the City
-                                            Rule Book</div>
-                                        <div type="button" class="disabled inneracc ham-menuitem">Update Notices and
-                                            Announcements
+                                            (click)=" calculateSums() ;openCashboxLedger(legderBook)">Check Ledger book
                                         </div>
+                                        <div type="button" class="disabled inneracc ham-menuitem">Run the garbage truck
+                                            daily</div>
+                                        <div type="button" class="inneracc ham-menuitem"
+                                            (click)="showCityRuleComponent('cityrule')">Update the City Rule Book</div>
+                                        <div type="button" (click)="showCityRuleComponent('notification')"
+                                            class="inneracc ham-menuitem">Update Notices and Announcements </div>
                                         <div type="button" class="inneracc ham-menuitem" (click)="showNewComponent()">
                                             Show Asset Audit Trail</div>
                                         <div type="button" class="disabled inneracc ham-menuitem">Set the City Clock
                                             Tower Tickrate</div>
-                                        <div type="button" class="disabled inneracc ham-menuitem">Audit the
-                                            Universal Bottle Cleaning Plant</div>
-                                        <div type="button" class="disabled inneracc ham-menuitem">Audit the
-                                            Refilling Station</div>
-                                        <div type="button" class="disabled inneracc ham-menuitem">Audit the
-                                            Plastic Recycling Plant</div>
+                                        <div type="button" class=" inneracc ham-menuitem" (click)="openAuditBottleCleaningVideoModal()">Audit the Universal
+                                            Bottle Manufacturing Plant</div>
+                                        <div type="button" class="disabled inneracc ham-menuitem">Audit the Refilling
+                                            Station</div>
+                                        <div type="button" class="inneracc ham-menuitem"
+                                            (click)="openAuditPlasticVideoModal()">Audit the Plastic Recycling Plant
+                                        </div>
+                                    </div>
+                                    <div *ngIf="this.switchYesOrNo==2 && currentrole=='Supermarket Owner'">
+                                        <div type="button" class="inneracc ham-menuitem" (click)="onMenuItemClick()">
+                                            Switch Role as Customer</div>
+                                        <div type="button" class=" inneracc ham-menuitem"
+                                            (click)=" calculatesupermarketSums() ;openCashbox(cashBox)">Check Cashbox
+                                            Status</div>
+                                        <div type="button" class=" inneracc ham-menuitem"
+                                            (click)=" calculatesupermarketSums() ;openCashboxLedger(legderBook)">Check
+                                            Ledger book</div>
+                                        <div type="button" class=" inneracc ham-menuitem" (click)="rungarbagetruck()">
+                                            Run the Bottle Collection Truck</div>
+                                    </div>
+                                    <div
+                                        *ngIf="this.switchYesOrNo==2 && currentrole=='Bottle Reverse Vending Machine Owner'">
+                                        <div type="button" class="inneracc ham-menuitem" (click)="onMenuItemClick()">
+                                            Switch Role as Customer</div>
+                                        <div type="button" class=" inneracc ham-menuitem"
+                                            (click)=" calculatereverseSums() ;openCashbox(cashBox)">Check Cashbox Status
+                                        </div>
+                                        <div type="button" class=" inneracc ham-menuitem"
+                                            (click)=" calculatereverseSums() ;openCashboxLedger(legderBook)">Check
+                                            Ledger book</div>
+                                    </div>
+
+                                    <div
+                                        *ngIf="this.switchYesOrNo==2 && currentrole=='Shampoo Refilling Station Owner'">
+                                        <div type="button" class="inneracc ham-menuitem" (click)="onMenuItemClick()">
+                                            Switch
+                                            Role as Customer</div>
+                                        <div type="button" class=" inneracc ham-menuitem"
+                                            (click)=" calculaterefillSums() ;openCashbox(cashBox)">Check Cashbox Status
+                                        </div>
+                                        <div type="button" class=" inneracc ham-menuitem"
+                                            (click)=" calculaterefillSums() ;openCashboxLedger(legderBook)">Check Ledger
+                                            book</div>
+                                    </div>
+                                    <div
+                                        *ngIf="this.switchYesOrNo==2 && currentrole=='Universal Bottle Manufacturing Plant owner'">
+                                        <div type="button" class="inneracc ham-menuitem" (click)="onMenuItemClick()">
+                                            Switch
+                                            Role as Customer</div>
+                                        <div type="button" class=" inneracc ham-menuitem"
+                                            (click)=" calculateUniversalManufacturingSums() ;openCashbox(cashBox)">Check
+                                            Cashbox Status
+                                        </div>
+                                        <div type="button" class="disabled inneracc ham-menuitem">Check Ledger
+                                            book</div>
+                                    </div>
+                                    <div *ngIf="this.switchYesOrNo==2 && currentrole=='Plastic Recycling Plant Owner'">
+                                        <div type="button" class="inneracc ham-menuitem" (click)="onMenuItemClick()">
+                                            Switch
+                                            Role as Customer</div>
+                                        <div type="button" class=" inneracc ham-menuitem"
+                                            (click)=" calPlasticRecyclingSums() ;openCashbox(cashBox)">Check Cashbox
+                                            Status
+                                        </div>
+                                        <div type="button" class="disabled inneracc ham-menuitem">Check Ledger
+                                            book</div>
+                                    </div>
+                                    <div *ngIf="this.switchYesOrNo==2 && currentrole=='Universal Bottle Cleaning Plant Owner'">
+                                        <div type="button" class="inneracc ham-menuitem" (click)="onMenuItemClick()">
+                                            Switch
+                                            Role as Customer</div>
+                                        <div type="button" class=" inneracc ham-menuitem"
+                                            (click)=" calUBCPSum() ;openCashbox(cashBox)">Check Cashbox
+                                            Status
+                                        </div>
+                                        <div type="button" class="disabled inneracc ham-menuitem">Check Ledger
+                                            book</div>
+                                    </div>
+                                    <div *ngIf="this.switchYesOrNo==2 && currentrole=='B1 Shampoo Producer'">
+                                        <div type="button" class="inneracc ham-menuitem" (click)="onMenuItemClick()">
+                                            Switch
+                                            Role as Customer</div>
+                                        <div type="button" class=" inneracc ham-menuitem"
+                                            (click)=" calB1shampoo() ;openCashbox(cashBox)">Check Cashbox
+                                            Status
+                                        </div>
+                                        <div type="button" class="disabled inneracc ham-menuitem">Check Ledger
+                                            book</div>
+                                    </div>
+                                    <div *ngIf="this.switchYesOrNo==2 && currentrole=='B2 Shampoo Producer'">
+                                        <div type="button" class="inneracc ham-menuitem" (click)="onMenuItemClick()">
+                                            Switch
+                                            Role as Customer</div>
+                                        <div type="button" class=" inneracc ham-menuitem"
+                                            (click)=" calB2shampoo() ;openCashbox(cashBox)">Check Cashbox
+                                            Status
+                                        </div>
+                                        <div type="button" class="disabled inneracc ham-menuitem">Check Ledger
+                                            book</div>
+                                    </div>
+                                    <div *ngIf="this.switchYesOrNo==2 && currentrole=='B3 Shampoo Producer'">
+                                        <div type="button" class="inneracc ham-menuitem" (click)="onMenuItemClick()">
+                                            Switch
+                                            Role as Customer</div>
+                                        <div type="button" class=" inneracc ham-menuitem"
+                                            (click)=" calB3shampoo() ;openCashbox(cashBox)">Check Cashbox
+                                            Status
+                                        </div>
+                                        <div type="button" class="disabled inneracc ham-menuitem">Check Ledger
+                                            book</div>
+                                    </div>
+                                    <div *ngIf="this.switchYesOrNo==2 && currentrole=='B4 Shampoo Producer'">
+                                        <div type="button" class="inneracc ham-menuitem" (click)="onMenuItemClick()">
+                                            Switch
+                                            Role as Customer</div>
+                                        <div type="button" class=" inneracc ham-menuitem"
+                                            (click)=" calB4shampoo() ;openCashbox(cashBox)">Check Cashbox
+                                            Status
+                                        </div>
+                                        <div type="button" class="disabled inneracc ham-menuitem">Check Ledger
+                                            book</div>
+                                    </div>
+                                    <div *ngIf="this.switchYesOrNo==2 && currentrole=='B5 Shampoo Producer'">
+                                        <div type="button" class="inneracc ham-menuitem" (click)="onMenuItemClick()">
+                                            Switch
+                                            Role as Customer</div>
+                                        <div type="button" class=" inneracc ham-menuitem"
+                                            (click)=" calB5shampoo() ;openCashbox(cashBox)">Check Cashbox
+                                            Status
+                                        </div>
+                                        <div type="button" class="disabled inneracc ham-menuitem">Check Ledger
+                                            book</div>
                                     </div>
                                 </div>
 
@@ -160,7 +283,7 @@
     </div>
     <div class="modal-body">
 
-        <div class="ledgerDisplay">
+        <div *ngIf="currentrole=='Mayor'" class="ledgerDisplay">
             <div class="cashboxHeader" style="margin-bottom: 15px;">Municipality Cashbox Status</div>
             <table class="cashboxTable">
                 <tr>
@@ -174,6 +297,126 @@
                 <tr>
                     <td class="tbllabel">Earning from Fines</td>
                     <td class="value">&#x20B9; {{ fineTotal | number : '1.2-2' }}</td>
+                </tr>
+            </table>
+        </div>
+        <div *ngIf="currentrole=='Supermarket Owner'" class="ledgerDisplay">
+            <div class="cashboxHeader" style="margin-bottom: 15px;">Supermarket Cashbox Status</div>
+            <table class="cashboxTable">
+                <tr>
+                    <td class="tbllabel">Current Cash</td>
+                    <td class="value">&#x20B9; {{ currentWalletsupermarket | number : '1.2-2' }}</td>
+                </tr>
+                <tr>
+                    <td class="tbllabel">Earning from Shampoo Sales</td>
+                    <td class="value">&#x20B9; {{ earningFromSales | number : '1.2-2' }}</td>
+                </tr>
+                <tr>
+                    <td class="tbllabel">Expenditure of Return Conveyor</td>
+                    <td class="value">&#x20B9; {{ DebitsInReturnConveyor | number : '1.2-2' }}</td>
+                </tr>
+            </table>
+        </div>
+        <div *ngIf="currentrole=='Bottle Reverse Vending Machine Owner'" class="ledgerDisplay">
+            <div class="cashboxHeader" style="margin-bottom: 15px;">Bottle Reverse Vending Machine Cashbox Status</div>
+            <table class="cashboxTable">
+                <tr>
+                    <td class="tbllabel">Current Cash</td>
+                    <td class="value">&#x20B9; {{ currentWalletReverseVending | number : '1.2-2' }}</td>
+                </tr>
+                <tr>
+                    <td class="tbllabel">Debit for Returning Bottle</td>
+                    <td class="value">&#x20B9; {{ DebitForReturningBottle | number : '1.2-2' }}</td>
+                </tr>
+
+            </table>
+        </div>
+        <div *ngIf="currentrole=='Shampoo Refilling Station Owner'" class="ledgerDisplay">
+            <div class="cashboxHeader" style="margin-bottom: 15px;">Shampoo Refilling Station Cashbox Status</div>
+            <table class="cashboxTable">
+                <tr>
+                    <td class="tbllabel">Current Cash</td>
+                    <td class="value">&#x20B9; {{ currentWalletRefilling | number : '1.2-2' }}</td>
+                </tr>
+                <tr>
+                    <td class="tbllabel">Credits from Refilling Shampoo</td>
+                    <td class="value">&#x20B9; {{ CreditFromRefillShampoo | number : '1.2-2' }}</td>
+                </tr>
+
+            </table>
+        </div>
+        <div *ngIf="currentrole=='Universal Bottle Manufacturing Plant owner'" class="ledgerDisplay">
+            <div class="cashboxHeader" style="margin-bottom: 15px;">Universal Bottle Manufacturing Plant Cashbox Status
+            </div>
+            <table class="cashboxTable">
+                <tr>
+                    <td class="tbllabel">Current Cash</td>
+                    <td class="value">&#x20B9; {{ WalletUniversalManufacturing | number : '1.2-2' }}</td>
+                </tr>
+
+
+            </table>
+        </div>
+        <div *ngIf="currentrole=='Plastic Recycling Plant Owner'" class="ledgerDisplay">
+            <div class="cashboxHeader" style="margin-bottom: 15px;">Plastic Recycling Plant Cashbox Status</div>
+            <table class="cashboxTable">
+                <tr>
+                    <td class="tbllabel">Current Cash</td>
+                    <td class="value">&#x20B9; {{ plasticRecyclicCashbox | number : '1.2-2' }}</td>
+                </tr>
+            </table>
+        </div>
+        <div *ngIf="currentrole=='Universal Bottle Cleaning Plant Owner'" class="ledgerDisplay">
+            <div class="cashboxHeader" style="margin-bottom: 15px;">Universal Bottle Cleaning Plant Cashbox Status</div>
+            <table class="cashboxTable">
+                <tr>
+                    <td class="tbllabel">Current Cash</td>
+                    <td class="value">&#x20B9; {{ ubcpCashbox | number : '1.2-2' }}</td>
+                </tr>
+            </table>
+        </div>
+        <div *ngIf="currentrole=='B1 Shampoo Producer'" class="ledgerDisplay">
+            <div class="cashboxHeader" style="margin-bottom: 15px;">B1 Shampoo Producer Cashbox Status</div>
+            <table class="cashboxTable">
+                <tr>
+                    <td class="tbllabel">Current Cash</td>
+                    <td class="value">&#x20B9; {{ b1ShampooCashbox | number : '1.2-2' }}</td>
+                </tr>
+            </table>
+        </div>
+        <div *ngIf="currentrole=='B2 Shampoo Producer'" class="ledgerDisplay">
+            <div class="cashboxHeader" style="margin-bottom: 15px;">B2 Shampoo Producer Cashbox Status</div>
+            <table class="cashboxTable">
+                <tr>
+                    <td class="tbllabel">Current Cash</td>
+                    <td class="value">&#x20B9; {{ b2ShampooCashbox | number : '1.2-2' }}</td>
+                </tr>
+            </table>
+        </div>
+        <div *ngIf="currentrole=='B3 Shampoo Producer'" class="ledgerDisplay">
+            <div class="cashboxHeader" style="margin-bottom: 15px;">B3 Shampoo Producer Cashbox Status</div>
+            <table class="cashboxTable">
+                <tr>
+                    <td class="tbllabel">Current Cash</td>
+                    <td class="value">&#x20B9; {{ b3ShampooCashbox | number : '1.2-2' }}</td>
+                </tr>
+            </table>
+        </div>
+        <div *ngIf="currentrole=='B4 Shampoo Producer'" class="ledgerDisplay">
+            <div class="cashboxHeader" style="margin-bottom: 15px;">B4 Shampoo Producer Cashbox Status</div>
+            <table class="cashboxTable">
+                <tr>
+                    <td class="tbllabel">Current Cash</td>
+                    <td class="value">&#x20B9; {{ b4ShampooCashbox | number : '1.2-2' }}</td>
+                </tr>
+            </table>
+        </div>
+        <div *ngIf="currentrole=='B5 Shampoo Producer'" class="ledgerDisplay">
+            <div class="cashboxHeader" style="margin-bottom: 15px;">B5 Shampoo Producer Cashbox Status</div>
+            <table class="cashboxTable">
+                <tr>
+                    <td class="tbllabel">Current Cash</td>
+                    <td class="value">&#x20B9; {{ b5ShampooCashbox | number : '1.2-2' }}</td>
                 </tr>
             </table>
         </div>

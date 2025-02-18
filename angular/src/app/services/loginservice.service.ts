@@ -23,7 +23,7 @@ export class LoginserviceService {
     'cityrate': '',
     'cityavatar': ''
   };
-  // baseurl = "https://dbl.iihs.in/api/";
+//  baseurl = "https://dbl.iihs.in/api/";
   baseurl = "http://127.0.0.1:8000/api/";
   authorizationData = 'Basic ' + btoa(this.username + ':' + this.password);
   httpHeaders = new HttpHeaders({
@@ -183,6 +183,11 @@ export class LoginserviceService {
     return this.http.get(this.baseurl + 'getcityname/' + this.currentuser.CityId,
       { headers: this.httpHeaders });
   }
+  getLastCityRule(): Observable<any> {
+  console.log( this.currentuser.CityId)
+    return this.http.get(this.baseurl + 'cityrule/' + this.currentuser.CityId,
+      { headers: this.httpHeaders });
+  }
   updateloggeduser(loguser: any): Observable<any> {
     let body;
     body = { login: loguser.login };
@@ -210,6 +215,7 @@ export class LoginserviceService {
     else {
       body = { User_cityid: edituser.cityid, Role: edituser.Role, cartId: edituser.cartId };
     }
+    console.log(body);
     return this.http.put(this.baseurl + 'updateusercity/' + this.currentuser.UserId, body,
       { headers: this.httpHeaders });
   }
@@ -256,20 +262,13 @@ export class LoginserviceService {
     return this.http.post(this.baseurl + 'cashflow/', body,
       { headers: this.httpHeaders });
   }
-  getsupermarketcashbox(): Observable<any> {
-    return this.http.get(this.baseurl + 'getsupermarketcash/' + this.currentuser.CityId,
+  getsupermarketcashbox(facilityName:any): Observable<any> {
+    return this.http.get(this.baseurl + 'getFacilityCashbox/' +facilityName+'/'+ this.currentuser.CityId,
       { headers: this.httpHeaders });
   }
-  getrefillingstationcashbox(): Observable<any> {
-    return this.http.get(this.baseurl + 'getrefillingstationcash/' + this.currentuser.CityId,
-      { headers: this.httpHeaders });
-  }
-  getReverseVendingCashbox(): Observable<any> {
-    return this.http.get(this.baseurl + 'getreversevendingcash/' + this.currentuser.CityId,
-      { headers: this.httpHeaders });
-  }
-  getcashboxmunicipality(): Observable<any> {
-    return this.http.get(this.baseurl + 'getmunicipalitycash/' + this.currentuser.CityId,
+  toggleTimer( timerPaused: boolean): Observable<any> {
+    
+    return this.http.post(this.baseurl + 'toggle-timer/' + this.currentuser.CityId, {timer_paused:timerPaused},
       { headers: this.httpHeaders });
   }
   updatesupermarketcashbox(cashbox: any): Observable<any> {

@@ -133,7 +133,7 @@
         <div class="leftcolony">{{cityname | uppercase}} HOUSING COLONY</div>
         <div class="rightcolony">{{cityname | uppercase}} HOUSING COLONY</div>-
         <div class="HouseWrapper">
-            <div *ngFor="let key of objkey(positionObject);let i = index" class="house {{key}}">
+            <div *ngFor="let key of objkey(positionObject);let i = index" class="house {{ formatKey(key) }}">
                 <div class="logInLight houselite"></div>
                 <div class="roleDisplay displaypanel"></div>
 
@@ -658,7 +658,7 @@
                         <div> "Bottle Status :" {{bottleStatus_Display['Bottle_Status']}}</div>
                         <div>"Shampoo Quantity :" {{bottleStatus_Display['currentQuantity']}}</div>
                         <div>"Bottle ID:" {{bottleStatus_Display['currentbottle'] }}</div>
-                        <div>"Bottle Location:" {{bottleStatus_Display['Location'] }}</div>
+                        <div>"Bottle Location:" {{bottleStatus_Display['Bottle_loc'] }}</div>
                     </div>
                     <div class="backside">
                         <div class="variableholder">
@@ -835,6 +835,30 @@
     <div class="modal-body">
         <div class="innderdiv">
             <div class="loadcontent2"></div>
+        </div>
+    </div>
+</ng-template>
+
+
+<ng-template #Auditing_Plastic let-modal>
+    <div class="modal-header">
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="innderdivvidoe">
+            <div class="loadvideo"><video src="./assets/video/Plastic_Recycle_Plant.mp4" width="100%" height="100%"
+                    controls></video></div>
+        </div>
+    </div>
+</ng-template>
+<ng-template #Auditing_BottleCleaning let-modal>
+    <div class="modal-header">
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="innderdivvidoe">
+            <div class="loadvideo"><video src="./assets/video/Bottling_Plant_Animation.mp4" width="100%" height="100%"
+                    controls></video></div>
         </div>
     </div>
 </ng-template>

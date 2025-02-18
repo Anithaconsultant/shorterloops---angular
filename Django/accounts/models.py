@@ -3,7 +3,7 @@ from django.db import models
 import datetime
 import uuid
 FACILITY_CHOICES = (
-    ('mun', 'Municipality Office', '100000'),
+    ('mun', 'Municipality Office', '10000'),
     ('b1p', 'B1 Shampoo Producer', '500000'),
     ('b2p', 'B2 Shampoo Producer', '500000'),
     ('b3p', 'B3 Shampoo Producer', '500000'),
@@ -215,7 +215,7 @@ class CustomUser(models.Model):
     wallet = models.CharField(max_length=70, default=2000, blank=False)
     status = models.CharField(max_length=70, blank=False)
     User_cityid = models.CharField(max_length=11, blank=True, default=0)
-    Role = models.CharField(max_length=30, blank=True)
+    Role = models.CharField(max_length=100, blank=True)
     cartId = models.CharField(max_length=30, blank=True, default=0)
     avatar = models.CharField(max_length=30, blank=True)
     gender = models.CharField(max_length=30, blank=True)

@@ -17,13 +17,42 @@ class CityTimer(threading.Thread):
         self.last_update_day = None
         self.lock = threading.Lock()  # For synchronizing access to shared resources
 
+    # def run(self):
+    #     print(f"Starting timer for city {self.city_id}")
+
+    #     while self.running:
+    #         with self.lock:  # Ensure that shared resources are accessed safely
+    #             # Ensure execution pauses when paused
+    #             self.pause_event.wait()  
+
+    #             time.sleep(1)
+    #             with transaction.atomic():
+    #                 city = City.objects.select_for_update().get(pk=self.city_id)
+    #                 city.CurrentTime += self.intervalcalculation
+    #                 if city.CurrentTime >= 86400:  # 24 hours passed
+    #                     city.CurrentTime = 0
+    #                     city.CurrentDay += 1
+
+    #                 if city.CurrentDay != 0 and city.CurrentDay % 30 == 0 and city.CurrentDay != self.last_update_day:
+    #                     self.update_wallets(city.CityId)
+    #                     self.last_update_day = city.CurrentDay
+
+    #                 city.save()
     def run(self):
         print(f"Starting timer for city {self.city_id}")
 
         while self.running:
             with self.lock:  # Ensure that shared resources are accessed safely
+                city = City.objects.get(pk=self.city_id)
+
+                # Check if the timer should be paused based on DB value
+                if city.timer_paused:
+                    self.pause()
+                else:
+                    self.resume()
+
                 # Ensure execution pauses when paused
-                self.pause_event.wait()  
+                self.pause_event.wait()
 
                 time.sleep(1)
                 with transaction.atomic():
