@@ -75,6 +75,7 @@ class City(models.Model):
     display_at_dustbin = models.BooleanField(null=True, blank=True,default=False)
     garbage_truck_announcement = models.BooleanField(null=True, blank=True,default=False)
     timer_paused = models.BooleanField(null=True, blank=True,default=False)
+    cityrul_notification = models.CharField(null=True,default='0',max_length=70)
    
 
 class Facility(models.Model):

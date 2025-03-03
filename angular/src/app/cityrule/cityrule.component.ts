@@ -1,20 +1,22 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router,ActivatedRoute  } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { LoginserviceService } from './../services/loginservice.service';
 import { AlertModalComponent } from '../alert-modal/alert-modal.component';
+import { SharedServiceService } from '../services/shared-service.service';
 @Component({
   selector: 'app-cityrule',
   templateUrl: './cityrule.component.html',
   styleUrls: ['./cityrule.component.scss']
 })
 export class CityruleComponent implements OnInit {
+[x: string]: any;
 
   @ViewChild('alertModal') alertModal!: AlertModalComponent;
 
 
-  cityRuleForm: FormGroup;notificationForm!: FormGroup;
-  constructor(private fb: FormBuilder, private logser: LoginserviceService, private route: Router,private activateroute: ActivatedRoute) {
+  cityRuleForm: FormGroup; notificationForm!: FormGroup;
+  constructor(private fb: FormBuilder,private sharedser:SharedServiceService, private logser: LoginserviceService, private route: Router, private activateroute: ActivatedRoute) {
     this.notificationForm = this.fb.group({
       display_at_dustbin: [false],
       garbage_truck_announcement: [false]
@@ -50,20 +52,22 @@ export class CityruleComponent implements OnInit {
 
     });
   }
-currentOption:any='';
+  currentOption: any = '';
   ngOnInit(): void {
-
+    this.activateroute.queryParams.subscribe(params => {
+      this.currentOption = params['option'];
+      //   console.log('Received option:', this.currentOption);
+    });
     if (this.logser.currentuser.Username == '') {
       this.route.navigate(['/login']);
     }
     else {
-      this.loadLastCityRule();
+      if (this.currentOption == 'cityrule') { this.loadLastCityRule(); }
+      else { this.loadLastCitynotification(); }
+
     }
 
-    this.activateroute.queryParams.subscribe(params => {
-      this.currentOption = params['option'];
-      console.log('Received option:', this.currentOption);
-    });
+    
   }
   loadLastCityRule() {
     const cityId = this.cityRuleForm.get('cityId')?.value; // Get cityId from the form
@@ -81,36 +85,59 @@ currentOption:any='';
       );
     }
   }
-  notificationSubmit():void{
-  //  alert("dag")
+  loadLastCitynotification() {
+    const cityId = this.logser.currentuser.CityId; // Get cityId from the form
+
+    if (cityId) {
+      this.logser.getcitynames().subscribe(
+        (data: any) => {
+          if (data) {
+            console.log("API Response:", data);
+
+            // Ensure checkboxes receive boolean values
+            const formattedData = {
+              display_at_dustbin: data[0].display_at_dustbin,
+              garbage_truck_announcement: data[0].garbage_truck_announcement
+            };
+            console.log(formattedData)
+            this.notificationForm.patchValue(formattedData); // Populate form with API response
+          }
+        },
+        (error) => {
+          console.error("Error fetching cityname", error);
+        }
+      );
+    }
+  }
+  showWarning:boolean=false;
+  toggleWarning(event: any) {
+    this.showWarning = event.target.checked; // Get checkbox value
+    this.sharedser.setShowWarning(this.showWarning); // Update service state
+  }
+  playWarning:boolean=false;
+  togglePlayWarning(event: any) {
+    this.playWarning = event.target.checked; // Get checkbox value
+    this.sharedser.setPlayWarning(this.playWarning); // Update service state
+  }
+  notificationSubmit(): void {
     if (this.notificationForm.valid) {
       const notificationData = this.notificationForm.value;
       let cityUpdateData = { ...notificationData };
-      console.log(cityUpdateData)
       this.updateCityTable(cityUpdateData);
       this.notificationForm.reset();
-      this.alertModal.openModal("Notification Updated",false,()=>{this.gotocity();})
+      this.alertModal.openModal("Notification Updated", false, () => { this.gotocity(); })
     }
   }
   onSubmit(): void {
     if (this.cityRuleForm.valid) {
       const formData = this.cityRuleForm.value;
-      // const cityUpdateData = {
-      //   display_at_dustbin: formData.display_at_dustbin,
-      //   garbage_truck_announcement: formData.garbage_truck_announcement
-      // };
       let cityRuleData = { ...formData };
-      // delete cityRuleData.display_at_dustbin;
-      // delete cityRuleData.garbage_truck_announcement;
-
-
-    //  
       this.insertIntoCityRuleTable(cityRuleData);
       this.cityRuleForm.reset();
-      this.alertModal.openModal("New Rule is Created",false,()=>{this.gotocity();})
+      this.alertModal.openModal("New Rule is Created", false, () => { this.gotocity(); })
     }
     else {
-      alert("invalid");
+     this.alertModal.openModal("Please fill the valid Details");
     }
   }
   activeInfo: string | null = null;
@@ -149,9 +176,9 @@ currentOption:any='';
         console.error('Error updating timer:', error);
       }
     );
-  //  this.logser.resumeTimer().subscribe(response => {
-      //console.log('Timer resumed:', response);
-      
- //   });
+    //  this.logser.resumeTimer().subscribe(response => {
+    //console.log('Timer resumed:', response);
+
+    //   });
   }
 }

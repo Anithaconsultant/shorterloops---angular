@@ -372,13 +372,13 @@
       <div class="col-md-12">
         <div class="form-check">
           <input type="checkbox" id="display_at_dustbin" formControlName="display_at_dustbin"
-            class="form-check-input" />
+            class="form-check-input" (change)="toggleWarning($event)" />
           <label for="display_at_dustbin" class="form-check-label">Display at Dustbin?</label>
         </div>
 
         <div class="form-check">
           <input type="checkbox" id="garbage_truck_announcement" formControlName="garbage_truck_announcement"
-            class="form-check-input" />
+            class="form-check-input" (change)="togglePlayWarning($event)" />
           <label for="garbage_truck_announcement" class="form-check-label">Garbage Truck Announcement?</label>
         </div>
       </div>

@@ -3,12 +3,12 @@ from django.dispatch import receiver, Signal
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 import threading
-from .models import Asset, Auditlog, City,Cityrule
-from .cityTimer import CityTimer
-from .timer_manager import start_timer_for_city, pause_timer_for_city, resume_timer_for_city  # Import here
+from .models import Asset, Auditlog, City, Cityrule,CustomUser
+from time import sleep
+import time
+from django.db.models import F 
+
 user_data_received = Signal()
-
-
 @receiver(pre_save, sender=Asset)
 def track_changes(sender, instance, **kwargs):
     """Store the original instance values before saving."""
@@ -78,9 +78,6 @@ def record_audit_trail_on_save(sender, instance, created, **kwargs):
             )
         transaction.on_commit(lambda: instance.reset_attributes())
 
-user_data_received.connect(record_audit_trail_on_save, sender=Asset, weak=False)
-
-
 
 @receiver(post_save, sender=Cityrule)
 def update_assets_from_cityrule(sender, instance, **kwargs):
@@ -113,7 +110,8 @@ def update_assets_from_cityrule(sender, instance, **kwargs):
             tax_retailer = instance.envtx_r_urcb if plant_refill_count == 0 else instance.envtx_r_urfB
         else:
             tax_retailer = None
-        # Update the asset's environmental tax
+
+        # Update asset's environmental tax
         if tax_value is not None:
             asset.Env_Tax_Customer = tax_value
         if tax_retailer is not None:
@@ -125,3 +123,169 @@ def update_assets_from_cityrule(sender, instance, **kwargs):
         asset.Discard_Garbagetruck_fine = str(instance.fine_for_throwing_bottle) if instance.fine_for_throwing_bottle is not None else ''
         asset.save()
 
+
+# def start_timer_for_city(city):
+#     timer = CityTimer(city.CityId, city.Clocktickrate)
+#     timers[city.CityId] = timer
+#     timer.start()
+
+# def stop_timer_for_city(city_id):
+#     if city_id in timers:
+#         timers[city_id].stop()  # Stop the timer thread completely
+#         del timers[city_id]  # Optionally, remove the timer from the dictionary
+#     else:
+#         print(f"No timer found for city {city_id}")
+        
+# def pause_timer_for_city(city_id):
+#     if city_id in timers:
+#         timers[city_id].pause()  # Pause the timer for the specific city
+#     else:
+#         print(f"No timer found for city {city_id}")
+
+
+# def resume_timer_for_city(city_id):
+#     if city_id in timers:
+#         timers[city_id].resume()  # Resume the timer for the specific city
+#     else:
+#         print(f"No timer found for city {city_id}")
+        
+
+
+# @receiver(post_save, sender=City)
+# def start_timer_on_create(sender, instance, created, **kwargs):
+#     if created:
+#         start_timer_for_city(instance)
+
+
+# timers = {}
+
+# class CityTimer(threading.Thread):
+#     def __init__(self, city_id, clocktickrate):
+#         super().__init__()
+#         self.city_id = city_id
+#         self.clocktickrate = clocktickrate
+#         self.intervalcalculation = 86400 / (self.clocktickrate * 60)
+#         self.running = True
+#         self.paused = False  # Track pause status
+#         self.pause_event = threading.Event()
+#         self.pause_event.set()  # Start unpaused
+#         self.last_update_day = None
+#         self.lock = threading.Lock()  # For synchronizing access to shared resources
+
+#     def run(self):
+#         print(f"Starting timer for city {self.city_id}")
+
+#         while self.running:
+#             with self.lock:  # Ensure that shared resources are accessed safely
+#                 city = City.objects.get(pk=self.city_id)
+
+#                 # Check if the timer should be paused based on DB value
+#                 if city.timer_paused:
+#                     self.pause()
+#                 else:
+#                     self.resume()
+
+#                 # Ensure execution pauses when paused
+#                 self.pause_event.wait()
+
+#                 sleep(1)
+#                 with transaction.atomic():
+#                     city = City.objects.select_for_update().get(pk=self.city_id)
+#                     city.CurrentTime += self.intervalcalculation
+#                     if city.CurrentTime >= 86400:  # 24 hours passed
+#                         city.CurrentTime = 0
+#                         city.CurrentDay += 1
+
+#                     if city.CurrentDay != 0 and city.CurrentDay % 30 == 0 and city.CurrentDay != self.last_update_day:
+#                         self.update_wallets(city.CityId)
+#                         self.last_update_day = city.CurrentDay
+
+#                     city.save()
+
+#     def update_wallets(self, city_id):
+#         CustomUser.objects.filter(User_cityid=city_id).update(wallet=F("wallet") + 2000)
+#         CustomUser.objects.filter(User_cityid=city_id).update(update_count=F("update_count") + 1)
+#         print(f"Successfully updated wallets for users in city ID: {city_id}")
+
+#     def pause(self):
+#         """Pause the timer"""
+#         print("Timer paused")
+#         with self.lock:
+#             if not self.paused:
+#                 self.paused = True
+#                 self.pause_event.clear()  # This will cause `pause_event.wait()` to block
+
+#     def resume(self):
+#         """Resume the timer"""
+#         with self.lock:
+#             if self.paused:
+#                 self.paused = False
+#                 self.pause_event.set()  # Unblocks `pause_event.wait()`
+
+#     def stop(self):
+#         """Stop the timer completely"""
+#         with self.lock:
+#             self.running = False
+#             self.pause_event.set()  # Ensure it exits even if paused
+#             print(f"Timer for city {self.city_id} stopped.")
+
+timers = {}
+
+
+class CityTimer(threading.Thread):
+    def __init__(self, city_id, clocktickrate):
+        super().__init__()
+        self.city_id = city_id
+        self.clocktickrate = clocktickrate
+        self.intervalcalculation = 86400 / (self.clocktickrate * 60)
+        self.running = True
+        self.last_update_day = None
+
+    def run(self):
+        print(f'Starting timer for city {self.city_id}')
+
+        while self.running:
+            time.sleep(1)
+            with transaction.atomic():
+                city = City.objects.select_for_update().get(pk=self.city_id)
+                city.CurrentTime += self.intervalcalculation
+
+                if city.CurrentTime >= 86400:  # 24 hours
+                    city.CurrentTime = 0
+                    city.CurrentDay += 1
+
+               # if city.CurrentDay >= 365:  # 365 days
+               #     city.CurrentDay = 0
+
+                # Check if 30 days have passed and update wallets if needed
+                if city.CurrentDay != 0 and city.CurrentDay % 30 == 0 and city.CurrentDay != self.last_update_day:
+                    self.update_wallets(city.CityId)
+                    self.last_update_day = city.CurrentDay
+
+                city.save()
+
+    def update_wallets(self, city_id):
+        CustomUser.objects.filter(User_cityid=city_id).update(wallet=F("wallet") + 2000)
+        CustomUser.objects.filter(User_cityid=city_id).update(update_count=F("update_count") + 1)
+        print(f"Successfully updated wallets for users in city ID: {city_id}")
+
+    def stop(self):
+        self.running = False
+
+
+def start_timer_for_city(city):
+    timer = CityTimer(city.CityId, city.Clocktickrate)
+    timers[city.CityId] = timer
+    timer.start()
+
+
+def stop_timer_for_city(city_id):
+    if city_id in timers:
+        timers[city_id].stop()
+        del timers[city_id]
+
+
+@receiver(post_save, sender=City)
+def start_timer_on_create(sender, instance, created, **kwargs):
+    if created:
+        start_timer_for_city(instance)

@@ -501,7 +501,7 @@ app-signup {
         }
         .B5_Shampoo_Producer  {
             top: 3800px;
-            left: 7538px;
+            left: 7561px;
         }
 
         .Bottle_Reverse_Vending_Machine_Owner {
@@ -511,7 +511,7 @@ app-signup {
 
         .Universal_Bottle_Manufacturing_Plant_owner {
             top: 3378px;
-            left: 7538px;
+            left: 7561px;
         }
 
         .Shampoo_Refilling_Station_Owner {
@@ -586,7 +586,7 @@ app-signup {
 
         }
 
-        .Supermarket {
+        .Supermarket_Owner {
             @extend .commoncls;
             left: 1909px;
             top: 2457px;
@@ -595,25 +595,25 @@ app-signup {
             background: #555;
         }
 
-        .Plastic {
+        .Plastic_Recycling_Plant_Owner {
             @extend .commoncls;
             left: 1982px;
             top: 871px;
         }
 
-        .Making {
+        .Universal_Bottle_Manufacturing_Plant_owner {
             @extend .commoncls;
             left: 4185px;
-            top: 615px;
+            top: 611px;
         }
 
-        .Ubottle {
+        .Universal_Bottle_Cleaning_Plant_Owner {
             @extend .commoncls;
-            left: 4500px;
-            top: 1511px
+            left: 4614px;
+            top: 1498px;
         }
 
-        .Refilling {
+        .Shampoo_Refilling_Station_Owner {
             @extend .commoncls;
             left: 5818px;
             top: 2430px;
@@ -677,7 +677,6 @@ app-signup {
                 height: 93px;
                 display: flex;
                 overflow: hidden;
-                border: 1px solid #f00;
             }
 
             .shinyshelf {
@@ -1474,7 +1473,7 @@ app-signup {
         top: 17px;
     }
 
-    .Current_Refill_Count {
+    .Current_PlantRefill_Count {
         position: absolute;
         top: 34px;
         left: -16px;

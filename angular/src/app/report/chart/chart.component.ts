@@ -46,7 +46,7 @@ export class ChartComponent {
         stacked: true, // Enable stacking on the x-axis
         title: {
           display: true,
-          text: 'Bottle Brands Type', // Y-axis label
+          text: 'Bottle Brand and Package Type', // Y-axis label
           font: {
             size: 16,
             weight: 'bold',
@@ -86,7 +86,7 @@ export class ChartComponent {
       x: { stacked: true,
         title: {
           display: true,
-          text: 'Bottle and Brand Types', // Y-axis label
+          text: 'Bottle Brand and Package Type', // Y-axis label
           font: {
             size: 16,
             weight: 'bold',
@@ -264,8 +264,8 @@ export class ChartComponent {
     'House4 Owner', 'House5 Owner', 'House6 Owner', 'House7 Owner', 'House8 Owner', 'House9 Owner', 'House10 Owner', 'Mayor'
   ];
   operationTypes = [
-    'purchased', 'returned', 'throwedOnTheStreet', 'throwedOnTheDustbin',
-    'throwedOnTheTruck', 'using', 'refilled'
+    'Purchased', 'Returned', 'ThrownOnTheStreet', 'ThrowOnTheDustbin',
+    'ThrownOnTheTruck', 'Using', 'Refilled'
   ];
 
   generateRoleBasedObject(roles: string[], operationTypes: string[]) {
@@ -288,27 +288,34 @@ export class ChartComponent {
 
     this.assetdataset.forEach((operation) => {
       //console.log(operation);
-      const { Fromfacility, Tofacility } = operation;
+      const { Fromfacility, Tofacility,Bottle_Status } = operation;
       //console.log(Fromfacility, Tofacility);
+
+      if(Bottle_Status=='InUse'){
+        this.incrementCategory(this.roleBasedOperations[Tofacility], 'Using');
+      }
       if (Fromfacility === 'Supermarket Owner' && this.isValidToFacility(Tofacility)) {
-        this.incrementCategory(this.roleBasedOperations[Tofacility], 'purchased');
+        this.incrementCategory(this.roleBasedOperations[Tofacility], 'Purchased');
       } else if (
         (Fromfacility.includes("Owner") || Fromfacility === 'Mayor') &&
         (Tofacility === 'Bottle Reverse Vending Machine' || Tofacility === 'Return Conveyor' || Tofacility === 'Reverse Vending' || Tofacility === 'ReturnConveyor')
       ) {
-        this.incrementCategory(this.roleBasedOperations[Fromfacility], 'returned');
+        this.incrementCategory(this.roleBasedOperations[Fromfacility], 'Returned');
       } else if (Fromfacility.includes('Refilling Station') && this.isValidToFacility(Tofacility)) {
-        this.incrementCategory(this.roleBasedOperations[Tofacility], 'refilled');
+        this.incrementCategory(this.roleBasedOperations[Tofacility], 'Refilled');
       }
       else if (this.isValidToFacility(Fromfacility) && (Tofacility === 'Street')) {
-        this.incrementCategory(this.roleBasedOperations[Fromfacility], 'throwedOnTheStreet');
+        this.incrementCategory(this.roleBasedOperations[Fromfacility], 'ThrownOnTheStreet');
       }
       else if (this.isValidToFacility(Fromfacility) && (Tofacility === 'Garbage Truck')) {
-        this.incrementCategory(this.roleBasedOperations[Fromfacility], 'throwedOnTheTruck');
+        this.incrementCategory(this.roleBasedOperations[Fromfacility], 'ThrownOnTheTruck');
       }
       else if (this.isValidToFacility(Fromfacility) && (Tofacility === 'City Dustbin')) {
-        this.incrementCategory(this.roleBasedOperations[Fromfacility], 'throwedOnTheDustbin');
+        this.incrementCategory(this.roleBasedOperations[Fromfacility], 'ThrowOnTheDustbin');
       }
+      // else if (this.isValidToFacility(Fromfacility) && (Tofacility === 'City Dustbin')) {
+      //   this.incrementCategory(this.roleBasedOperations[Fromfacility], 'ThrowOnTheDustbin');
+      // }
     });
 
 
@@ -384,13 +391,13 @@ oprlabel:any;
   // Helper to assign colors dynamically
   getBackgroundColor(property: string): string {
     const colors: { [key: string]: string } = {
-      purchased: 'rgba(54, 162, 235, 0.6)',
-      returned: 'rgba(255, 99, 132, 0.6)',
-      throwedOnTheStreet: 'rgba(255, 159, 64, 0.6)',
-      throwedOnTheDustbin: 'rgba(75, 192, 192, 0.6)',
-      throwedOnTheTruck: 'rgba(153, 102, 255, 0.6)',
-      using: 'rgba(255, 206, 86, 0.6)',
-      refilled: 'rgba(75, 192, 75, 0.6)',
+      Purchased: 'rgba(54, 162, 235, 0.6)',
+      Returned: 'rgba(255, 99, 132, 0.6)',
+      ThrownOnTheStreet: 'rgba(255, 159, 64, 0.6)',
+      ThrownOnTheDustbin: 'rgba(75, 192, 192, 0.6)',
+      ThrownOnTheTruck: 'rgba(153, 102, 255, 0.6)',
+      Using: 'rgba(255, 206, 86, 0.6)',
+      Refilled: 'rgba(75, 192, 75, 0.6)',
     };
     return colors[property] || 'rgba(0, 0, 0, 0.6)';
   }

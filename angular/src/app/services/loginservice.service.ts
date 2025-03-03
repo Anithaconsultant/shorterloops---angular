@@ -23,8 +23,8 @@ export class LoginserviceService {
     'cityrate': '',
     'cityavatar': ''
   };
-//  baseurl = "https://dbl.iihs.in/api/";
-  baseurl = "http://127.0.0.1:8000/api/";
+// baseurl = "https://dbl.iihs.in/api/";
+baseurl = "http://127.0.0.1:8000/api/";
   authorizationData = 'Basic ' + btoa(this.username + ':' + this.password);
   httpHeaders = new HttpHeaders({
     'Content-Type': 'application/json',
@@ -178,6 +178,45 @@ export class LoginserviceService {
     return this.http.put(this.baseurl + 'assets/' + currentbottle.currentbottle, body,
       { headers: this.httpHeaders });
   }
+  updateBtlLocationandMakeitRetired(currentbottle: any,bottleId:any): Observable<any> {
+    return this.http.put(this.baseurl + 'assets/' + bottleId, currentbottle,
+      { headers: this.httpHeaders });
+  }
+  bringBackBrandedBottles(currentbottle: any,assetId:any): Observable<any> {
+
+    return this.http.put(this.baseurl + 'assets/' +assetId, currentbottle,
+      { headers: this.httpHeaders });
+  }
+  updateUBContent(currentbottle: any): Observable<any> {
+    const body = {
+      Content_Code:'',
+      Current_Content_Code:'',
+      Transaction_Id:'',
+      Transaction_Date:'',
+      Fromfacility:'',
+      Tofacility:'',
+      dragged:false,
+      purchased:false,
+      Bottle_Status:'Empty-Clean'
+    };
+    console.log("UB update",currentbottle,body);
+    return this.http.put(this.baseurl + 'assets/' + currentbottle, body,
+      { headers: this.httpHeaders });
+  }
+  updateBrandedContent(currentbottle: any): Observable<any> {
+    const body = {
+      Transaction_Id:'',
+      Transaction_Date:'',
+      Fromfacility:'',
+      Tofacility:'',
+      dragged:false,
+      purchased:false,
+      Bottle_Status:'Empty-Clean'
+    };
+    console.log("Branded",currentbottle,body);
+    return this.http.put(this.baseurl + 'assets/' + currentbottle, body,
+      { headers: this.httpHeaders });
+  }
   getcitynames(): Observable<any> {
   console.log( this.currentuser.CityId)
     return this.http.get(this.baseurl + 'getcityname/' + this.currentuser.CityId,
@@ -262,8 +301,13 @@ export class LoginserviceService {
     return this.http.post(this.baseurl + 'cashflow/', body,
       { headers: this.httpHeaders });
   }
-  getsupermarketcashbox(facilityName:any): Observable<any> {
+  getFacilitycashbox(facilityName:any): Observable<any> {
     return this.http.get(this.baseurl + 'getFacilityCashbox/' +facilityName+'/'+ this.currentuser.CityId,
+      { headers: this.httpHeaders });
+  }
+  updateFacilitycashbox(facilityName:any,cashbox:any): Observable<any> {
+    const body = { Cashbox: cashbox };
+    return this.http.put(this.baseurl + 'getFacilityCashbox/' +facilityName+'/'+ this.currentuser.CityId,body,
       { headers: this.httpHeaders });
   }
   toggleTimer( timerPaused: boolean): Observable<any> {
@@ -271,26 +315,26 @@ export class LoginserviceService {
     return this.http.post(this.baseurl + 'toggle-timer/' + this.currentuser.CityId, {timer_paused:timerPaused},
       { headers: this.httpHeaders });
   }
-  updatesupermarketcashbox(cashbox: any): Observable<any> {
-    const body = { Cashbox: cashbox };
-    return this.http.put(this.baseurl + 'getsupermarketcash/' + this.currentuser.CityId, body,
-      { headers: this.httpHeaders });
-  }
-  updaterefillingcashbox(cashbox: any): Observable<any> {
-    const body = { Cashbox: cashbox };
-    return this.http.put(this.baseurl + 'getrefillingstationcash/' + this.currentuser.CityId, body,
-      { headers: this.httpHeaders });
-  }
-  updatereversecashbox(cashbox: any): Observable<any> {
-    const body = { Cashbox: cashbox };
-    return this.http.put(this.baseurl + 'getreversevendingcash/' + this.currentuser.CityId, body,
-      { headers: this.httpHeaders });
-  }
-  updatecashboxmunicipality(cashbox: any): Observable<any> {
-    const body = { Cashbox: cashbox }
-    return this.http.put(this.baseurl + 'getmunicipalitycash/' + this.currentuser.CityId, body,
-      { headers: this.httpHeaders });
-  }
+  // updatesupermarketcashbox(cashbox: any): Observable<any> {
+  //   const body = { Cashbox: cashbox };
+  //   return this.http.put(this.baseurl + 'getsupermarketcash/' + this.currentuser.CityId, body,
+  //     { headers: this.httpHeaders });
+  // }
+  // updaterefillingcashbox(cashbox: any): Observable<any> {
+  //   const body = { Cashbox: cashbox };
+  //   return this.http.put(this.baseurl + 'getrefillingstationcash/' + this.currentuser.CityId, body,
+  //     { headers: this.httpHeaders });
+  // }
+  // updatereversecashbox(cashbox: any): Observable<any> {
+  //   const body = { Cashbox: cashbox };
+  //   return this.http.put(this.baseurl + 'getreversevendingcash/' + this.currentuser.CityId, body,
+  //     { headers: this.httpHeaders });
+  // }
+  // updatecashboxmunicipality(cashbox: any): Observable<any> {
+  //   const body = { Cashbox: cashbox }
+  //   return this.http.put(this.baseurl + 'getmunicipalitycash/' + this.currentuser.CityId, body,
+  //     { headers: this.httpHeaders });
+  // }
 
   sendUserDetails(userDetails: any): Observable<any> {
     const headers = new HttpHeaders()

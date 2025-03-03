@@ -53,10 +53,11 @@
                                             Show Asset Audit Trail</div>
                                         <div type="button" class="disabled inneracc ham-menuitem">Set the City Clock
                                             Tower Tickrate</div>
-                                        <div type="button" class=" inneracc ham-menuitem" (click)="openAuditBottleCleaningVideoModal()">Audit the Universal
+                                        <div type="button" class=" inneracc ham-menuitem" (click)="openAuditBottleMakingVideoModal()">Audit the Universal
                                             Bottle Manufacturing Plant</div>
                                         <div type="button" class="disabled inneracc ham-menuitem">Audit the Refilling
                                             Station</div>
+                                        <div type="button" class="inneracc ham-menuitem"  (click)="openAuditBottleCleaningVideoModal()">Audit the Universal Bottle Cleaning Plant</div>
                                         <div type="button" class="inneracc ham-menuitem"
                                             (click)="openAuditPlasticVideoModal()">Audit the Plastic Recycling Plant
                                         </div>
@@ -70,6 +71,8 @@
                                         <div type="button" class=" inneracc ham-menuitem"
                                             (click)=" calculatesupermarketSums() ;openCashboxLedger(legderBook)">Check
                                             Ledger book</div>
+                                        <div type="button" class=" inneracc ham-menuitem"
+                                            (click)=" loadPlantBottles() ;">Bring Back Refilled Bottles</div>
                                         <div type="button" class=" inneracc ham-menuitem" (click)="rungarbagetruck()">
                                             Run the Bottle Collection Truck</div>
                                     </div>

@@ -1414,7 +1414,7 @@ export class AddcityComponent implements OnInit {
     Units = 'ml';
     Bottle_loc = 'Supermarket Shelf';
     Bottle_Status = 'Full';
-    DOM = '1/1/2023';
+    DOM = '0';
     Max_Refill_Count = 5;
 
     assettableobj = {
@@ -1429,7 +1429,7 @@ export class AddcityComponent implements OnInit {
         'Units': 'ml',
         'Bottle_loc': 'Supermarket shelf',
         'Bottle_Status': 'Full',
-        'DOM': '1/1/2023',
+        'DOM': '0',
         'Max_Refill_Count': 5,
         'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
         'Latest_Refill_Date': '',
@@ -1596,6 +1596,21 @@ export class AddcityComponent implements OnInit {
             // }
             if (!isNaN(parseInt(this.city.Clocktickrate)) && this.selectedavatar != 0 && parseInt(this.city.Clocktickrate) > 0) {
                 this.city.cityavatar = String(this.selectedavatar);
+
+
+                let totalAssets = Object.keys(this.assetData).length;
+                let zeroRefillCount = Math.floor(totalAssets * 0.2); // 20% of records
+                let selectedZeroRefillIndices = new Set();
+                
+                // Filter assets where Current_PlantRefill_Count is 0
+                let eligibleAssets = Object.keys(this.assetData).filter(assetId => this.assetData[assetId].Current_PlantRefill_Count === 0);
+                let maxZeroRefill = Math.min(zeroRefillCount, eligibleAssets.length); // Ensure we don't exceed available assets
+                
+                // Randomly select assets from the eligible set
+                while (selectedZeroRefillIndices.size < maxZeroRefill) {
+                    let randomIndex = Math.floor(Math.random() * eligibleAssets.length);
+                    selectedZeroRefillIndices.add(eligibleAssets[randomIndex]); // Add asset ID, not index
+                }
                 $(".maskholder").show();
 
                 this.logser.createcity(this.city).pipe(
@@ -1642,7 +1657,7 @@ export class AddcityComponent implements OnInit {
                                     this.assettableobj['Env_Tax_Producer'] = asset['Env_Tax_Customer'];
                                     this.assettableobj['Env_Tax_Retailer'] = asset['Env_Tax_Customer'];
                                     this.assettableobj['Discard_fine'] = asset['Discard_fine'];
-
+                                    this.assettableobj['Max_Refill_Count'] = selectedZeroRefillIndices.has(assetId) ? 0 : 5;
 
                                     return this.logser.createAsset(this.assettableobj);
                                 });

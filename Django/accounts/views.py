@@ -1,5 +1,4 @@
 from django.db.models import Q
-from .userData import UserData
 from .models import City, CustomUser, Facility, FACILITY_CHOICES, Cityrule, Asset, Cashflow, Auditlog, Bottleprice, Shampooprice
 from .serializers import userSerializer, citySerializer, facilitySerializer, cityRuleSerializer, AssetSerializer, cashflowSerializer, AuditSerializer, BottleSerializer, shampooSerializer
 from rest_framework.decorators import api_view
@@ -13,8 +12,9 @@ import json
 from django.db.models import QuerySet
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.signals import post_save
-from .signals import user_data_received, pause_timer_for_city, resume_timer_for_city
+from .signals import user_data_received
 from django.utils.decorators import method_decorator
+# from .cityTimer import CityTimer
 
 data1 = list()
 currentuser = ''
@@ -197,49 +197,48 @@ def add_Cityrule(request):
         return JsonResponse(serializer.data, safe=False)
 
 
-
-
 @api_view(['GET'])
 def get_last_city_rule(request, city_id):
     last_rule = Cityrule.objects.filter(
-         cityId=city_id).order_by('ruleId').last()
+        cityId=city_id).order_by('ruleId').last()
 
     # Get city data
-    #city_data =  City.objects.filter(pk=city_id).first()
+    # city_data =  City.objects.filter(pk=city_id).first()
 
     if last_rule:
         response_data = {
-        "rule_number": last_rule.rule_number,
-        "day_number": last_rule.day_number,
-        "time_in_hours": last_rule.time_in_hours,
-        "virgin_plastic_price": last_rule.virgin_plastic_price,
-        "recycled_plastic_price": last_rule.recycled_plastic_price,
-        "envtx_p_shampoo": last_rule.envtx_p_shampoo,
-        "envtx_p_bvb": last_rule.envtx_p_bvb,
-        "envtx_p_brcb": last_rule.envtx_p_brcb,
-        "envtx_p_brfb": last_rule.envtx_p_brfb,
-        "envtx_ub_v_m": last_rule.envtx_ub_v_m,
-        "envtx_ub_rc_m": last_rule.envtx_ub_rc_m,
-        "envtx_ub_xx_cl": last_rule.envtx_ub_xx_cl,
-        "envtx_r_bvb": last_rule.envtx_r_bvb,
-        "envtx_r_brcb": last_rule.envtx_r_brcb,
-        "envtx_r_brfb": last_rule.envtx_r_brfb,
-        "envtx_r_uvb": last_rule.envtx_r_uvb,
-        "envtx_r_urcb": last_rule.envtx_r_urcb,
-        "envtx_r_urfB": last_rule.envtx_r_urfB,
-        "envtx_c_bvb": last_rule.envtx_c_bvb,
-        "envtx_c_brcb": last_rule.envtx_c_brcb,
-        "envtx_c_brfb": last_rule.envtx_c_brfb,
-        "envtx_c_uvb": last_rule.envtx_c_uvb,
-        "envtx_c_urcb": last_rule.envtx_c_urcb,
-        "envtx_c_urfB": last_rule.envtx_c_urfB,
-        "fine_for_throwing_bottle": last_rule.fine_for_throwing_bottle,
-        "dustbinning_fine": last_rule.dustbinning_fine,
-       # "display_at_dustbin": city_data.display_at_dustbin,  
-       # "garbage_truck_announcement": city_data.garbage_truck_announcement 
-         }
+            "rule_number": last_rule.rule_number,
+            "day_number": last_rule.day_number,
+            "time_in_hours": last_rule.time_in_hours,
+            "virgin_plastic_price": last_rule.virgin_plastic_price,
+            "recycled_plastic_price": last_rule.recycled_plastic_price,
+            "envtx_p_shampoo": last_rule.envtx_p_shampoo,
+            "envtx_p_bvb": last_rule.envtx_p_bvb,
+            "envtx_p_brcb": last_rule.envtx_p_brcb,
+            "envtx_p_brfb": last_rule.envtx_p_brfb,
+            "envtx_ub_v_m": last_rule.envtx_ub_v_m,
+            "envtx_ub_rc_m": last_rule.envtx_ub_rc_m,
+            "envtx_ub_xx_cl": last_rule.envtx_ub_xx_cl,
+            "envtx_r_bvb": last_rule.envtx_r_bvb,
+            "envtx_r_brcb": last_rule.envtx_r_brcb,
+            "envtx_r_brfb": last_rule.envtx_r_brfb,
+            "envtx_r_uvb": last_rule.envtx_r_uvb,
+            "envtx_r_urcb": last_rule.envtx_r_urcb,
+            "envtx_r_urfB": last_rule.envtx_r_urfB,
+            "envtx_c_bvb": last_rule.envtx_c_bvb,
+            "envtx_c_brcb": last_rule.envtx_c_brcb,
+            "envtx_c_brfb": last_rule.envtx_c_brfb,
+            "envtx_c_uvb": last_rule.envtx_c_uvb,
+            "envtx_c_urcb": last_rule.envtx_c_urcb,
+            "envtx_c_urfB": last_rule.envtx_c_urfB,
+            "fine_for_throwing_bottle": last_rule.fine_for_throwing_bottle,
+            "dustbinning_fine": last_rule.dustbinning_fine,
+            # "display_at_dustbin": city_data.display_at_dustbin,
+            # "garbage_truck_announcement": city_data.garbage_truck_announcement
+        }
         return JsonResponse(response_data, safe=False)
     return JsonResponse({"message": "No records found"}, status=404)
+
 
 @api_view(['GET', 'POST'])
 def getfacility(request, cityid):
@@ -274,7 +273,7 @@ def returnasset(request, itemid):
         return JsonResponse(serializer.data, safe=False)
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
-        
+
         getasset = Asset.objects.filter(AssetId=itemid).first()
         serializer = AssetSerializer(getasset, data=data, partial=True)
         if serializer.is_valid():
@@ -404,9 +403,8 @@ def updatetransactionfacility(request, cityid):
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
 
 
-
 @api_view(['GET', 'PUT'])
-def getfacilitycash(request,facilityName,cityid):
+def getfacilitycash(request, facilityName, cityid):
     if request.method == 'GET':
         data = Facility.objects.filter(
             Facilityname=facilityName, Facility_cityid=cityid)
@@ -423,6 +421,7 @@ def getfacilitycash(request,facilityName,cityid):
         else:
             print("invalid data")
         return JsonResponse(serializer.data, safe=False)
+
 
 @api_view(['GET', 'POST', 'PUT'])
 def leavefacility(request, userid):
@@ -452,8 +451,9 @@ def cityrule(request):
         data = Cityrule.objects.all()
         serializer = cityRuleSerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
-    
-@api_view(['GET', 'POST', 'PUT'])    
+
+
+@api_view(['GET', 'POST', 'PUT'])
 def toggle_city_timer(request, cityid):
     if request.method == "POST":
         try:
@@ -471,13 +471,13 @@ def toggle_city_timer(request, cityid):
             return JsonResponse({"success": False, "error": "Invalid JSON format"}, status=400)
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)}, status=500)
-    
+
     return JsonResponse({"success": False, "error": "Invalid request method"}, status=405)
 
 
 @api_view(['GET', 'POST', 'PUT'])
 def editcity(request, cityid):
-    
+
     try:
         city = City.objects.get(pk=cityid)  # Fetch a single city instance
     except City.DoesNotExist:
@@ -485,8 +485,9 @@ def editcity(request, cityid):
 
     if request.method == 'POST' or request.method == 'PUT':
         data = JSONParser().parse(request)
-        print('data',data)
-        serializer = citySerializer(city, data=data, partial=True)  # Pass instance, not QuerySet
+        print('data', data)
+        # Pass instance, not QuerySet
+        serializer = citySerializer(city, data=data, partial=True)
 
         if serializer.is_valid():
             serializer.save()
@@ -495,8 +496,10 @@ def editcity(request, cityid):
             return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == 'GET':
-        serializer = citySerializer(city)
-        return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+        getcity = City.objects.filter(pk=cityid)
+        serializer = citySerializer(getcity, many=True)
+        print('getcitynamr', serializer.data)
+        return JsonResponse(serializer.data, safe=False)
 
 
 @api_view(['GET', 'POST', 'PUT'])
