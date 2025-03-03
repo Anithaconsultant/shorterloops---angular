@@ -119,11 +119,11 @@
         </div>
         <!-- <div class="housedisplay">{{currentusername | titlecase}}</div> -->
         <div class="boardholder">
-            <div class="Supermarket commoncls">CLOSED</div>
-            <div class="Plastic commoncls">CLOSED</div>
-            <div class="Ubottle commoncls">CLOSED</div>
-            <div class="Making commoncls">CLOSED</div>
-            <div class="Refilling commoncls">CLOSE</div>
+            <div class="Supermarket_Owner commoncls">CLOSED</div>
+            <div class="Plastic_Recycling_Plant_Owner commoncls">CLOSED</div>
+            <div class="Universal_Bottle_Cleaning_Plant_Owner commoncls">CLOSED</div>
+            <div class="Universal_Bottle_Manufacturing_Plant_owner commoncls">CLOSED</div>
+            <div class="Shampoo_Refilling_Station_Owner commoncls">CLOSE</div>
         </div>
         <div class="mayorflag"></div>
 
@@ -139,7 +139,7 @@
 
                 <div class="namedisplay housedisplay"></div>
             </div>
-            <div class="bottleStore {{currentUserRole}}">
+            <div class="bottleStore {{formatKey(currentUserRole)}}">
                 <div cdkDropList #houseshelfList="cdkDropList"
                     [cdkDropListConnectedTo]="[customercartList,customercartBottomList,truckList]"
                     [cdkDropListData]="BottleInHouseList" (cdkDropListDropped)="boughtdrop($event)"
@@ -859,6 +859,36 @@
         <div class="innderdivvidoe">
             <div class="loadvideo"><video src="./assets/video/Bottling_Plant_Animation.mp4" width="100%" height="100%"
                     controls></video></div>
+        </div>
+    </div>
+</ng-template>
+
+
+
+<ng-template #reloadBottle let-modal>
+    <div class="modal-header">
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="reloadDisplay">
+            <div class="tableheading">Bottles at the Plants Details</div>
+            <div>
+                <table>
+                    <thead>
+                      <tr>
+                        <th>Bottle Type</th>
+                        <th>No of Bottles</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of reloadBottles | keyvalue">
+                        <td>{{ item.key.toString() | titlecase}}</td>
+                        <td>{{ item.value }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <button class="reloadSuperMarket" (click)="reloadBottlesToSuperMarket()">Reload to SuperMarket</button>
+            </div>
         </div>
     </div>
 </ng-template>
