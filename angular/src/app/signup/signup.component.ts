@@ -5,12 +5,15 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import * as $ from 'jquery';
+import { AlertModalComponent } from '../alert-modal/alert-modal.component';
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss']
 })
 export class SignupComponent implements OnInit {
+  @ViewChild('alertModal') alertModal!: AlertModalComponent;
+
   public signupForm!: FormGroup;
   submitted = false;
   newuser = {
@@ -63,7 +66,7 @@ export class SignupComponent implements OnInit {
   signup() {
     this.submitted = true;
     if (this.signupForm.invalid) {
-      alert("Please fill all the Fields");
+      this.alertModal.openModal("Please fill all the Fields");
       return;
     }
 
@@ -75,12 +78,12 @@ export class SignupComponent implements OnInit {
             $(".success").show();
           }
           else {
-            alert(data.message);
+            this.alertModal.openModal(data.message);
           }
 
         },
         error => {
-          console.log(error);
+          //console.log(error);
         }
       );
 

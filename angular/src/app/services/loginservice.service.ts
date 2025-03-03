@@ -5,8 +5,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class LoginserviceService {
-  username = "admin";
-  password = "admin@123";
+  username = "Admin";
+  password = "Admin@123";
   currentuser = {
     'Username': '',
     'UserId': '',
@@ -23,8 +23,8 @@ export class LoginserviceService {
     'cityrate': '',
     'cityavatar': ''
   };
-   baseurl = "https://dbl.iihs.in/api/";
-  //baseurl = "http://127.0.0.1:8000/api/";
+// baseurl = "https://dbl.iihs.in/api/";
+baseurl = "http://127.0.0.1:8000/api/";
   authorizationData = 'Basic ' + btoa(this.username + ':' + this.password);
   httpHeaders = new HttpHeaders({
     'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ export class LoginserviceService {
       { headers: this.httpHeaders });
   }
   createAsset(asset: any): Observable<any> {
-    const body = { AssetId: asset.AssetId, Asset_CityId: asset.Asset_CityId, CategoryCode: asset.CategoryCode, Bottle_Code: asset.Bottle_Code, Content_Code: asset.Content_Code, Current_Content_Code: asset.Current_Content_Code, Quantity: asset.Quantity, remQuantity: asset.remQuantity, Units: asset.Units, Bottle_loc: asset.Bottle_loc, Bottle_Status: asset.Bottle_Status, DOM: asset.DOM, Max_Refill_Count: asset.Max_Refill_Count, Current_Refill_Count: asset.Current_Refill_Count, Latest_Refill_Date: asset.Latest_Refill_Date, Retirement_Date: asset.Retirement_Date, Retire_Reason: asset.Retire_Reason, Content_Price: asset.Content_Price, Bottle_Price: asset.Bottle_Price, Redeem_Good: asset.Redeem_Good, Redeem_Damaged: asset.Redeem_Damaged, Discount_RefillB: asset.Discount_RefillB, Env_Tax: asset.Env_Tax, Discard_fine: asset.Discard_fine, Transaction_Id: asset.Transaction_Id, Transaction_Date: asset.Transaction_Date, Fromfacility: asset.Fromfacility, Tofacility: asset.Tofacility };
+    const body = { AssetId: asset.AssetId, Asset_CityId: asset.Asset_CityId, CategoryCode: asset.CategoryCode, Bottle_Code: asset.Bottle_Code, Content_Code: asset.Content_Code, Current_Content_Code: asset.Current_Content_Code, Quantity: asset.Quantity, remQuantity: asset.remQuantity, Units: asset.Units, Bottle_loc: asset.Bottle_loc, Bottle_Status: asset.Bottle_Status, DOM: asset.DOM, Max_Refill_Count: asset.Max_Refill_Count, Current_SelfRefill_Count: asset.Current_SelfRefill_Count, Current_PlantRefill_Count: asset.Current_PlantRefill_Count, Latest_Refill_Date: asset.Latest_Refill_Date, Retirement_Date: asset.Retirement_Date, Retire_Reason: asset.Retire_Reason, Content_Price: asset.Content_Price, Bottle_Price: asset.Bottle_Price, Redeem_Good: asset.Redeem_Good, Redeem_Damaged: asset.Redeem_Damaged, Discount_RefillB: asset.Discount_RefillB, Env_Tax_Customer: asset.Env_Tax_Customer, Discard_fine: asset.Discard_fine, Transaction_Id: asset.Transaction_Id, Transaction_Date: asset.Transaction_Date, Fromfacility: asset.Fromfacility, Tofacility: asset.Tofacility };
     return this.http.post(this.baseurl + 'asset/' + this.currentuser.CityId, body,
       { headers: this.httpHeaders });
   }
@@ -51,6 +51,13 @@ export class LoginserviceService {
 
     const body = { CityName: city.CityName, MayorId: city.MayorId, Clocktickrate: city.Clocktickrate, Status: city.Status, cityavatar: city.cityavatar };
     return this.http.post(this.baseurl + 'addcity/', body,
+      { headers: this.httpHeaders });
+
+  }
+
+  createcityrule(cityrule: any): Observable<any> {
+    //console.log(cityrule)
+    return this.http.post(this.baseurl + 'addRule/', cityrule,
       { headers: this.httpHeaders });
 
   }
@@ -65,6 +72,10 @@ export class LoginserviceService {
   }
   getAllAssets(): Observable<any> {
     return this.http.get(this.baseurl + 'asset/' + this.currentuser.CityId,
+      { headers: this.httpHeaders });
+  }
+  getFilteredCityAssets(cityId: any): Observable<any> {
+    return this.http.get(this.baseurl + 'asset/' + cityId,
       { headers: this.httpHeaders });
   }
 
@@ -133,11 +144,17 @@ export class LoginserviceService {
       { headers: this.httpHeaders });
   }
 
+  updateNoticeonCityTable(body: any): Observable<any> {
+    //console.log(body)
+    return this.http.put(this.baseurl + 'addcity/' + this.currentuser.CityId, body,
+      { headers: this.httpHeaders });
+  }
+
   updateRefillData(bottleDataatRefill: any): Observable<any> {
     const body: { [key: string]: any } = {
       remQuantity: String(bottleDataatRefill.currentQuantity),
       Bottle_Status: bottleDataatRefill.Bottle_Status,
-      Current_Refill_Count: bottleDataatRefill.Current_Refill_Count
+      Current_SelfRefill_Count: bottleDataatRefill.Current_SelfRefill_Count
 
     };
 
@@ -161,9 +178,53 @@ export class LoginserviceService {
     return this.http.put(this.baseurl + 'assets/' + currentbottle.currentbottle, body,
       { headers: this.httpHeaders });
   }
-  getcitynames(): Observable<any> {
+  updateBtlLocationandMakeitRetired(currentbottle: any,bottleId:any): Observable<any> {
+    return this.http.put(this.baseurl + 'assets/' + bottleId, currentbottle,
+      { headers: this.httpHeaders });
+  }
+  bringBackBrandedBottles(currentbottle: any,assetId:any): Observable<any> {
 
+    return this.http.put(this.baseurl + 'assets/' +assetId, currentbottle,
+      { headers: this.httpHeaders });
+  }
+  updateUBContent(currentbottle: any): Observable<any> {
+    const body = {
+      Content_Code:'',
+      Current_Content_Code:'',
+      Transaction_Id:'',
+      Transaction_Date:'',
+      Fromfacility:'',
+      Tofacility:'',
+      dragged:false,
+      purchased:false,
+      Bottle_Status:'Empty-Clean'
+    };
+    console.log("UB update",currentbottle,body);
+    return this.http.put(this.baseurl + 'assets/' + currentbottle, body,
+      { headers: this.httpHeaders });
+  }
+  updateBrandedContent(currentbottle: any): Observable<any> {
+    const body = {
+      Transaction_Id:'',
+      Transaction_Date:'',
+      Fromfacility:'',
+      Tofacility:'',
+      dragged:false,
+      purchased:false,
+      Bottle_Status:'Empty-Clean'
+    };
+    console.log("Branded",currentbottle,body);
+    return this.http.put(this.baseurl + 'assets/' + currentbottle, body,
+      { headers: this.httpHeaders });
+  }
+  getcitynames(): Observable<any> {
+  console.log( this.currentuser.CityId)
     return this.http.get(this.baseurl + 'getcityname/' + this.currentuser.CityId,
+      { headers: this.httpHeaders });
+  }
+  getLastCityRule(): Observable<any> {
+  console.log( this.currentuser.CityId)
+    return this.http.get(this.baseurl + 'cityrule/' + this.currentuser.CityId,
       { headers: this.httpHeaders });
   }
   updateloggeduser(loguser: any): Observable<any> {
@@ -193,6 +254,7 @@ export class LoginserviceService {
     else {
       body = { User_cityid: edituser.cityid, Role: edituser.Role, cartId: edituser.cartId };
     }
+    console.log(body);
     return this.http.put(this.baseurl + 'updateusercity/' + this.currentuser.UserId, body,
       { headers: this.httpHeaders });
   }
@@ -239,33 +301,40 @@ export class LoginserviceService {
     return this.http.post(this.baseurl + 'cashflow/', body,
       { headers: this.httpHeaders });
   }
-  getsupermarketcashbox(): Observable<any> {
-    return this.http.get(this.baseurl + 'getsupermarketcash/' + this.currentuser.CityId,
+  getFacilitycashbox(facilityName:any): Observable<any> {
+    return this.http.get(this.baseurl + 'getFacilityCashbox/' +facilityName+'/'+ this.currentuser.CityId,
       { headers: this.httpHeaders });
   }
-  getrefillingstationcashbox(): Observable<any> {
-    return this.http.get(this.baseurl + 'getrefillingstationcash/' + this.currentuser.CityId,
-      { headers: this.httpHeaders });
-  }
-  getcashboxmunicipality(): Observable<any> {
-    return this.http.get(this.baseurl + 'getmunicipalitycash/' + this.currentuser.CityId,
-      { headers: this.httpHeaders });
-  }
-  updatesupermarketcashbox(cashbox: any): Observable<any> {
+  updateFacilitycashbox(facilityName:any,cashbox:any): Observable<any> {
     const body = { Cashbox: cashbox };
-    return this.http.put(this.baseurl + 'getsupermarketcash/' + this.currentuser.CityId, body,
+    return this.http.put(this.baseurl + 'getFacilityCashbox/' +facilityName+'/'+ this.currentuser.CityId,body,
       { headers: this.httpHeaders });
   }
-  updaterefillingcashbox(cashbox: any): Observable<any> {
-    const body = { Cashbox: cashbox };
-    return this.http.put(this.baseurl + 'getrefillingstationcash/' + this.currentuser.CityId, body,
+  toggleTimer( timerPaused: boolean): Observable<any> {
+    
+    return this.http.post(this.baseurl + 'toggle-timer/' + this.currentuser.CityId, {timer_paused:timerPaused},
       { headers: this.httpHeaders });
   }
-  updatecashboxmunicipality(cashbox: any): Observable<any> {
-    const body = { Cashbox: cashbox }
-    return this.http.put(this.baseurl + 'getmunicipalitycash/' + this.currentuser.CityId, body,
-      { headers: this.httpHeaders });
-  }
+  // updatesupermarketcashbox(cashbox: any): Observable<any> {
+  //   const body = { Cashbox: cashbox };
+  //   return this.http.put(this.baseurl + 'getsupermarketcash/' + this.currentuser.CityId, body,
+  //     { headers: this.httpHeaders });
+  // }
+  // updaterefillingcashbox(cashbox: any): Observable<any> {
+  //   const body = { Cashbox: cashbox };
+  //   return this.http.put(this.baseurl + 'getrefillingstationcash/' + this.currentuser.CityId, body,
+  //     { headers: this.httpHeaders });
+  // }
+  // updatereversecashbox(cashbox: any): Observable<any> {
+  //   const body = { Cashbox: cashbox };
+  //   return this.http.put(this.baseurl + 'getreversevendingcash/' + this.currentuser.CityId, body,
+  //     { headers: this.httpHeaders });
+  // }
+  // updatecashboxmunicipality(cashbox: any): Observable<any> {
+  //   const body = { Cashbox: cashbox }
+  //   return this.http.put(this.baseurl + 'getmunicipalitycash/' + this.currentuser.CityId, body,
+  //     { headers: this.httpHeaders });
+  // }
 
   sendUserDetails(userDetails: any): Observable<any> {
     const headers = new HttpHeaders()
@@ -306,5 +375,20 @@ export class LoginserviceService {
     });
     return this.http.get(this.baseurl + 'filter-audit-logs/', { headers: this.httpHeaders, params });
   }
+
+  pauseTimer() {
+    return this.http.post(this.baseurl + 'manage-city-timer/' + this.currentuser.CityId, { action: 'pause' },
+      { headers: this.httpHeaders });
+
+  }
+
+  resumeTimer() {
+    return this.http.post(this.baseurl + 'manage-city-timer/' + this.currentuser.CityId, { action: 'resume' },
+      { headers: this.httpHeaders });
+
+  }
+
+
+
 
 }

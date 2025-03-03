@@ -3,6 +3,9 @@
     <audio #welcomemarket preload="auto">
         <source src="assets/audio/welcomesupermarket.mp3" type="audio/mp3" />
     </audio>
+    <audio #anouncement preload="auto">
+        <source src="assets/audio/announcement.mp3" type="audio/mp3" />
+    </audio>
     <audio #trucksound preload="auto">
         <source src="assets/audio/truck_horn.mp3" type="audio/mp3" />
     </audio>
@@ -119,11 +122,11 @@
         </div>
         <!-- <div class="housedisplay">{{currentusername | titlecase}}</div> -->
         <div class="boardholder">
-            <div class="Supermarket commoncls">CLOSED</div>
-            <div class="Plastic commoncls">CLOSED</div>
-            <div class="Ubottle commoncls">CLOSED</div>
-            <div class="Making commoncls">CLOSED</div>
-            <div class="Refilling commoncls">CLOSE</div>
+            <div class="Supermarket_Owner commoncls">CLOSED</div>
+            <div class="Plastic_Recycling_Plant_Owner commoncls">CLOSED</div>
+            <div class="Universal_Bottle_Cleaning_Plant_Owner commoncls">CLOSED</div>
+            <div class="Universal_Bottle_Manufacturing_Plant_owner commoncls">CLOSED</div>
+            <div class="Shampoo_Refilling_Station_Owner commoncls">CLOSE</div>
         </div>
         <div class="mayorflag"></div>
 
@@ -133,13 +136,13 @@
         <div class="leftcolony">{{cityname | uppercase}} HOUSING COLONY</div>
         <div class="rightcolony">{{cityname | uppercase}} HOUSING COLONY</div>-
         <div class="HouseWrapper">
-            <div *ngFor="let key of objkey(positionObject);let i = index" class="house {{key}}">
+            <div *ngFor="let key of objkey(positionObject);let i = index" class="house {{ formatKey(key) }}">
                 <div class="logInLight houselite"></div>
                 <div class="roleDisplay displaypanel"></div>
 
                 <div class="namedisplay housedisplay"></div>
             </div>
-            <div class="bottleStore {{currentUserRole}}">
+            <div class="bottleStore {{formatKey(currentUserRole)}}">
                 <div cdkDropList #houseshelfList="cdkDropList"
                     [cdkDropListConnectedTo]="[customercartList,customercartBottomList,truckList]"
                     [cdkDropListData]="BottleInHouseList" (cdkDropListDropped)="boughtdrop($event)"
@@ -160,6 +163,7 @@
                     (click)="openbottelstages(cartcontent,$event)">
                 </div>
             </div>
+            <div class="warning" *ngIf="showwarning==true"></div>
         </div>
         <div class="reverseVending">
             <div class="reverseDropper">
@@ -505,8 +509,8 @@
                 <div class="labelholder">
                     <div class="DOM">{{assetdata[0].DOM}}</div>
                     <div class="Quantity">{{assetdata[0].Quantity}} {{assetdata[0].Units}}</div>
-                    <div class="Current_Refill_Count">{{assetdata[0].Current_Refill_Count}}</div>
-      
+                    <div class="Current_PlantRefill_Count">{{assetdata[0].Current_PlantRefill_Count}}</div>
+
                     <div class="Latest_Refill_Date">{{assetdata[0].Latest_Refill_Date}}</div>
                     <div class="Shampoo_Price">&#8377;{{shapooprice}}</div>
                     <div class="Content_Price">&#8377; {{assetdata[0].Content_Price}}</div>
@@ -514,7 +518,7 @@
                     <div class="Discount_RefillB">&#8377; {{assetdata[0].Discount_RefillB}}</div>
                     <div class="Redeem_Good">&#8377; {{assetdata[0].Redeem_Good}}</div>
                     <div class="Discard_fine">&#8377; {{assetdata[0].Discard_fine}}</div>
-                    <div class="Env_Tax">&#8377; {{assetdata[0].Env_Tax}}</div>
+                    <div class="Env_Tax_Customer">&#8377; {{assetdata[0].Env_Tax_Customer}}</div>
                     <div class="Total_price">&#8377; {{totalamount}}</div>
                     <div class="AssetId">{{assetdata[0].AssetId}}</div>
                     <div class="Max_Refill_Count">Maximum Refill Count :{{assetdata[0].Max_Refill_Count}}</div>
@@ -631,11 +635,11 @@
                                         <td>{{ item.AssetId}}</td>
                                         <td>{{ item.Bottle_Code}}</td>
                                         <td>{{ item.Content_Code}}</td>
-                                        <td>{{ item.Current_Refill_Count}}</td>
+                                        <td>{{ item.Current_PlantRefill_Count}}</td>
                                         <td>{{ item.Content_Price}}</td>
                                         <td>{{ item.Bottle_Price}}</td>
                                         <td>{{ item.Discount_RefillB}}</td>
-                                        <td>{{ item.Env_Tax}}</td>
+                                        <td>{{ item.Env_Tax_Customer}}</td>
                                         <td>{{ item.Redeem_Good}}</td>
                                         <td>Purchase</td>
                                         <td>{{ item.Totalvalue}}</td>
@@ -658,7 +662,7 @@
                         <div> "Bottle Status :" {{bottleStatus_Display['Bottle_Status']}}</div>
                         <div>"Shampoo Quantity :" {{bottleStatus_Display['currentQuantity']}}</div>
                         <div>"Bottle ID:" {{bottleStatus_Display['currentbottle'] }}</div>
-                        <div>"Bottle Location:" {{bottleStatus_Display['Location'] }}</div>
+                        <div>"Bottle Location:" {{bottleStatus_Display['Bottle_loc'] }}</div>
                     </div>
                     <div class="backside">
                         <div class="variableholder">
@@ -673,13 +677,18 @@
                                     <div class="Quantity">Quantity: {{sldBottleData[0].Quantity}}
                                         {{sldBottleData[0].Units}}</div>
                                 </div>
-                                <div >
+                                <div>
                                     <div class="MaxCount">Maximum Refill Count: {{sldBottleData[0].Max_Refill_Count}}
-                                       </div>
+                                    </div>
                                 </div>
-                                <div >
-                                    <div class="Current_Refill_Count">Current Refill Count:
-                                        {{sldBottleData[0].Current_Refill_Count}}</div>
+                                <div>
+                                    <div class="Current_PlantRefill_Count">Current Plant Refill Count:
+                                        {{sldBottleData[0].Current_PlantRefill_Count}}</div>
+                                </div>
+
+                                <div>
+                                    <div class="Current_SelfRefill_Count">Current Self Refill Count:
+                                        {{sldBottleData[0].Current_SelfRefill_Count}}</div>
                                 </div>
 
                                 <div *ngIf="sldBottleData[0]?.Latest_Refill_Date">
@@ -716,8 +725,8 @@
                                     </div>
                                 </div>
 
-                                <div *ngIf="sldBottleData[0]?.Env_Tax !== undefined">
-                                    <div class="Env_Tax">Environmental Tax: &#8377; {{sldBottleData[0].Env_Tax}}</div>
+                                <div *ngIf="sldBottleData[0]?.Env_Tax_Customer !== undefined">
+                                    <div class="Env_Tax_Customer">Environmental Tax: &#8377; {{sldBottleData[0].Env_Tax_Customer}}</div>
                                 </div>
 
                                 <div *ngIf="totalamount !== undefined">
@@ -727,7 +736,7 @@
                                 <div *ngIf="sldBottleData[0]?.AssetId">
                                     <div class="AssetId">Asset Id: {{sldBottleData[0].AssetId}}</div>
                                 </div>
-                
+
                             </div>
 
                         </div>
@@ -830,6 +839,71 @@
     <div class="modal-body">
         <div class="innderdiv">
             <div class="loadcontent2"></div>
+        </div>
+    </div>
+</ng-template>
+
+
+<ng-template #Auditing_Plastic let-modal>
+    <div class="modal-header">
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="innderdivvidoe">
+            <div class="loadvideo"><video src="./assets/video/Plastic_Recycle_Plant.mp4" width="100%" height="100%"
+                    controls></video></div>
+        </div>
+    </div>
+</ng-template>
+<ng-template #Auditing_BottleCleaning let-modal>
+    <div class="modal-header">
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="innderdivvidoe">
+            <div class="loadvideo"><video src="./assets/video/Cleaning_Station_Animation.mp4" width="100%" height="100%"
+                    controls></video></div>
+        </div>
+    </div>
+</ng-template>
+<ng-template #Auditing_BottleMaking let-modal>
+    <div class="modal-header">
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="innderdivvidoe">
+            <div class="loadvideo"><video src="./assets/video/Bottling_Plant_Animation.mp4" width="100%" height="100%"
+                    controls></video></div>
+        </div>
+    </div>
+</ng-template>
+
+
+
+<ng-template #reloadBottle let-modal>
+    <div class="modal-header">
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="reloadDisplay">
+            <div class="tableheading">Bottles at the Plants Details</div>
+            <div>
+                <table>
+                    <thead>
+                      <tr>
+                        <th>Bottle Type</th>
+                        <th>No of Bottles</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of reloadBottles | keyvalue">
+                        <td>{{ item.key.toString() | titlecase}}</td>
+                        <td>{{ item.value }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <button class="reloadSuperMarket" (click)="reloadBottlesToSuperMarket()">Reload to SuperMarket</button>
+            </div>
         </div>
     </div>
 </ng-template>

@@ -4,12 +4,14 @@ import { LoginserviceService } from './../services/loginservice.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AlertModalComponent } from '../alert-modal/alert-modal.component';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+  @ViewChild('alertModal') alertModal!: AlertModalComponent;
   public loginForm!: FormGroup;
   submitted = false;
   constructor(private modalService: NgbModal, private formbuilder: FormBuilder, private http: HttpClientModule, private router: Router, private logser: LoginserviceService) {
@@ -32,7 +34,7 @@ export class LoginComponent implements OnInit {
     $("video").hide();
     this.showImage = true;
     // You can implement additional logic here if needed
-    console.log('Skip button clicked');
+    //console.log('Skip button clicked');
   }
   ngOnInit(): void {
     this.loginForm = this.formbuilder.group({
@@ -43,7 +45,7 @@ export class LoginComponent implements OnInit {
   login() {
     this.submitted = true;
     if (this.loginForm.invalid) {
-      alert("Please enter Username and Password");
+      this.alertModal.openModal("Please enter Username and Password",false);
       return;
     }
     if (this.submitted) {
@@ -78,19 +80,19 @@ export class LoginComponent implements OnInit {
               }
             },
             (error) => {
-              console.log(error);
+              //console.log(error);
             }
           );
 
         } else {
           if (userfound) {
-            alert("Kindly Check your Credentials");
+            this.alertModal.openModal("Kindly Check your Credentials",false);
           } else {
-            alert("User not Found. Kindly Register.");
+            this.alertModal.openModal("User not Found. Kindly Register.",false);
           }
         }
       }, err => {
-        alert("Something went wrong")
+        this.alertModal.openModal("Something went wrong",false)
       })
     }
   }

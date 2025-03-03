@@ -1,4 +1,4 @@
-from .userData import UserData
+from django.db.models import Q
 from .models import City, CustomUser, Facility, FACILITY_CHOICES, Cityrule, Asset, Cashflow, Auditlog, Bottleprice, Shampooprice
 from .serializers import userSerializer, citySerializer, facilitySerializer, cityRuleSerializer, AssetSerializer, cashflowSerializer, AuditSerializer, BottleSerializer, shampooSerializer
 from rest_framework.decorators import api_view
@@ -13,7 +13,8 @@ from django.db.models import QuerySet
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.signals import post_save
 from .signals import user_data_received
-
+from django.utils.decorators import method_decorator
+# from .cityTimer import CityTimer
 
 data1 = list()
 currentuser = ''
@@ -96,8 +97,9 @@ def signup(request):
 @api_view(['GET', 'POST'])
 def getcityname(request, cityid):
     if request.method == 'GET':
-        data = City.objects.filter(pk=cityid)
-        serializer = citySerializer(data, many=True)
+        getcity = City.objects.filter(pk=cityid)
+        serializer = citySerializer(getcity, many=True)
+        print('getcitynamr', serializer.data)
         return JsonResponse(serializer.data, safe=False)
 
 
@@ -105,7 +107,6 @@ def getcityname(request, cityid):
 def addcity(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
-        print(data)
         serializer = citySerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -181,6 +182,65 @@ def createtransaction(request):
 
 
 @api_view(['GET', 'POST'])
+def add_Cityrule(request):
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = cityRuleSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            print("invalid data")
+        return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+    if request.method == 'GET':
+        data = Cityrule.objects.all()
+        serializer = cityRuleSerializer(data, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+
+@api_view(['GET'])
+def get_last_city_rule(request, city_id):
+    last_rule = Cityrule.objects.filter(
+        cityId=city_id).order_by('ruleId').last()
+
+    # Get city data
+    # city_data =  City.objects.filter(pk=city_id).first()
+
+    if last_rule:
+        response_data = {
+            "rule_number": last_rule.rule_number,
+            "day_number": last_rule.day_number,
+            "time_in_hours": last_rule.time_in_hours,
+            "virgin_plastic_price": last_rule.virgin_plastic_price,
+            "recycled_plastic_price": last_rule.recycled_plastic_price,
+            "envtx_p_shampoo": last_rule.envtx_p_shampoo,
+            "envtx_p_bvb": last_rule.envtx_p_bvb,
+            "envtx_p_brcb": last_rule.envtx_p_brcb,
+            "envtx_p_brfb": last_rule.envtx_p_brfb,
+            "envtx_ub_v_m": last_rule.envtx_ub_v_m,
+            "envtx_ub_rc_m": last_rule.envtx_ub_rc_m,
+            "envtx_ub_xx_cl": last_rule.envtx_ub_xx_cl,
+            "envtx_r_bvb": last_rule.envtx_r_bvb,
+            "envtx_r_brcb": last_rule.envtx_r_brcb,
+            "envtx_r_brfb": last_rule.envtx_r_brfb,
+            "envtx_r_uvb": last_rule.envtx_r_uvb,
+            "envtx_r_urcb": last_rule.envtx_r_urcb,
+            "envtx_r_urfB": last_rule.envtx_r_urfB,
+            "envtx_c_bvb": last_rule.envtx_c_bvb,
+            "envtx_c_brcb": last_rule.envtx_c_brcb,
+            "envtx_c_brfb": last_rule.envtx_c_brfb,
+            "envtx_c_uvb": last_rule.envtx_c_uvb,
+            "envtx_c_urcb": last_rule.envtx_c_urcb,
+            "envtx_c_urfB": last_rule.envtx_c_urfB,
+            "fine_for_throwing_bottle": last_rule.fine_for_throwing_bottle,
+            "dustbinning_fine": last_rule.dustbinning_fine,
+            # "display_at_dustbin": city_data.display_at_dustbin,
+            # "garbage_truck_announcement": city_data.garbage_truck_announcement
+        }
+        return JsonResponse(response_data, safe=False)
+    return JsonResponse({"message": "No records found"}, status=404)
+
+
+@api_view(['GET', 'POST'])
 def getfacility(request, cityid):
     if request.method == 'GET':
         data = Facility.objects.filter(Facility_cityid=cityid)
@@ -213,7 +273,7 @@ def returnasset(request, itemid):
         return JsonResponse(serializer.data, safe=False)
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
-        print(data)
+
         getasset = Asset.objects.filter(AssetId=itemid).first()
         serializer = AssetSerializer(getasset, data=data, partial=True)
         if serializer.is_valid():
@@ -227,33 +287,90 @@ def returnasset(request, itemid):
 def facility(request, mayorid):
     if request.method == 'POST':
         data = JSONParser().parse(request)
-        for value in range(len(FACILITY_CHOICES)):
-            global cartcount
-            faciname = FACILITY_CHOICES[value][1]
-            if (faciname == 'Municipality Office' or faciname == 'Clock Tower' or faciname == 'Public Dustbin' or faciname == 'Municipality Landfill' or faciname == 'Garbage Truck'):
-                if (faciname == 'Municipality Office'):
-                    cartIds = str(data['Facility_cityid']
-                                  )+'_'+str(cartcount)
-                    serval = {'Facilityname': faciname, 'Facility_cityid': data['Facility_cityid'],
-                              'Owner_status': 'Active', 'Owner_id': mayorid, 'Cashbox': '', 'LedgerId': '0', 'cartId': cartIds}
+        global cartcount
+
+        # Loop through FACILITY_CHOICES to process each facility
+        for code, faciname, cashbox_value in FACILITY_CHOICES:
+            if faciname in ['Municipality Office', 'Clock Tower', 'Public Dustbin', 'Municipality Landfill', 'Garbage Truck']:
+                if faciname == 'Municipality Office':
+                    cartIds = str(data['Facility_cityid']) + \
+                        '_' + str(cartcount)
+                    serval = {
+                        'Facilityname': faciname,
+                        'Facility_cityid': data['Facility_cityid'],
+                        'Owner_status': 'Active',
+                        'Owner_id': mayorid,
+                        'Cashbox': cashbox_value,
+                        'LedgerId': '0',
+                        'cartId': cartIds
+                    }
                 else:
-                    serval = {'Facilityname': faciname, 'Facility_cityid': data['Facility_cityid'],
-                              'Owner_status': 'Active', 'Owner_id': mayorid, 'Cashbox': '', 'LedgerId': '0', 'cartId': '0'}
+                    serval = {
+                        'Facilityname': faciname,
+                        'Facility_cityid': data['Facility_cityid'],
+                        'Owner_status': 'Active',
+                        'Owner_id': mayorid,
+                        'Cashbox': cashbox_value,
+                        'LedgerId': '0',
+                        'cartId': '0'
+                    }
             else:
-                cartcount = cartcount+1
-                cartIds = str(data['Facility_cityid'])+'_'+str(cartcount)
-                serval = {'Facilityname': faciname, 'Facility_cityid': data['Facility_cityid'],
-                          'Owner_status': '', 'Owner_id': '', 'Cashbox': '', 'LedgerId': '0', 'cartId': cartIds}
+                cartcount += 1
+                cartIds = str(data['Facility_cityid']) + '_' + str(cartcount)
+                serval = {
+                    'Facilityname': faciname,
+                    'Facility_cityid': data['Facility_cityid'],
+                    'Owner_status': '',
+                    'Owner_id': '',
+                    'Cashbox': cashbox_value,
+                    'LedgerId': '0',
+                    'cartId': cartIds
+                }
+
+            # Serialize and save the data
             serializer = facilitySerializer(data=serval)
             if serializer.is_valid():
                 serializer.save()
             else:
                 print("invalid data")
+
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+
     if request.method == 'GET':
         data = Facility.objects.all()
         serializer = facilitySerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
+
+# def facility(request, mayorid):
+#     if request.method == 'POST':
+#         data = JSONParser().parse(request)
+#         for value in range(len(FACILITY_CHOICES)):
+#             global cartcount
+#             faciname = FACILITY_CHOICES[value][1]
+#             if (faciname == 'Municipality Office' or faciname == 'Clock Tower' or faciname == 'Public Dustbin' or faciname == 'Municipality Landfill' or faciname == 'Garbage Truck'):
+#                 if (faciname == 'Municipality Office'):
+#                     cartIds = str(data['Facility_cityid']
+#                                   )+'_'+str(cartcount)
+#                     serval = {'Facilityname': faciname, 'Facility_cityid': data['Facility_cityid'],
+#                               'Owner_status': 'Active', 'Owner_id': mayorid, 'Cashbox': '', 'LedgerId': '0', 'cartId': cartIds}
+#                 else:
+#                     serval = {'Facilityname': faciname, 'Facility_cityid': data['Facility_cityid'],
+#                               'Owner_status': 'Active', 'Owner_id': mayorid, 'Cashbox': '', 'LedgerId': '0', 'cartId': '0'}
+#             else:
+#                 cartcount = cartcount+1
+#                 cartIds = str(data['Facility_cityid'])+'_'+str(cartcount)
+#                 serval = {'Facilityname': faciname, 'Facility_cityid': data['Facility_cityid'],
+#                           'Owner_status': '', 'Owner_id': '', 'Cashbox': '', 'LedgerId': '0', 'cartId': cartIds}
+#             serializer = facilitySerializer(data=serval)
+#             if serializer.is_valid():
+#                 serializer.save()
+#             else:
+#                 print("invalid data")
+#         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+#     if request.method == 'GET':
+#         data = Facility.objects.all()
+#         serializer = facilitySerializer(data, many=True)
+#         return JsonResponse(serializer.data, safe=False)
 
 
 @api_view(['GET', 'POST', 'PUT'])
@@ -287,57 +404,17 @@ def updatetransactionfacility(request, cityid):
 
 
 @api_view(['GET', 'PUT'])
-def getsupermarketcash(request, cityid):
+def getfacilitycash(request, facilityName, cityid):
     if request.method == 'GET':
         data = Facility.objects.filter(
-            Facilityname='Supermarket Owner', Facility_cityid=cityid)
+            Facilityname=facilityName, Facility_cityid=cityid)
         serializer = facilitySerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
     if request.method == 'PUT':
         data = JSONParser().parse(request)
         serval = {'Cashbox': data['Cashbox']}
         getfacility = Facility.objects.filter(
-            Facilityname='Supermarket Owner', Facility_cityid=cityid).first()
-        serializer = facilitySerializer(getfacility, data=serval, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-        else:
-            print("invalid data")
-        return JsonResponse(serializer.data, safe=False)
-
-
-@api_view(['GET', 'PUT'])
-def getmunicipalitycash(request, cityid):
-    if request.method == 'GET':
-        data = Facility.objects.filter(
-            Facilityname='Municipality Office', Facility_cityid=cityid)
-        serializer = facilitySerializer(data, many=True)
-        return JsonResponse(serializer.data, safe=False)
-    if request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serval = {'Cashbox': data['Cashbox']}
-        getfacility = Facility.objects.filter(
-            Facilityname='Municipality Office', Facility_cityid=cityid).first()
-        serializer = facilitySerializer(getfacility, data=serval, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-        else:
-            print("invalid data")
-        return JsonResponse(serializer.data, safe=False)
-
-
-@api_view(['GET', 'PUT'])
-def getrefillingstationcash(request, cityid):
-    if request.method == 'GET':
-        data = Facility.objects.filter(
-            Facilityname='Refilling Van Owner', Facility_cityid=cityid)
-        serializer = facilitySerializer(data, many=True)
-        return JsonResponse(serializer.data, safe=False)
-    if request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serval = {'Cashbox': data['Cashbox']}
-        getfacility = Facility.objects.filter(
-            Facilityname='Refilling Van Owner', Facility_cityid=cityid).first()
+            Facilityname=facilityName, Facility_cityid=cityid).first()
         serializer = facilitySerializer(getfacility, data=serval, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -376,23 +453,60 @@ def cityrule(request):
         return JsonResponse(serializer.data, safe=False)
 
 
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'POST', 'PUT'])
+def toggle_city_timer(request, cityid):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            timer_paused = data.get("timer_paused")
+
+            city = City.objects.get(pk=cityid)
+            city.timer_paused = timer_paused
+            city.save()
+
+            return JsonResponse({"success": True, "message": f"Timer paused updated to {timer_paused}"})
+        except City.DoesNotExist:
+            return JsonResponse({"success": False, "error": "City not found"}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({"success": False, "error": "Invalid JSON format"}, status=400)
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+    return JsonResponse({"success": False, "error": "Invalid request method"}, status=405)
+
+
+@api_view(['GET', 'POST', 'PUT'])
 def editcity(request, cityid):
-    if request.method == 'POST':
+
+    try:
+        city = City.objects.get(pk=cityid)  # Fetch a single city instance
+    except City.DoesNotExist:
+        return Response({"error": "City not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'POST' or request.method == 'PUT':
         data = JSONParser().parse(request)
-        getcity = City.objects.filter(pk=cityid)
-        serializer = citySerializer(getcity, data=data, partial=True)
+        print('data', data)
+        # Pass instance, not QuerySet
+        serializer = citySerializer(city, data=data, partial=True)
+
         if serializer.is_valid():
             serializer.save()
+            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
         else:
-            print("invalid data")
-        return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+            return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    if request.method == 'GET':
+        getcity = City.objects.filter(pk=cityid)
+        serializer = citySerializer(getcity, many=True)
+        print('getcitynamr', serializer.data)
+        return JsonResponse(serializer.data, safe=False)
 
 
 @api_view(['GET', 'POST', 'PUT'])
 def updateusercity(request, userid):
     if request.method == 'PUT':
         data = JSONParser().parse(request)
+        print(data)
         getuser = CustomUser.objects.filter(pk=userid).first()
         serializer = userSerializer(getuser, data=data, partial=True)
         if serializer.is_valid():
@@ -404,23 +518,6 @@ def updateusercity(request, userid):
         data = CustomUser.objects.all()
         serializer = userSerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
-
-
-# @csrf_exempt  # Only if you're accepting POST requests without CSRF token
-# def receive_user_data(request):
-#     if request.method == 'POST':
-#         try:
-#             user_data = json.loads(request.headers.get('User-Data', '{}'))
-#             userdata = UserData.get_instance()
-#             userdata.set_data('username', user_data.get('currentuser'))
-#             userdata.set_data('CityId', user_data.get('CityId'))
-#             userdata.set_data('currentCartId', user_data.get('currentCartId'))
-#             userdata.set_data('CurrentDay', user_data.get('CurrentDay'))
-#             return JsonResponse({'message': 'User details received successfully'})
-#         except json.JSONDecodeError:
-#             return JsonResponse({'error': 'Invalid JSON data'}, status=400)
-#     else:
-#         return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
 
 
 @api_view(['GET'])
@@ -438,10 +535,9 @@ def get_audit_logsuser(request, user):
     cityid = user.split("&")[1]
     data = Auditlog.objects.filter(userName=username)
     serializer = AuditSerializer(data, many=True)
-    print(serializer.data)
     return JsonResponse(serializer.data, safe=False)
 
-from django.db.models import Q
+
 def filter_audit_logs(request):
     filters = {}
 
@@ -474,15 +570,21 @@ def filter_audit_logs(request):
     role_user_filters = None
     if role_user:
         usernames = role_user.split(',')
-        role_user_filters = Q(userName__in=usernames) | Q(FromFacility__in=usernames) | Q(ToFacility__in=usernames)
+        role_user_filters = Q(userName__in=usernames) | Q(
+            FromFacility__in=usernames) | Q(ToFacility__in=usernames)
 
     bottle_type = request.GET.get('bottle_type')
     if bottle_type:
         filters['Bottle_Code__in'] = bottle_type.split(',')
 
-    current_refill = request.GET.get('current_refill')
-    if current_refill:
-        filters['currentrefillCount__in'] = current_refill.split(',')
+    current_selfrefill = request.GET.get('current_selfrefill')
+    if current_selfrefill:
+        filters['Current_SelfRefill_Count__in'] = current_selfrefill.split(',')
+
+    current_plantrefill = request.GET.get('current_plantrefill')
+    if current_plantrefill:
+        filters['Current_PlantRefill_Count__in'] = current_plantrefill.split(
+            ',')
 
     TransactionId = request.GET.get('TransactionId')
     if TransactionId:
@@ -503,12 +605,12 @@ def filter_audit_logs(request):
     if startDay and endDay:
         # Filter for records where the day of TransactionDate is between start_day and end_day
         filters['TransactionDate__range'] = [startDay, endDay]
-    
+
     if role_user_filters:
-        filtered_logs = Auditlog.objects.filter(Q(**filters) & role_user_filters)
+        filtered_logs = Auditlog.objects.filter(
+            Q(**filters) & role_user_filters)
     else:
         filtered_logs = Auditlog.objects.filter(**filters)
-
 
     if isinstance(filtered_logs, QuerySet):
         print(filtered_logs.query)
@@ -534,8 +636,11 @@ def get_filter_options(request):
         'userName', flat=True).distinct())
     BottleTypeOptions = list(Auditlog.objects.values_list(
         'Bottle_Code', flat=True).distinct())
-    currentRefillOptions = list(Auditlog.objects.values_list(
-        'currentrefillCount', flat=True).distinct())
+    currentSelfRefillOptions = list(Auditlog.objects.values_list(
+        'currentselfrefillCount', flat=True).distinct())
+
+    currentPlantRefillOptions = list(Auditlog.objects.values_list(
+        'currentplantrefillCount', flat=True).distinct())
     TransactionIdOptions = list(Auditlog.objects.values_list(
         'TransactionId', flat=True).distinct())
     assetIdOptions = list(Auditlog.objects.values_list(
@@ -552,7 +657,8 @@ def get_filter_options(request):
         'statusOptions': status_options,
         'roleOptions': role_options,
         'BottleTypeOptions': BottleTypeOptions,
-        'currentRefillOptions': currentRefillOptions,
+        'currentSelfRefillOptions': currentSelfRefillOptions,
+        'currentRefillOptions': currentPlantRefillOptions,
         'TransactionIdOptions': TransactionIdOptions,
         'assetIdOptions': assetIdOptions,
         'dayOptions': dayOptions,
@@ -561,3 +667,31 @@ def get_filter_options(request):
 
     }
     return JsonResponse(data)
+
+
+@api_view(['GET', 'POST'])
+@csrf_exempt  # Only for development; use proper authentication in production
+def manage_city_timer(request, cityid):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            action = data.get("action")  # 'pause' or 'resume'
+            print(action)
+            if not cityid or action not in ["pause", "resume"]:
+                return JsonResponse({"error": "Invalid data"}, status=400)
+
+            if not City.objects.filter(pk=cityid).exists():
+                return JsonResponse({"error": "City not found"}, status=404)
+
+            if action == "pause":
+                pause_timer_for_city(cityid)
+                return JsonResponse({"message": f"Paused timer for city {cityid}"})
+
+            elif action == "resume":
+                resume_timer_for_city(cityid)
+                return JsonResponse({"message": f"Resumed timer for city {cityid}"})
+
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
+
+    return JsonResponse({"error": "Invalid request"}, status=405)

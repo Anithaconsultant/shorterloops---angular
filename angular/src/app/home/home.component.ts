@@ -1,13 +1,15 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { LoginserviceService } from "./../services/loginservice.service";
 import { Router } from "@angular/router";
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AlertModalComponent } from '../alert-modal/alert-modal.component';
 @Component({
   selector: "app-home",
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"],
 })
 export class HomeComponent implements OnInit {
+  @ViewChild('alertModal') alertModal!: AlertModalComponent;
   currentuser: any;
   selectrole = false;
   setusername: any;
@@ -21,7 +23,7 @@ export class HomeComponent implements OnInit {
     facilityname: "",
     facilityCityId: 0,
     Ownerid: "",
-    Owner_status:''
+    Owner_status: ''
   };
   user: any;
   userobj = {
@@ -33,7 +35,7 @@ export class HomeComponent implements OnInit {
   }
 
 
-  constructor(private logser: LoginserviceService, private router: Router,private modalService: NgbModal) {
+  constructor(private logser: LoginserviceService, private router: Router, private modalService: NgbModal) {
     this.currentuser = { ...this.logser.currentuser };
     this.setusername = this.currentuser.Username;
     this.userobj.gender = this.currentuser.gender;
@@ -48,7 +50,7 @@ export class HomeComponent implements OnInit {
     }
     this.logser.getAllUsers().subscribe((data) => {
       this.user = data;
-      
+
     })
   }
   setList: any[] = [];
@@ -93,16 +95,16 @@ export class HomeComponent implements OnInit {
           this.facility[key].Owner_id != "" &&
           this.facility[key].facilityName == this.selectedfacility
         ) {
-          alert(
+          this.alertModal.openModal(
             "The current role is not available please select any other role"
           );
           this.canUpdate = true;
         } else {
           let currentcartId;
-          
+
           if (this.facility[key].Facilityname == this.selectedfacility) {
             currentcartId = this.facility[key].cartId;
-            
+
             this.facilityobj.facilityCityId = parseInt(this.selectedcityid);
             this.facilityobj.facilityname = this.selectedfacility;
             this.facilityobj.Ownerid = this.logser.currentuser.UserId;
@@ -120,24 +122,26 @@ export class HomeComponent implements OnInit {
 
 
     });
-  }  openwhyshorter(whyshorter:any){
-  
-    this.modalService.open(whyshorter,{windowClass:'frontpage'});
+  } openwhyshorter(whyshorter: any) {
+
+    this.modalService.open(whyshorter, { windowClass: 'frontpage' });
   }
-  openaboutshorter(aboutshorter:any){
-  
-    this.modalService.open(aboutshorter,{windowClass:'frontpage'});
+  openaboutshorter(aboutshorter: any) {
+
+    this.modalService.open(aboutshorter, { windowClass: 'frontpage' });
   }
   opennavshorter(navigation: any) {
 
-    this.modalService.open(navigation,{windowClass:'frontpage'});
+    this.modalService.open(navigation, { windowClass: 'frontpage' });
   }
 
   dochanges() {
     if (this.canUpdate == false && this.selectrole) {
+      console.log("this.facilityobj", this.facilityobj)
       this.logser.updatefacility(this.facilityobj).subscribe(
         (data) => {
           this.facilityobj = data;
+          console.log(this.userobj)
           this.logser.updateuser(this.userobj).subscribe(
             (data) => {
               this.userobj = data;
@@ -149,7 +153,7 @@ export class HomeComponent implements OnInit {
           );
         },
         (error) => {
-          console.log(error);
+          //console.log(error);
         }
       );
     }
