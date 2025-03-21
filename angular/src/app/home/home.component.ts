@@ -115,7 +115,11 @@ export class HomeComponent implements OnInit {
             this.logser.currentuser.Role = this.selectedfacility;
             this.logser.currentuser.cartId = currentcartId;
             this.logser.currentuser.CityId = this.selectedcityid.toString();
+            
+            
+            
           }
+
 
         }
       }
@@ -145,7 +149,9 @@ export class HomeComponent implements OnInit {
           this.logser.updateuser(this.userobj).subscribe(
             (data) => {
               this.userobj = data;
-              this.router.navigate(["maincity"]);
+             
+                this.router.navigate(['maincity']);
+             
             },
             (error) => {
               console.log(error);
@@ -159,5 +165,20 @@ export class HomeComponent implements OnInit {
     }
   }
 
-
+  assignGovernorRole(){
+    this.selectedfacility = 'Governor';
+    this.userobj.Role = this.selectedfacility;
+    this.logser.currentuser.Role = this.selectedfacility;
+    this.logser.updateuser(this.userobj).subscribe(
+      (data) => {
+        this.userobj = data;
+       
+          this.router.navigate(['/report']);
+       
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }
 }

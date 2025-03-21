@@ -5,6 +5,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertModalComponent } from '../alert-modal/alert-modal.component';
+import { SharedServiceService } from '../services/shared-service.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -14,7 +15,7 @@ export class LoginComponent implements OnInit {
   @ViewChild('alertModal') alertModal!: AlertModalComponent;
   public loginForm!: FormGroup;
   submitted = false;
-  constructor(private modalService: NgbModal, private formbuilder: FormBuilder, private http: HttpClientModule, private router: Router, private logser: LoginserviceService) {
+  constructor(private modalService: NgbModal,private sharedService: SharedServiceService, private formbuilder: FormBuilder, private http: HttpClientModule, private router: Router, private logser: LoginserviceService) {
 
   }
   userobj = {
@@ -42,6 +43,7 @@ export class LoginComponent implements OnInit {
       password: ['']
     })
   }
+  switchYesOrNo!: number; // The variable is now a number
   login() {
     this.submitted = true;
     if (this.loginForm.invalid) {
@@ -49,51 +51,71 @@ export class LoginComponent implements OnInit {
       return;
     }
     if (this.submitted) {
-      let userfound = false;
-      this.logser.getAllUsers().subscribe(res => {
-        const user = res.find((a: any) => {
-          if (a.Username === this.loginForm.value.username) {
-            userfound = true;
+      this.logser.getAllUsers().subscribe(
+        (res: any[]) => {
+          const user = res.find((a: any) => 
+            a.Username === this.loginForm.value.username && 
+            a.Password === this.loginForm.value.password
+          );
+    
+          if (!user) {
+            this.alertModal.openModal("Invalid Username/Password or Please Register If You are visiting For First Time", false);
+            return;
           }
-          return a.Username === this.loginForm.value.username && a.Password === this.loginForm.value.password;
-        });
-        if (user) {
-          this.logser.currentuser.Username = user.Username;
-          this.logser.currentuser.UserId = user.UserId;
-          this.logser.currentuser.CityId = user.User_cityid;
-          this.logser.currentuser.Role = user.Role;
-          this.logser.currentuser.wallet = user.wallet;
-          this.logser.currentuser.cartId = user.cartId;
-          this.logser.currentuser.gender = user.gender;
-          this.logser.currentuser.avatar = user.avatar;
-          this.logser.currentuser.login = user.login;
-          this.loginForm.reset()
+    
+          // if (user.Password !== this.loginForm.value.password) {
+          //   this.alertModal.openModal("Kindly Check your Credentials", false);
+          //   return;
+          // }
+    
+          this.setCurrentUser(user);
+          this.loginForm.reset();
           this.userobj.login = '1';
+    
           this.logser.updateloggeduser(this.userobj).subscribe(
             (data) => {
               this.userobj = data;
-              if (user.User_cityid == 0) {
-                this.router.navigate(["home"])
-              }
-              else {
-                this.router.navigate(["maincity"])
-              }
+              this.navigateBasedOnRoleAndCity(user);
             },
             (error) => {
-              //console.log(error);
+              this.alertModal.openModal("Something went wrong", false);
             }
           );
-
-        } else {
-          if (userfound) {
-            this.alertModal.openModal("Kindly Check your Credentials",false);
-          } else {
-            this.alertModal.openModal("User not Found. Kindly Register.",false);
-          }
+        },
+        (err) => {
+          this.alertModal.openModal("Something went wrong", false);
         }
-      }, err => {
-        this.alertModal.openModal("Something went wrong",false)
-      })
+      );
+    }
+    
+ 
+  }
+  private setCurrentUser(user: any): void {
+    this.logser.currentuser.Username = user.Username;
+    this.logser.currentuser.UserId = user.UserId;
+    this.logser.currentuser.CityId = user.User_cityid;
+    this.logser.currentuser.Role = user.Role;
+  
+    if (user.Role !== 'Governor') {
+      this.logser.currentuser.wallet = user.wallet;
+      this.logser.currentuser.cartId = user.cartId;
+      this.logser.currentuser.gender = user.gender;
+      this.logser.currentuser.avatar = user.avatar;
+      this.logser.currentuser.login = user.login;
+    }
+  }
+  
+  private navigateBasedOnRoleAndCity(user: any): void {
+    if (user.User_cityid == 0 && user.Role !== 'Governor') {
+      this.router.navigate(["home"]);
+    } else {
+      if (user.Role === 'Governor') {
+        this.router.navigate(["report"]);
+      } else {
+        this.switchYesOrNo = 0;
+        this.sharedService.setSwitchYesOrNo(this.switchYesOrNo);
+        this.router.navigate(["maincity"]);
+      }
     }
   }
   playVideo() {

@@ -12,7 +12,7 @@ import json
 from django.db.models import QuerySet
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.signals import post_save
-from .signals import user_data_received
+from .signals import user_data_received,pause_timer_for_city,resume_timer_for_city
 from django.utils.decorators import method_decorator
 # from .cityTimer import CityTimer
 
@@ -202,9 +202,6 @@ def get_last_city_rule(request, city_id):
     last_rule = Cityrule.objects.filter(
         cityId=city_id).order_by('ruleId').last()
 
-    # Get city data
-    # city_data =  City.objects.filter(pk=city_id).first()
-
     if last_rule:
         response_data = {
             "rule_number": last_rule.rule_number,
@@ -212,25 +209,24 @@ def get_last_city_rule(request, city_id):
             "time_in_hours": last_rule.time_in_hours,
             "virgin_plastic_price": last_rule.virgin_plastic_price,
             "recycled_plastic_price": last_rule.recycled_plastic_price,
-            "envtx_p_shampoo": last_rule.envtx_p_shampoo,
             "envtx_p_bvb": last_rule.envtx_p_bvb,
             "envtx_p_brcb": last_rule.envtx_p_brcb,
             "envtx_p_brfb": last_rule.envtx_p_brfb,
-            "envtx_ub_v_m": last_rule.envtx_ub_v_m,
-            "envtx_ub_rc_m": last_rule.envtx_ub_rc_m,
-            "envtx_ub_xx_cl": last_rule.envtx_ub_xx_cl,
+            "envtx_p_uvb": last_rule.envtx_p_uvb,
+            "envtx_p_urcb": last_rule.envtx_p_urcb,
+            "envtx_p_urfb": last_rule.envtx_p_urfb,
             "envtx_r_bvb": last_rule.envtx_r_bvb,
             "envtx_r_brcb": last_rule.envtx_r_brcb,
             "envtx_r_brfb": last_rule.envtx_r_brfb,
             "envtx_r_uvb": last_rule.envtx_r_uvb,
             "envtx_r_urcb": last_rule.envtx_r_urcb,
-            "envtx_r_urfB": last_rule.envtx_r_urfB,
+            "envtx_r_urfb": last_rule.envtx_r_urfb,
             "envtx_c_bvb": last_rule.envtx_c_bvb,
             "envtx_c_brcb": last_rule.envtx_c_brcb,
             "envtx_c_brfb": last_rule.envtx_c_brfb,
             "envtx_c_uvb": last_rule.envtx_c_uvb,
             "envtx_c_urcb": last_rule.envtx_c_urcb,
-            "envtx_c_urfB": last_rule.envtx_c_urfB,
+            "envtx_c_urfb": last_rule.envtx_c_urfb,
             "fine_for_throwing_bottle": last_rule.fine_for_throwing_bottle,
             "dustbinning_fine": last_rule.dustbinning_fine,
             # "display_at_dustbin": city_data.display_at_dustbin,
@@ -454,6 +450,7 @@ def cityrule(request):
 
 
 @api_view(['GET', 'POST', 'PUT'])
+@csrf_exempt
 def toggle_city_timer(request, cityid):
     if request.method == "POST":
         try:
@@ -464,6 +461,14 @@ def toggle_city_timer(request, cityid):
             city.timer_paused = timer_paused
             city.save()
 
+            print(f"Timer paused set to {timer_paused} for city {cityid}")
+
+            # Pause or resume the timer based on the timer_paused value
+            if timer_paused:
+                pause_timer_for_city(cityid)
+            else:
+                resume_timer_for_city(cityid)
+
             return JsonResponse({"success": True, "message": f"Timer paused updated to {timer_paused}"})
         except City.DoesNotExist:
             return JsonResponse({"success": False, "error": "City not found"}, status=404)
@@ -473,7 +478,6 @@ def toggle_city_timer(request, cityid):
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
     return JsonResponse({"success": False, "error": "Invalid request method"}, status=405)
-
 
 @api_view(['GET', 'POST', 'PUT'])
 def editcity(request, cityid):

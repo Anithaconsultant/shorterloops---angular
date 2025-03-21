@@ -146,7 +146,7 @@ class Cityrule(models.Model):
     
     ruleId = models.AutoField(primary_key=True)
     cityId = models.CharField(max_length=70, blank=True)
-    rule_number = models.CharField(max_length=70, blank=True)
+    rule_number = models.IntegerField(unique=True, editable=False)
     day_number = models.CharField(max_length=70, blank=True)
     time_in_hours = models.FloatField(null=True, blank=True)
     virgin_plastic_price = models.FloatField(null=True, blank=True)
@@ -155,27 +155,36 @@ class Cityrule(models.Model):
     envtx_p_bvb = models.FloatField(null=True, blank=True)
     envtx_p_brcb = models.FloatField(null=True, blank=True)
     envtx_p_brfb = models.FloatField(null=True, blank=True)
-    envtx_ub_v_m = models.FloatField(null=True, blank=True)
-    envtx_ub_rc_m = models.FloatField(null=True, blank=True)
-    envtx_ub_xx_cl = models.FloatField(null=True, blank=True)
+    envtx_p_uvb = models.FloatField(null=True, blank=True)
+    envtx_p_urcb = models.FloatField(null=True, blank=True)
+    envtx_p_urfb = models.FloatField(null=True, blank=True)
     envtx_r_bvb = models.FloatField(null=True, blank=True)
     envtx_r_brcb = models.FloatField(null=True, blank=True)
     envtx_r_brfb = models.FloatField(null=True, blank=True)
     envtx_r_uvb = models.FloatField(null=True, blank=True)
     envtx_r_urcb = models.FloatField(null=True, blank=True)
-    envtx_r_urfB = models.FloatField(null=True, blank=True)
+    envtx_r_urfb = models.FloatField(null=True, blank=True)
     envtx_c_bvb = models.FloatField(null=True, blank=True)
     envtx_c_brcb = models.FloatField(null=True, blank=True)
     envtx_c_brfb = models.FloatField(null=True, blank=True)
     envtx_c_uvb = models.FloatField(null=True, blank=True)
     envtx_c_urcb = models.FloatField(null=True, blank=True)
-    envtx_c_urfB = models.FloatField(null=True, blank=True)
+    envtx_c_urfb = models.FloatField(null=True, blank=True)
     fine_for_throwing_bottle = models.FloatField(null=True, blank=True)
     dustbinning_fine = models.FloatField(null=True, blank=True)
 
 
+    def save(self, *args, **kwargs):
+        if not self.rule_number:  # If rule_number is not set
+            last_rule = Cityrule.objects.order_by('-rule_number').first()
+            if last_rule:
+                self.rule_number = last_rule.rule_number + 1
+            else:
+                self.rule_number = 1  # Start from 1 if no rules exist
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return f"City: {self.city_id}, Rule: {self.rule_number}"
+        return f"Rule {self.rule_number} for City {self.cityId}"
 
 class Auditlog(models.Model):
     class Meta:

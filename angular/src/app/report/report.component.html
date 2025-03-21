@@ -5,15 +5,18 @@
             <div class="formcls">
                 <!-- filter-form.component.html -->
                 <div class="filter-container">
-                    <mat-form-field>
+                    <mat-form-field appearance="fill" class="custom-background">
                         <mat-label>City</mat-label>
-                        <mat-select class="matoptioncls" [(ngModel)]="filters.city" multiple>
-                            <mat-option class="matoptioncls" *ngFor="let city of cityOptions" [value]="city">{{ city
-                                }}</mat-option>
+
+                        <mat-select [(ngModel)]="filters.city" class="matoptioncls">
+                            <mat-option *ngFor="let city of cityOptions" [value]="city">{{ city }}</mat-option>
                         </mat-select>
+
+
                     </mat-form-field>
 
-                    <mat-form-field>
+
+                    <mat-form-field appearance="fill" class="custom-background">
                         <mat-label>Brand</mat-label>
                         <mat-select class="matoptioncls" [(ngModel)]="filters.brand" multiple>
                             <mat-option class="matoptioncls" *ngFor="let brand of brandOptions" [value]="brand">{{ brand
@@ -21,41 +24,42 @@
                         </mat-select>
                     </mat-form-field>
 
-                    <mat-form-field>
+                    <mat-form-field appearance="fill" class="custom-background">
                         <mat-label>Bottle Location</mat-label>
                         <mat-select class="matoptioncls" [(ngModel)]="filters.current_location" multiple>
                             <mat-option class="matoptioncls" *ngFor="let currentlocation of current_locationOptions"
                                 [value]="currentlocation">{{ currentlocation }}</mat-option>
                         </mat-select>
-                    </mat-form-field> <mat-form-field>
+                    </mat-form-field> <mat-form-field appearance="fill" class="custom-background">
                         <mat-label>Entry Location</mat-label>
                         <mat-select class="matoptioncls" [(ngModel)]="filters.entry_location" multiple>
                             <mat-option class="matoptioncls" *ngFor="let entrylocation of entry_locationOptions"
                                 [value]="entrylocation">{{ entrylocation }}</mat-option>
                         </mat-select>
-                    </mat-form-field> <mat-form-field>
+                    </mat-form-field> <mat-form-field appearance="fill" class="custom-background">
                         <mat-label>Exit Location</mat-label>
                         <mat-select class="matoptioncls" [(ngModel)]="filters.exit_location" multiple>
                             <mat-option class="matoptioncls" *ngFor="let exitloc of exit_locationOptions"
                                 [value]="exitloc">{{ exitloc }}</mat-option>
                         </mat-select>
                     </mat-form-field>
-                    <mat-form-field>
+                    <mat-form-field appearance="fill" class="custom-background">
                         <mat-label>Current Self Refill Count </mat-label>
                         <mat-select class="matoptioncls" [(ngModel)]="filters.current_selfrefill" multiple>
                             <mat-option class="matoptioncls" *ngFor="let currenselfrefill of currentSelfRefillOptions"
                                 [value]="currenselfrefill">{{ currenselfrefill }}</mat-option>
                         </mat-select>
                     </mat-form-field>
-                    <mat-form-field>
+                    <mat-form-field appearance="fill" class="custom-background">
                         <mat-label>Current Plant Refill Count </mat-label>
                         <mat-select class="matoptioncls" [(ngModel)]="filters.current_plantrefill" multiple>
-                            <mat-option class="matoptioncls" *ngFor="let currentplantrefill of currentPlantRefillOptions"
+                            <mat-option class="matoptioncls"
+                                *ngFor="let currentplantrefill of currentPlantRefillOptions"
                                 [value]="currentplantrefill">{{ currentplantrefill }}</mat-option>
                         </mat-select>
                     </mat-form-field>
 
-                    <mat-form-field>
+                    <mat-form-field appearance="fill" class="custom-background">
                         <mat-label>Bottle Type</mat-label>
                         <mat-select class="matoptioncls" [(ngModel)]="filters.bottle_type" multiple>
                             <mat-option class="matoptioncls" *ngFor="let bottletype of BottleTypeOptions"
@@ -64,7 +68,7 @@
                         </mat-select>
                     </mat-form-field>
 
-                    <mat-form-field>
+                    <mat-form-field appearance="fill" class="custom-background">
                         <mat-label>Transaction Id</mat-label>
                         <mat-select class="matoptioncls" [(ngModel)]="filters.TransactionId" multiple>
                             <mat-option class="matoptioncls" *ngFor="let location of TransactionIdOptions"
@@ -73,7 +77,7 @@
                         </mat-select>
                     </mat-form-field>
 
-                    <mat-form-field>
+                    <mat-form-field appearance="fill" class="custom-background">
                         <mat-label>Asset ID</mat-label>
                         <mat-select class="matoptioncls" [(ngModel)]="filters.assetID" multiple>
                             <mat-option class="matoptioncls" *ngFor="let location of assetIdOptions"
@@ -82,7 +86,7 @@
                         </mat-select>
                     </mat-form-field>
 
-                    <mat-form-field>
+                    <mat-form-field appearance="fill" class="custom-background">
                         <mat-label>Day</mat-label>
                         <mat-select class="matoptioncls" [(ngModel)]="filters.day" multiple>
                             <mat-option class="matoptioncls" *ngFor="let day of dayOptions" [value]="day">{{
@@ -91,22 +95,24 @@
                         </mat-select>
                     </mat-form-field>
 
-                    <mat-form-field>
+                    <mat-form-field appearance="fill" class="custom-background">
                         <mat-label>Start Day</mat-label>
                         <mat-select class="matoptioncls" [(ngModel)]="filters.startDay">
-                            <mat-option class="matoptioncls" *ngFor="let startday of dayOptions" [value]="startday">{{ startday }}</mat-option>
+                            <mat-option class="matoptioncls" *ngFor="let startday of dayOptions" [value]="startday">{{
+                                startday }}</mat-option>
                         </mat-select>
                     </mat-form-field>
-                
+
                     <!-- End Day Filter -->
-                    <mat-form-field>
+                    <mat-form-field appearance="fill" class="custom-background">
                         <mat-label>End Day</mat-label>
                         <mat-select class="matoptioncls" [(ngModel)]="filters.endDay">
-                            <mat-option class="matoptioncls" *ngFor="let endday of dayOptions" [value]="endday">{{ endday }}</mat-option>
+                            <mat-option class="matoptioncls" *ngFor="let endday of dayOptions" [value]="endday">{{
+                                endday }}</mat-option>
                         </mat-select>
                     </mat-form-field>
-                    
-                    <mat-form-field>
+
+                    <mat-form-field appearance="fill" class="custom-background">
                         <mat-label>Status</mat-label>
                         <mat-select class="matoptioncls" [(ngModel)]="filters.status" multiple>
                             <mat-option class="matoptioncls" *ngFor="let status of statusOptions" [value]="status">{{
@@ -114,7 +120,7 @@
                         </mat-select>
                     </mat-form-field>
 
-                    <mat-form-field>
+                    <mat-form-field appearance="fill" class="custom-background">
                         <mat-label>Role / User</mat-label>
                         <mat-select [(ngModel)]="filters.role_user" multiple>
                             <mat-option class="matoptioncls" *ngFor="let role of roleOptions" [value]="role">{{ role
@@ -122,14 +128,15 @@
                         </mat-select>
                     </mat-form-field>
 
-                    <button mat-raised-button color="primary" (click)="applyFilters()">Apply Filters</button>
+
                 </div>
 
 
-
+                <button mat-raised-button class="apply-filters-btn" (click)="applyFilters()">Apply Filters</button>
+                <button mat-raised-button class="sample sample-video-btn" (click)="showsample(report)">Sample Video</button>
             </div>
             <div class="navtocity" (click)="gotocity()">&#10006;</div>
-            <div class="sample" (click)="showsample(report)">Sample Video</div>
+            
         </div>
         <div class="numdisplay">
             <p>Total Records Retrieved: {{ auditLogs.length }}</p>

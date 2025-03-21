@@ -13,9 +13,10 @@
         <div class="container centeralign" *ngIf="selectrole==false">
             <a class="btn btn-primary create" routerLink="/addcity" role="button">CREATE A NEW CITY</a>
             <button class="btn btn-primary join" (click)="selectrole=true">JOIN EXISTING CITY</button>
-        </div>
+            <button class="btn btn-primary join" (click)="assignGovernorRole()">JOIN AS A GOVERNOR</button>
+        </div>{{selectedfacility}}{{selectrole}}
 
-        <div *ngIf="selectrole" class="selectrolecontent">
+        <div *ngIf="selectrole && selectedfacility==''" class="selectrolecontent">
 
             <div class="mb-3 col-xl-4 col-md-4 col-lg-6 mx-auto">
                 <label for="City" class="form-label">Select your City</label>
@@ -45,7 +46,7 @@
                     <option value="Universal Bottle Cleaning Plant Owner"> Universal Bottle Cleaning Plant Owner</option>
                     <option value='Plastic Recycling Plant Owner'> Plastic Recycling plant Owner </option>
                     <option value="Shampoo Refilling Station Owner"> Shampoo Refilling Station Owner </option>
-                    <option value="Rag picker"> Rag picker </option>
+                    <option value="Rag picker" disabled> Rag picker </option>
                     <option value="House1 Owner"> House1 Owner </option>
                     <option value="House2 Owner"> House2 Owner </option>
                     <option value="House3 Owner"> House3 Owner </option>

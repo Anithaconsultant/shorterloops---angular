@@ -98,7 +98,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'shorterloop',
         'USER': 'root',
-        'PASSWORD': 'Admin@123',
+        'PASSWORD': 'Admin@1234',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
