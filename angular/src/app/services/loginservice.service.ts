@@ -23,7 +23,7 @@ export class LoginserviceService {
     'cityrate': '',
     'cityavatar': ''
   };
-// baseurl = "https://dbl.iihs.in/api/";
+ //baseurl = "https://dbl.iihs.in/api/";
 baseurl = "http://127.0.0.1:8000/api/";
   authorizationData = 'Basic ' + btoa(this.username + ':' + this.password);
   httpHeaders = new HttpHeaders({
@@ -315,26 +315,7 @@ baseurl = "http://127.0.0.1:8000/api/";
     return this.http.post(this.baseurl + 'toggle-timer/' + this.currentuser.CityId, {timer_paused:timerPaused},
       { headers: this.httpHeaders });
   }
-  // updatesupermarketcashbox(cashbox: any): Observable<any> {
-  //   const body = { Cashbox: cashbox };
-  //   return this.http.put(this.baseurl + 'getsupermarketcash/' + this.currentuser.CityId, body,
-  //     { headers: this.httpHeaders });
-  // }
-  // updaterefillingcashbox(cashbox: any): Observable<any> {
-  //   const body = { Cashbox: cashbox };
-  //   return this.http.put(this.baseurl + 'getrefillingstationcash/' + this.currentuser.CityId, body,
-  //     { headers: this.httpHeaders });
-  // }
-  // updatereversecashbox(cashbox: any): Observable<any> {
-  //   const body = { Cashbox: cashbox };
-  //   return this.http.put(this.baseurl + 'getreversevendingcash/' + this.currentuser.CityId, body,
-  //     { headers: this.httpHeaders });
-  // }
-  // updatecashboxmunicipality(cashbox: any): Observable<any> {
-  //   const body = { Cashbox: cashbox }
-  //   return this.http.put(this.baseurl + 'getmunicipalitycash/' + this.currentuser.CityId, body,
-  //     { headers: this.httpHeaders });
-  // }
+
 
   sendUserDetails(userDetails: any): Observable<any> {
     const headers = new HttpHeaders()

@@ -1065,7 +1065,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           this.citytiming['CurrentTime'] = this.convertSeconds(data[0]['CurrentTime']);
           this.citytiming['CurrentDay'] = data[0].CurrentDay;
 
-          if (this.citytiming['CurrentDay'] % 97 === 0 && this.currentUserRole == "Mayor" && this.citytiming['CurrentDay'] != this.cityRuleReminderDay &&  this.alertnotified==false) {
+          if (this.citytiming['CurrentDay'] % 100 === 0 && this.currentUserRole == "Mayor" && this.citytiming['CurrentDay'] != this.cityRuleReminderDay && this.alertnotified == false) {
             this.alertModal.openModal("Remainder !!! <br/><div class='cssalignment'>You may edit the City Rules If you Wish. Please Click on the Below link to Proceed</div", true,
               () => {
                 this.alertnotified = true;
@@ -1074,7 +1074,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
               });
 
           }
-
+          console.log(this.citytiming['CurrentTime']);
         },
         error => {
           console.log(error);
@@ -2120,7 +2120,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
 
               this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_01';
-              this.transaction['Amount'] = String(this.totalsupermarketbill);
+              this.transaction['Amount'] = String( this.totalsupermarketbill- this.totalenv );
               this.transaction['CreditFacility'] = 'Supermarket Owner';
               this.transaction['DebitFacility'] = this.currentUserRole;
               this.transaction['Purpose'] = 'Purchasing Shampoo from Supermarket';
@@ -2149,8 +2149,19 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
                           $(".close").show();
                           this.playAudioElement(this.transactioncomplete.nativeElement, 0.8);
                           this.billpaid = true;
+                          this.logser.getFacilitycashbox('Municipality Office').subscribe(data => {
+                            (data[0]['Cashbox'] == '') ? this.municipalcashbox = 0 : this.municipalcashbox = parseInt(data[0]['Cashbox']);
+                            this.municipalcashbox += this.totalenv;
+                            this.logser.updateFacilitycashbox('Municipality Office', String(this.municipalcashbox)).subscribe(data => { });
+                          });
+                          this.logser.getFacilitycashbox('Supermarket Owner').subscribe(data => {
+                            (data[0]['Cashbox'] == '') ? this.supermarketcashbox = 0 : this.supermarketcashbox = parseInt(data[0]['Cashbox']);
+                            this.supermarketcashbox += this.totalsupermarketbill- this.totalenv ;
+                            this.logser.updateFacilitycashbox('Supermarket Owner', String(this.supermarketcashbox)).subscribe(data => { });
+                          });
                         });
                       }
+
                     },
                     error => {
                       //console.log(error);
@@ -2163,16 +2174,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             });
 
 
-            this.logser.getFacilitycashbox('Municipality Office').subscribe(data => {
-              (data[0]['Cashbox'] == '') ? this.municipalcashbox = 0 : this.municipalcashbox = parseInt(data[0]['Cashbox']);
-              this.municipalcashbox += this.totalenv;
-              this.logser.updateFacilitycashbox('Municipality Office', String(this.municipalcashbox)).subscribe(data => { });
-            });
-            this.logser.getFacilitycashbox('Supermarket Owner').subscribe(data => {
-              (data[0]['Cashbox'] == '') ? this.supermarketcashbox = 0 : this.supermarketcashbox = parseInt(data[0]['Cashbox']);
-              this.supermarketcashbox += this.totalsupermarketbill;
-              this.logser.updateFacilitycashbox('Supermarket Owner', String(this.supermarketcashbox)).subscribe(data => { });
-            });
+
 
 
           },
@@ -2261,19 +2263,18 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       });
       this.subscription = this.sharedService.switchYesOrNo$.subscribe(value => {
         this.switchYesOrNo = value;
-
         if (this.switchYesOrNo == 2) {
+          $(".cart").show();
+          this.loadinginitialState();
+        }
+        else if (this.switchYesOrNo == 0) {
+          $(".cart").hide();
           if (this.currentUserRole == 'Mayor') {
             this.dopanzoom(-3341, -2150, '1');
           }
           else if (this.currentUserRole == 'Supermarket Owner') {
             this.dopanzoom(-1079.58, -2257.31, '1');
           }
-
-        }
-        else if (this.switchYesOrNo == 0) {
-
-          this.loadinginitialState();
         }
       });
 
@@ -2299,16 +2300,23 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     }
 
   }
+  closeothermodels(){
+    if (this.modalService.hasOpenModals()) {
+      this.modalService.dismissAll(); // Close all open modals
+    }
+  }
   openAuditPlasticVideoModal(): void {
-    this.modalService.open(this.Auditing_Plastic, { size: 'lg' });
+    console.log("nan varen how many times");
+  this.closeothermodels();
+    this.modalService.open(this.Auditing_Plastic, { windowClass: 'cartcontent' });
   }
-  openAuditBottleCleaningVideoModal(): void {
-    this.modalService.open(this.Auditing_BottleCleaning, { size: 'lg' });
+  openAuditBottleCleaningVideoModal(): void {  this.closeothermodels();
+    this.modalService.open(this.Auditing_BottleCleaning, { windowClass: 'cartcontent'});
   }
-  openAuditBottleMakingVideoModal(): void {
-    this.modalService.open(this.Auditing_BottleMaking, { size: 'lg' });
+  openAuditBottleMakingVideoModal(): void {  this.closeothermodels();
+    this.modalService.open(this.Auditing_BottleMaking, {windowClass: 'cartcontent' });
   }
-  openReloadBottletoSupermarketModal(): void {
+  openReloadBottletoSupermarketModal(): void {  this.closeothermodels();
     this.modalService.open(this.reloadBottle, { windowClass: 'cartcontent' });
   }
   bringBackBottles: any = [];
@@ -2411,7 +2419,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     let y = this.positionObject[a as keyof typeof this.positionObject][0][1];
     let x1 = this.positionObject[a as keyof typeof this.positionObject][1][0];
     let y1 = this.positionObject[a as keyof typeof this.positionObject][1][1];
-    if (this.switchYesOrNo == 0) {
+    if (this.switchYesOrNo == 2) {
       this.dopanzoom(x, y, '1');
     }
     //this.dopanzoom(-1057.16, -2306.8, '1');
@@ -2519,9 +2527,26 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   }
   logout() {
     this.userobj.login = '0';
+
     this.logser.updateloggeduser(this.userobj).subscribe(
       (data) => {
         this.userobj = data;
+        this.logser.currentuser = {
+          'Username': '',
+          'UserId': '',
+          'CityId': '',
+          'Role': '',
+          'wallet': 0.0,
+          'cartId': '',
+          'gender': '',
+          'avatar': '',
+          'login': '',
+          'cityname': '',
+          'CurrentTime': '',
+          'currentday': 0,
+          'cityrate': '',
+          'cityavatar': ''
+        };
         this.router.navigate(["login"]);
       },
       (error) => {
@@ -2551,6 +2576,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     this.instance1.smoothMoveTo(x, y);
   }
   open(content: any) {
+    this.closeothermodels();
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
 
   }
@@ -2569,6 +2595,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     this.calculatenetfine();
     this.loadledgerdata();
     this.checkthebottlestatusfordisplay();
+    this.closeothermodels();
     this.modalService.open(cartcontent, { windowClass: 'cartcontent' });
 
   }
@@ -2625,10 +2652,11 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           let env = calc * (parseInt(data[0]['Env_Tax_Customer']) / 100);
 
           this.totalenv += env;
-          //console.log(discount, env, this.totalenv);
+          console.log(discount, env, this.totalenv);
           let totalvalue = (calc + env) - discount;
           data[0]['Totalvalue'] = totalvalue;
-          this.totalsupermarketbill += totalvalue - env;
+          data[0]['Env_Tax_Customer'] = env;
+          this.totalsupermarketbill += totalvalue;
           this.netamount += totalvalue;
           this.boughtbottledata.push(data[0]);
         });
@@ -2670,7 +2698,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         this.leblfound = false;
         this.bottleclass = this.assetdata[0]['Content_Code'].split(".")[1];
       }
-
+      this.closeothermodels();
       this.modalService.open(bottlesticker);
     });
 
@@ -3015,190 +3043,287 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   cart_bottle_list: string[] = [];
   dustbin_bottles: string[] = [];
   truckContList: string[] = [];
+  // boughtdrop(event: CdkDragDrop<string[]>) {
+  //   if (event.previousContainer === event.container) {
+  //     // Move item within the same container
+  //     moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+  //   } else {
+  //     // Transfer item between containers
+  //     transferArrayItem(
+  //       event.previousContainer.data,
+  //       event.container.data,
+  //       event.previousIndex,
+  //       event.currentIndex
+  //     );
+
+  //     // Get the currently dropped item's ID and dropzone class
+  //     let currentlyDroped = event.item.element.nativeElement.id;
+  //     let currentDropzone = event.container.element.nativeElement.classList;
+
+  //     // Extract bottle ID from the element ID
+  //     let bottleId = currentlyDroped.split('City')[1].split("at")[0];
+
+  //     if (currentDropzone.contains('Inhouseshelf_bottles')) {
+  //       // Update bottle location to house
+  //       this.updateonlyloc['currentbottle'] = bottleId;
+  //       this.updateonlyloc['Bottleloc'] = 'House@' + this.currentUserCartId;
+
+  //       this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
+  //         //console.log("Bottle location updated to house");
+
+  //         // Explicitly update the dropzone list
+  //         this.Inhouseshelf_bottles = [...event.container.data];
+  //       });
+
+  //     } else if (currentDropzone.contains('newbottle_list') || currentDropzone.contains('cart_bottle_list')) {
+  //       this.updateonlyloc['currentbottle'] = bottleId;
+  //       this.updateonlyloc['Bottleloc'] = this.currentUserCartId;
+
+  //       this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
+  //         (this as any)[event.container.element.nativeElement.classList[0]] = [...event.container.data];
+
+  //       });
+
+  //     } else if (currentDropzone.contains('dustbin_bottles')) {
+  //       // Handle the bottle being dropped into the dustbin
+  //       this.logser.getthisAssets(bottleId).subscribe((data) => {
+  //         this.updatebottlereturn['currentitem'] = bottleId;
+  //         this.updatebottlereturn['Bottleloc'] = "City Dustbin";
+  //         this.updatebottlereturn['bottlestatus'] = data[0]['Bottle_Status'];
+  //         this.updatebottlereturn['fromfacility'] = this.currentUserRole;
+  //         this.updatebottlereturn['tofacility'] = 'Municipality Office';
+
+
+  //         let dustbin_fine = 0.0;
+  //         // Calculate the fine
+  //         for (let i = 0; i < this.bottlePrice.length; i++) {
+  //           if (this.bottlePrice[i]['BottleType'] == currentlyDroped.split('id')[0].split('_')[2] + '.' + currentlyDroped.split('id')[1].split('_')[0]) {
+  //             dustbin_fine = parseFloat(this.bottlePrice[i]['OriginalPrice']) * 0.5;
+  //             break;
+  //           }
+  //         }
+
+  //         if (this.currentwallet > dustbin_fine) {
+  //           this.alertModal.openModal("A fine of ₹" + dustbin_fine + " has been charged for this offense");
+  //           this.currentwallet = this.currentwallet - dustbin_fine;
+  //           this.logser.currentuser.wallet = this.currentwallet;
+
+  //           this.logser.updatewallet().subscribe(
+  //             data => {
+  //               data = this.currentwallet;
+  //               this.playAudioElement(this.Fine.nativeElement, 0.8);
+
+  //               // Handle the transaction for the fine
+  //               this.logser.gettransactions().subscribe(data => {
+  //                 let transactioncount = '0000' + (data.length + 1);
+  //                 this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + transactioncount + '_04';
+  //                 this.transaction['Amount'] = String(dustbin_fine);
+  //                 this.transaction['CreditFacility'] = 'Municipality Office';
+  //                 this.transaction['DebitFacility'] = this.currentUserRole;
+  //                 this.transaction['Purpose'] = 'Fine for Throwing Bottle to City Dustbin';
+
+  //                 this.logser.createtransaction(this.transaction).subscribe(
+  //                   data => {
+  //                     data = this.transaction;
+  //                     this.updatebottlereturn['transactionid'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + transactioncount + '_04';
+  //                     this.updatebottlereturn['transactiondate'] = String(this.citytiming['CurrentDay']);
+
+
+  //                     this.logser.updateConveyorAssets(this.updatebottlereturn).subscribe((data) => {
+  //                       //console.log("Bottle location updated to City Dustbin");
+  //                       this.playAudioElement(this.Fine.nativeElement, 0.8);
+  //                       this.logser.getFacilitycashbox('Municipality Office').subscribe(data => {
+  //                         (data[0]['Cashbox'] == '') ? this.municipalcashbox = 0 : this.municipalcashbox = parseInt(data[0]['Cashbox']);
+  //                         this.municipalcashbox += dustbin_fine;
+  //                         this.logser.updateFacilitycashbox('Municipality Office', String(this.municipalcashbox)).subscribe(data => { });
+  //                       });
+  //                     });
+
+  //                   });
+  //               });
+
+
+  //             },
+  //             error => {
+  //               //console.log(error);
+  //             });
+
+  //           // Update the municipality cashbox
+
+  //         }
+
+  //         // Explicitly update the dustbin list
+  //         this.dustbin_bottles = [...event.container.data];
+  //       });
+
+  //     } else if (currentDropzone.contains('truckContList')) {
+  //       // Update bottle location to landfill
+  //       this.logser.getthisAssets(bottleId).subscribe((data) => {
+  //         this.updatebottlereturn['currentitem'] = bottleId;
+  //         this.updatebottlereturn['Bottleloc'] = "Garbage Truck";
+  //         this.updatebottlereturn['bottlestatus'] = data[0]['Bottle_Status'];
+  //         this.updatebottlereturn['fromfacility'] = this.currentUserRole;
+  //         this.updatebottlereturn['tofacility'] = 'Municipality Office';
+
+
+  //         let garbagetruck_fine = 0.0;
+  //         // Calculate the fine
+  //         for (let i = 0; i < this.bottlePrice.length; i++) {
+  //           if (this.bottlePrice[i]['BottleType'] == currentlyDroped.split('id')[0].split('_')[2] + '.' + currentlyDroped.split('id')[1].split('_')[0]) {
+  //             garbagetruck_fine = parseFloat(this.bottlePrice[i]['OriginalPrice']) * 0.5;
+  //             break;
+  //           }
+  //         }
+
+  //         if (this.currentwallet > garbagetruck_fine) {
+  //           this.alertModal.openModal("A fine of ₹" + garbagetruck_fine + " has been charged for this offense");
+  //           this.currentwallet = this.currentwallet - garbagetruck_fine;
+  //           this.logser.currentuser.wallet = this.currentwallet;
+
+  //           this.logser.updatewallet().subscribe(
+  //             data => {
+  //               data = this.currentwallet;
+  //               this.playAudioElement(this.Fine.nativeElement, 0.8);
+
+  //               // Handle the transaction for the fine
+  //               this.logser.gettransactions().subscribe(data => {
+  //                 let transactioncount = '0000' + (data.length + 1);
+  //                 this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + transactioncount + '_05';
+  //                 this.transaction['Amount'] = String(this.refill_amount_topay);
+  //                 this.transaction['CreditFacility'] = 'Municipality Office';
+  //                 this.transaction['DebitFacility'] = this.currentUserRole;
+  //                 this.transaction['Purpose'] = 'Fine for Throwing Bottle to Garbage Truck';
+
+  //                 this.logser.createtransaction(this.transaction).subscribe(
+  //                   data => {
+  //                     data = this.transaction;
+  //                     this.updatebottlereturn['transactionid'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + transactioncount + '_05';
+  //                     this.updatebottlereturn['transactiondate'] = String(this.citytiming['CurrentDay']);
+
+
+  //                     this.logser.updateConveyorAssets(this.updatebottlereturn).subscribe((data) => {
+  //                       //console.log("Bottle location updated to Garbage Truck");
+  //                       this.playAudioElement(this.Fine.nativeElement, 0.8);
+  //                       this.logser.getFacilitycashbox('Municipality Office').subscribe(data => {
+  //                         (data[0]['Cashbox'] == '') ? this.municipalcashbox = 0 : this.municipalcashbox = parseInt(data[0]['Cashbox']);
+  //                         this.municipalcashbox += garbagetruck_fine;
+  //                         this.logser.updateFacilitycashbox('Municipality Office', String(this.municipalcashbox)).subscribe(data => { });
+  //                       });
+  //                     });
+  //                   });
+  //               });
+
+
+  //             },
+  //             error => {
+  //               //console.log(error);
+  //             });
+
+  //           // Update the municipality cashbox
+
+  //         }
+  //         // Explicitly update the truck container list
+  //         this.truckContList = [...event.container.data];
+  //       });
+  //     }
+  //   }
+  // }
   boughtdrop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
-      // Move item within the same container
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
-      // Transfer item between containers
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
+      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
 
-      // Get the currently dropped item's ID and dropzone class
-      let currentlyDroped = event.item.element.nativeElement.id;
-      let currentDropzone = event.container.element.nativeElement.classList;
-
-      // Extract bottle ID from the element ID
-      let bottleId = currentlyDroped.split('City')[1].split("at")[0];
+      const currentlyDropped = event.item.element.nativeElement.id;
+      const currentDropzone = event.container.element.nativeElement.classList;
+      const bottleId = currentlyDropped.split('City')[1].split("at")[0];
 
       if (currentDropzone.contains('Inhouseshelf_bottles')) {
-        // Update bottle location to house
-        this.updateonlyloc['currentbottle'] = bottleId;
-        this.updateonlyloc['Bottleloc'] = 'House@' + this.currentUserCartId;
-
-        this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
-          //console.log("Bottle location updated to house");
-
-          // Explicitly update the dropzone list
-          this.Inhouseshelf_bottles = [...event.container.data];
-        });
-
+        this.updateBottleLocationandFine(`House@${this.currentUserCartId}`, 0, '', '', bottleId);
+        this.Inhouseshelf_bottles = [...event.container.data];
       } else if (currentDropzone.contains('newbottle_list') || currentDropzone.contains('cart_bottle_list')) {
-        this.updateonlyloc['currentbottle'] = bottleId;
-        this.updateonlyloc['Bottleloc'] = this.currentUserCartId;
-
-        this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
-          (this as any)[event.container.element.nativeElement.classList[0]] = [...event.container.data];
-
-        });
-
+        this.updateBottleLocationandFine(this.currentUserCartId, 0, '', '', bottleId);
+        (this as any)[event.container.element.nativeElement.classList[0]] = [...event.container.data];
       } else if (currentDropzone.contains('dustbin_bottles')) {
-        // Handle the bottle being dropped into the dustbin
-        this.logser.getthisAssets(bottleId).subscribe((data) => {
-          this.updatebottlereturn['currentitem'] = bottleId;
-          this.updatebottlereturn['Bottleloc'] = "City Dustbin";
-          this.updatebottlereturn['bottlestatus'] = data[0]['Bottle_Status'];
-          this.updatebottlereturn['fromfacility'] = this.currentUserRole;
-          this.updatebottlereturn['tofacility'] = 'Municipality Office';
-
-
-          let amount_fine = 0.0;
-          // Calculate the fine
-          for (let i = 0; i < this.bottlePrice.length; i++) {
-            if (this.bottlePrice[i]['BottleType'] == currentlyDroped.split('id')[0].split('_')[2] + '.' + currentlyDroped.split('id')[1].split('_')[0]) {
-              amount_fine = parseFloat(this.bottlePrice[i]['OriginalPrice']) * 0.5;
-              break;
-            }
-          }
-
-          if (this.currentwallet > amount_fine) {
-            this.alertModal.openModal("A fine of ₹" + amount_fine + " has been charged for this offense");
-            this.currentwallet = this.currentwallet - amount_fine;
-            this.logser.currentuser.wallet = this.currentwallet;
-
-            this.logser.updatewallet().subscribe(
-              data => {
-                data = this.currentwallet;
-                this.playAudioElement(this.Fine.nativeElement, 0.8);
-
-                // Handle the transaction for the fine
-                this.logser.gettransactions().subscribe(data => {
-                  let transactioncount = '0000' + (data.length + 1);
-                  this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + transactioncount + '_04';
-                  this.transaction['Amount'] = String(this.refill_amount_topay);
-                  this.transaction['CreditFacility'] = 'Municipality Office';
-                  this.transaction['DebitFacility'] = this.currentUserRole;
-                  this.transaction['Purpose'] = 'Fine for Throwing Bottle to City Dustbin';
-
-                  this.logser.createtransaction(this.transaction).subscribe(
-                    data => {
-                      data = this.transaction;
-                      this.updatebottlereturn['transactionid'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + transactioncount + '_04';
-                      this.updatebottlereturn['transactiondate'] = String(this.citytiming['CurrentDay']);
-
-
-                      this.logser.updateConveyorAssets(this.updatebottlereturn).subscribe((data) => {
-                        //console.log("Bottle location updated to City Dustbin");
-                        this.playAudioElement(this.Fine.nativeElement, 0.8);
-                      });
-
-                    });
-                });
-
-
-              },
-              error => {
-                //console.log(error);
-              });
-
-            // Update the municipality cashbox
-            this.logser.getFacilitycashbox('Municipality Office').subscribe(data => {
-              (data[0]['Cashbox'] == '') ? this.municipalcashbox = 0 : this.municipalcashbox = parseInt(data[0]['Cashbox']);
-              this.municipalcashbox += amount_fine;
-              this.logser.updateFacilitycashbox('Municipality Office', String(this.municipalcashbox)).subscribe(data => { });
-            });
-          }
-
-          // Explicitly update the dustbin list
-          this.dustbin_bottles = [...event.container.data];
-        });
-
+        this.handleFineAndLocation(bottleId, currentlyDropped, 'City Dustbin', '04', 'Fine for Throwing Bottle to City Dustbin');
+        this.dustbin_bottles = [...event.container.data];
       } else if (currentDropzone.contains('truckContList')) {
-        // Update bottle location to landfill
-        this.logser.getthisAssets(bottleId).subscribe((data) => {
-          this.updatebottlereturn['currentitem'] = bottleId;
-          this.updatebottlereturn['Bottleloc'] = "Garbage Truck";
-          this.updatebottlereturn['bottlestatus'] = data[0]['Bottle_Status'];
-          this.updatebottlereturn['fromfacility'] = this.currentUserRole;
-          this.updatebottlereturn['tofacility'] = 'Municipality Office';
+        this.handleFineAndLocation(bottleId, currentlyDropped, 'Garbage Truck', '05', 'Fine for Throwing Bottle to Garbage Truck');
+        this.truckContList = [...event.container.data];
+      }
+    }
+  }
 
+  private calculateFine(bottleType: string): number {
+    const bottle = this.bottlePrice.find(b => b['BottleType'] === bottleType);
+    return bottle ? parseFloat(bottle['OriginalPrice']) * 0.5 : 0;
+  }
 
-          let amount_fine = 0.0;
-          // Calculate the fine
-          for (let i = 0; i < this.bottlePrice.length; i++) {
-            if (this.bottlePrice[i]['BottleType'] == currentlyDroped.split('id')[0].split('_')[2] + '.' + currentlyDroped.split('id')[1].split('_')[0]) {
-              amount_fine = parseFloat(this.bottlePrice[i]['OriginalPrice']) * 0.5;
-              break;
-            }
-          }
+  // Helper function to update bottle location
+  private updateBottleLocationandFine(location: string, fine: number, purpose: string, transactionType: string, bottleId?: string) {
+    if (bottleId) {
+      this.updateonlyloc['currentbottle'] = bottleId;
+      this.updateonlyloc['Bottleloc'] = location;
+      this.logser.updatelocation(this.updateonlyloc).subscribe(() => { });
+    } else {
+      this.updatebottlereturn['currentitem'] = this.selectedBottleatStage.split("at")[0].split("City")[1];
+      this.updatebottlereturn['Bottleloc'] = location;
+      this.updatebottlereturn['bottlestatus'] = this.bottleStatus_Display['Bottle_Status'];
+      this.updatebottlereturn['fromfacility'] = this.currentUserRole;
+      this.updatebottlereturn['tofacility'] = 'Municipality Office';
 
-          if (this.currentwallet > amount_fine) {
-            this.alertModal.openModal("A fine of ₹" + amount_fine + " has been charged for this offense");
-            this.currentwallet = this.currentwallet - amount_fine;
-            this.logser.currentuser.wallet = this.currentwallet;
+      if (this.currentwallet > fine) {
+        this.alertModal.openModal(`A fine of ₹${fine} has been charged for this offense`);
+        this.currentwallet -= fine;
+        this.logser.currentuser.wallet = this.currentwallet;
 
-            this.logser.updatewallet().subscribe(
-              data => {
-                data = this.currentwallet;
-                this.playAudioElement(this.Fine.nativeElement, 0.8);
-
-                // Handle the transaction for the fine
-                this.logser.gettransactions().subscribe(data => {
-                  let transactioncount = '0000' + (data.length + 1);
-                  this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + transactioncount + '_05';
-                  this.transaction['Amount'] = String(this.refill_amount_topay);
-                  this.transaction['CreditFacility'] = 'Municipality Office';
-                  this.transaction['DebitFacility'] = this.currentUserRole;
-                  this.transaction['Purpose'] = 'Fine for Throwing Bottle to Garbage Truck';
-
-                  this.logser.createtransaction(this.transaction).subscribe(
-                    data => {
-                      data = this.transaction;
-                      this.updatebottlereturn['transactionid'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + transactioncount + '_05';
-                      this.updatebottlereturn['transactiondate'] = String(this.citytiming['CurrentDay']);
-
-
-                      this.logser.updateConveyorAssets(this.updatebottlereturn).subscribe((data) => {
-                        //console.log("Bottle location updated to Garbage Truck");
-                        this.playAudioElement(this.Fine.nativeElement, 0.8);
-                      });
-                    });
-                });
-
-
-              },
-              error => {
-                //console.log(error);
-              });
-
-            // Update the municipality cashbox
-            this.logser.getFacilitycashbox('Municipality Office').subscribe(data => {
-              (data[0]['Cashbox'] == '') ? this.municipalcashbox = 0 : this.municipalcashbox = parseInt(data[0]['Cashbox']);
-              this.municipalcashbox += amount_fine;
-              this.logser.updateFacilitycashbox('Municipality Office', String(this.municipalcashbox)).subscribe(data => { });
-            });
-          }
-          // Explicitly update the truck container list
-          this.truckContList = [...event.container.data];
+        this.logser.updatewallet().subscribe(() => {
+          this.handleTransaction(fine, purpose, transactionType);
         });
       }
     }
   }
 
+  // Helper function to handle transactions
+  private handleTransaction(amount: number, purpose: string, transactionType: string) {
+    this.logser.gettransactions().subscribe(transactions => {
+      const transactionCount = '0000' + (transactions.length + 1);
+      this.transaction['TransactionId'] = `${this.currentusercityId}_${this.citytiming['CurrentDay']}_${this.citytiming['CurrentTime']}_${transactionCount}_${transactionType}`;
+      this.transaction['Amount'] = String(amount);
+      this.transaction['CreditFacility'] = 'Municipality Office';
+      this.transaction['DebitFacility'] = this.currentUserRole;
+      this.transaction['Purpose'] = purpose;
+
+      this.logser.createtransaction(this.transaction).subscribe(() => {
+        this.updatebottlereturn['transactionid'] = this.transaction['TransactionId'];
+        this.updatebottlereturn['transactiondate'] = String(this.citytiming['CurrentDay']);
+
+        this.logser.updateConveyorAssets(this.updatebottlereturn).subscribe(() => {
+          this.playAudioElement(this.Fine.nativeElement, 0.8);
+          this.updateMunicipalCashbox(amount);
+        });
+      });
+    });
+  }
+
+  // Helper function to update municipal cashbox
+  private updateMunicipalCashbox(amount: number) {
+    this.logser.getFacilitycashbox('Municipality Office').subscribe(data => {
+      this.municipalcashbox = data[0]['Cashbox'] ? parseInt(data[0]['Cashbox']) : 0;
+      this.municipalcashbox += amount;
+      this.logser.updateFacilitycashbox('Municipality Office', String(this.municipalcashbox)).subscribe(() => { });
+    });
+  }
+
+  // Helper function to handle fine and location updates
+  private handleFineAndLocation(bottleId: string, currentlyDropped: string, location: string, transactionType: string, purpose: string) {
+    this.logser.getthisAssets(bottleId).subscribe(data => {
+      const bottleType = currentlyDropped.split('id')[0].split('_')[2] + '.' + currentlyDropped.split('id')[1].split('_')[0];
+      const fine = this.calculateFine(bottleType);
+
+      this.updateBottleLocationandFine(location, fine, purpose, transactionType, bottleId);
+    });
+  }
 
   netfine = 0.0;
   netpurchase = 0.0;
@@ -3804,6 +3929,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   selectedbottle = '';
 
   openwhyshorter(whyshorter: any) {
+    this.closeothermodels();
     this.modalService.open(whyshorter, { windowClass: "frontpage" });
   }
 
@@ -4072,79 +4198,89 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     this.logser.updatethisAssetQuantity(this.bottleStatus_Display).subscribe((data) => { });
   }
   isThrown: boolean = false;
+  // makeitThrown() {
+  //   $('.btncont,.shampoolevel').hide();
+  //   this.isThrown = true;
+  //   let thrown_fine = 0.0;
+  //   for (let i = 0; i < this.bottlePrice.length; i++) {
+  //     if (this.bottlePrice[i]['BottleType'] == this.selectedBottleatStage.split('id')[0].split('_')[2] + '.' + this.selectedBottleatStage.split('id')[1].split('_')[0]) {
+  //       thrown_fine = parseFloat(this.bottlePrice[i]['OriginalPrice']) * 0.5;
+  //       break;
+  //     }
+  //   }
+  //   this.updatebottlereturn['currentitem'] = this.selectedBottleatStage.split("at")[0].split("City")[1];
+  //   this.updatebottlereturn['Bottleloc'] = 'Street'
+  //   this.updatebottlereturn['bottlestatus'] = this.bottleStatus_Display['Bottle_Status'];
+  //   this.updatebottlereturn['fromfacility'] = this.currentUserRole;
+  //   this.updatebottlereturn['tofacility'] = 'Municipality Office';
+
+
+  //   if (this.currentwallet > thrown_fine) {
+  //     this.alertModal.openModal("A fine of ₹" + thrown_fine + " has been charged for this offense");
+  //     this.currentwallet = this.currentwallet - thrown_fine;
+  //     this.logser.currentuser.wallet = this.currentwallet;
+
+  //     this.logser.updatewallet().subscribe(
+  //       data => {
+  //         data = this.currentwallet;
+
+  //         this.logser.gettransactions().subscribe(data => {
+  //           let transactioncount = '0000' + (data.length + 1);
+
+
+  //           this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + transactioncount + '_08';
+  //           this.transaction['Amount'] = String(thrown_fine);
+  //           this.transaction['CreditFacility'] = 'Municipality Office';
+  //           this.transaction['DebitFacility'] = this.currentUserRole;
+  //           this.transaction['Purpose'] = 'Fine for Throwing Bottle';
+  //           this.logser.createtransaction(this.transaction).subscribe(
+  //             data => {
+  //               data = this.transaction;
+  //               this.updatebottlereturn['transactionid'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + transactioncount + '_08';
+  //               this.updatebottlereturn['transactiondate'] = String(this.citytiming['CurrentDay']);
+
+
+  //               this.logser.updateConveyorAssets(this.updatebottlereturn).subscribe((data) => {
+  //                 this.bottleStatus_Display['Bottle_loc'] = "Street";
+  //                 this.playAudioElement(this.Fine.nativeElement, 0.8);
+  //                 let index = this.currentUserPurhcased.findIndex(item => item === this.bottleStatus_Display['currentbottle'])
+  //                 this.currentUserPurhcased.splice(index, 1);
+  //                 this.logser.getFacilitycashbox('Municipality Office').subscribe(data => {
+  //                   (data[0]['Cashbox'] == '') ? this.municipalcashbox = 0 : this.municipalcashbox = parseInt(data[0]['Cashbox']);
+  //                   this.municipalcashbox += thrown_fine;
+  //                   this.logser.updateFacilitycashbox('Municipality Office', String(this.municipalcashbox)).subscribe(data => { });
+  //                 });
+  //               });
+
+  //             });
+
+  //         },
+  //           error => {
+  //             //console.log(error);
+  //           });
+
+
+  //       });
+
+
+
+
+
+  //   }
+  //   $("#" + this.selectedBottleatStage.split("at")[0].split("City")[1]).addClass('Street');
+
+
+
+
+  // }
   makeitThrown() {
     $('.btncont,.shampoolevel').hide();
     this.isThrown = true;
-    let amount_fine = 0.0;
-    for (let i = 0; i < this.bottlePrice.length; i++) {
-      if (this.bottlePrice[i]['BottleType'] == this.selectedBottleatStage.split('id')[0].split('_')[2] + '.' + this.selectedBottleatStage.split('id')[1].split('_')[0]) {
-        amount_fine = parseFloat(this.bottlePrice[i]['OriginalPrice']) * 0.5;
-        break;
-      }
-    }
-    this.updatebottlereturn['currentitem'] = this.selectedBottleatStage.split("at")[0].split("City")[1];
-    this.updatebottlereturn['Bottleloc'] = 'Street'
-    this.updatebottlereturn['bottlestatus'] = this.bottleStatus_Display['Bottle_Status'];
-    this.updatebottlereturn['fromfacility'] = this.currentUserRole;
-    this.updatebottlereturn['tofacility'] = 'Municipality Office';
 
+    const bottleType = this.selectedBottleatStage.split('id')[0].split('_')[2] + '.' + this.selectedBottleatStage.split('id')[1].split('_')[0];
+    const thrownFine = this.calculateFine(bottleType);
 
-    if (this.currentwallet > amount_fine) {
-      this.alertModal.openModal("A fine of ₹" + amount_fine + " has been charged for this offense");
-      this.currentwallet = this.currentwallet - amount_fine;
-      this.logser.currentuser.wallet = this.currentwallet;
-
-      this.logser.updatewallet().subscribe(
-        data => {
-          data = this.currentwallet;
-
-          this.logser.gettransactions().subscribe(data => {
-            let transactioncount = '0000' + (data.length + 1);
-
-
-            this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + transactioncount + '_08';
-            this.transaction['Amount'] = String(amount_fine);
-            this.transaction['CreditFacility'] = 'Municipality Office';
-            this.transaction['DebitFacility'] = this.currentUserRole;
-            this.transaction['Purpose'] = 'Fine for Throwing Bottle';
-            this.logser.createtransaction(this.transaction).subscribe(
-              data => {
-                data = this.transaction;
-                this.updatebottlereturn['transactionid'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + transactioncount + '_08';
-                this.updatebottlereturn['transactiondate'] = String(this.citytiming['CurrentDay']);
-
-
-                this.logser.updateConveyorAssets(this.updatebottlereturn).subscribe((data) => {
-                  this.bottleStatus_Display['Bottle_loc'] = "Street";
-                  this.playAudioElement(this.Fine.nativeElement, 0.8);
-                  let index = this.currentUserPurhcased.findIndex(item => item === this.bottleStatus_Display['currentbottle'])
-                  this.currentUserPurhcased.splice(index, 1);
-                });
-
-              });
-
-          },
-            error => {
-              //console.log(error);
-            });
-
-
-        });
-
-      this.logser.getFacilitycashbox('Municipality Office').subscribe(data => {
-        (data[0]['Cashbox'] == '') ? this.municipalcashbox = 0 : this.municipalcashbox = parseInt(data[0]['Cashbox']);
-        this.municipalcashbox += amount_fine;
-        this.logser.updateFacilitycashbox('Municipality Office', String(this.municipalcashbox)).subscribe(data => { });
-      });
-
-
-
-    }
-    $("#" + this.selectedBottleatStage.split("at")[0].split("City")[1]).addClass('Street');
-
-
-
-
+    this.updateBottleLocationandFine('Street', thrownFine, 'Fine for Throwing Bottle', '08');
   }
   reduceCapacity() {
     if (this.bottleStatus_Display['currentQuantity'] >= 20) {
@@ -4195,7 +4331,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       this.billpaid = false;
     }
 
-
+    this.closeothermodels();
     this.modalService.open(cartcontent, { windowClass: "cartcontent" });
     this.checkthebottlestatusfordisplay();
 

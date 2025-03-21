@@ -94,6 +94,7 @@ export class HamburgerMenuComponent implements OnInit {
     this.logser.getFacilitycashbox('Municipality Office').subscribe(data => {
       this.currentWalletMunis = data[0]['Cashbox'];
     });
+    console.log(this.currentWalletMunis)
     this.logser.gettransactions().subscribe(data => {
       this.cashflowdata = [];
       console.log(data.length);
@@ -293,12 +294,11 @@ export class HamburgerMenuComponent implements OnInit {
   }
 
   onMenuItemClick() {
-    const newValue = 1;  // Set this to the appropriate number value based on your logic
-
-    if (this.switchYesOrNo === 0) {
-      this.switchYesOrNo = 2;
-    } else if (this.switchYesOrNo === 2) {
+   
+    if (this.switchYesOrNo === 2) {
       this.switchYesOrNo = 0;
+    } else if (this.switchYesOrNo === 0) {
+      this.switchYesOrNo = 2;
     }
 
     this.sharedService.setSwitchYesOrNo(this.switchYesOrNo);

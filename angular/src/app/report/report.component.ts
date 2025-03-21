@@ -16,7 +16,13 @@ export class ReportComponent implements OnInit {
   @ViewChild(ChartComponent, { static: false }) chartComponent: ChartComponent | undefined
   selectedUser = '';
   auditLogs: any[] = [];
-  constructor(private router: Router, private logser: LoginserviceService, private modalService: NgbModal, private ExcelExportService: ExcelExportService) { }
+  currentUserRole = '';
+  loggedInUserCity='';
+  constructor(private router: Router, private logser: LoginserviceService, private modalService: NgbModal, private ExcelExportService: ExcelExportService) {
+    this.currentUserRole = this.logser.currentuser.Role;
+    this.loggedInUserCity=this.logser.currentuser.CityId;
+
+  }
   ngOnInit(): void {
 
     if (this.logser.currentuser.Username != '') {
@@ -27,9 +33,26 @@ export class ReportComponent implements OnInit {
       this.router.navigate(['/login']);
     }
   }
-
+  userobj = {
+    'login': '1'
+  }
   gotocity() {
-    this.router.navigate(["maincity"]);
+    if (this.logser.currentuser.Role == 'Governor') {
+      this.userobj.login = '0';
+      this.logser.updateloggeduser(this.userobj).subscribe(
+        (data) => {
+          this.userobj = data;
+          this.router.navigate(["login"]);
+        },
+        (error) => {
+          //console.log(error);
+        }
+      );
+    }
+    else {
+      this.router.navigate(["maincity"]);
+    }
+
   }
 
 
@@ -78,7 +101,12 @@ export class ReportComponent implements OnInit {
 
   loadFilterOptions() {
     this.logser.getFilterOptions().subscribe(data => {
+      if(this.currentUserRole=='Governor'){
       this.cityOptions = data.cityOptions;
+      }
+      else{
+        this.cityOptions = [this.loggedInUserCity];
+      }
       this.brandOptions = data.brandOptions;
       this.current_locationOptions = data.current_locationOptions;
       this.exit_locationOptions = data.exit_locationOptions;

@@ -29,12 +29,12 @@
                             <ng-template>
                                 <div class="hamburger-menu">
 
-                                    <div *ngIf="this.switchYesOrNo==0">
+                                    <div *ngIf="this.switchYesOrNo==2">
                                         <div class="ham-menuitem" (click)="onMenuItemClick();">Switch Role as
                                             {{currentrole}}
                                         </div>
                                     </div>
-                                    <div *ngIf="this.switchYesOrNo==2 && currentrole=='Mayor'">
+                                    <div *ngIf="this.switchYesOrNo==0 && currentrole=='Mayor'">
                                         <div type="button" class="inneracc ham-menuitem" (click)="onMenuItemClick()">
                                             Switch Role as Customer</div>
                                         <div type="button" class=" inneracc ham-menuitem"
@@ -46,7 +46,7 @@
                                         <div type="button" class="disabled inneracc ham-menuitem">Run the garbage truck
                                             daily</div>
                                         <div type="button" class="inneracc ham-menuitem"
-                                            (click)="showCityRuleComponent('cityrule')">Update the City Rule Book</div>
+                                            (click)="showCityRuleComponent('cityrule')">Update Environment Taxes</div>
                                         <div type="button" (click)="showCityRuleComponent('notification')"
                                             class="inneracc ham-menuitem">Update Notices and Announcements </div>
                                         <div type="button" class="inneracc ham-menuitem" (click)="showNewComponent()">
@@ -62,7 +62,7 @@
                                             (click)="openAuditPlasticVideoModal()">Audit the Plastic Recycling Plant
                                         </div>
                                     </div>
-                                    <div *ngIf="this.switchYesOrNo==2 && currentrole=='Supermarket Owner'">
+                                    <div *ngIf="this.switchYesOrNo==0 && currentrole=='Supermarket Owner'">
                                         <div type="button" class="inneracc ham-menuitem" (click)="onMenuItemClick()">
                                             Switch Role as Customer</div>
                                         <div type="button" class=" inneracc ham-menuitem"
@@ -77,7 +77,7 @@
                                             Run the Bottle Collection Truck</div>
                                     </div>
                                     <div
-                                        *ngIf="this.switchYesOrNo==2 && currentrole=='Bottle Reverse Vending Machine Owner'">
+                                        *ngIf="this.switchYesOrNo==0 && currentrole=='Bottle Reverse Vending Machine Owner'">
                                         <div type="button" class="inneracc ham-menuitem" (click)="onMenuItemClick()">
                                             Switch Role as Customer</div>
                                         <div type="button" class=" inneracc ham-menuitem"
@@ -89,7 +89,7 @@
                                     </div>
 
                                     <div
-                                        *ngIf="this.switchYesOrNo==2 && currentrole=='Shampoo Refilling Station Owner'">
+                                        *ngIf="this.switchYesOrNo==0 && currentrole=='Shampoo Refilling Station Owner'">
                                         <div type="button" class="inneracc ham-menuitem" (click)="onMenuItemClick()">
                                             Switch
                                             Role as Customer</div>
@@ -101,7 +101,7 @@
                                             book</div>
                                     </div>
                                     <div
-                                        *ngIf="this.switchYesOrNo==2 && currentrole=='Universal Bottle Manufacturing Plant owner'">
+                                        *ngIf="this.switchYesOrNo==0 && currentrole=='Universal Bottle Manufacturing Plant owner'">
                                         <div type="button" class="inneracc ham-menuitem" (click)="onMenuItemClick()">
                                             Switch
                                             Role as Customer</div>
@@ -112,7 +112,7 @@
                                         <div type="button" class="disabled inneracc ham-menuitem">Check Ledger
                                             book</div>
                                     </div>
-                                    <div *ngIf="this.switchYesOrNo==2 && currentrole=='Plastic Recycling Plant Owner'">
+                                    <div *ngIf="this.switchYesOrNo==0 && currentrole=='Plastic Recycling Plant Owner'">
                                         <div type="button" class="inneracc ham-menuitem" (click)="onMenuItemClick()">
                                             Switch
                                             Role as Customer</div>
@@ -123,7 +123,7 @@
                                         <div type="button" class="disabled inneracc ham-menuitem">Check Ledger
                                             book</div>
                                     </div>
-                                    <div *ngIf="this.switchYesOrNo==2 && currentrole=='Universal Bottle Cleaning Plant Owner'">
+                                    <div *ngIf="this.switchYesOrNo==0 && currentrole=='Universal Bottle Cleaning Plant Owner'">
                                         <div type="button" class="inneracc ham-menuitem" (click)="onMenuItemClick()">
                                             Switch
                                             Role as Customer</div>
@@ -134,7 +134,7 @@
                                         <div type="button" class="disabled inneracc ham-menuitem">Check Ledger
                                             book</div>
                                     </div>
-                                    <div *ngIf="this.switchYesOrNo==2 && currentrole=='B1 Shampoo Producer'">
+                                    <div *ngIf="this.switchYesOrNo==0 && currentrole=='B1 Shampoo Producer'">
                                         <div type="button" class="inneracc ham-menuitem" (click)="onMenuItemClick()">
                                             Switch
                                             Role as Customer</div>
@@ -145,7 +145,7 @@
                                         <div type="button" class="disabled inneracc ham-menuitem">Check Ledger
                                             book</div>
                                     </div>
-                                    <div *ngIf="this.switchYesOrNo==2 && currentrole=='B2 Shampoo Producer'">
+                                    <div *ngIf="this.switchYesOrNo==0 && currentrole=='B2 Shampoo Producer'">
                                         <div type="button" class="inneracc ham-menuitem" (click)="onMenuItemClick()">
                                             Switch
                                             Role as Customer</div>
@@ -156,7 +156,7 @@
                                         <div type="button" class="disabled inneracc ham-menuitem">Check Ledger
                                             book</div>
                                     </div>
-                                    <div *ngIf="this.switchYesOrNo==2 && currentrole=='B3 Shampoo Producer'">
+                                    <div *ngIf="this.switchYesOrNo==0 && currentrole=='B3 Shampoo Producer'">
                                         <div type="button" class="inneracc ham-menuitem" (click)="onMenuItemClick()">
                                             Switch
                                             Role as Customer</div>
@@ -167,7 +167,7 @@
                                         <div type="button" class="disabled inneracc ham-menuitem">Check Ledger
                                             book</div>
                                     </div>
-                                    <div *ngIf="this.switchYesOrNo==2 && currentrole=='B4 Shampoo Producer'">
+                                    <div *ngIf="this.switchYesOrNo==0 && currentrole=='B4 Shampoo Producer'">
                                         <div type="button" class="inneracc ham-menuitem" (click)="onMenuItemClick()">
                                             Switch
                                             Role as Customer</div>
@@ -178,7 +178,7 @@
                                         <div type="button" class="disabled inneracc ham-menuitem">Check Ledger
                                             book</div>
                                     </div>
-                                    <div *ngIf="this.switchYesOrNo==2 && currentrole=='B5 Shampoo Producer'">
+                                    <div *ngIf="this.switchYesOrNo==0 && currentrole=='B5 Shampoo Producer'">
                                         <div type="button" class="inneracc ham-menuitem" (click)="onMenuItemClick()">
                                             Switch
                                             Role as Customer</div>
