@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
+import { AuthService } from '../auth.service';
 @Injectable({
   providedIn: 'root'
 })
 export class LoginserviceService {
-  username = "Admin";
-  password = "Admin@123";
+  // username = "Admin";
+  // password = "Admin@123";
   currentuser = {
     'Username': '',
     'UserId': '',
@@ -23,76 +24,102 @@ export class LoginserviceService {
     'cityrate': '',
     'cityavatar': ''
   };
- //baseurl = "https://dbl.iihs.in/api/";
-baseurl = "http://127.0.0.1:8000/api/";
-  authorizationData = 'Basic ' + btoa(this.username + ':' + this.password);
-  httpHeaders = new HttpHeaders({
-    'Content-Type': 'application/json',
-    'Authorization': this.authorizationData
-  });
+  baseurl = "https://dbl.iihs.in/api/";
+  //baseurl = "http://127.0.0.1:8000/api/";
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private authService: AuthService) { }
+
+  private getAuthHeaders(): HttpHeaders {
+    return this.authService.getAuthHeaders();
+  }
+
   getAllUsers(): Observable<any> {
-    return this.http.get(this.baseurl,
-      { headers: this.httpHeaders });
+    return this.http.get(this.baseurl + 'users/',
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );
   }
   createUser(user: any): Observable<any> {
     const body = { Username: user.Username, email: user.email, Password: user.Password, mobile: user.mobile, wallet: user.wallet, status: user.status, User_cityid: user.User_cityid, Role: user.Role, cartId: user.cartId, gender: user.gender, avatar: user.avatar };
 
     return this.http.post(this.baseurl + 'signup/', body,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );
   }
   createAsset(asset: any): Observable<any> {
     const body = { AssetId: asset.AssetId, Asset_CityId: asset.Asset_CityId, CategoryCode: asset.CategoryCode, Bottle_Code: asset.Bottle_Code, Content_Code: asset.Content_Code, Current_Content_Code: asset.Current_Content_Code, Quantity: asset.Quantity, remQuantity: asset.remQuantity, Units: asset.Units, Bottle_loc: asset.Bottle_loc, Bottle_Status: asset.Bottle_Status, DOM: asset.DOM, Max_Refill_Count: asset.Max_Refill_Count, Current_SelfRefill_Count: asset.Current_SelfRefill_Count, Current_PlantRefill_Count: asset.Current_PlantRefill_Count, Latest_Refill_Date: asset.Latest_Refill_Date, Retirement_Date: asset.Retirement_Date, Retire_Reason: asset.Retire_Reason, Content_Price: asset.Content_Price, Bottle_Price: asset.Bottle_Price, Redeem_Good: asset.Redeem_Good, Redeem_Damaged: asset.Redeem_Damaged, Discount_RefillB: asset.Discount_RefillB, Env_Tax_Customer: asset.Env_Tax_Customer, Discard_fine: asset.Discard_fine, Transaction_Id: asset.Transaction_Id, Transaction_Date: asset.Transaction_Date, Fromfacility: asset.Fromfacility, Tofacility: asset.Tofacility };
     return this.http.post(this.baseurl + 'asset/' + this.currentuser.CityId, body,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );
   }
   createcity(city: any): Observable<any> {
 
     const body = { CityName: city.CityName, MayorId: city.MayorId, Clocktickrate: city.Clocktickrate, Status: city.Status, cityavatar: city.cityavatar };
     return this.http.post(this.baseurl + 'addcity/', body,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );
 
   }
 
   createcityrule(cityrule: any): Observable<any> {
     //console.log(cityrule)
     return this.http.post(this.baseurl + 'addRule/', cityrule,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );
 
   }
   updatecurrenttime(): Observable<any> {
 
-    return this.http.get(this.baseurl + 'updatetime/' + this.currentuser.CityId, { headers: this.httpHeaders });
+    return this.http.get(this.baseurl + 'updatetime/' + this.currentuser.CityId, { headers: this.getAuthHeaders() }).pipe(
+      catchError(this.handleError)
+    );
 
   }
   getAllCities(): Observable<any> {
     return this.http.get(this.baseurl + 'addcity/',
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );
   }
   getAllAssets(): Observable<any> {
     return this.http.get(this.baseurl + 'asset/' + this.currentuser.CityId,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );
   }
   getFilteredCityAssets(cityId: any): Observable<any> {
     return this.http.get(this.baseurl + 'asset/' + cityId,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );
   }
 
   getthisAssets(currentitem: any): Observable<any> {
-    return this.http.get(this.baseurl + 'assets/' + currentitem, { headers: this.httpHeaders });
+    return this.http.get(this.baseurl + 'assets/' + currentitem, { headers: this.getAuthHeaders() }).pipe(
+      catchError(this.handleError)
+    );
   }
 
 
   lockthisAsset(currentitem: string): Observable<any> {
-    return this.http.post(this.baseurl + 'lockasset/' + currentitem, { headers: this.httpHeaders });
+    return this.http.post(this.baseurl + 'lockasset/' + currentitem, { headers: this.getAuthHeaders() }).pipe(
+      catchError(this.handleError)
+    );
   }
   unlockthisAsset(currentitem: string): Observable<any> {
-    return this.http.post(this.baseurl + 'unlockasset/' + currentitem, { headers: this.httpHeaders });
+    return this.http.post(this.baseurl + 'unlockasset/' + currentitem, { headers: this.getAuthHeaders() }).pipe(
+      catchError(this.handleError)
+    );
   }
 
   startthread(): Observable<any> {
-    return this.http.post(this.baseurl + 'update_city_threads/', { headers: this.httpHeaders });
+    return this.http.post(this.baseurl + 'update_city_threads/', { headers: this.getAuthHeaders() }).pipe(
+      catchError(this.handleError)
+    );
   }
   updatethisAssets(currentitem: any): Observable<any> {
     const body: { [key: string]: any } = {
@@ -116,7 +143,9 @@ baseurl = "http://127.0.0.1:8000/api/";
 
 
     return this.http.put(this.baseurl + 'assets/' + currentitem.currentitem, body,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );
   }
   updateConveyorAssets(currentitem: any): Observable<any> {
     const body = {
@@ -128,7 +157,9 @@ baseurl = "http://127.0.0.1:8000/api/";
     };
 
     return this.http.put(this.baseurl + 'assets/' + currentitem.currentitem, body,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );
   }
 
   updatethisAssetQuantity(currentbottle: any): Observable<any> {
@@ -141,13 +172,17 @@ baseurl = "http://127.0.0.1:8000/api/";
       body['Bottle_loc'] = currentbottle.Location;
     }
     return this.http.put(this.baseurl + 'assets/' + currentbottle.currentbottle, body,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );
   }
 
   updateNoticeonCityTable(body: any): Observable<any> {
     //console.log(body)
     return this.http.put(this.baseurl + 'addcity/' + this.currentuser.CityId, body,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );
   }
 
   updateRefillData(bottleDataatRefill: any): Observable<any> {
@@ -159,7 +194,9 @@ baseurl = "http://127.0.0.1:8000/api/";
     };
 
     return this.http.put(this.baseurl + 'assets/' + bottleDataatRefill.RefillingBottle, body,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );
   }
   updatedragged(currentbottle: any): Observable<any> {
     const body = {
@@ -169,81 +206,103 @@ baseurl = "http://127.0.0.1:8000/api/";
 
     };
     return this.http.put(this.baseurl + 'assets/' + currentbottle.currentbottle, body,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );
   }
   updatelocation(currentbottle: any): Observable<any> {
     const body = {
       Bottle_loc: currentbottle.Bottleloc
     };
     return this.http.put(this.baseurl + 'assets/' + currentbottle.currentbottle, body,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );
   }
-  updateBtlLocationandMakeitRetired(currentbottle: any,bottleId:any): Observable<any> {
+  updateBtlLocationandMakeitRetired(currentbottle: any, bottleId: any): Observable<any> {
     return this.http.put(this.baseurl + 'assets/' + bottleId, currentbottle,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );
   }
-  bringBackBrandedBottles(currentbottle: any,assetId:any): Observable<any> {
+  bringBackBrandedBottles(currentbottle: any, assetId: any): Observable<any> {
 
-    return this.http.put(this.baseurl + 'assets/' +assetId, currentbottle,
-      { headers: this.httpHeaders });
+    return this.http.put(this.baseurl + 'assets/' + assetId, currentbottle,
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );
   }
   updateUBContent(currentbottle: any): Observable<any> {
     const body = {
-      Content_Code:'',
-      Current_Content_Code:'',
-      Transaction_Id:'',
-      Transaction_Date:'',
-      Fromfacility:'',
-      Tofacility:'',
-      dragged:false,
-      purchased:false,
-      Bottle_Status:'Empty-Clean'
+      Content_Code: '',
+      Current_Content_Code: '',
+      Transaction_Id: '',
+      Transaction_Date: '',
+      Fromfacility: '',
+      Tofacility: '',
+      dragged: false,
+      purchased: false,
+      Bottle_Status: 'Empty-Clean'
     };
-    console.log("UB update",currentbottle,body);
+    console.log("UB update", currentbottle, body);
     return this.http.put(this.baseurl + 'assets/' + currentbottle, body,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );
   }
   updateBrandedContent(currentbottle: any): Observable<any> {
     const body = {
-      Transaction_Id:'',
-      Transaction_Date:'',
-      Fromfacility:'',
-      Tofacility:'',
-      dragged:false,
-      purchased:false,
-      Bottle_Status:'Empty-Clean'
+      Transaction_Id: '',
+      Transaction_Date: '',
+      Fromfacility: '',
+      Tofacility: '',
+      dragged: false,
+      purchased: false,
+      Bottle_Status: 'Empty-Clean'
     };
-    console.log("Branded",currentbottle,body);
+    console.log("Branded", currentbottle, body);
     return this.http.put(this.baseurl + 'assets/' + currentbottle, body,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );;
   }
   getcitynames(): Observable<any> {
-  console.log( this.currentuser.CityId)
+    console.log(this.currentuser.CityId)
     return this.http.get(this.baseurl + 'getcityname/' + this.currentuser.CityId,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );;
   }
   getLastCityRule(): Observable<any> {
-  console.log( this.currentuser.CityId)
+    console.log(this.currentuser.CityId)
     return this.http.get(this.baseurl + 'cityrule/' + this.currentuser.CityId,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );;
   }
   updateloggeduser(loguser: any): Observable<any> {
     let body;
     body = { login: loguser.login };
     return this.http.put(this.baseurl + 'updateusercity/' + this.currentuser.UserId, body,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );;
   }
   updateuseravatar(avatar: any): Observable<any> {
     let body;
     body = { avatar: avatar };
     return this.http.put(this.baseurl + 'updateusercity/' + this.currentuser.UserId, body,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );;
   }
   leavescity(): Observable<any> {
     let body;
     body = { User_cityid: '', Role: '', cartId: '', avatar: '' };
     return this.http.put(this.baseurl + 'updateusercity/' + this.currentuser.UserId, body,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );
   }
   updateuser(edituser: any): Observable<any> {
     let body;
@@ -256,32 +315,44 @@ baseurl = "http://127.0.0.1:8000/api/";
     }
     console.log(body);
     return this.http.put(this.baseurl + 'updateusercity/' + this.currentuser.UserId, body,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );;
   }
   updatewallet(): Observable<any> {
     let body = { wallet: this.currentuser.wallet };
 
     return this.http.put(this.baseurl + 'updateusercity/' + this.currentuser.UserId, body,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );;
   }
   getallfacility(cityid: any): Observable<any> {
     return this.http.get(this.baseurl + 'getfacility/' + cityid,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );;
   }
   updatefacility(facilityobj: any): Observable<any> {
     const body = { Facilityname: facilityobj.facilityname, Owner_id: facilityobj.Ownerid, Facility_cityid: facilityobj.facilityCityId, Owner_status: facilityobj.Owner_status }
     return this.http.put(this.baseurl + 'updatefacility/', body,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );;
   }
   leavefacility(): Observable<any> {
     const body = { Owner_id: '', Owner_status: 'Inactive' }
     return this.http.put(this.baseurl + 'leavefacility/' + this.currentuser.UserId, body,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );;
   }
   createfacility(firstfacility: any): Observable<any> {
     const body = { Facility_cityid: firstfacility.CityId };
     return this.http.post(this.baseurl + 'facility/' + this.currentuser.UserId, body,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );;
   }
 
   createtransaction(transaction: any): Observable<any> {
@@ -290,63 +361,97 @@ baseurl = "http://127.0.0.1:8000/api/";
       'CreditFacility': transaction.CreditFacility, 'Purpose': transaction.Purpose
     };
     return this.http.post(this.baseurl + 'cashflow/', body,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );;
   }
   gettransactions(): Observable<any> {
     return this.http.get(this.baseurl + 'cashflow/',
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );;
   }
   updatetransactioninfacility(transaction: any): Observable<any> {
     const body = {};
     return this.http.post(this.baseurl + 'cashflow/', body,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );;
   }
-  getFacilitycashbox(facilityName:any): Observable<any> {
-    return this.http.get(this.baseurl + 'getFacilityCashbox/' +facilityName+'/'+ this.currentuser.CityId,
-      { headers: this.httpHeaders });
+  getFacilitycashbox(facilityName: any): Observable<any> {
+    return this.http.get(this.baseurl + 'getFacilityCashbox/' + facilityName + '/' + this.currentuser.CityId,
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );;
   }
-  updateFacilitycashbox(facilityName:any,cashbox:any): Observable<any> {
+  updateFacilitycashbox(facilityName: any, cashbox: any): Observable<any> {
     const body = { Cashbox: cashbox };
-    return this.http.put(this.baseurl + 'getFacilityCashbox/' +facilityName+'/'+ this.currentuser.CityId,body,
-      { headers: this.httpHeaders });
+    return this.http.put(this.baseurl + 'getFacilityCashbox/' + facilityName + '/' + this.currentuser.CityId, body,
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );;
   }
-  toggleTimer( timerPaused: boolean): Observable<any> {
-    
-    return this.http.post(this.baseurl + 'toggle-timer/' + this.currentuser.CityId, {timer_paused:timerPaused},
-      { headers: this.httpHeaders });
+  toggleTimer(timerPaused: boolean): Observable<any> {
+
+    return this.http.post(this.baseurl + 'toggle-timer/' + this.currentuser.CityId, { timer_paused: timerPaused },
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );;
   }
 
 
   sendUserDetails(userDetails: any): Observable<any> {
-    const headers = new HttpHeaders()
-      .set('Content-Type', 'application/json')
-      .set('Authorization', this.authorizationData)
-      .set('user-data', JSON.stringify(userDetails));
+    // const headers = new getAuthHeaders()()
+    //   .set('Content-Type', 'application/json')
+    //   .set('Authorization', this.authorizationData)
+    //   .set('user-data', JSON.stringify(userDetails));
 
     const url = this.baseurl + 'receive_user_details/';
-    return this.http.post(url, {}, { headers: headers });
+    return this.http.post(url, {}, { headers: this.getAuthHeaders() }).pipe(
+      catchError(this.handleError)
+    );
   }
   getAuditLogs(assetId: any) {
     return this.http.get(this.baseurl + 'audit-log/' + assetId + '&' + this.currentuser.CityId,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );;
   }
   getAuditLogsuser(user: any) {
     return this.http.get(this.baseurl + 'audit-logs/' + user + '&' + this.currentuser.CityId,
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );;
   }
   getBottlePrice() {
     return this.http.get(this.baseurl + 'bottleprice/',
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );;
   }
-  getShampooPrice() {
-    return this.http.get(this.baseurl + 'shampooprice/',
-      { headers: this.httpHeaders });
+  getShampooPrice(): Observable<any> {
+    return this.http.get(this.baseurl + 'shampooprice/', {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      catchError(error => {
+        console.error('Error fetching shampoo price:', error);
+        // You can transform the error here if needed
+        return throwError(() => new Error('Failed to fetch shampoo price'));
+      })
+    );
   }
 
   getFilterOptions(): Observable<any> {
-    return this.http.get(this.baseurl + 'filter-options/');
+    return this.http.get(this.baseurl + 'filter-options/', {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      catchError(this.handleError)
+    );
   }
-
+  private handleError(error: any) {
+    console.error('API Error:', error);
+    return throwError(() => new Error(error.message || 'Server error'));
+  }
   getFilteredLogs(filters: any): Observable<any> {
     let params = new HttpParams();
     Object.keys(filters).forEach(key => {
@@ -354,18 +459,24 @@ baseurl = "http://127.0.0.1:8000/api/";
         params = params.append(key, filters[key]);
       }
     });
-    return this.http.get(this.baseurl + 'filter-audit-logs/', { headers: this.httpHeaders, params });
+    return this.http.get(this.baseurl + 'filter-audit-logs/', { headers: this.getAuthHeaders(), params }).pipe(
+      catchError(this.handleError)
+    );;
   }
 
   pauseTimer() {
     return this.http.post(this.baseurl + 'manage-city-timer/' + this.currentuser.CityId, { action: 'pause' },
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );;
 
   }
 
   resumeTimer() {
     return this.http.post(this.baseurl + 'manage-city-timer/' + this.currentuser.CityId, { action: 'resume' },
-      { headers: this.httpHeaders });
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );;
 
   }
 

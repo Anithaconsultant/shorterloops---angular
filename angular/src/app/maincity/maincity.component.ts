@@ -56,6 +56,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild('Supermarket_Return', { static: false }) private Supermarket_Return!: ElementRef;
   @ViewChild('Thanksreturning', { static: false }) private Thanksreturning!: ElementRef;
   @ViewChild('Fine', { static: false }) private Fine!: ElementRef;
+  isMuted = false;
+
+  @ViewChild('allAudio', { static: true }) allAudio!: ElementRef<HTMLAudioElement[]>;
+
   netamount = 0;
   boughtbottledata: any[] = [];
   getcurrentplacedbrand = '';
@@ -238,7 +242,14 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   switchYesOrNo!: number; // The variable is now a number
 
   private hasCalledFunction = false;
+
+
+  private cityInitialized = false;
+  private timeInterval: any;
+  private assetInterval: any;
+
   ngOnInit(): void {
+
 
     interval(1000)
       .pipe(takeWhile(() => !this.hasCalledFunction))
@@ -246,103 +257,141 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         this.convertSeconds(seconds);
       });
 
-    if (this.logser.currentuser.Username != '' && this.logser.currentuser.CityId != '') {
-
-
-      this.userDetails.currentuser = this.logser.currentuser.Username;
-      this.userDetails.CityId = this.logser.currentuser.CityId;
-      this.userDetails.currentCartId = this.logser.currentuser.cartId;
-      this.userDetails.CurrentDay = this.logser.currentuser.currentday.toString();
-
-      this.logser.getAllUsers().subscribe((data) => {
-        this.user = data;
-        for (var t = 0; t < this.user.length; t++) {
-          if (this.user[t].login == 1 && this.user[t].User_cityid == this.logser.currentuser.CityId) {
-            $("." + this.user[t].Role.split(" ")[0]).show();
-            this.currentUserId = this.user[t].UserId;
-          }
-          if (this.user[t].Username == this.currentusername) {
-            this.currentwallet = parseFloat(this.user[t].wallet);
-            this.logser.currentuser.wallet = this.user[t].wallet;
-          }
-          if (this.user[t].Username == this.currentusername && this.user[t].avatar == '') {
-            this.noavatar = true;
-            if (this.noavatar == true) {
-              this.open(this.content)
-            }
-          }
-          else if (this.user[t].Username == this.currentusername && this.user[t].avatar !== '') {
-            this.logser.currentuser.avatar = this.user[t].avatar;
-            this.currentuseravatar = this.user[t].avatar
-            $(".displaypic,.cartavatar").addClass('pic_' + this.logser.currentuser.avatar);
-          }
-          if (this.user[t].Role !== '' && this.user[t].User_cityid == this.logser.currentuser.CityId) {
-            let word = this.formatKey(this.user[t].Role);
-
-            $("." + word + " .displaypanel").html(this.user[t].Role);
-            $("." + word + " .housedisplay").html(this.user[t].Username).show();
-            $("." + word + " .houselite").show();
-            if (word == 'Supermarket_Owner' || word == 'Plastic_Recycling_Plant_Owner' || word == 'Universal_Bottle_Cleaning_Plant_Owner' || word == 'Universal_Bottle_Manufacturing_Plant_owner' || word == 'Shampoo_Refilling_Station_Owner') {
-              $(".commoncls." + word).html('').addClass('openlight');
-            }
-          }
-          if (this.user[t].User_cityid == this.logser.currentuser.CityId) {
-            let avatarnumber = this.user[t].avatar;
-            for (var j = 0; j < this.maleset.length; j++) {
-              if (this.maleset[j].toString() == avatarnumber) {
-                this.maleset.splice(j, 1);
-
-              }
-            }
-          }
-        }
-        this.newmale = this.maleset.slice(0);
-        this.logser.getcitynames().subscribe((data) => {
-
-          setTimeout(() => {
-            if (data[0].MayorId != 0) {
-              $(".mayorflag").show();
-            }
-
-            this.logser.currentuser.cityname = data[0].CityName;
-            this.logser.currentuser.CurrentTime = (this.convertSeconds(data[0]['CurrentTime'].toString()));
-            this.logser.currentuser.currentday = data[0].CurrentDay;
-            this.logser.currentuser.cityrate = data[0].cityrate;
-            this.logser.currentuser.cityavatar = data[0].cityavatar;
-            this.cityrate = data[0].cityrate;
-            this.cityavatar = data[0].cityavatar;
-            this.cityname = this.logser.currentuser.cityname;
-            this.cityCurrentTime = (this.convertSeconds(data[0].CurrentTime));
-            this.citycurrentday = data[0].CurrentDay;
-            this.showwarning = data[0].display_at_dustbin;
-            this.playwarning = data[0].garbage_truck_announcement;
-            this.cityRuleReminderDay = data[0].garbage_truck_announcement;
-            $(".maincity").addClass("city_" + this.cityavatar);
-            setInterval(() => { this.loadtime() }, 1000);
-            setInterval(async () => {
-              await this.loadAvailableAsset();
-              // await this.checkArrayLengthAndAnimate();
-            }, 10000);
-          }, 500)
-        });
-
-      });
-
-
-      this.logser.getBottlePrice().subscribe((data: any) => {
-        this.bottlePrice = data;
-      });
-      this.logser.getShampooPrice().subscribe((data: any) => {
-        this.shampooPrice = data;
-      });
-
-
-    }
-    else {
+    // Check if user has selected a city
+    if (this.logser.currentuser.Username && this.logser.currentuser.CityId) {
+      this.initializeCityData();
+    } else {
       this.router.navigate(['/login']);
     }
   }
 
+
+  private initializeCityData(): void {
+    // Prevent multiple initializations
+    if (this.cityInitialized) return;
+    this.cityInitialized = true;
+
+    // Set user details
+    this.userDetails = {
+      currentuser: this.logser.currentuser.Username,
+      CityId: this.logser.currentuser.CityId,
+      currentCartId: this.logser.currentuser.cartId,
+      CurrentDay: this.logser.currentuser.currentday.toString()
+    };
+
+    // Get all users
+    this.logser.getAllUsers().subscribe((data) => {
+      this.user = data;
+      this.processUserData();
+
+      // Get city names
+      this.logser.getcitynames().subscribe((cityData) => {
+        this.processCityData(cityData);
+
+        // Set up intervals (only once)
+        this.setupIntervals();
+      });
+    });
+
+    // Get prices
+    this.logser.getBottlePrice().subscribe((data: any) => {
+      this.bottlePrice = data;
+    });
+
+    this.logser.getShampooPrice().subscribe((data: any) => {
+      this.shampooPrice = data;
+    });
+  }
+
+  private processUserData(): void {
+    for (const user of this.user) {
+      if (user.login == 1 && user.User_cityid == this.logser.currentuser.CityId) {
+        $("." + user.Role.split(" ")[0]).show();
+        this.currentUserId = user.UserId;
+      }
+
+      if (user.Username == this.currentusername) {
+        this.currentwallet = parseFloat(user.wallet);
+        this.logser.currentuser.wallet = user.wallet;
+
+        if (!user.avatar) {
+          this.noavatar = true;
+          this.open(this.content);
+        } else {
+          this.logser.currentuser.avatar = user.avatar;
+          this.currentuseravatar = user.avatar;
+          $(".displaypic,.cartavatar").addClass('pic_' + user.avatar);
+        }
+      }
+      $(".houselite").hide();
+      if (user.Role && user.User_cityid == this.logser.currentuser.CityId) {
+        const word = this.formatKey(user.Role);
+        $(`.${word} .displaypanel`).html(user.Role);
+        $(`.${word} .housedisplay`).html(user.Username).show();
+        $(`.${word} .houselite`).show();
+
+        if ([
+          'Supermarket_Owner',
+          'Plastic_Recycling_Plant_Owner',
+          'Universal_Bottle_Cleaning_Plant_Owner',
+          'Universal_Bottle_Manufacturing_Plant_owner',
+          'Shampoo_Refilling_Station_Owner'
+        ].includes(word)) {
+          $(`.commoncls.${word}`).html('').addClass('openlight');
+        }
+      }
+
+      if (user.User_cityid == this.logser.currentuser.CityId && user.avatar) {
+        this.maleset = this.maleset.filter(m => m.toString() !== user.avatar);
+      }
+    }
+
+    this.newmale = [...this.maleset];
+  }
+
+  private processCityData(cityData: any): void {
+    setTimeout(() => {
+      const city = cityData[0];
+      if (city.MayorId != 0) {
+        $(".mayorflag").show();
+      }
+
+      this.logser.currentuser.cityname = city.CityName;
+      this.logser.currentuser.CurrentTime = this.convertSeconds(city.CurrentTime.toString());
+      this.logser.currentuser.currentday = city.CurrentDay;
+      this.logser.currentuser.cityrate = city.cityrate;
+      this.logser.currentuser.cityavatar = city.cityavatar;
+
+      this.cityrate = city.cityrate;
+      this.cityavatar = city.cityavatar;
+      this.cityname = city.CityName;
+      this.cityCurrentTime = this.convertSeconds(city.CurrentTime);
+      this.citycurrentday = city.CurrentDay;
+      this.showwarning = city.display_at_dustbin;
+      this.playwarning = city.garbage_truck_announcement;
+      this.cityRuleReminderDay = city.garbage_truck_announcement;
+
+      $(".maincity").addClass("city_" + this.cityavatar);
+    }, 500);
+  }
+
+  private setupIntervals(): void {
+    // Set up time interval (only if not already set)
+    if (!this.timeInterval) {
+      this.timeInterval = setInterval(() => this.loadtime(), 1000);
+    }
+
+    // Set up asset interval with error handling
+    if (!this.assetInterval) {
+      this.assetInterval = setInterval(async () => {
+        try {
+          await this.loadAvailableAsset();
+        } catch (error) {
+          console.error('Error loading assets:', error);
+        }
+      }, 10000);
+    }
+  }
   cityRuleReminderDay: number = 0;
   setTrue() {
     this.canMoveTop = true;
@@ -2120,7 +2169,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
 
               this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_01';
-              this.transaction['Amount'] = String( this.totalsupermarketbill- this.totalenv );
+              this.transaction['Amount'] = String(this.totalsupermarketbill - this.totalenv);
               this.transaction['CreditFacility'] = 'Supermarket Owner';
               this.transaction['DebitFacility'] = this.currentUserRole;
               this.transaction['Purpose'] = 'Purchasing Shampoo from Supermarket';
@@ -2156,7 +2205,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
                           });
                           this.logser.getFacilitycashbox('Supermarket Owner').subscribe(data => {
                             (data[0]['Cashbox'] == '') ? this.supermarketcashbox = 0 : this.supermarketcashbox = parseInt(data[0]['Cashbox']);
-                            this.supermarketcashbox += this.totalsupermarketbill- this.totalenv ;
+                            this.supermarketcashbox += this.totalsupermarketbill - this.totalenv;
                             this.logser.updateFacilitycashbox('Supermarket Owner', String(this.supermarketcashbox)).subscribe(data => { });
                           });
                         });
@@ -2228,95 +2277,99 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-
   ngAfterViewInit(): void {
-    if (this.logser.currentuser.Username != '') {
-      this.instance = panzoom(this.scene.nativeElement, {
-        maxZoom: 3,
-        minZoom: 0.3,
-        bounds: true,
-        boundsPadding: 1,
-        smoothScroll: true,
-        filterKey: function () {
-          return true;
-        },
-        beforeWheel: function (e) {
-          var shouldIgnore = !e.shiftKey;
-          return shouldIgnore;
-        },
-        beforeMouseDown: function (e) {
-          var shouldIgnore = !e.shiftKey;
-          return shouldIgnore;
-        },
-        onDoubleClick: function (e) {
-          return false; // tells the library to not preventDefault, and not stop propagation
-        }
-
-
-      });
-
-      this.sharedService.showWarning$.subscribe(value => {
-        this.showwarning = value;
-      });
-      this.sharedService.playWarning$.subscribe(value => {
-        this.playwarning = value;
-      });
-      this.subscription = this.sharedService.switchYesOrNo$.subscribe(value => {
-        this.switchYesOrNo = value;
-        if (this.switchYesOrNo == 2) {
-          $(".cart").show();
-          this.loadinginitialState();
-        }
-        else if (this.switchYesOrNo == 0) {
-          $(".cart").hide();
-          if (this.currentUserRole == 'Mayor') {
-            this.dopanzoom(-3341, -2150, '1');
-          }
-          else if (this.currentUserRole == 'Supermarket Owner') {
-            this.dopanzoom(-1079.58, -2257.31, '1');
-          }
-        }
-      });
-
-      this.modalSubscription = this.sharedService.auditPlasticVideoModal$.subscribe(() => {
-        this.openAuditPlasticVideoModal();
-      });
-      this.modalSubscription = this.sharedService.auditBottleCleaningVideoModal$.subscribe(() => {
-        this.openAuditBottleCleaningVideoModal();
-      });
-      this.modalSubscription = this.sharedService.auditBottleMakingVideoModal$.subscribe(() => {
-        this.openAuditBottleMakingVideoModal();
-      });
-      this.runGarbagetruck = this.sharedService.rungarbagetruck$.subscribe(() => {
-        this.rungarbagetruck();
-      });
-      this.loadPlantBottlesSubscription = this.sharedService.loadPlantBottles$.subscribe(() => {
-        this.loadPlantBottles();
-      });
+    if (this.logser.currentuser.Username !== '') {
+      this.initializePanzoom();
+      this.subscribeToSharedServices();
       this.loadinginitialState();
-
-
-
     }
-
   }
-  closeothermodels(){
+
+  private initializePanzoom(): void {
+    this.instance = panzoom(this.scene.nativeElement, {
+      maxZoom: 3,
+      minZoom: 0.3,
+      bounds: true,
+      boundsPadding: 1,
+      smoothScroll: true,
+      filterKey: () => true,
+      beforeWheel: (e) => !e.shiftKey,
+      beforeMouseDown: (e) => !e.shiftKey,
+      onDoubleClick: () => false
+    });
+  }
+
+  private subscribeToSharedServices(): void {
+    this.sharedService.showWarning$.subscribe(value => this.showwarning = value);
+    this.sharedService.playWarning$.subscribe(value => this.playwarning = value);
+
+    this.subscription = this.sharedService.switchYesOrNo$.subscribe(value => {
+      this.handleSwitchYesOrNo(value);
+    });
+
+    this.modalSubscription = this.sharedService.auditPlasticVideoModal$.subscribe(() => this.openAuditPlasticVideoModal());
+    this.modalSubscription = this.sharedService.auditBottleCleaningVideoModal$.subscribe(() => this.openAuditBottleCleaningVideoModal());
+    this.modalSubscription = this.sharedService.auditBottleMakingVideoModal$.subscribe(() => this.openAuditBottleMakingVideoModal());
+
+    this.runGarbagetruck = this.sharedService.rungarbagetruck$.subscribe(() => this.rungarbagetruck());
+    this.loadPlantBottlesSubscription = this.sharedService.loadPlantBottles$.subscribe(() => this.loadPlantBottles());
+  }
+
+  private handleSwitchYesOrNo(value: number): void {
+    this.switchYesOrNo = value;
+    if (this.switchYesOrNo === 2) {
+      $(".cart").show();
+      this.loadinginitialState();
+    } else if (this.switchYesOrNo === 0) {
+      $(".cart").hide();
+      this.handleUserRoleNavigation();
+    }
+  }
+
+  private handleUserRoleNavigation(): void {
+    const roleCoordinates: { [key: string]: [number, number, string] } = {
+      'Mayor': [-3341, -2150, '1'],
+      'Supermarket Owner': [-1079.58, -2257.31, '1'],
+      'Universal Bottle Manufacturing Plant owner': [-3301.17, -418, '1'],
+      'Plastic Recycling Plant Owner': [-884.463, -574.902, '1'],
+      'Bottle Reverse Vending Machine Owner': [-5365.48, -1862.22, '1'],
+      'Shampoo Refilling Station Owner': [-5557.47, -2345.08, '1'],
+      'Universal Bottle Cleaning Plant Owner': [-3114.48, -1073.29, '1'],
+      'B1 Shampoo Producer': [0, 0, '1'],
+      'B2 Shampoo Producer': [-641.86, 0, '1'],
+      'B3 Shampoo Producer': [-1380.06, -2, '1'],
+      'B4 Shampoo Producer': [-5960.32, -2, '1'],
+      'B5 Shampoo Producer': [-6787.32, -2, '1']
+    };
+
+    if (this.currentUserRole in roleCoordinates) {
+      this.dopanzoom(...roleCoordinates[this.currentUserRole]);
+    } else if (this.currentUserRole.includes('House')) {
+      $(".cart").show();
+      this.loadinginitialState();
+    }
+  }
+
+  closeothermodels() {
     if (this.modalService.hasOpenModals()) {
       this.modalService.dismissAll(); // Close all open modals
     }
   }
   openAuditPlasticVideoModal(): void {
     console.log("nan varen how many times");
-  this.closeothermodels();
+    this.closeothermodels();
     this.modalService.open(this.Auditing_Plastic, { windowClass: 'cartcontent' });
   }
-  openAuditBottleCleaningVideoModal(): void {  this.closeothermodels();
-    this.modalService.open(this.Auditing_BottleCleaning, { windowClass: 'cartcontent'});
+  openAuditBottleCleaningVideoModal(): void {
+    this.closeothermodels();
+    this.modalService.open(this.Auditing_BottleCleaning, { windowClass: 'cartcontent' });
   }
-  openAuditBottleMakingVideoModal(): void {  this.closeothermodels();
-    this.modalService.open(this.Auditing_BottleMaking, {windowClass: 'cartcontent' });
+  openAuditBottleMakingVideoModal(): void {
+    this.closeothermodels();
+    this.modalService.open(this.Auditing_BottleMaking, { windowClass: 'cartcontent' });
   }
-  openReloadBottletoSupermarketModal(): void {  this.closeothermodels();
+  openReloadBottletoSupermarketModal(): void {
+    this.closeothermodels();
     this.modalService.open(this.reloadBottle, { windowClass: 'cartcontent' });
   }
   bringBackBottles: any = [];
@@ -2419,18 +2472,14 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     let y = this.positionObject[a as keyof typeof this.positionObject][0][1];
     let x1 = this.positionObject[a as keyof typeof this.positionObject][1][0];
     let y1 = this.positionObject[a as keyof typeof this.positionObject][1][1];
-    if (this.switchYesOrNo == 2) {
+    if (this.currentUserRole.includes('House') || this.switchYesOrNo == 2) {
       this.dopanzoom(x, y, '1');
     }
     //this.dopanzoom(-1057.16, -2306.8, '1');
     $("." + this.formatKey(a) + ".bottleStore").css({ 'left': (x1 - 31) + 'px', 'top': (y1 - 87) + 'px' });
     $(".cart").css({ 'left': x1 + 'px', 'top': y1 + 'px' });
-    $(".houselite").hide();
+
     $(".cartid").html(this.currentUserCartId);
-    let that = this;
-
-
-
   }
 
 
@@ -3938,6 +3987,9 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.clearMovement();
+    // Clear all intervals when component is destroyed
+    if (this.timeInterval) clearInterval(this.timeInterval);
+    if (this.assetInterval) clearInterval(this.assetInterval);
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
@@ -4448,5 +4500,15 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
   reverseVendingOperation() {
 
+  }
+
+  toggleAudio() {
+    const audioElements = document.querySelectorAll('audio');
+
+    audioElements.forEach((audio: HTMLAudioElement) => {
+      audio.muted = !this.isMuted;
+    });
+
+    this.isMuted = !this.isMuted;
   }
 }

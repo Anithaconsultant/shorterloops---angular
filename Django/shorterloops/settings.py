@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
-
+from datetime import timedelta
 
 from pathlib import Path
 
@@ -57,7 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-     'auditlog.middleware.AuditlogMiddleware',
+    'auditlog.middleware.AuditlogMiddleware',
 ]
 
 ROOT_URLCONF = 'shorterloops.urls'
@@ -95,13 +95,13 @@ DATABASES = {
 
     'default':
         {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'shorterloop',
-        'USER': 'root',
-        'PASSWORD': 'Admin@1234',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-    }
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'shorterloop',
+            'USER': 'root',
+            'PASSWORD': 'Admin@1234',
+            'HOST': '127.0.0.1',
+            'PORT': '3306',
+        }
     # {
     #     'ENGINE': 'django.db.backends.mysql',
     #     'OPTIONS': {
@@ -162,12 +162,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = '/'
 CORS_ALLOW_ALL_ORIGINS = True
-# CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_CREDENTIALS = True
 # CORS_REPLACE_HTTPS_REFERER = True
-# CORS_ALLOWED_ORIGINS = [
-#     "https://dbl.iihs.in",
-#     "https://10.10.4.129"
-# ]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:4200",
+    "http://127.0.0.1:4200"
+]
 
 # CSRF_TRUSTED_ORIGINS = [
 #     'https://dbl.iihs.in',
@@ -181,8 +181,8 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ALLOW_HEADERS = [
-    'Content-Type', 
-    'Authorization', 
+    'Content-Type',
+    'Authorization',
     'user-data',  # Add 'user-data' to the list of allowed headers
 ]
 
@@ -195,8 +195,11 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAdminUser',
+        'rest_framework.permissions.IsAuthenticated',
     ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
 }
 LOGGING = {
     'version': 1,
@@ -213,4 +216,17 @@ LOGGING = {
             'level': 'DEBUG',
         },
     },
+}
+AUTH_USER_MODEL = 'accounts.CustomUser'
+# settings.py
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'accounts.backends.CustomUserAuthBackend',  # Your custom backend
+]
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'USER_ID_FIELD': 'UserId',
+    'USER_ID_CLAIM': 'user_id',
 }

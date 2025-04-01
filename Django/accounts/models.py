@@ -1,4 +1,5 @@
 
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 import datetime
 import uuid
@@ -27,6 +28,7 @@ FACILITY_CHOICES = (
     ('hs9', 'House9 Owner', ''),
     ('hs10', 'House10 Owner', '')
 )
+
 
 class Shampooprice(models.Model):
     class Meta:
@@ -72,11 +74,14 @@ class City(models.Model):
     CityCreateTime = models.TimeField(auto_now=True)
     Status = models.CharField(max_length=70, null=True)
     cityavatar = models.CharField(max_length=70, null=True)
-    display_at_dustbin = models.BooleanField(null=True, blank=True,default=False)
-    garbage_truck_announcement = models.BooleanField(null=True, blank=True,default=False)
-    timer_paused = models.BooleanField(null=True, blank=True,default=False)
-    cityrul_notification = models.CharField(null=True,default='0',max_length=70)
-   
+    display_at_dustbin = models.BooleanField(
+        null=True, blank=True, default=False)
+    garbage_truck_announcement = models.BooleanField(
+        null=True, blank=True, default=False)
+    timer_paused = models.BooleanField(null=True, blank=True, default=False)
+    cityrul_notification = models.CharField(
+        null=True, default='0', max_length=70)
+
 
 class Facility(models.Model):
     class Meta:
@@ -123,27 +128,30 @@ class Asset(models.Model):
     Env_Tax_Producer = models.CharField(max_length=70, blank=True)
     Discard_Dustbin_fine = models.CharField(max_length=70, blank=True)
     Discard_Garbagetruck_fine = models.CharField(max_length=70, blank=True)
-    Transaction_Id = models.CharField(max_length=70, blank=True,default='')
+    Transaction_Id = models.CharField(max_length=70, blank=True, default='')
     Transaction_Date = models.CharField(max_length=70, blank=True)
     Fromfacility = models.CharField(max_length=70, blank=True)
     Tofacility = models.CharField(max_length=70, blank=True)
     purchased = models.BooleanField(default=False)
     dragged = models.BooleanField(default=False)
     correlation_id = models.CharField(max_length=100, blank=True, null=True)
+
     def save(self, *args, **kwargs):
         if not self.correlation_id:
             self.correlation_id = str(uuid.uuid4())
         super(Asset, self).save(*args, **kwargs)
+
     def reset_attributes(self):
         """Reset the instance attributes to their current database state."""
         db_instance = type(self).objects.get(pk=self.pk)
         for field in self._meta.fields:
             setattr(self, field.name, getattr(db_instance, field.name))
 
+
 class Cityrule(models.Model):
     class Meta:
         db_table = "Cityrule"
-    
+
     ruleId = models.AutoField(primary_key=True)
     cityId = models.CharField(max_length=70, blank=True)
     rule_number = models.IntegerField(unique=True, editable=False)
@@ -173,7 +181,6 @@ class Cityrule(models.Model):
     fine_for_throwing_bottle = models.FloatField(null=True, blank=True)
     dustbinning_fine = models.FloatField(null=True, blank=True)
 
-
     def save(self, *args, **kwargs):
         if not self.rule_number:  # If rule_number is not set
             last_rule = Cityrule.objects.order_by('-rule_number').first()
@@ -186,22 +193,25 @@ class Cityrule(models.Model):
     def __str__(self):
         return f"Rule {self.rule_number} for City {self.cityId}"
 
+
 class Auditlog(models.Model):
     class Meta:
         db_table = "audit_log"
     id = models.AutoField(primary_key=True)
     action = models.CharField(max_length=2000, blank=False)
     AssetId = models.CharField(max_length=100, blank=False)
-    CityId= models.CharField(max_length=100, blank=True)
-    Bottle_loc = models.CharField(max_length=100, blank=False,default="Supermarket shelf")
+    CityId = models.CharField(max_length=100, blank=True)
+    Bottle_loc = models.CharField(
+        max_length=100, blank=False, default="Supermarket shelf")
     TransactionId = models.CharField(max_length=100, blank=True)
     Bottle_Code = models.CharField(max_length=100, blank=True)
-    TransactionDate= models.CharField(max_length=100, blank=True)
-    FromFacility= models.CharField(max_length=100, blank=False,default="Supermarket shelf")
+    TransactionDate = models.CharField(max_length=100, blank=True)
+    FromFacility = models.CharField(
+        max_length=100, blank=False, default="Supermarket shelf")
     ToFacility = models.CharField(max_length=100, blank=True)
     ContentCode = models.CharField(max_length=100, blank=True)
     Current_Content_Code = models.CharField(max_length=100, blank=True)
-    assetStatus = models.CharField(max_length=100, blank=False,default="Full")
+    assetStatus = models.CharField(max_length=100, blank=False, default="Full")
     remQuantity = models.CharField(max_length=100, blank=True)
     Unit = models.CharField(max_length=100, blank=True)
     ManufactureDate = models.CharField(max_length=100, blank=True)
@@ -210,17 +220,31 @@ class Auditlog(models.Model):
     currentplantrefillCount = models.CharField(max_length=100, blank=True)
     LatestFillDate = models.CharField(max_length=100, blank=True)
     bottleRetireDate = models.CharField(max_length=100, blank=True)
-    RetireReason= models.CharField(max_length=100, blank=True)
-    userName = models.CharField(max_length=100, blank=False,default="")
+    RetireReason = models.CharField(max_length=100, blank=True)
+    userName = models.CharField(max_length=100, blank=False, default="")
 
 
-class CustomUser(models.Model):
+class CustomUserManager(BaseUserManager):
+    def create_user(self, Username, email, Password=None, **extra_fields):
+        if not Username:
+            raise ValueError('The Username must be set')
+        user = self.model(
+            Username=Username,
+            email=self.normalize_email(email),
+            **extra_fields
+        )
+        user.set_password(Password)
+        user.save(using=self._db)
+        return user
+
+
+class CustomUser(AbstractBaseUser):
+
     class Meta:
-        db_table = 'usertable'
+        db_table = "usertable"
     UserId = models.AutoField(primary_key=True)
     Username = models.CharField(max_length=70, blank=False, unique=True)
     email = models.CharField(max_length=50, blank=False, unique=True)
-    Password = models.CharField(max_length=70, blank=False)
     mobile = models.CharField(blank=False, max_length=20)
     wallet = models.CharField(max_length=70, default=2000, blank=False)
     status = models.CharField(max_length=70, blank=False)
@@ -231,3 +255,12 @@ class CustomUser(models.Model):
     gender = models.CharField(max_length=30, blank=True)
     login = models.CharField(max_length=30, blank=False, default=0)
     update_count = models.IntegerField(default=0)
+    last_login = models.DateTimeField(blank=True, null=True)
+
+    USERNAME_FIELD = 'Username'
+    REQUIRED_FIELDS = ['email']
+
+    objects = CustomUserManager()
+
+    def __str__(self):
+        return self.Username
