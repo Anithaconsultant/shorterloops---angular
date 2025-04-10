@@ -24,8 +24,8 @@ export class LoginserviceService {
     'cityrate': '',
     'cityavatar': ''
   };
-  baseurl = "https://dbl.iihs.in/api/";
-  //baseurl = "http://127.0.0.1:8000/api/";
+  // baseurl = "https://dbl.iihs.in/api/";
+  baseurl = "http://127.0.0.1:8000/api/";
 
   constructor(private http: HttpClient, private authService: AuthService) { }
 
@@ -72,6 +72,16 @@ export class LoginserviceService {
       );
 
   }
+  getCityRules(): Observable<any> {
+    //console.log(cityrule)
+    return this.http.get(this.baseurl + 'addRule/',
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );
+
+  }
+
+
   updatecurrenttime(): Observable<any> {
 
     return this.http.get(this.baseurl + 'updatetime/' + this.currentuser.CityId, { headers: this.getAuthHeaders() }).pipe(
@@ -356,11 +366,7 @@ export class LoginserviceService {
   }
 
   createtransaction(transaction: any): Observable<any> {
-    const body = {
-      TransactionId: transaction.TransactionId, 'Amount': transaction.Amount, 'DebitFacility': transaction.DebitFacility,
-      'CreditFacility': transaction.CreditFacility, 'Purpose': transaction.Purpose
-    };
-    return this.http.post(this.baseurl + 'cashflow/', body,
+    return this.http.post(this.baseurl + 'cashflow/', transaction,
       { headers: this.getAuthHeaders() }).pipe(
         catchError(this.handleError)
       );;
@@ -371,13 +377,13 @@ export class LoginserviceService {
         catchError(this.handleError)
       );;
   }
-  updatetransactioninfacility(transaction: any): Observable<any> {
-    const body = {};
-    return this.http.post(this.baseurl + 'cashflow/', body,
+  getParticularCitytransactions(city: any, user: any): Observable<any> {
+    return this.http.get(this.baseurl + 'cashflow/' + city + '/' + user,
       { headers: this.getAuthHeaders() }).pipe(
         catchError(this.handleError)
       );;
   }
+
   getFacilitycashbox(facilityName: any): Observable<any> {
     return this.http.get(this.baseurl + 'getFacilityCashbox/' + facilityName + '/' + this.currentuser.CityId,
       { headers: this.getAuthHeaders() }).pipe(

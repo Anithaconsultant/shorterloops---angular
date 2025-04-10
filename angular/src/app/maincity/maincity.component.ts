@@ -185,7 +185,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     'Amount': '',
     'DebitFacility': '',
     'CreditFacility': '',
-    'Purpose': ''
+    'Purpose': '',
+    'Content_Amt': '',
+    'Container_Amt': ''
+
   }
   municipalcashbox = 0;
   supermarketcashbox = 0;
@@ -1211,7 +1214,6 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       }
       else {
         this.dopanzoom(-5250, -1862, '1');
-        this.reverseVendingOperation();
       }
 
 
@@ -1253,7 +1255,6 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       else if (isWithinRange(topValue, 2200, 2300) && isWithinRange(leftValue, 5300, 5891)) {
         this.dopanzoom(-5250, -1862, '1');
         this.setTrue(); this.whichRoad = "reverseVendingMachine";
-        this.reverseVendingOperation();
       }
       else {
         this.whichRoad = "rightroad";
@@ -2170,6 +2171,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
               this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + this.transactioncount + '_01';
               this.transaction['Amount'] = String(this.totalsupermarketbill - this.totalenv);
+              this.transaction['Container_Amt'] = String(this.currentPurchaseContainer)
+              this.transaction['Content_Amt'] = String(this.currentPurchaseContent)
               this.transaction['CreditFacility'] = 'Supermarket Owner';
               this.transaction['DebitFacility'] = this.currentUserRole;
               this.transaction['Purpose'] = 'Purchasing Shampoo from Supermarket';
@@ -2180,6 +2183,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
                   this.transaction['CreditFacility'] = 'Municipality Office';
                   this.transaction['DebitFacility'] = this.currentUserRole;
                   this.transaction['Purpose'] = 'Environment tax for Shampoo purchase';
+                  this.transaction['Container_Amt'] = '0';
+                  this.transaction['Content_Amt'] = '0';
                   this.logser.createtransaction(this.transaction).subscribe(
                     data => {
                       data = this.transaction;
@@ -2675,6 +2680,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     this.boughtbottledata = [];
     this.netamount = 0.0;
     this.totalenv = 0.0;
+    this.currentPurchaseContainer = 0.0;
+    this.currentPurchaseContent = 0.0;
     this.totalsupermarketbill = 0;
     if (this.bottletaken.length > 0) {
       this.billpaid = false;
@@ -2699,7 +2706,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           let calc = parseInt(data[0]['Content_Price']) + parseInt(data[0]['Bottle_Price']);
           let discount = calc * (parseInt(data[0]['Discount_RefillB']) / 100);
           let env = calc * (parseInt(data[0]['Env_Tax_Customer']) / 100);
-
+          this.currentPurchaseContainer += parseInt(data[0]['Bottle_Price']);
+          this.currentPurchaseContent += parseInt(data[0]['Content_Price']);
           this.totalenv += env;
           console.log(discount, env, this.totalenv);
           let totalvalue = (calc + env) - discount;
@@ -2724,7 +2732,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       this.billpaid = true;
     }
   }
-
+  currentPurchaseContainer = 0.0;
+  currentPurchaseContent = 0.0;
   objectKeys(obj: any) {
     return Object.keys(obj)[0];
   }
@@ -2933,6 +2942,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             this.transaction['CreditFacility'] = 'Refilling Station';
             this.transaction['DebitFacility'] = this.currentUserRole;
             this.transaction['Purpose'] = 'Refilling shampoo from the Refilling Station';
+            this.transaction['Container_Amt'] = '0';
+            this.transaction['Content_Amt'] = '0';
             this.logser.createtransaction(this.transaction).subscribe(
               data => {
                 data = this.transaction;
@@ -2974,75 +2985,76 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
 
 
+
+      $(".displayboard").html("Brand =" + this.refillbrandselected + "<br/>Quantity = " + this.selectquantity + "ml<br/>Price/ml = ₹" + this.unitprice + "<br/>Discount = " + this.currentDiscount + "%<br/>Net Amount = ₹" + this.refill_amount_topay + "<br/> Order Confirmed. Please wait till we refill your bottle.");
+      $("#pressor").animate({ 'top': '1px' }, 2000, () => {
+        $("#pressor").animate({ 'top': '-10px' });
+        $(".gear").addClass('icon');
+        let getbrand = $(".refilllist").children('div')[0].classList[1];
+        $("." + getbrand).addClass('removedcap');
+        if (this.refillbrandselected == 'B1.Shiny') {
+          $(".refilldropper").animate({ 'left': '44px' }, 2000, () => {
+            $(".shinyfiller").show();
+            $(".gear").removeClass('icon');
+            let that = this; setTimeout(function () {
+              $(".gear").addClass('icon');
+              $(".shinyfiller").hide(); that.closecap();
+            }, 2000);
+          });
+        }
+        if (this.refillbrandselected == 'B2.Spiky') {
+          $(".refilldropper").animate({ 'left': '94px' }, 2000, () => {
+            $(".spikyfiller").show(); $(".gear").removeClass('icon');
+            let that = this;
+            setTimeout(function () {
+              $(".gear").addClass('icon');
+              $(".spikyfiller").hide();
+              that.closecap();
+            }, 2000);
+          });
+        }
+        if (this.refillbrandselected == 'B4.Wavy') {
+          $(".refilldropper").animate({ 'left': '196px' }, 2000, () => {
+            $(".wavyfiller").show();
+            $(".gear").removeClass('icon');
+            let that = this;
+            setTimeout(function () {
+              $(".gear").addClass('icon');
+              $(".wavyfiller").hide();
+              that.closecap();
+            }, 2000);
+          });
+        }
+        if (this.refillbrandselected == 'B5.Silky') {
+          $(".refilldropper").animate({ 'left': '247px' }, 2000, () => {
+            $(".silkyfiller").show();
+            $(".gear").removeClass('icon');
+            let that = this;
+            setTimeout(function () {
+              $(".gear").addClass('icon');
+              $(".silkyfiller").hide();
+              that.closecap();
+            }, 2000);
+          });
+        }
+        if (this.refillbrandselected == 'B3.Bouncy') {
+          $(".refilldropper").animate({ 'left': '145px' }, 2000, () => {
+            $(".bouncyfiller").show();
+            $(".gear").removeClass('icon');
+            let that = this;
+            setTimeout(function () {
+              $(".gear").addClass('icon');
+              $(".bouncyfiller").hide();
+              that.closecap();
+            }, 2000);
+          });
+        }
+
+      })
     }
     else {
       this.alertModal.openModal("You have Insuccifient Balance");
     }
-    $(".displayboard").html("Brand =" + this.refillbrandselected + "<br/>Quantity = " + this.selectquantity + "ml<br/>Price/ml = ₹" + this.unitprice + "<br/>Discount = " + this.currentDiscount + "%<br/>Net Amount = ₹" + this.refill_amount_topay + "<br/> Order Confirmed. Please wait till we refill your bottle.");
-    $("#pressor").animate({ 'top': '1px' }, 2000, () => {
-      $("#pressor").animate({ 'top': '-10px' });
-      $(".gear").addClass('icon');
-      let getbrand = $(".refilllist").children('div')[0].classList[1];
-      $("." + getbrand).addClass('removedcap');
-      if (this.refillbrandselected == 'B1.Shiny') {
-        $(".refilldropper").animate({ 'left': '44px' }, 2000, () => {
-          $(".shinyfiller").show();
-          $(".gear").removeClass('icon');
-          let that = this; setTimeout(function () {
-            $(".gear").addClass('icon');
-            $(".shinyfiller").hide(); that.closecap();
-          }, 2000);
-        });
-      }
-      if (this.refillbrandselected == 'B2.Spiky') {
-        $(".refilldropper").animate({ 'left': '94px' }, 2000, () => {
-          $(".spikyfiller").show(); $(".gear").removeClass('icon');
-          let that = this;
-          setTimeout(function () {
-            $(".gear").addClass('icon');
-            $(".spikyfiller").hide();
-            that.closecap();
-          }, 2000);
-        });
-      }
-      if (this.refillbrandselected == 'B4.Wavy') {
-        $(".refilldropper").animate({ 'left': '196px' }, 2000, () => {
-          $(".wavyfiller").show();
-          $(".gear").removeClass('icon');
-          let that = this;
-          setTimeout(function () {
-            $(".gear").addClass('icon');
-            $(".wavyfiller").hide();
-            that.closecap();
-          }, 2000);
-        });
-      }
-      if (this.refillbrandselected == 'B5.Silky') {
-        $(".refilldropper").animate({ 'left': '247px' }, 2000, () => {
-          $(".silkyfiller").show();
-          $(".gear").removeClass('icon');
-          let that = this;
-          setTimeout(function () {
-            $(".gear").addClass('icon');
-            $(".silkyfiller").hide();
-            that.closecap();
-          }, 2000);
-        });
-      }
-      if (this.refillbrandselected == 'B3.Bouncy') {
-        $(".refilldropper").animate({ 'left': '145px' }, 2000, () => {
-          $(".bouncyfiller").show();
-          $(".gear").removeClass('icon');
-          let that = this;
-          setTimeout(function () {
-            $(".gear").addClass('icon');
-            $(".bouncyfiller").hide();
-            that.closecap();
-          }, 2000);
-        });
-      }
-
-    })
   }
   resetrefilling() {
     this.resetanimation = true;
@@ -3342,6 +3354,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       this.transaction['CreditFacility'] = 'Municipality Office';
       this.transaction['DebitFacility'] = this.currentUserRole;
       this.transaction['Purpose'] = purpose;
+      this.transaction['Container_Amt'] = '0';
+      this.transaction['Content_Amt'] = '0';
 
       this.logser.createtransaction(this.transaction).subscribe(() => {
         this.updatebottlereturn['transactionid'] = this.transaction['TransactionId'];
@@ -3525,6 +3539,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
             this.transaction['CreditFacility'] = this.currentUserRole;
             this.transaction['DebitFacility'] = debitFacilty;
             this.transaction['Purpose'] = 'Refund for returning Bottle';
+            this.transaction['Container_Amt'] = '0';
+            this.transaction['Content_Amt'] = '0';
             this.logser.createtransaction(this.transaction).subscribe(
               (data) => {
                 data = this.transaction;
@@ -4491,15 +4507,11 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
   playAudioElement(audioElement: HTMLAudioElement, volume: number) {
     audioElement.volume = volume;
-    audioElement.muted = false;
+    audioElement.muted = this.isMuted;
     audioElement.play().then(() => {
     }).catch(error => {
       console.error(`Error playing ${audioElement.src}:`, error);
     });
-  }
-
-  reverseVendingOperation() {
-
   }
 
   toggleAudio() {

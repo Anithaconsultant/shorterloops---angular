@@ -59,6 +59,8 @@ class Cashflow(models.Model):
     DebitFacility = models.CharField(max_length=70)
     CreditFacility = models.CharField(max_length=70)
     Purpose = models.CharField(max_length=70)
+    Content_Amt = models.CharField(max_length=70, default='')
+    Container_Amt = models.CharField(max_length=70, default='')
 
 
 class City(models.Model):

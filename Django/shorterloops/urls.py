@@ -31,6 +31,8 @@ urlpatterns = [
          name='update_city_threads'),
     # path('api/receive_user_details/', views.receive_user_data, name='receive_user_data'),
     path('api/cashflow/', views.createtransaction, name='createtransaction'),
+    path('api/cashflow/<str:cityid>/<username>', views.getParticulartransaction,
+         name='getParticulartransaction'),
     path('api/audit-log/<asset_id>/', views.get_audit_logs, name='get_audit_logs'),
     path('api/audit-logs/<user>/', views.get_audit_logsuser,
          name='get_audit_logsuser'),

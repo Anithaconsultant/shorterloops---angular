@@ -261,6 +261,19 @@ def createtransaction(request):
         return JsonResponse(serializer.data, safe=False)
 
 
+@api_view(['GET'])
+def getParticulartransaction(request, cityid, username):
+
+    if request.method == 'GET':
+        data = Cashflow.objects.filter(
+            TransactionId__startswith=cityid
+        ).filter(
+            Q(DebitFacility=username) | Q(CreditFacility=username)
+        )
+        serializer = cashflowSerializer(data, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+
 @api_view(['GET', 'POST'])
 def add_Cityrule(request):
     if request.method == 'POST':
