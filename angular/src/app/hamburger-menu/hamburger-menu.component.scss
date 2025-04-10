@@ -9,18 +9,15 @@
     background: transparent;
     top: 64px;
     position: relative;
-
   }
 
   .hamburger {
-
     display: grid;
     grid-template-columns: repeat(3, 2px);
     grid-template-rows: repeat(3, 2px);
     gap: 5px;
     margin-left: -3px;
     margin-top: -3px;
-
 
     .dot {
       width: 5px;
@@ -75,8 +72,6 @@
         right: 15px;
       }
     }
-
-
   }
 
   .hambergerbutton {
@@ -95,13 +90,16 @@
     justify-content: center;
     align-items: center;
     border: 2px solid #fff;
-
   }
-
 }
 
 .accordion-item {
-  background-color: rgba(255, 255, 255, 0.5); // 50% transparent white background
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.5
+  ); // 50% transparent white background
   border: none; // Remove border for a cleaner look
   transition: background-color 0.3s ease;
 
@@ -115,11 +113,8 @@
       font-size: 14px;
       font-weight: bold;
       transition: color 0.3s ease;
-
-      // &:hover {
-      //   color: #fff; // White font color on hover
-      //   background-color: rgba(0,0,0,0.5) !important;
-      // }
+      display: flex;
+      justify-content: space-between;
     }
   }
 
@@ -132,8 +127,6 @@
     max-height: 400px;
     overflow: auto;
     transition: background-color 0.3s ease;
-
-
   }
 
   // When the accordion is active or expanded
@@ -148,16 +141,16 @@
   cursor: default;
   pointer-events: none;
   color: rgba(0, 0, 0, 0.5) !important;
-
 }
 
 // Additional style for the profile picture container
 .displaypic {
-  width: 20px !important;
-  height: 20px !important;
+  width: 25px !important;
+  height: 25px !important;
   background-size: cover;
   cursor: pointer;
   margin: 0px 10px;
+  flex-shrink: 0;
 }
 
 // Hamburger menu item styles
@@ -182,8 +175,6 @@
   align-items: center;
   height: 360px;
   overflow-y: auto;
-
-
 
   /* General table styling */
   table {

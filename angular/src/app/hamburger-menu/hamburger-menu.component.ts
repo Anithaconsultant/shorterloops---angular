@@ -63,10 +63,11 @@ export class HamburgerMenuComponent implements OnInit {
         console.error('Error updating timer:', error);
       }
     );
-
-
     // });
 
+  }
+  showCityRuleview(option: any) {
+    this.router.navigate(['/cityrule'], { queryParams: { option: option } });
   }
 
   openaboutshorter(aboutshorter: any) {
@@ -294,7 +295,7 @@ export class HamburgerMenuComponent implements OnInit {
   }
 
   onMenuItemClick() {
-   
+
     if (this.switchYesOrNo === 2) {
       this.switchYesOrNo = 0;
     } else if (this.switchYesOrNo === 0) {

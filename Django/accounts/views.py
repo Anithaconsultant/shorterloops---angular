@@ -1,9 +1,8 @@
 from django.db.models import Q
 from .models import City, CustomUser, Facility, FACILITY_CHOICES, Cityrule, Asset, Cashflow, Auditlog, Bottleprice, Shampooprice
-from .serializers import userSerializer, citySerializer, facilitySerializer, cityRuleSerializer, AssetSerializer, cashflowSerializer, AuditSerializer, BottleSerializer, shampooSerializer
+from .serializers import CustomUserSerializer, citySerializer, facilitySerializer, cityRuleSerializer, AssetSerializer, cashflowSerializer, AuditSerializer, BottleSerializer, shampooSerializer
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
-from rest_framework import status
 from django.http import JsonResponse
 from django.db import transaction
 from django.shortcuts import get_object_or_404
@@ -12,13 +11,90 @@ import json
 from django.db.models import QuerySet
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.signals import post_save
-from .signals import user_data_received,pause_timer_for_city,resume_timer_for_city
+from .signals import user_data_received, pause_timer_for_city, resume_timer_for_city
 from django.utils.decorators import method_decorator
+from django.contrib.auth import authenticate
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.views import APIView
 # from .cityTimer import CityTimer
-
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 data1 = list()
 currentuser = ''
 cartcount = 100
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class SignUpView(APIView):
+    authentication_classes = []  # Disable all authentication
+    permission_classes = []     # Disable all permissions
+
+    def post(self, request):
+        serializer = CustomUserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'user': CustomUserSerializer(user).data
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LoginView(APIView):
+    authentication_classes = []  # Disable authentication
+    permission_classes = []  # Allow unrestricted access
+
+    def post(self, request):
+        username = request.data.get('Username')
+        password = request.data.get('Password')
+
+        user = authenticate(Username=username, password=password)
+
+        if user:
+            refresh = RefreshToken.for_user(user)
+            serializer = CustomUserSerializer(user)
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'user': serializer.data
+            })
+        return Response(
+            {'error': 'Invalid credentials'},
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+
+
+class UserListView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        users = CustomUser.objects.all()
+        serializer = CustomUserSerializer(users, many=True)
+        return Response(serializer.data)
+
+
+class UserProfileView(APIView):
+    def get(self, request):
+        user = request.user
+        serializer = CustomUserSerializer(user)
+        return Response(serializer.data)
+
+    def patch(self, request):
+        user = request.user
+        serializer = CustomUserSerializer(
+            user, data=request.data, partial=True)
+        if serializer.is_valid():
+            if 'Password' in request.data:
+                serializer.validated_data['Password'] = make_password(
+                    request.data['Password'])
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @transaction.atomic
@@ -30,6 +106,10 @@ def confirm_payment(request, seat_number):
     seat.save()
 
     return JsonResponse({'message': 'Payment confirmed. Seat booked successfully'})
+
+
+def get_csrf(request):
+    return JsonResponse({'detail': 'CSRF cookie set'})
 
 
 def reserve_seat(request, seat_number):
@@ -73,7 +153,7 @@ def unlockasset(request, itemid):
 def login(request):
     if request.method == 'GET':
         data = CustomUser.objects.all()
-        serializer = userSerializer(data, many=True)
+        serializer = CustomUserSerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
 
 
@@ -81,7 +161,7 @@ def login(request):
 def signup(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
-        serializer = userSerializer(data=data)
+        serializer = CustomUserSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return JsonResponse({'message': 'Success'})
@@ -90,7 +170,7 @@ def signup(request):
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
     if request.method == 'GET':
         data = CustomUser.objects.all()
-        serializer = userSerializer(data, many=True)
+        serializer = CustomUserSerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
 
 
@@ -181,6 +261,19 @@ def createtransaction(request):
         return JsonResponse(serializer.data, safe=False)
 
 
+@api_view(['GET'])
+def getParticulartransaction(request, cityid, username):
+
+    if request.method == 'GET':
+        data = Cashflow.objects.filter(
+            TransactionId__startswith=cityid
+        ).filter(
+            Q(DebitFacility=username) | Q(CreditFacility=username)
+        )
+        serializer = cashflowSerializer(data, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+
 @api_view(['GET', 'POST'])
 def add_Cityrule(request):
     if request.method == 'POST':
@@ -254,6 +347,7 @@ def get_BottlePrice(request):
 
 @api_view(['GET', 'PUT'])
 def get_ShampooPrice(request):
+    permission_classes = [IsAuthenticated]
     if request.method == 'GET':
         data = Shampooprice.objects.all()
         serializer = shampooSerializer(data, many=True)
@@ -479,6 +573,7 @@ def toggle_city_timer(request, cityid):
 
     return JsonResponse({"success": False, "error": "Invalid request method"}, status=405)
 
+
 @api_view(['GET', 'POST', 'PUT'])
 def editcity(request, cityid):
 
@@ -512,7 +607,7 @@ def updateusercity(request, userid):
         data = JSONParser().parse(request)
         print(data)
         getuser = CustomUser.objects.filter(pk=userid).first()
-        serializer = userSerializer(getuser, data=data, partial=True)
+        serializer = CustomUserSerializer(getuser, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
         else:
@@ -520,7 +615,7 @@ def updateusercity(request, userid):
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
     if request.method == 'GET':
         data = CustomUser.objects.all()
-        serializer = userSerializer(data, many=True)
+        serializer = CustomUserSerializer(data, many=True)
         return JsonResponse(serializer.data, safe=False)
 
 

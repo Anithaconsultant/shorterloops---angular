@@ -25,7 +25,7 @@ export class HomeComponent implements OnInit {
     Ownerid: "",
     Owner_status: ''
   };
-  user: any;
+  allUser: any;
   userobj = {
     'cityid': 0,
     'Role': '',
@@ -49,7 +49,7 @@ export class HomeComponent implements OnInit {
       this.router.navigate(["login"])
     }
     this.logser.getAllUsers().subscribe((data) => {
-      this.user = data;
+      this.allUser = data;
 
     })
   }
@@ -57,11 +57,11 @@ export class HomeComponent implements OnInit {
   selectedcityid = '';
   choosefacility() {
     this.selectedcityid = this.getCityId();
-    for (var t = 0; t < this.user.length; t++) {
-      if (this.user[t].Role !== '' && this.user[t].User_cityid == this.selectedcityid) {
+    for (var t = 0; t < this.allUser.length; t++) {
+      if (this.allUser[t].Role !== '' && this.allUser[t].User_cityid == this.selectedcityid) {
         let that = this;
         $('#role').find('option').each(function () {
-          if ($(this).attr('value') == that.user[t].Role) {
+          if ($(this).attr('value') == that.allUser[t].Role) {
             $(this).attr('disabled', 'true');
           }
         });
@@ -115,9 +115,9 @@ export class HomeComponent implements OnInit {
             this.logser.currentuser.Role = this.selectedfacility;
             this.logser.currentuser.cartId = currentcartId;
             this.logser.currentuser.CityId = this.selectedcityid.toString();
-            
-            
-            
+
+
+
           }
 
 
@@ -140,7 +140,7 @@ export class HomeComponent implements OnInit {
   }
 
   dochanges() {
-    if (this.canUpdate == false && this.selectrole) {
+    if (this.canUpdate == false && this.selectrole == true) {
       console.log("this.facilityobj", this.facilityobj)
       this.logser.updatefacility(this.facilityobj).subscribe(
         (data) => {
@@ -149,9 +149,8 @@ export class HomeComponent implements OnInit {
           this.logser.updateuser(this.userobj).subscribe(
             (data) => {
               this.userobj = data;
-             
-                this.router.navigate(['maincity']);
-             
+              this.router.navigate(['maincity']);
+
             },
             (error) => {
               console.log(error);
@@ -165,16 +164,16 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  assignGovernorRole(){
+  assignGovernorRole() {
     this.selectedfacility = 'Governor';
     this.userobj.Role = this.selectedfacility;
     this.logser.currentuser.Role = this.selectedfacility;
     this.logser.updateuser(this.userobj).subscribe(
       (data) => {
         this.userobj = data;
-       
-          this.router.navigate(['/report']);
-       
+
+        this.router.navigate(['/report']);
+
       },
       (error) => {
         console.log(error);

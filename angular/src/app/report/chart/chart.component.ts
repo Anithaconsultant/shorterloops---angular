@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { LoginserviceService } from '../../services/loginservice.service';
-import { ChartOptions, ChartType, ChartDataset } from 'chart.js';
+import { ChartOptions, ChartType, ChartDataset, ChartConfiguration, plugins } from 'chart.js';
 
 interface BottleData {
   Bottle_Code: string;
@@ -15,6 +15,7 @@ interface BottleData {
 })
 export class ChartComponent {
   @Input() filteredData: any;
+
   public chartData: any;
   public chartOptions: any;
   public chartType: any = 'bar';
@@ -83,7 +84,8 @@ export class ChartComponent {
   public secondchartOptions = {
     responsive: true,
     scales: {
-      x: { stacked: true,
+      x: {
+        stacked: true,
         title: {
           display: true,
           text: 'Bottle Brand and Package Type', // Y-axis label
@@ -92,8 +94,9 @@ export class ChartComponent {
             weight: 'bold',
           },
         },
-       },
-      y: { stacked: true, beginAtZero: true ,
+      },
+      y: {
+        stacked: true, beginAtZero: true,
         title: {
           display: true,
           text: 'No. of Shampoo Bottles', // Y-axis label
@@ -118,10 +121,12 @@ export class ChartComponent {
       }
     }
   };
+  quarterlyChartData!: { label: string; data: number[]; backgroundColor: string; }[];
 
   constructor(private logser: LoginserviceService) { }
 
   loadChartData() {
+    console.log(this.filteredData);
     this.logser.getFilteredCityAssets(this.filteredData['city'][0]).subscribe((data) => {
       this.assetdataset = [];
       for (let y = 0; y < data.length; y++) {
@@ -207,6 +212,13 @@ export class ChartComponent {
       this.aggregateBasedonOperations();
       //console.log(this.roleBasedOperations);
     });
+    this.logser.getParticularCitytransactions(this.filteredData['city'][0], this.filteredData['role_user'][0]).subscribe((data) => {
+
+      this.prepareQuarterlyChartData(data)
+
+
+    });
+    //;
   }
   roleBasedOperations: any = {};
   drawLocationChart(): void {
@@ -288,10 +300,10 @@ export class ChartComponent {
 
     this.assetdataset.forEach((operation) => {
       //console.log(operation);
-      const { Fromfacility, Tofacility,Bottle_Status } = operation;
+      const { Fromfacility, Tofacility, Bottle_Status } = operation;
       //console.log(Fromfacility, Tofacility);
 
-      if(Bottle_Status=='InUse'){
+      if (Bottle_Status == 'InUse') {
         this.incrementCategory(this.roleBasedOperations[Tofacility], 'Using');
       }
       if (Fromfacility === 'Supermarket Owner' && this.isValidToFacility(Tofacility)) {
@@ -356,7 +368,7 @@ export class ChartComponent {
             },
           },
         },
-   
+
       },
       plugins: {
         legend: {
@@ -375,8 +387,8 @@ export class ChartComponent {
     };
   }
 
-oprChartdata:any;
-oprlabel:any;
+  oprChartdata: any;
+  oprlabel: any;
   private incrementCategory(category: any, operationType: string) {
     //console.log(category, operationType)
     if (category.hasOwnProperty(operationType)) {
@@ -401,4 +413,146 @@ oprlabel:any;
     };
     return colors[property] || 'rgba(0, 0, 0, 0.6)';
   }
+
+
+
+  public prepareQuarterlyChartData(transactions: any[]): void {
+    // Process the data into quarters
+    const quarters = this.processQuarterlyData(transactions);
+
+    this.quarterbarChartData = [
+      {
+        data: [quarters.Q1.container, quarters.Q2.container, quarters.Q3.container, quarters.Q4.container],
+        label: 'Container Amount',
+        backgroundColor: 'rgba(238, 23, 70, 0.7)'
+      },
+      {
+        data: [quarters.Q1.content, quarters.Q2.content, quarters.Q3.content, quarters.Q4.content],
+        label: 'Content Amount',
+        backgroundColor: 'rgba(54, 162, 235, 0.7)'
+      },
+      {
+        data: [quarters.Q1.refill, quarters.Q2.refill, quarters.Q3.refill, quarters.Q4.refill],
+        label: 'Refill Amount',
+        backgroundColor: 'rgba(255, 206, 86, 0.7)'
+      },
+      {
+        data: [-(quarters.Q1.return), -(quarters.Q2.return), -(quarters.Q3.return), -(quarters.Q4.return)],
+        label: 'Return Amount',
+        backgroundColor: 'rgba(255, 87, 34, 0.7)'
+      },
+      {
+        data: [quarters.Q1.tax, quarters.Q2.tax, quarters.Q3.tax, quarters.Q4.tax],
+        label: 'Environment Tax',
+        backgroundColor: 'rgba(153, 102, 255, 0.7)'
+
+      },
+      {
+        data: [quarters.Q1.fine, quarters.Q2.fine, quarters.Q3.fine, quarters.Q4.fine],
+        label: 'Fine Amount',
+        backgroundColor: 'rgba(53, 253, 53, 0.7)'
+      }
+    ];
+    console.log(this.quarterbarChartData);
+
+  }
+
+  // 2. Modify your existing processQuarterlyData method to return the correct type:
+  private processQuarterlyData(transactions: any[]) {
+    // Group by quarter and calculate amounts
+    const quarters = {
+      Q1: { container: 0, content: 0, refill: 0, return: 0, tax: 0, fine: 0 },
+      Q2: { container: 0, content: 0, refill: 0, return: 0, tax: 0, fine: 0 },
+      Q3: { container: 0, content: 0, refill: 0, return: 0, tax: 0, fine: 0 },
+      Q4: { container: 0, content: 0, refill: 0, return: 0, tax: 0, fine: 0 }
+    };
+    console.log(transactions)
+    transactions.forEach(tx => {
+
+      const day = parseInt(tx.TransactionId.split("_")[1]);
+      let quarter: keyof typeof quarters;
+      console.log(day)
+      // Determine quarter (assuming 365 days divided into 4 quarters)
+      if (day <= 91) quarter = 'Q1';
+      else if (day <= 182) quarter = 'Q2';
+      else if (day <= 273) quarter = 'Q3';
+      else quarter = 'Q4';
+
+      // Categorize the transaction
+      if (tx.Purpose.includes('returning Bottle') && tx.CreditFacility == this.filteredData['role_user'][0]) {
+        quarters[quarter].return += parseFloat(tx.Amount); // Ensure 'quarter' is typed correctly
+      }
+      else if (tx.Purpose.includes('Environment tax') && tx.DebitFacility == this.filteredData['role_user'][0]) {
+        quarters[quarter].tax += parseFloat(tx.Amount);
+      }
+      else if (tx.Purpose.includes('Refilling shampoo') && tx.DebitFacility == this.filteredData['role_user'][0]) {
+        quarters[quarter].refill += parseFloat(tx.Amount);
+      }
+      else if (tx.Purpose.includes('Throwing Bottle') && tx.DebitFacility == this.filteredData['role_user'][0]) {
+        quarters[quarter].fine += parseFloat(tx.Amount);
+      }
+
+      // Container and content amounts
+      quarters[quarter].container += parseFloat(tx.Container_Amt);
+      quarters[quarter].content += parseFloat(tx.Content_Amt);
+    });
+
+    return quarters;
+
+    // Categorize the transaction
+
+
+  }
+
+  public quarterbarChartLegend = true;
+  public quarterbarChartPlugins = [];
+  public quarterbarChartData: ChartDataset[] = [];
+  public quarterbarChartOptions: ChartOptions = {
+
+    responsive: true,
+    scales: {
+      x: {
+        stacked: true,
+        title: {
+          display: true,
+          text: 'Quarters', // X-axis label
+          font: {
+            size: 16,
+            weight: 'bold',
+          },
+        },
+        ticks: {
+          autoSkip: false, // Show all labels
+        },
+        labels: ['Q1', 'Q2', 'Q3', 'Q4'], // Move labels here
+      },
+      y: {
+        stacked: true,
+        title: {
+          display: true,
+          text: 'Amount ($)'
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Consumer\'s Spend on Quarters',
+        font: {
+          size: 24,
+          weight: 'bold',
+        },
+      }
+    },
+
+
+
+  };
+
+
+
 }

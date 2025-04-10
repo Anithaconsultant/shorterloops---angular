@@ -10,13 +10,13 @@ import { SharedServiceService } from '../services/shared-service.service';
   styleUrls: ['./cityrule.component.scss']
 })
 export class CityruleComponent implements OnInit {
-[x: string]: any;
+  [x: string]: any;
 
   @ViewChild('alertModal') alertModal!: AlertModalComponent;
 
 
   cityRuleForm: FormGroup; notificationForm!: FormGroup;
-  constructor(private fb: FormBuilder,private sharedser:SharedServiceService, private logser: LoginserviceService, private route: Router, private activateroute: ActivatedRoute) {
+  constructor(private fb: FormBuilder, private sharedser: SharedServiceService, private logser: LoginserviceService, private route: Router, private activateroute: ActivatedRoute) {
     this.notificationForm = this.fb.group({
       display_at_dustbin: [false],
       garbage_truck_announcement: [false]
@@ -26,11 +26,11 @@ export class CityruleComponent implements OnInit {
       rule_number: [null],
       day_number: [this.logser.currentuser.currentday || '', Validators.required],
       time_in_hours: [parseInt(this.logser.currentuser.CurrentTime)],
-    
+
       // Raw Material Prices
       virgin_plastic_price: [null],
       recycled_plastic_price: [null],
-    
+
       // Environmental Taxes (Existing Values - Readonly)
       last_envtx_p_bvb: [null],
       last_envtx_r_bvb: [null],
@@ -50,7 +50,7 @@ export class CityruleComponent implements OnInit {
       last_envtx_p_urfb: [null],
       last_envtx_r_urfb: [null],
       last_envtx_c_urfb: [null],
-    
+
       // Environmental Taxes (Editable Fields)
       envtx_p_bvb: ['', [Validators.min(0), Validators.max(100)]],
       envtx_r_bvb: ['', [Validators.min(0), Validators.max(100)]],
@@ -70,12 +70,13 @@ export class CityruleComponent implements OnInit {
       envtx_p_urfb: ['', [Validators.min(0), Validators.max(100)]],
       envtx_r_urfb: ['', [Validators.min(0), Validators.max(100)]],
       envtx_c_urfb: ['', [Validators.min(0), Validators.max(100)]],
-    
+
       // Fine Section
       fine_for_throwing_bottle: ['', [Validators.min(0)]],
       dustbinning_fine: ['', [Validators.min(0)]],
     });
   }
+  cityrules: any = [];
   currentOption: any = '';
   ngOnInit(): void {
     this.activateroute.queryParams.subscribe(params => {
@@ -87,22 +88,27 @@ export class CityruleComponent implements OnInit {
     }
     else {
       if (this.currentOption == 'cityrule') { this.loadLastCityRule(); }
-      else { this.loadLastCitynotification(); }
+      else if (this.currentOption == 'notification') { this.loadLastCitynotification(); }
+      else {
+        this.logser.getCityRules().subscribe(data => {
+          this.cityrules = data;
+        });
+      }
 
     }
 
-    
+
   }
   loadLastCityRule() {
     const cityId = this.cityRuleForm.get('cityId')?.value; // Get cityId from the form
-  
+
     if (cityId) {
       this.logser.getLastCityRule().subscribe(
         (data) => {
           if (data) {
             // Exclude 'Day' and 'Time' from the API response
             const { day, time, ...restData } = data;
-  
+
             // Populate the 'last_' prefixed fields with the retrieved data
             this.cityRuleForm.patchValue({
               last_envtx_p_bvb: restData.envtx_p_bvb,
@@ -125,15 +131,15 @@ export class CityruleComponent implements OnInit {
               last_envtx_c_urfb: restData.envtx_c_urfb,
               day_number: this.logser.currentuser.currentday,
               time_in_hours: parseInt(this.logser.currentuser.CurrentTime),
-              rule_number: restData. rule_number,
-              fine_for_throwing_bottle:  restData.fine_for_throwing_bottle,
-              dustbinning_fine: restData. dustbinning_fine,
-              virgin_plastic_price:restData.virgin_plastic_price,
-              recycled_plastic_price:restData.recycled_plastic_price,
+              rule_number: restData.rule_number,
+              fine_for_throwing_bottle: restData.fine_for_throwing_bottle,
+              dustbinning_fine: restData.dustbinning_fine,
+              virgin_plastic_price: restData.virgin_plastic_price,
+              recycled_plastic_price: restData.recycled_plastic_price,
             });
-  
+
             // Set the current day and time
-          
+
           }
         },
         (error) => {
@@ -166,12 +172,12 @@ export class CityruleComponent implements OnInit {
       );
     }
   }
-  showWarning:boolean=false;
+  showWarning: boolean = false;
   toggleWarning(event: any) {
     this.showWarning = event.target.checked; // Get checkbox value
     this.sharedser.setShowWarning(this.showWarning); // Update service state
   }
-  playWarning:boolean=false;
+  playWarning: boolean = false;
   togglePlayWarning(event: any) {
     this.playWarning = event.target.checked; // Get checkbox value
     this.sharedser.setPlayWarning(this.playWarning); // Update service state
@@ -190,7 +196,7 @@ export class CityruleComponent implements OnInit {
   onSubmit() {
     if (this.cityRuleForm.valid) {
       const formData = this.cityRuleForm.value;
-  
+
       // Extract only the editable fields for submission
       const updatedData = {
         cityId: formData.cityId,
@@ -219,7 +225,7 @@ export class CityruleComponent implements OnInit {
         fine_for_throwing_bottle: formData.fine_for_throwing_bottle,
         dustbinning_fine: formData.dustbinning_fine,
       };
-  
+      console.log("submited")
       // Send updatedData to the backend
       this.logser.createcityrule(updatedData).subscribe(
         (response) => {

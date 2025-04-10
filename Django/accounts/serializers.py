@@ -1,11 +1,33 @@
 from rest_framework import serializers
-from accounts.models import City, CustomUser, Facility, Cityrule, Asset, Shampooprice, Bottleprice, Cashflow,Auditlog
+from accounts.models import City, CustomUser, Facility, Cityrule, Asset, Shampooprice, Bottleprice, Cashflow, Auditlog
+from django.contrib.auth.hashers import make_password
 
 
-class userSerializer(serializers.ModelSerializer):
+class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = '__all__'
+        extra_kwargs = {
+            'Password': {'write_only': True},
+            'UserId': {'read_only': True}
+        }
+
+    def create(self, validated_data):
+        # Hash password before saving
+        validated_data['password'] = make_password(validated_data['password'])
+        return super().create(validated_data)
+
+
+class ViewUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        exclude = ['password', 'last_login', 'is_superuser', 'is_staff',
+                   'is_active', 'date_joined', 'groups', 'user_permissions']
+
+
+class CustomUserLoginSerializer(serializers.Serializer):
+    Username = serializers.CharField()
+    Password = serializers.CharField(write_only=True)
 
 
 class shampooSerializer(serializers.ModelSerializer):
@@ -48,7 +70,8 @@ class AssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Asset
         fields = '__all__'
-        
+
+
 class AuditSerializer(serializers.ModelSerializer):
     class Meta:
         model = Auditlog

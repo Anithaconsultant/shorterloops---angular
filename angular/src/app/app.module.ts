@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { DatePipe } from '@angular/common';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { LoginComponent } from './login/login.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SignupComponent } from './signup/signup.component';
 import { MaincityComponent } from './maincity/maincity.component';
@@ -30,6 +30,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { AlertModalComponent } from './alert-modal/alert-modal.component';
 import { ChartComponent } from './report/chart/chart.component';
 import { CityruleComponent } from './cityrule/cityrule.component';
+import { JwtInterceptor } from './interceptors/jwt.interceptor';
 @NgModule({
   declarations: [
     AppComponent,
@@ -57,9 +58,9 @@ import { CityruleComponent } from './cityrule/cityrule.component';
     NgbDropdownModule,
     BrowserAnimationsModule,
     DragDropModule, MatTreeModule, MatButtonModule, MatIconModule, MatSelectModule,
-    MatFormFieldModule,NgChartsModule 
+    MatFormFieldModule, NgChartsModule
   ],
-  providers: [AuthService, { provide: LocationStrategy, useClass: HashLocationStrategy },
+  providers: [AuthService, { provide: LocationStrategy, useClass: HashLocationStrategy }, { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     DatePipe],
   bootstrap: [AppComponent]
 })

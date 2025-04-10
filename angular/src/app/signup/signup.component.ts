@@ -1,4 +1,4 @@
-import { Component, OnInit,ViewChild,ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginserviceService } from './../services/loginservice.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import * as $ from 'jquery';
 import { AlertModalComponent } from '../alert-modal/alert-modal.component';
+import { AuthService } from '../auth.service';
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
@@ -16,11 +17,13 @@ export class SignupComponent implements OnInit {
 
   public signupForm!: FormGroup;
   submitted = false;
+  errorMessage = '';
+  successMessage = '';
   newuser = {
     'Username': '',
     'email': '',
     'mobile': '',
-    'Password': '',
+    'password': '',
     'wallet': '2000',
     'status': 'active',
     'User_cityid': '',
@@ -36,7 +39,8 @@ export class SignupComponent implements OnInit {
   maleset = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
   femaleset = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
   bgposition = ['-180px -72px', '-613px -78px', '-1111px -77px', '-1486px -75px', '-1923px -88px', '-2393px -75px', '-2749px -82px', '-3331px -72px', '-3840px -96px', '-4309px -62px', '-180px -570px', '-680px -577px', '-1111px -575px', '-1471px -553px', '-1929px -586px', '-2393px -573px', '-2849px -581px', '-3331px -570px', '-3840px -595px', '-4309px -634px', '-180px -1021px', '-673px -1027px', '-1111px -1026px', '-1486px -1021px', '-1929px -1037px', '-2393px -1024px', '-2842px -1031px', '-3331px -1021px', '-3840px -1046px', '-4309px -1013px', '-180px -1429px', '-680px -1444px', '-1111px -1433px', '-1526px -1468px', '-1929px -1444px', '-2393px -1431px', '-2954px -1439px', '-3331px -1429px', '-3840px -1453px', '-4309px -1457px']
-  constructor(private formbuilder: FormBuilder, private modalService: NgbModal, private http: HttpClientModule, private router: Router, private logser: LoginserviceService) {
+  constructor(private formbuilder: FormBuilder,
+    private authService: AuthService, private modalService: NgbModal, private http: HttpClientModule, private router: Router, private logser: LoginserviceService) {
 
 
   }
@@ -71,22 +75,23 @@ export class SignupComponent implements OnInit {
     }
 
     if (this.submitted) {
-      this.logser.createUser(this.newuser).subscribe(
-        data => {
-          if (data.message == 'Success') {
-            this.newuser = data;
-            $(".success").show();
+      console.log(this.newuser);
+      this.authService.signup(this.newuser).subscribe({
+        next: () => {
+          this.successMessage = 'Registration successful! Please login.';
+          this.errorMessage = '';
+        }, error: (err) => {
+          this.errorMessage = 'Registration failed. Please try again.';
+          if (err.error) {
+            // Handle specific errors from Django
+            if (err.error.Username) {
+              this.errorMessage = err.error.Username[0];
+            } else if (err.error.email) {
+              this.errorMessage = err.error.email[0];
+            }
           }
-          else {
-            this.alertModal.openModal(data.message);
-          }
-
-        },
-        error => {
-          //console.log(error);
         }
-      );
-
+      });
     }
 
   }
@@ -99,7 +104,7 @@ export class SignupComponent implements OnInit {
   }
   playVideo() {
 
-    this.showImage=true;
+    this.showImage = true;
     const video = this.videoPlayer.nativeElement;
     video.play();
   }
