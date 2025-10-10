@@ -47,8 +47,10 @@ urlpatterns = [
     path('api/filter-options/', views.get_filter_options,
          name='get_filter_options'),
     path('api/addRule/', views.add_Cityrule, name='add_Cityrule'),
+    path('api/inventory/', views.bottle_inventory_detail, name='bottle_inventory_detail'),
     path("api/toggle-timer/<cityid>",
          views.toggle_city_timer, name="toggle_city_timer"),
     path('api/cityrule/<city_id>', views.get_last_city_rule,
          name='get_last_city_rule'),
+
 ]

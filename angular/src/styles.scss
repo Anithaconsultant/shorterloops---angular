@@ -2442,3 +2442,17 @@ $align-space: 14px;
     }
   }
 }
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+app-bottle-inventory-form {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
