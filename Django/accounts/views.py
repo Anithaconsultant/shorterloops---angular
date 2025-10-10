@@ -1,6 +1,8 @@
+from collections import defaultdict
+from .models import Asset
 from django.db.models import Q
-from .models import City, CustomUser, Facility, FACILITY_CHOICES, Cityrule, Asset, Cashflow, Auditlog, Bottleprice, Shampooprice
-from .serializers import CustomUserSerializer, citySerializer, facilitySerializer, cityRuleSerializer, AssetSerializer, cashflowSerializer, AuditSerializer, BottleSerializer, shampooSerializer
+from .models import City, CustomUser, Facility, FACILITY_CHOICES, Cityrule, Asset, Cashflow, Auditlog, Bottleprice, Shampooprice,BottleInventory
+from .serializers import CustomUserSerializer, citySerializer, facilitySerializer, cityRuleSerializer, AssetSerializer, cashflowSerializer, AuditSerializer, BottleSerializer, shampooSerializer,BottleInventorySerializer
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from django.http import JsonResponse
@@ -25,6 +27,12 @@ data1 = list()
 currentuser = ''
 cartcount = 100
 
+import string
+import random
+
+def generate_short_id(length=8):
+    characters = string.ascii_letters + string.digits  # a-zA-Z0-9
+    return ''.join(random.choices(characters, k=length))
 
 @method_decorator(csrf_exempt, name='dispatch')
 class SignUpView(APIView):
@@ -794,3 +802,33 @@ def manage_city_timer(request, cityid):
             return JsonResponse({"error": "Invalid JSON"}, status=400)
 
     return JsonResponse({"error": "Invalid request"}, status=405)
+
+
+@api_view(['GET', 'PUT'])
+def bottle_inventory_detail(request):
+    producer_code = request.query_params.get('producer_code')
+    bottle_type = request.query_params.get('bottle_type')
+    city_id = request.query_params.get('city_id')
+
+    if not (producer_code and bottle_type and city_id):
+        return Response({'error': 'Missing query parameters.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        inventory = BottleInventory.objects.get(
+            producer_code=producer_code,
+            bottle_type=bottle_type,
+            Bottle_CityId=city_id
+        )
+    except BottleInventory.DoesNotExist:
+        return Response({'error': 'Inventory not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = BottleInventorySerializer(inventory)
+        return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        serializer = BottleInventorySerializer(inventory, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

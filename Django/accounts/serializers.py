@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from accounts.models import City, CustomUser, Facility, Cityrule, Asset, Shampooprice, Bottleprice, Cashflow, Auditlog
+from accounts.models import City, CustomUser, Facility, Cityrule, Asset, Shampooprice, Bottleprice, Cashflow, Auditlog,BottleInventory
 from django.contrib.auth.hashers import make_password
 
 
@@ -35,6 +35,10 @@ class shampooSerializer(serializers.ModelSerializer):
         model = Shampooprice
         fields = '__all__'
 
+class BottleInventorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BottleInventory
+        fields = '__all__'
 
 class BottleSerializer(serializers.ModelSerializer):
     class Meta:

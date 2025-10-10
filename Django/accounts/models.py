@@ -3,6 +3,9 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 import datetime
 import uuid
+from django.conf import settings
+
+
 FACILITY_CHOICES = (
     ('mun', 'Municipality Office', '10000'),
     ('b1p', 'B1 Shampoo Producer', '500000'),
@@ -266,3 +269,59 @@ class CustomUser(AbstractBaseUser):
 
     def __str__(self):
         return self.Username
+
+
+class BottleInventory(models.Model):
+    BOTTLE_TYPES = [
+        ('BVB', 'BVB'),
+        ('BRCB', 'BRCB'),
+        ('BRFB', 'BRFB'),
+        ('UVB', 'UVB'),
+        ('URCB', 'URCB'),
+        ('URFB', 'URFB'),
+    ]
+
+    class Meta:
+        db_table = "bottle_inventory"
+        unique_together = ("producer_code", "bottle_type", "Bottle_CityId")
+    # Identification Fields
+    producer_code = models.CharField(max_length=255, db_index=True, blank=False)
+    bottle_type = models.CharField(max_length=4, choices=BOTTLE_TYPES)
+    cycle_number = models.IntegerField()
+
+    # Stock Information
+    current_total_stock = models.PositiveIntegerField(default=0)
+    bottles_sold_to_supermarket_prev_cycle = models.PositiveIntegerField(default=0)
+    bottles_bought_by_consumers = models.PositiveIntegerField(default=0)
+
+    # Return Information
+    bottles_returned_good = models.PositiveIntegerField(default=0)
+    bottles_returned_damaged = models.PositiveIntegerField(default=0)
+
+    # Manufacturing Information
+    manufacturing_day = models.PositiveIntegerField(null=True, blank=True)
+
+    # Pricing Information
+    content_price_per_ml = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    bottle_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    total_mrp = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+
+    # Bottle Specifications
+    max_refill_count = models.PositiveIntegerField(default=1)
+
+    # Return Values
+    redeem_value_good = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    redeem_value_damaged = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+
+    # Commission and Discounts
+    supermarket_commission_percent = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    consumer_discount_percent = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+
+    # Production Planning
+    bottles_to_produce = models.PositiveIntegerField(default=0)
+    bottles_to_sell_to_supermarket = models.PositiveIntegerField(default=0)
+
+    # Metadata
+    last_updated = models.DateTimeField(auto_now=True)
+    Bottle_CityId = models.ForeignKey("city", on_delete=models.CASCADE)
+

@@ -3,12 +3,17 @@ from django.dispatch import receiver, Signal
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 import threading
-from .models import Asset, Auditlog, City, Cityrule,CustomUser
+from .models import Asset, Auditlog, City, Cityrule, CustomUser, BottleInventory
 from time import sleep
 import time
-from django.db.models import F 
+from django.db.models import F
 from django.db import transaction
+from django.contrib.auth import get_user_model
+from django.utils import timezone
+
 user_data_received = Signal()
+
+
 @receiver(pre_save, sender=Asset)
 def track_changes(sender, instance, **kwargs):
     """Store the original instance values before saving."""
@@ -17,6 +22,7 @@ def track_changes(sender, instance, **kwargs):
             instance._original = sender.objects.get(pk=instance.pk)
         except ObjectDoesNotExist:
             instance._original = None  # Handle gracefully if the instance doesn't exist
+
 
 @receiver(post_save, sender=Asset)
 def record_audit_trail_on_save(sender, instance, created, **kwargs):
@@ -99,7 +105,7 @@ def update_assets_from_cityrule(sender, instance, **kwargs):
             tax_value = instance.envtx_c_urcb if plant_refill_count == 0 else instance.envtx_c_urfb
         else:
             tax_value = None
-        
+
         if bottle_code in ["B1.V", "B2.V", "B3.V", "B4.V", "B5.V"]:
             tax_retailer = instance.envtx_r_bvb
         elif bottle_code == "UB.V":
@@ -119,14 +125,121 @@ def update_assets_from_cityrule(sender, instance, **kwargs):
 
         # Update fines from city rule mapping.
         # Converting the float values to strings since Asset's fine fields are varchar.
-        asset.Discard_Dustbin_fine = str(instance.dustbinning_fine) if instance.dustbinning_fine is not None else ''
-        asset.Discard_Garbagetruck_fine = str(instance.fine_for_throwing_bottle) if instance.fine_for_throwing_bottle is not None else ''
+        asset.Discard_Dustbin_fine = str(
+            instance.dustbinning_fine) if instance.dustbinning_fine is not None else ''
+        asset.Discard_Garbagetruck_fine = str(
+            instance.fine_for_throwing_bottle) if instance.fine_for_throwing_bottle is not None else ''
         asset.save()
-
 
 
 timers = {}
 
+User = get_user_model()
+
+
+def get_bottle_type(asset: Asset):
+    """Classify Asset into BottleInventory type."""
+    print(asset.Bottle_Code, asset.Current_PlantRefill_Count)
+    if asset.Bottle_Code in ["B1.V", "B5.V"]:
+        return "BVB"
+    elif asset.Bottle_Code == "B2.R":
+        return "BRFB" if asset.Current_PlantRefill_Count > 0 else "BRCB"
+    elif asset.Bottle_Code == "B3.R":
+        return "BRFB" if asset.Current_PlantRefill_Count > 0 else "BRCB"
+    elif asset.Bottle_Code == "UB.V":
+        return "UVB"
+    elif asset.Bottle_Code == "UB.R":
+        return "URFB" if asset.Current_PlantRefill_Count > 0 else "URCB"
+    return None
+
+
+from collections import Counter
+from django.utils import timezone
+from django.db import transaction
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+@receiver(post_save, sender=Asset)
+def create_or_update_bottle_inventory(sender, instance, created, **kwargs):
+    if not created:
+        return  # only on creation
+
+    with transaction.atomic():  # ✅ prevent race conditions & deadlocks
+        # filter all assets for this city
+        assets_qs = Asset.objects.filter(Asset_CityId=instance.Asset_CityId)
+        if assets_qs.count() < 90:
+            return  # wait until all 90 records for this city are inserted
+
+        # --- Step 1: Categorize all assets ---
+        category_counts = Counter()
+        sample_asset_for_category = {}
+
+        for asset in assets_qs:
+            bottle_type = get_bottle_type(asset)
+            if not bottle_type:
+                continue
+
+            # ✅ Extract safe producer code (always non-null)
+            producer_code = None
+            if asset.Content_Code:
+                parts = asset.Content_Code.split(".")
+                if len(parts) > 1:
+                    producer_code = parts[1]
+                else:
+                    producer_code = None  # fallback
+            if bottle_type in ["UVB", "URCB", "URFB"]:
+                 producer_code = "Universal"
+            key = (bottle_type, producer_code)
+            category_counts[key] += 1
+
+            if key not in sample_asset_for_category:
+                sample_asset_for_category[key] = asset
+
+        # --- Step 2: Update or create BottleInventory ---
+        for (bottle_type, producer_code), count in category_counts.items():
+            asset = sample_asset_for_category[(bottle_type, producer_code)]
+
+            # Extract values for pricing
+            bottle_price = float(asset.Bottle_Price or 0)
+            content_price = float(asset.Content_Price or 0)
+            env_tax = float(asset.Env_Tax_Customer or 0)
+            max_refill = int(asset.Max_Refill_Count or 0)
+            redeem_good = float(asset.Redeem_Good or 0)
+            redeem_damaged = float(asset.Redeem_Damaged or 0)
+            discount = float(asset.Discount_RefillB or 0)
+
+            shampoo_price_per_ml = 0.0
+            if asset.Quantity:
+                shampoo_price_per_ml = content_price / float(asset.Quantity)
+
+            total_mrp = bottle_price + content_price + env_tax
+
+            # ✅ Safe update_or_create with producer_code included
+            BottleInventory.objects.update_or_create(
+                producer_code=producer_code,
+                bottle_type=bottle_type,
+                Bottle_CityId_id=asset.Asset_CityId_id,
+                defaults={
+                    "cycle_number": 0,
+                    "current_total_stock": 0,
+                    "bottles_sold_to_supermarket_prev_cycle": count,
+                    "bottles_bought_by_consumers": 0,
+                    "bottles_returned_good": 0,
+                    "bottles_returned_damaged": 0,
+                    "manufacturing_day": asset.DOM,
+                    "content_price_per_ml": shampoo_price_per_ml,
+                    "bottle_price": bottle_price,
+                    "total_mrp": total_mrp,
+                    "max_refill_count": max_refill,
+                    "redeem_value_good": redeem_good,
+                    "redeem_value_damaged": redeem_damaged,
+                    "supermarket_commission_percent": 0,
+                    "consumer_discount_percent": discount,
+                    "bottles_to_produce": 0,
+                    "bottles_to_sell_to_supermarket": 0,
+                    "last_updated": timezone.now(),
+                },
+            )
 
 class CityTimer(threading.Thread):
     def __init__(self, city_id, clocktickrate):
@@ -139,24 +252,22 @@ class CityTimer(threading.Thread):
         self.last_update_day = None
 
     def run(self):
-    
+
         while self.running:
-          
+
             time.sleep(1)
             with transaction.atomic():
                 city = City.objects.select_for_update().get(pk=self.city_id)
                 city.refresh_from_db()  # Refresh the instance from the database
-                print('city timer :',city.timer_paused,self.city_id)
                 # Check if the timer is paused
                 if city.timer_paused:
                     self.paused = True
                     continue  # Skip the rest of the loop if paused
                 else:
                     self.paused = False
-                print( 'self.paused:',self.paused)
                 # Only update time if not paused
                 if not self.paused:
-                    print(f"Timer for city {self.city_id} is running")  # Debugging
+                    # Debugging
                     city.CurrentTime += self.intervalcalculation
 
                     if city.CurrentTime >= 86400:  # 24 hours
@@ -171,8 +282,10 @@ class CityTimer(threading.Thread):
                     city.save()
 
     def update_wallets(self, city_id):
-        CustomUser.objects.filter(User_cityid=city_id).update(wallet=F("wallet") + 2000)
-        CustomUser.objects.filter(User_cityid=city_id).update(update_count=F("update_count") + 1)
+        CustomUser.objects.filter(User_cityid=city_id).update(
+            wallet=F("wallet") + 2000)
+        CustomUser.objects.filter(User_cityid=city_id).update(
+            update_count=F("update_count") + 1)
         print(f"Successfully updated wallets for users in city ID: {city_id}")
 
     def stop(self):
@@ -211,3 +324,4 @@ def resume_timer_for_city(city_id):
 def start_timer_on_create(sender, instance, created, **kwargs):
     if created:
         start_timer_for_city(instance)
+

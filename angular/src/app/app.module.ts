@@ -31,6 +31,11 @@ import { AlertModalComponent } from './alert-modal/alert-modal.component';
 import { ChartComponent } from './report/chart/chart.component';
 import { CityruleComponent } from './cityrule/cityrule.component';
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
+
+
+import { BottleInventoryFormComponent } from './bottle-inventory-form/bottle-inventory-form.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -46,7 +51,8 @@ import { JwtInterceptor } from './interceptors/jwt.interceptor';
     ClickOutsideDirective,
     AlertModalComponent,
     ChartComponent,
-    CityruleComponent
+    CityruleComponent,
+    BottleInventoryFormComponent
   ],
   imports: [
     BrowserModule,
@@ -58,7 +64,7 @@ import { JwtInterceptor } from './interceptors/jwt.interceptor';
     NgbDropdownModule,
     BrowserAnimationsModule,
     DragDropModule, MatTreeModule, MatButtonModule, MatIconModule, MatSelectModule,
-    MatFormFieldModule, NgChartsModule
+    MatFormFieldModule, NgChartsModule, MatCardModule, MatInputModule
   ],
   providers: [AuthService, { provide: LocationStrategy, useClass: HashLocationStrategy }, { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     DatePipe],

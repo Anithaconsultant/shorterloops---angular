@@ -70,8 +70,8 @@ export class LoginserviceService {
       { headers: this.getAuthHeaders() }).pipe(
         catchError(this.handleError)
       );
-
   }
+
   getCityRules(): Observable<any> {
     //console.log(cityrule)
     return this.http.get(this.baseurl + 'addRule/',
@@ -371,6 +371,27 @@ export class LoginserviceService {
         catchError(this.handleError)
       );;
   }
+
+
+    getInventory(producerCode: string, bottleType: string, cityId: number) {
+    const params = new HttpParams()
+      .set('producer_code', producerCode)
+      .set('bottle_type', bottleType)
+      .set('city_id', cityId.toString());
+
+    return this.http.get<any>(this.baseurl + 'inventory/', { params });
+  }
+
+  updateInventory(producerCode: string, bottleType: string, cityId: string, data: any) {
+    const params = new HttpParams()
+      .set('producer_code', producerCode)
+      .set('bottle_type', bottleType)
+      .set('city_id', cityId.toString());
+
+    return this.http.put(this.baseurl + 'inventory/', data, { params });
+  }
+
+
   gettransactions(): Observable<any> {
     return this.http.get(this.baseurl + 'cashflow/',
       { headers: this.getAuthHeaders() }).pipe(
