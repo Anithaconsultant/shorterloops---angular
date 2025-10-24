@@ -52,5 +52,7 @@ urlpatterns = [
          views.toggle_city_timer, name="toggle_city_timer"),
     path('api/cityrule/<city_id>', views.get_last_city_rule,
          name='get_last_city_rule'),
+    path('api/get_last_serial/', views.get_last_serial, name='get_last_serial'),
+
 
 ]

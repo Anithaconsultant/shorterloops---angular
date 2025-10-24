@@ -237,6 +237,7 @@ def create_or_update_bottle_inventory(sender, instance, created, **kwargs):
                     "consumer_discount_percent": discount,
                     "bottles_to_produce": 0,
                     "bottles_to_sell_to_supermarket": 0,
+                    "stock_updated_day": "0",
                     "last_updated": timezone.now(),
                 },
             )
@@ -269,7 +270,9 @@ class CityTimer(threading.Thread):
                 if not self.paused:
                     # Debugging
                     city.CurrentTime += self.intervalcalculation
-
+                    #print(city.CityName, city.CurrentTime, city.CurrentDay,f"(Interval: {self.intervalcalculation})")
+                    
+                    
                     if city.CurrentTime >= 86400:  # 24 hours
                         city.CurrentTime = 0
                         city.CurrentDay += 1
@@ -299,6 +302,9 @@ class CityTimer(threading.Thread):
 
 
 def start_timer_for_city(city):
+    if city.CityId in timers:
+        print(f"Timer already running for city {city.CityName}")
+        return
     timer = CityTimer(city.CityId, city.Clocktickrate)
     timers[city.CityId] = timer
     timer.start()

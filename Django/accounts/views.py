@@ -187,7 +187,7 @@ def getcityname(request, cityid):
     if request.method == 'GET':
         getcity = City.objects.filter(pk=cityid)
         serializer = citySerializer(getcity, many=True)
-        print('getcitynamr', serializer.data)
+        
         return JsonResponse(serializer.data, safe=False)
 
 
@@ -592,8 +592,6 @@ def editcity(request, cityid):
 
     if request.method == 'POST' or request.method == 'PUT':
         data = JSONParser().parse(request)
-        print('data', data)
-        # Pass instance, not QuerySet
         serializer = citySerializer(city, data=data, partial=True)
 
         if serializer.is_valid():
@@ -605,7 +603,6 @@ def editcity(request, cityid):
     if request.method == 'GET':
         getcity = City.objects.filter(pk=cityid)
         serializer = citySerializer(getcity, many=True)
-        print('getcitynamr', serializer.data)
         return JsonResponse(serializer.data, safe=False)
 
 
@@ -613,7 +610,6 @@ def editcity(request, cityid):
 def updateusercity(request, userid):
     if request.method == 'PUT':
         data = JSONParser().parse(request)
-        print(data)
         getuser = CustomUser.objects.filter(pk=userid).first()
         serializer = CustomUserSerializer(getuser, data=data, partial=True)
         if serializer.is_valid():
@@ -720,7 +716,7 @@ def filter_audit_logs(request):
         filtered_logs = Auditlog.objects.filter(**filters)
 
     if isinstance(filtered_logs, QuerySet):
-        print(filtered_logs.query)
+        pass
     data = list(filtered_logs.values())
 
     return JsonResponse(data, safe=False)
@@ -783,7 +779,6 @@ def manage_city_timer(request, cityid):
         try:
             data = json.loads(request.body)
             action = data.get("action")  # 'pause' or 'resume'
-            print(action)
             if not cityid or action not in ["pause", "resume"]:
                 return JsonResponse({"error": "Invalid data"}, status=400)
 
@@ -803,32 +798,146 @@ def manage_city_timer(request, cityid):
 
     return JsonResponse({"error": "Invalid request"}, status=405)
 
-
-@api_view(['GET', 'PUT'])
+@api_view(['POST', 'GET'])
 def bottle_inventory_detail(request):
+    producer_code = request.data.get('producer_code')
+    bottle_type = request.data.get('bottle_type')
+    city_id = request.data.get('Bottle_CityId')
+    stock_updated_day = request.data.get('day')
+    print("Received query params:", producer_code, bottle_type, city_id, request.data)
+    if request.method == 'POST':
+        current_cycle = request.data.get('cycle_number')
+        previous_cycle = request.data.get('previous_cycle_number')
+
+        # Convert to int if provided
+        current_cycle = int(current_cycle) if current_cycle is not None else None
+        previous_cycle = int(previous_cycle) if previous_cycle is not None else None
+
+        # 🔹 1. Update previous cycle ONLY if it exists and cycle > 0
+        if previous_cycle and previous_cycle > 0:
+            try:
+                prev_inventory = BottleInventory.objects.get(
+                    producer_code=producer_code,
+                    bottle_type=bottle_type,
+                    Bottle_CityId_id=city_id,
+                    cycle_number=previous_cycle
+                )
+                print(f"Updating previous cycle {previous_cycle} for {producer_code} {bottle_type} city {city_id}")
+
+                update_fields = [
+                    'bottles_bought_by_consumers',
+                    'bottles_returned_damaged', 
+                    'bottles_returned_good',
+                    'bottles_sold_to_supermarket_prev_cycle'
+                ]
+                
+                update_data = {field: request.data[field] for field in update_fields if field in request.data}
+
+                if update_data:
+                    serializer = BottleInventorySerializer(prev_inventory, data=update_data, partial=True)
+                    if serializer.is_valid():
+                        serializer.save()
+                        print(f"✅ Previous cycle {previous_cycle} updated with: {update_data}")
+                    else:
+                        print("❌ Serializer validation failed:", serializer.errors)
+            except BottleInventory.DoesNotExist:
+                print(f"⚠️ Previous cycle {previous_cycle} not found; skipping update")
+            except Exception as e:
+                print(f"❌ Error updating previous cycle: {e}")
+
+        # 🔹 2. Create new cycle entry
+        data = request.data.copy()
+
+        # Reset counters for the new cycle
+        for field in ['bottles_bought_by_consumers', 'bottles_returned_damaged', 'bottles_returned_good', 'bottles_sold_to_supermarket_prev_cycle']:
+            data[field] = 0
+
+        # Ensure FK is correct
+        data['Bottle_CityId_id'] = city_id
+
+        serializer = BottleInventorySerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        print("❌ Serializer errors:", serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+    # 🔹 3. Handle GET
+    if request.method == 'GET':
+        if not (producer_code and bottle_type and city_id):
+            return Response({'error': 'Missing query parameters.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        inventories = BottleInventory.objects.filter(
+            producer_code=producer_code,
+            bottle_type=bottle_type,
+            Bottle_CityId_id=city_id  # ✅ correct filter
+        ).order_by('-cycle_number')
+
+        if not inventories.exists():
+            return Response({'error': 'Inventory not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = BottleInventorySerializer(inventories, many=True)
+        return Response(serializer.data)
+    
+    
+@api_view(['GET'])
+def get_last_serial(request):
     producer_code = request.query_params.get('producer_code')
     bottle_type = request.query_params.get('bottle_type')
     city_id = request.query_params.get('city_id')
 
+    # Validate input
     if not (producer_code and bottle_type and city_id):
-        return Response({'error': 'Missing query parameters.'}, status=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        inventory = BottleInventory.objects.get(
-            producer_code=producer_code,
-            bottle_type=bottle_type,
-            Bottle_CityId=city_id
+        return Response(
+            {'error': 'Missing query parameters (producer_code, bottle_type, city_id required).'},
+            status=status.HTTP_400_BAD_REQUEST
         )
-    except BottleInventory.DoesNotExist:
-        return Response({'error': 'Inventory not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-    if request.method == 'GET':
-        serializer = BottleInventorySerializer(inventory)
-        return Response(serializer.data)
+    # Get last inventory record for that combination
+    last_inventory = Asset.objects.filter(
+        producer_code=producer_code,
+        bottle_type=bottle_type,
+        Bottle_CityId_id=city_id
+    ).order_by('-cycle_number').first()
 
-    elif request.method == 'PUT':
-        serializer = BottleInventorySerializer(inventory, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    last_serial = "00001"  # default starting serial
+
+    if last_inventory:
+        # Example field: SB_B1idV_00002
+        bottle_id = getattr(last_inventory, 'bottle_id', None)
+
+        if bottle_id:
+            match = re.search(r'_(\d{5,})$', bottle_id)
+            if match:
+                last_serial_num = int(match.group(1))
+                # increment by 1 and preserve leading zeros
+                next_serial = str(last_serial_num + 1).zfill(5)
+                last_serial = next_serial
+
+        return Response(
+            {
+                'producer_code': producer_code,
+                'bottle_type': bottle_type,
+                'city_id': city_id,
+                'last_cycle': last_inventory.cycle_number,
+                'next_serial': last_serial
+            },
+            status=status.HTTP_200_OK
+        )
+        print(Response)
+
+    # No previous record → start from 00001
+    return Response(
+        {
+            'producer_code': producer_code,
+            'bottle_type': bottle_type,
+            'city_id': city_id,
+            'last_cycle': 0,
+            'next_serial': "00000",
+            'message': 'No previous records found; starting fresh.'
+        },
+        status=status.HTTP_200_OK
+    )

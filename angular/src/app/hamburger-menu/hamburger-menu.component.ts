@@ -142,6 +142,7 @@ export class HamburgerMenuComponent implements OnInit {
     'B5 Shampoo Producer': [
       { label: 'Switch Role as Customer', action: () => this.onMenuItemClick() },
       { label: 'Check Cashbox Status', action: (cashBox:any) => { this.calB5shampoo(); this.openCashbox(cashBox); } },
+      { label: 'Produce Shampoo', action: () => this.placeOrder() },
       { label: 'Check Ledger book', action: null, disabled: true },
     ],
   };

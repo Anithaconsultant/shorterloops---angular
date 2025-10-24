@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoginserviceService } from './../services/loginservice.service';
+import { BASE_ASSET } from '../constants/asset-base';
+import { data } from 'jquery';
 
 @Component({
   selector: 'app-bottle-inventory-form',
@@ -72,12 +74,14 @@ export class BottleInventoryFormComponent implements OnInit {
 
   currentCycleNumber: number = 0;
   createForm(): void {
-    console.log(Math.floor(this.loginService.currentuser.currentday / 90));
-    this.currentCycleNumber = Math.floor(this.loginService.currentuser.currentday / 90);
+    // console.log(this.currentCycleNumber, ' currentcycle ', Math.floor(this.loginService.currentuser.currentday ));
+    this.currentCycleNumber = Math.floor(this.loginService.currentuser.currentday);
+
     this.inventoryForm = this.fb.group({
 
       bottle_type: ['', Validators.required],
-      cycle_number: [this.currentCycleNumber, [Validators.required, Validators.min(1)]],
+      cycle_number: [this.currentCycleNumber + 1, [Validators.required, Validators.min(1)]],
+      previous_cycle_number: [this.currentCycleNumber, [Validators.required, Validators.min(0)]],
       current_total_stock: [0, [Validators.required, Validators.min(0)]],
       bottles_sold_to_supermarket_prev_cycle: [0, [Validators.required, Validators.min(0)]],
       bottles_bought_by_consumers: [0, [Validators.required, Validators.min(0)]],
@@ -107,7 +111,6 @@ export class BottleInventoryFormComponent implements OnInit {
     plantRefillCount: number
   ): string | null {
     category = category.toLowerCase();
-    console.log(category, producer, plantRefillCount)
     if (category === "bvb") {
       return `${producer}.V`;
     } else if (category === "uvb") {
@@ -135,6 +138,7 @@ export class BottleInventoryFormComponent implements OnInit {
   customerpurchased: number = 0;
   returnedGood: number = 0;
   returnedDamaged: number = 0;
+  available_Bottles_In_City: string = '';
   getDataFromServer(value: string): void {
     console.log(value)
     this.currentlySelectedBrandBottles = [];
@@ -144,12 +148,16 @@ export class BottleInventoryFormComponent implements OnInit {
 
 
     for (let r = 0; r < this.allAssets.length; r++) {
-      let extractedBottleCode = this.getBottleCodeFromCategory(value, this.loginService.currentuser.Role.split(' ')[0], this.allAssets[r]['Current_PlantRefill_Count'])
-      console.log(extractedBottleCode);
-      if (this.allAssets[r]['Bottle_Code'] === extractedBottleCode) {
+      console.log('curent count'+this.allAssets[r]['Current_PlantRefill_Count'],value,this.loginService.currentuser.Role.split(' ')[0])
+      let getBottleCode = this.getBottleCodeFromCategory(value, this.loginService.currentuser.Role.split(' ')[0], this.allAssets[r]['Current_PlantRefill_Count'])
+      console.log('getBottleCode'+ getBottleCode);
+      if (this.allAssets[r]['Bottle_Code'] === getBottleCode) {
         this.currentlySelectedBrandBottles.push(this.allAssets[r]);
       }
+
     }
+    this.available_Bottles_In_City = this.currentlySelectedBrandBottles.length;
+    console.log('length'+this.currentlySelectedBrandBottles.length);
     for (let y = 0; y < this.currentlySelectedBrandBottles.length; y++) {
       console.log(this.currentlySelectedBrandBottles[y]['Transaction_Id'].split('_')[1], Math.floor(this.currentlySelectedBrandBottles[y]['Transaction_Id'].split('_')[1] / 90) == this.currentCycleNumber)
       if (this.currentlySelectedBrandBottles[y]['purchased'] == 1 && Math.floor(this.currentlySelectedBrandBottles[y]['Transaction_Id'].split('_')[1] / 90) == this.currentCycleNumber) {
@@ -163,9 +171,9 @@ export class BottleInventoryFormComponent implements OnInit {
           this.returnedDamaged++;
         }
       }
+
     }
 
-    console.log(this.currentlySelectedBrandBottles)
     this.inventoryForm.patchValue({
       bottles_bought_by_consumers: this.customerpurchased,
       bottles_sold_to_supermarket_prev_cycle: this.currentlySelectedBrandBottles.length,
@@ -176,43 +184,126 @@ export class BottleInventoryFormComponent implements OnInit {
   onSubmit(): void {
     if (this.inventoryForm.invalid) {
       console.warn('🚫 Cannot submit, form invalid.');
-      this.inventoryForm.markAllAsTouched(); // shows mat-errors
-      this.showFormErrors(); // log specific invalid fields
+      this.inventoryForm.markAllAsTouched();
+      this.showFormErrors();
       return;
     }
-    if (this.inventoryForm.valid) {
-      this.loginService.updateInventory(this.producerCode, this.inventoryForm.value.bottle_type, this.cityId, this.inventoryForm.value).subscribe(
-        response => {
-          // Handle success
-          console.log('Inventory updated successfully', response);
-        },
-        error => {
-          // Handle error
-          console.error('Error creating inventory', error);
+
+    console.log('✅ Form Submitted!', this.inventoryForm.value);
+
+    this.loginService.createInventory(
+      this.producerCode,
+      this.inventoryForm.value.bottle_type,
+      this.cityId,
+      this.inventoryForm.value
+    ).subscribe({
+      next: (response) => {
+        console.log('✅ Inventory created successfully', response);
+        this.selectedBottleType = this.inventoryForm.value.bottle_type;
+        this.extractedBottleCode = this.getBottleCodeFromCategory(this.selectedBottleType, this.loginService.currentuser.Role.split(' ')[0], 0) || '';
+        this.generatebottles();
+        // Fetch the last serial after creation
+
+      },
+
+      error: (error) => {
+        console.error('❌ Error creating inventory:', error);
+
+        // --- Friendly Alerts Based on Error Type ---
+        if (error.status === 409) {
+          alert('⚠️ Record already exists for this cycle, bottle type, and city.');
         }
-      );
-    }
+        else if (error.status === 400 && error.error?.non_field_errors) {
+          alert('⚠️ ' + error.error.non_field_errors[0]);
+        }
+        else if (error.status === 400 && typeof error.error === 'object') {
+          const errorKeys = Object.keys(error.error);
+          if (errorKeys.length > 0) {
+            const key = errorKeys[0];
+            alert(`⚠️ ${key}: ${error.error[key]}`);
+          } else {
+            alert('⚠️ Validation failed. Please check your input.');
+          }
+        }
+        else if (error.status === 404) {
+          alert('❗ Requested data not found on the server.');
+        }
+        else if (error.status === 500) {
+          alert('🚨 Server error occurred. Please try again later.');
+        }
+        else {
+          alert('❌ Unexpected error: ' + (error.message || 'Please check console.'));
+        }
+      },
+
+      complete: () => {
+        console.log('✅ Inventory request completed.');
+      }
+    });
   }
+
 
   hasError(controlName: string, errorCode: string): boolean {
     const control = this.inventoryForm.get(controlName);
     return control ? control.hasError(errorCode) && (control.dirty || control.touched) : false;
   }
-
+  userobj = {
+    'login': '1'
+  }
+  gotocity() {
+    this.router.navigate(["maincity"]);
+  }
   showFormErrors(): void {
-  if (!this.inventoryForm) return;
+    if (!this.inventoryForm) return;
+    console.warn('⚠️ Form is invalid. Details:');
+    Object.keys(this.inventoryForm.controls).forEach(key => {
+      const control = this.inventoryForm.get(key);
+      if (control && control.invalid) {
+        console.warn(
+          `❌ ${key} =>`,
+          control.errors,
+          `| Current value: ${control.value}`
+        );
+      }
+    });
+  }
+  extractedBottleCode: string = '';
+  generatebottles(): void {
+    const newAsset = { ...BASE_ASSET };
 
-  console.warn('⚠️ Form is invalid. Details:');
-  Object.keys(this.inventoryForm.controls).forEach(key => {
-    const control = this.inventoryForm.get(key);
-    if (control && control.invalid) {
-      console.warn(
-        `❌ ${key} =>`,
-        control.errors,
-        `| Current value: ${control.value}`
-      );
+    console.log(this.extractedBottleCode);
+
+    newAsset.Bottle_Code = this.extractedBottleCode;
+    newAsset.Content_Code = this.producerCode;
+    newAsset.Content_Price = this.inventoryForm.value.content_price_per_ml;
+    newAsset.Bottle_Price = this.inventoryForm.value.bottle_price;
+    newAsset.Redeem_Good = this.inventoryForm.value.redeem_value_good;
+    newAsset.Redeem_Damaged = this.inventoryForm.value.redeem_value_damaged;
+    newAsset.Discount_RefillB = this.inventoryForm.value.consumer_discount_percent;
+    newAsset.Env_Tax_Customer = 5;
+    newAsset.Env_Tax_Producer = 3;
+    newAsset.Env_Tax_Retailer = 2;
+    newAsset.Discard_fine = 20;
+    newAsset.Current_SelfRefill_Count = 0;
+    if (this.selectedBottleType === 'BRFB' || this.selectedBottleType === 'URFB') {
+      newAsset.Current_PlantRefill_Count = 1;
+    } else {
+      newAsset.Current_PlantRefill_Count = 0;
     }
-  });
-}
+    newAsset.Latest_Refill_Date = '';
+
+    console.log(newAsset)
+
+
+    const newAssetId = `SB_${newAsset.Bottle_Code.split(".")[0]}id${newAsset.Bottle_Code.split(".")[1]}_${(this.currentlySelectedBrandBottles.length+1).toString().padStart(5, '0')}`;
+
+    console.log('Generating new asset with ID:', newAssetId, newAsset);
+  
+    const payload = { id: newAssetId, ...newAsset };
+    const bottlesToProduce = this.inventoryForm.value.bottles_to_produce;
+    console.log('Generating bottles:', bottlesToProduce, 'Starting serial:');
+  }
+
+
 
 }
