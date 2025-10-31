@@ -283,7 +283,7 @@ class BottleInventory(models.Model):
 
     class Meta:
         db_table = "bottle_inventory"
-        unique_together = ("producer_code", "bottle_type", "Bottle_CityId")
+        unique_together = ("producer_code", "bottle_type", "Bottle_CityId", "cycle_number")
     # Identification Fields
     producer_code = models.CharField(max_length=255, db_index=True, blank=False)
     bottle_type = models.CharField(max_length=4, choices=BOTTLE_TYPES)
@@ -293,6 +293,7 @@ class BottleInventory(models.Model):
     current_total_stock = models.PositiveIntegerField(default=0)
     bottles_sold_to_supermarket_prev_cycle = models.PositiveIntegerField(default=0)
     bottles_bought_by_consumers = models.PositiveIntegerField(default=0)
+    stock_updated_day = models.CharField(max_length=11, blank=True, default=0)
 
     # Return Information
     bottles_returned_good = models.PositiveIntegerField(default=0)

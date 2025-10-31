@@ -159,18 +159,40 @@ from django.db import transaction
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.db import transaction
+from django.utils import timezone
+from collections import Counter
+from .models import Asset, BottleInventory, City
+
+
 @receiver(post_save, sender=Asset)
-def create_or_update_bottle_inventory(sender, instance, created, **kwargs):
+def create_initial_bottle_inventory(sender, instance, created, **kwargs):
+    """
+    Triggered only once when all initial assets for a city are populated.
+    Populates BottleInventory entries only the first time.
+    """
     if not created:
-        return  # only on creation
+        return  # Only act when an Asset is newly created
 
-    with transaction.atomic():  # ✅ prevent race conditions & deadlocks
-        # filter all assets for this city
-        assets_qs = Asset.objects.filter(Asset_CityId=instance.Asset_CityId)
-        if assets_qs.count() < 90:
-            return  # wait until all 90 records for this city are inserted
+    with transaction.atomic():
+        city_id = instance.Asset_CityId_id
 
-        # --- Step 1: Categorize all assets ---
+        # ✅ Check if inventory already exists for this city
+        if BottleInventory.objects.filter(Bottle_CityId_id=city_id).exists():
+            # Already populated before → do nothing
+            return
+
+        # ✅ Get all assets for that city
+        assets_qs = Asset.objects.filter(Asset_CityId=city_id)
+        total_assets = assets_qs.count()
+
+        # Wait until full set of assets (e.g. 90) are inserted
+        if total_assets < 90:
+            return  # wait until all assets for this city are ready
+
+        # --- Step 1: Categorize by bottle_type + producer_code ---
         category_counts = Counter()
         sample_asset_for_category = {}
 
@@ -179,27 +201,22 @@ def create_or_update_bottle_inventory(sender, instance, created, **kwargs):
             if not bottle_type:
                 continue
 
-            # ✅ Extract safe producer code (always non-null)
+            # Extract producer code safely
             producer_code = None
             if asset.Content_Code:
                 parts = asset.Content_Code.split(".")
-                if len(parts) > 1:
-                    producer_code = parts[1]
-                else:
-                    producer_code = None  # fallback
+                producer_code = parts[1] if len(parts) > 1 else None
             if bottle_type in ["UVB", "URCB", "URFB"]:
-                 producer_code = "Universal"
+                producer_code = "Universal"
+
             key = (bottle_type, producer_code)
             category_counts[key] += 1
+            sample_asset_for_category.setdefault(key, asset)
 
-            if key not in sample_asset_for_category:
-                sample_asset_for_category[key] = asset
-
-        # --- Step 2: Update or create BottleInventory ---
+        # --- Step 2: Create BottleInventory entries ---
         for (bottle_type, producer_code), count in category_counts.items():
             asset = sample_asset_for_category[(bottle_type, producer_code)]
 
-            # Extract values for pricing
             bottle_price = float(asset.Bottle_Price or 0)
             content_price = float(asset.Content_Price or 0)
             env_tax = float(asset.Env_Tax_Customer or 0)
@@ -214,32 +231,33 @@ def create_or_update_bottle_inventory(sender, instance, created, **kwargs):
 
             total_mrp = bottle_price + content_price + env_tax
 
-            # ✅ Safe update_or_create with producer_code included
-            BottleInventory.objects.update_or_create(
+            # ✅ Create only once
+            BottleInventory.objects.create(
                 producer_code=producer_code,
                 bottle_type=bottle_type,
                 Bottle_CityId_id=asset.Asset_CityId_id,
-                defaults={
-                    "cycle_number": 0,
-                    "current_total_stock": 0,
-                    "bottles_sold_to_supermarket_prev_cycle": count,
-                    "bottles_bought_by_consumers": 0,
-                    "bottles_returned_good": 0,
-                    "bottles_returned_damaged": 0,
-                    "manufacturing_day": asset.DOM,
-                    "content_price_per_ml": shampoo_price_per_ml,
-                    "bottle_price": bottle_price,
-                    "total_mrp": total_mrp,
-                    "max_refill_count": max_refill,
-                    "redeem_value_good": redeem_good,
-                    "redeem_value_damaged": redeem_damaged,
-                    "supermarket_commission_percent": 0,
-                    "consumer_discount_percent": discount,
-                    "bottles_to_produce": 0,
-                    "bottles_to_sell_to_supermarket": 0,
-                    "last_updated": timezone.now(),
-                },
+                cycle_number=0,
+                current_total_stock=0,
+                bottles_sold_to_supermarket_prev_cycle=count,
+                bottles_bought_by_consumers=0,
+                bottles_returned_good=0,
+                bottles_returned_damaged=0,
+                manufacturing_day=asset.DOM,
+                content_price_per_ml=shampoo_price_per_ml,
+                bottle_price=bottle_price,
+                total_mrp=total_mrp,
+                max_refill_count=max_refill,
+                redeem_value_good=redeem_good,
+                redeem_value_damaged=redeem_damaged,
+                supermarket_commission_percent=0,
+                consumer_discount_percent=discount,
+                bottles_to_produce=0,
+                bottles_to_sell_to_supermarket=0,
+                stock_updated_day="0",
+                last_updated=timezone.now(),
             )
+
+        print(f"✅ BottleInventory created for city {city_id} with {len(category_counts)} entries.")
 
 class CityTimer(threading.Thread):
     def __init__(self, city_id, clocktickrate):
@@ -269,7 +287,7 @@ class CityTimer(threading.Thread):
                 if not self.paused:
                     # Debugging
                     city.CurrentTime += self.intervalcalculation
-
+                                       
                     if city.CurrentTime >= 86400:  # 24 hours
                         city.CurrentTime = 0
                         city.CurrentDay += 1
@@ -299,6 +317,9 @@ class CityTimer(threading.Thread):
 
 
 def start_timer_for_city(city):
+    if city.CityId in timers:
+        print(f"Timer already running for city {city.CityName}")
+        return
     timer = CityTimer(city.CityId, city.Clocktickrate)
     timers[city.CityId] = timer
     timer.start()

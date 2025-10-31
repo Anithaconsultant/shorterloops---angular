@@ -371,9 +371,31 @@ export class LoginserviceService {
         catchError(this.handleError)
       );;
   }
-
-
-    getInventory(producerCode: string, bottleType: string, cityId: number) {
+  // createInventory(data: any): Observable<any> {
+  //   return this.http.post(this.baseurl + 'inventory/', data,
+  //     { headers: this.getAuthHeaders() }).pipe(
+  //       catchError(this.handleError)
+  //     );;
+  // }
+  createInventory(producerCode: string, bottleType: string, cityId: string, data: any) {
+    const payload = {
+      ...data,
+      producer_code: producerCode,
+      bottle_type: bottleType,
+      Bottle_CityId: cityId,
+      day: this.currentuser.currentday.toString()
+    };
+    console.log("Inventory Payload:", payload); // Debugging line
+    return this.http.post(this.baseurl + 'inventory/', payload);
+  }
+ get_last_serial_number(producerCode: string, bottleType: string, cityId: string) {
+    const params = new HttpParams()
+      .set('producer_code', producerCode)
+      .set('bottle_type', bottleType)
+      .set('city_id', cityId.toString());
+    return this.http.get(this.baseurl + 'get_last_serial/', { params });
+  }
+  getInventory(producerCode: string, bottleType: string, cityId: number) {
     const params = new HttpParams()
       .set('producer_code', producerCode)
       .set('bottle_type', bottleType)
@@ -382,14 +404,6 @@ export class LoginserviceService {
     return this.http.get<any>(this.baseurl + 'inventory/', { params });
   }
 
-  updateInventory(producerCode: string, bottleType: string, cityId: string, data: any) {
-    const params = new HttpParams()
-      .set('producer_code', producerCode)
-      .set('bottle_type', bottleType)
-      .set('city_id', cityId.toString());
-
-    return this.http.put(this.baseurl + 'inventory/', data, { params });
-  }
 
 
   gettransactions(): Observable<any> {

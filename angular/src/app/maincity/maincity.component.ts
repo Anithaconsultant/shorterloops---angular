@@ -1126,7 +1126,6 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
               });
 
           }
-          console.log(this.citytiming['CurrentTime']);
         },
         error => {
           console.log(error);
@@ -3445,7 +3444,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     let currentlyDroped = event.item.element.nativeElement.id;
     let currentDropzone = event.container.element.nativeElement.classList;
     let amount_refund = 0.0;
-
+    console.log('Currently Dropped:', currentlyDroped);
+    console.log('Current Dropzone:', currentDropzone);
     // Explicitly update the bottledropped list with the latest data
     if (event.container.element.nativeElement.classList.contains('bottle_list')) {
       this.bottledropped.length = 0;
@@ -3717,6 +3717,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
 
   startreturnanimation(currentlyDropped: string) {
+
+    console.log('Starting return animation for:', currentlyDropped);
     this.getdetailbrandfunction(currentlyDropped);
     const positions: { [key: string]: { left: string; topR: string; topOther: string; speed: number } } = {
       'B1.Shiny': { left: '1913px', topR: '2960px', topOther: '2260px', speed: 500 },
@@ -4524,4 +4526,3 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     this.isMuted = !this.isMuted;
   }
 }
-  

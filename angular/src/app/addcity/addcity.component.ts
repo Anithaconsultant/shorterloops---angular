@@ -60,7 +60,8 @@ export class AddcityComponent implements OnInit {
             'Env_Tax_Producer': '5',
             'Env_Tax_Retailer': '2.5',
             'Discard_fine': '9',
-            'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
+            'Current_SelfRefill_Count': 0,
+            'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
         },
         'SB_B1idV_00002': {
