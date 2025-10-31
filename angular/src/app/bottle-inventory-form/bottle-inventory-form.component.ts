@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoginserviceService } from './../services/loginservice.service';
 import { BASE_ASSET } from '../constants/asset-base';
-import { data } from 'jquery';
+import { AlertModalComponent } from '../alert-modal/alert-modal.component';
+import { data, get } from 'jquery';
 
 @Component({
   selector: 'app-bottle-inventory-form',
@@ -25,34 +26,37 @@ export class BottleInventoryFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private loginService: LoginserviceService,
-    private router: Router,
+    private router: Router
   ) {
     this.createForm();
   }
+  @ViewChild('alertModal') alertModal!: AlertModalComponent;
   citySummary: any = {};
   totalByProducer: any;
   allAssets: any = [];
   producerCode = '';
   selectedBottleType = '';
   cityId = '';
+  currentRole = '';
 
   ngOnInit(): void {
     this.currentUser = this.loginService.currentuser;
     this.cityId = this.loginService.currentuser.CityId;
+    this.currentRole = this.loginService.currentuser.Role;
     console.log(this.producerCode, this.currentUser.Role);
-    if (this.loginService.currentuser.Role.split(' ')[0].includes('B1')) {
+    if (this.currentRole.split(' ')[0].includes('B1')) {
       this.producerCode = "Shiny";
     }
-    else if (this.loginService.currentuser.Role.split(' ')[0].includes('B2')) {
+    else if (this.currentRole.split(' ')[0].includes('B2')) {
       this.producerCode = "Spiky";
     }
-    else if (this.loginService.currentuser.Role.split(' ')[0].includes('B3')) {
+    else if (this.currentRole.split(' ')[0].includes('B3')) {
       this.producerCode = "Bouncy";
     }
-    else if (this.loginService.currentuser.Role.split(' ')[0].includes('B5')) {
+    else if (this.currentRole.split(' ')[0].includes('B5')) {
       this.producerCode = "Silky";
     }
-    else if (this.loginService.currentuser.Role.split(' ')[0].includes('B4')) {
+    else if (this.currentRole.split(' ')[0].includes('B4')) {
       this.producerCode = "Wavy";
     }
     console.log(this.producerCode);
@@ -75,7 +79,7 @@ export class BottleInventoryFormComponent implements OnInit {
   currentCycleNumber: number = 0;
   createForm(): void {
     // console.log(this.currentCycleNumber, ' currentcycle ', Math.floor(this.loginService.currentuser.currentday ));
-    this.currentCycleNumber = Math.floor(this.loginService.currentuser.currentday);
+    this.currentCycleNumber = Math.floor(this.loginService.currentuser.currentday / 90);
 
     this.inventoryForm = this.fb.group({
 
@@ -108,7 +112,6 @@ export class BottleInventoryFormComponent implements OnInit {
   getBottleCodeFromCategory(
     category: string,
     producer: string,
-    plantRefillCount: number
   ): string | null {
     category = category.toLowerCase();
     if (category === "bvb") {
@@ -116,21 +119,14 @@ export class BottleInventoryFormComponent implements OnInit {
     } else if (category === "uvb") {
       return "UB.V";
     } else if (category === "brcb" || category === "brfb") {
-      console.log('brcb');
-      if ((category === "brfb" && plantRefillCount > 0) ||
-        (category === "brcb" && plantRefillCount === 0)) {
-        console.log(`${producer}.R`);
-        return `${producer}.R`;
-      } else {
-        return null;
-      }
+
+      console.log(`${producer}.R`);
+      return `${producer}.R`;
+
     } else if (category === "urcb" || category === "urfb") {
-      if ((category === "urfb" && plantRefillCount > 0) ||
-        (category === "urcb" && plantRefillCount === 0)) {
-        return "UB.R";
-      } else {
-        return null;
-      }
+
+      return "UB.R";
+
     } else {
       return null;
     }
@@ -148,30 +144,30 @@ export class BottleInventoryFormComponent implements OnInit {
 
 
     for (let r = 0; r < this.allAssets.length; r++) {
-      console.log('curent count'+this.allAssets[r]['Current_PlantRefill_Count'],value,this.loginService.currentuser.Role.split(' ')[0])
-      let getBottleCode = this.getBottleCodeFromCategory(value, this.loginService.currentuser.Role.split(' ')[0], this.allAssets[r]['Current_PlantRefill_Count'])
-      console.log('getBottleCode'+ getBottleCode);
-      if (this.allAssets[r]['Bottle_Code'] === getBottleCode) {
+      let getBottleCode = this.getBottleCodeFromCategory(value, this.loginService.currentuser.Role.split(' ')[0])
+      if (this.allAssets[r]['Bottle_Code'] === getBottleCode && getBottleCode !== null) {
         this.currentlySelectedBrandBottles.push(this.allAssets[r]);
       }
-
+      else if (getBottleCode === null) {
+        break;
+      }
     }
     this.available_Bottles_In_City = this.currentlySelectedBrandBottles.length;
-    console.log('length'+this.currentlySelectedBrandBottles.length);
-    for (let y = 0; y < this.currentlySelectedBrandBottles.length; y++) {
-      console.log(this.currentlySelectedBrandBottles[y]['Transaction_Id'].split('_')[1], Math.floor(this.currentlySelectedBrandBottles[y]['Transaction_Id'].split('_')[1] / 90) == this.currentCycleNumber)
-      if (this.currentlySelectedBrandBottles[y]['purchased'] == 1 && Math.floor(this.currentlySelectedBrandBottles[y]['Transaction_Id'].split('_')[1] / 90) == this.currentCycleNumber) {
-        this.customerpurchased++;
+    if (this.currentlySelectedBrandBottles.length > 0) {
+      for (let y = 0; y < this.currentlySelectedBrandBottles.length; y++) {
+        if (this.currentlySelectedBrandBottles[y]['purchased'] == 1 && Math.floor(this.currentlySelectedBrandBottles[y]['Transaction_Id'].split('_')[1] / 90) == this.currentCycleNumber) {
+          this.customerpurchased++;
 
-        if (this.currentlySelectedBrandBottles[y]['Bottle_Status'] == "Empty-Dirty" && this.currentlySelectedBrandBottles[y]['Bottle_loc'] == "Return Conveyor" || this.currentlySelectedBrandBottles[y]['Bottle_loc'] == "Reverse Vending Machine") {
-          this.returnedGood++;
+          if (this.currentlySelectedBrandBottles[y]['Bottle_Status'] == "Empty-Dirty" && this.currentlySelectedBrandBottles[y]['Bottle_loc'] == "Return Conveyor" || this.currentlySelectedBrandBottles[y]['Bottle_loc'] == "Reverse Vending Machine") {
+            this.returnedGood++;
+          }
+
+          if (this.currentlySelectedBrandBottles[y]['Bottle_Status'] == "Damaged-Empty" && this.currentlySelectedBrandBottles[y]['Bottle_loc'] == "Return Conveyor" || this.currentlySelectedBrandBottles[y]['Bottle_loc'] == "Reverse Vending Machine") {
+            this.returnedDamaged++;
+          }
         }
 
-        if (this.currentlySelectedBrandBottles[y]['Bottle_Status'] == "Damaged-Empty" && this.currentlySelectedBrandBottles[y]['Bottle_loc'] == "Return Conveyor" || this.currentlySelectedBrandBottles[y]['Bottle_loc'] == "Reverse Vending Machine") {
-          this.returnedDamaged++;
-        }
       }
-
     }
 
     this.inventoryForm.patchValue({
@@ -200,9 +196,22 @@ export class BottleInventoryFormComponent implements OnInit {
       next: (response) => {
         console.log('✅ Inventory created successfully', response);
         this.selectedBottleType = this.inventoryForm.value.bottle_type;
-        this.extractedBottleCode = this.getBottleCodeFromCategory(this.selectedBottleType, this.loginService.currentuser.Role.split(' ')[0], 0) || '';
-        this.generatebottles();
-        // Fetch the last serial after creation
+        this.extractedBottleCode = this.getBottleCodeFromCategory(this.selectedBottleType, this.loginService.currentuser.Role.split(' ')[0]) || '';
+        this.alertModal.openModal('Order Placed Successfully!');
+        for (let i = 0; i < this.inventoryForm.value.bottles_to_produce; i++) {
+          console.log(i, this.inventoryForm.value.bottles_to_produce, this.inventoryForm.value.bottles_to_sell_to_supermarket);
+          if (i < (this.inventoryForm.value.bottles_to_sell_to_supermarket - 1)) {
+            this.generatebottles('Supermarket', i + 1);
+          }
+          else {
+            this.generatebottles(this.producerCode + "_Plant", i + 1);
+          }
+          // Fetch the last serial after creation
+        }
+
+        setTimeout(() => {
+          this.resetFormToDefaults();
+        }, 1000);
 
       },
 
@@ -242,6 +251,42 @@ export class BottleInventoryFormComponent implements OnInit {
     });
   }
 
+resetFormToDefaults(): void {
+  this.currentCycleNumber = Math.floor(this.loginService.currentuser.currentday / 90);
+
+  this.inventoryForm.reset({
+    bottle_type: '',
+    cycle_number: this.currentCycleNumber + 1,
+    previous_cycle_number: this.currentCycleNumber,
+    current_total_stock: 0,
+    bottles_sold_to_supermarket_prev_cycle: 0,
+    bottles_bought_by_consumers: 0,
+    bottles_returned_good: 0,
+    bottles_returned_damaged: 0,
+    manufacturing_day: this.loginService.currentuser.currentday,
+    content_price_per_ml: null,
+    bottle_price: null,
+    total_mrp: null,
+    max_refill_count: 10,
+    redeem_value_good: null,
+    redeem_value_damaged: null,
+    supermarket_commission_percent: null,
+    consumer_discount_percent: null,
+    bottles_to_produce: 0,
+    bottles_to_sell_to_supermarket: 0,
+    Bottle_CityId: this.cityId,
+    producer: this.currentUser.username
+  });
+
+  this.selectedBottleType = '';
+  this.customerpurchased = 0;
+  this.returnedGood = 0;
+  this.returnedDamaged = 0;
+  this.currentlySelectedBrandBottles = [];
+  this.available_Bottles_In_City = '';
+
+  console.log('✅ Form has been reset to default values');
+}
 
   hasError(controlName: string, errorCode: string): boolean {
     const control = this.inventoryForm.get(controlName);
@@ -268,13 +313,14 @@ export class BottleInventoryFormComponent implements OnInit {
     });
   }
   extractedBottleCode: string = '';
-  generatebottles(): void {
+  generatebottles(bottleloc: string, i: number): void {
     const newAsset = { ...BASE_ASSET };
 
     console.log(this.extractedBottleCode);
 
     newAsset.Bottle_Code = this.extractedBottleCode;
-    newAsset.Content_Code = this.producerCode;
+    newAsset.Content_Code = this.extractedBottleCode.split(".")[0] + '.' + this.producerCode;
+    newAsset.Current_Content_Code = this.extractedBottleCode.split(".")[0] + '.' + this.producerCode;
     newAsset.Content_Price = this.inventoryForm.value.content_price_per_ml;
     newAsset.Bottle_Price = this.inventoryForm.value.bottle_price;
     newAsset.Redeem_Good = this.inventoryForm.value.redeem_value_good;
@@ -285,23 +331,33 @@ export class BottleInventoryFormComponent implements OnInit {
     newAsset.Env_Tax_Retailer = 2;
     newAsset.Discard_fine = 20;
     newAsset.Current_SelfRefill_Count = 0;
+    newAsset.CategoryCode = 'SB';
+    newAsset.Asset_CityId = this.cityId;
+
+    newAsset.Bottle_loc = bottleloc;
     if (this.selectedBottleType === 'BRFB' || this.selectedBottleType === 'URFB') {
       newAsset.Current_PlantRefill_Count = 1;
     } else {
       newAsset.Current_PlantRefill_Count = 0;
     }
+
     newAsset.Latest_Refill_Date = '';
-
-    console.log(newAsset)
-
-
-    const newAssetId = `SB_${newAsset.Bottle_Code.split(".")[0]}id${newAsset.Bottle_Code.split(".")[1]}_${(this.currentlySelectedBrandBottles.length+1).toString().padStart(5, '0')}`;
-
+    let newId = this.available_Bottles_In_City + i;
+    const newAssetId = `${this.cityId}_SB_${newAsset.Bottle_Code.split(".")[0]}id${newAsset.Bottle_Code.split(".")[1]}_${(newId).toString().padStart(5, '0')}`;
+    newAsset.AssetId = newAssetId;
     console.log('Generating new asset with ID:', newAssetId, newAsset);
-  
-    const payload = { id: newAssetId, ...newAsset };
-    const bottlesToProduce = this.inventoryForm.value.bottles_to_produce;
-    console.log('Generating bottles:', bottlesToProduce, 'Starting serial:');
+
+    const payload = { ...newAsset };
+    this.loginService.createAsset(payload).subscribe({
+      next: (response) => {
+        console.log('✅ Asset created successfully', response);
+        // Update local list
+
+      },
+      error: (error) => {
+        console.error('❌ Error creating asset:', error);
+      }
+    });
   }
 
 

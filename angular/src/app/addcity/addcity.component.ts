@@ -64,7 +64,7 @@ export class AddcityComponent implements OnInit {
             'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
         },
-        '   ': {
+        'SB_B1idV_00002': {
             'Bottle_Code': 'B1.V',
             'Content_Code': 'B1.Shiny',
             'Content_Price': '300',
@@ -76,8 +76,7 @@ export class AddcityComponent implements OnInit {
             'Env_Tax_Producer': '5',
             'Env_Tax_Retailer': '2.5',
             'Discard_fine': '9',
-            'Current_SelfRefill_Count': 0,
-            'Current_PlantRefill_Count': 0,
+            'Current_SelfRefill_Count': 0, 'Current_PlantRefill_Count': 0,
             'Latest_Refill_Date': ''
         },
         'SB_B1idV_00003': {
@@ -1524,11 +1523,11 @@ export class AddcityComponent implements OnInit {
                 let totalAssets = Object.keys(this.assetData).length;
                 let zeroRefillCount = Math.floor(totalAssets * 0.2); // 20% of records
                 let selectedZeroRefillIndices = new Set();
-
+                
                 // Filter assets where Current_PlantRefill_Count is 0
                 let eligibleAssets = Object.keys(this.assetData).filter(assetId => this.assetData[assetId].Current_PlantRefill_Count === 0);
                 let maxZeroRefill = Math.min(zeroRefillCount, eligibleAssets.length); // Ensure we don't exceed available assets
-
+                
                 // Randomly select assets from the eligible set
                 while (selectedZeroRefillIndices.size < maxZeroRefill) {
                     let randomIndex = Math.floor(Math.random() * eligibleAssets.length);

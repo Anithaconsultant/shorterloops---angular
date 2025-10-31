@@ -57,11 +57,11 @@ export class HamburgerMenuComponent implements OnInit {
   }
 
 
-  rolesConfig:any = {
+  rolesConfig: any = {
     Mayor: [
       { label: 'Switch Role as Customer', action: () => this.onMenuItemClick() },
-      { label: 'Check the Office Cashbox Status', action: (cashBox:any) => { this.calculateSums(); this.openCashbox(cashBox); } },
-      { label: 'Check Ledger book', action: (legderBook:any) => { this.calculateSums(); this.openCashboxLedger(legderBook); } },
+      { label: 'Check the Office Cashbox Status', action: (cashBox: any) => { this.calculateSums(); this.openCashbox(cashBox); } },
+      { label: 'Check Ledger book', action: (legderBook: any) => { this.calculateSums(); this.openCashboxLedger(legderBook); } },
       { label: 'Run the garbage truck daily', action: null, disabled: true },
       { label: 'Update Environment Taxes', action: () => this.showCityRuleComponent('cityrule') },
       { label: 'Update Notices and Announcements', action: () => this.showCityRuleComponent('notification') },
@@ -75,80 +75,81 @@ export class HamburgerMenuComponent implements OnInit {
 
     'Supermarket Owner': [
       { label: 'Switch Role as Customer', action: () => this.onMenuItemClick() },
-      { label: 'Check Cashbox Status', action: (cashBox:any) => { this.calculatesupermarketSums(); this.openCashbox(cashBox); } },
-      { label: 'Check Ledger book', action: (legderBook:any) => { this.calculatesupermarketSums(); this.openCashboxLedger(legderBook); } },
+      { label: 'Check Cashbox Status', action: (cashBox: any) => { this.calculatesupermarketSums(); this.openCashbox(cashBox); } },
+      { label: 'Check Ledger book', action: (legderBook: any) => { this.calculatesupermarketSums(); this.openCashboxLedger(legderBook); } },
       { label: 'Bring Back Refilled Bottles', action: () => this.loadPlantBottles() },
+      { label: 'Order Shampoo', action: () => this.placeOrder() },
       { label: 'Run the Bottle Collection Truck', action: () => this.rungarbagetruck() },
     ],
 
     'Bottle Reverse Vending Machine Owner': [
       { label: 'Switch Role as Customer', action: () => this.onMenuItemClick() },
-      { label: 'Check Cashbox Status', action: (cashBox:any) => { this.calculatereverseSums(); this.openCashbox(cashBox); } },
-      { label: 'Check Ledger book', action: (legderBook:any) => { this.calculatereverseSums(); this.openCashboxLedger(legderBook); } },
+      { label: 'Check Cashbox Status', action: (cashBox: any) => { this.calculatereverseSums(); this.openCashbox(cashBox); } },
+      { label: 'Check Ledger book', action: (legderBook: any) => { this.calculatereverseSums(); this.openCashboxLedger(legderBook); } },
     ],
 
     'Shampoo Refilling Station Owner': [
       { label: 'Switch Role as Customer', action: () => this.onMenuItemClick() },
-      { label: 'Check Cashbox Status', action: (cashBox:any) => { this.calculaterefillSums(); this.openCashbox(cashBox); } },
-      { label: 'Check Ledger book', action: (legderBook:any) => { this.calculaterefillSums(); this.openCashboxLedger(legderBook); } },
+      { label: 'Check Cashbox Status', action: (cashBox: any) => { this.calculaterefillSums(); this.openCashbox(cashBox); } },
+      { label: 'Check Ledger book', action: (legderBook: any) => { this.calculaterefillSums(); this.openCashboxLedger(legderBook); } },
     ],
 
     'Universal Bottle Manufacturing Plant owner': [
       { label: 'Switch Role as Customer', action: () => this.onMenuItemClick() },
-      { label: 'Check Cashbox Status', action: (cashBox:any) => { this.calculateUniversalManufacturingSums(); this.openCashbox(cashBox); } },
+      { label: 'Check Cashbox Status', action: (cashBox: any) => { this.calculateUniversalManufacturingSums(); this.openCashbox(cashBox); } },
       { label: 'Check Ledger book', action: null, disabled: true },
     ],
 
     'Plastic Recycling Plant Owner': [
       { label: 'Switch Role as Customer', action: () => this.onMenuItemClick() },
-      { label: 'Check Cashbox Status', action: (cashBox:any) => { this.calPlasticRecyclingSums(); this.openCashbox(cashBox); } },
+      { label: 'Check Cashbox Status', action: (cashBox: any) => { this.calPlasticRecyclingSums(); this.openCashbox(cashBox); } },
       { label: 'Check Ledger book', action: null, disabled: true },
     ],
 
     'Universal Bottle Cleaning Plant Owner': [
       { label: 'Switch Role as Customer', action: () => this.onMenuItemClick() },
-      { label: 'Check Cashbox Status', action: (cashBox:any) => { this.calUBCPSum(); this.openCashbox(cashBox); } },
+      { label: 'Check Cashbox Status', action: (cashBox: any) => { this.calUBCPSum(); this.openCashbox(cashBox); } },
       { label: 'Check Ledger book', action: null, disabled: true },
     ],
 
     'B1 Shampoo Producer': [
       { label: 'Switch Role as Customer', action: () => this.onMenuItemClick() },
-      { label: 'Check Cashbox Status', action: (cashBox:any) => { this.calB1shampoo(); this.openCashbox(cashBox); } },
+      { label: 'Check Cashbox Status', action: (cashBox: any) => { this.calB1shampoo(); this.openCashbox(cashBox); } },
       { label: 'Produce Shampoo', action: () => this.placeOrder() },
       { label: 'Check Ledger book', action: null, disabled: true },
     ],
 
     'B2 Shampoo Producer': [
       { label: 'Switch Role as Customer', action: () => this.onMenuItemClick() },
-      { label: 'Check Cashbox Status', action: (cashBox:any) => { this.calB2shampoo(); this.openCashbox(cashBox); } },
+      { label: 'Check Cashbox Status', action: (cashBox: any) => { this.calB2shampoo(); this.openCashbox(cashBox); } },
       { label: 'Produce Shampoo', action: () => this.placeOrder() },
       { label: 'Check Ledger book', action: null, disabled: true },
     ],
 
     'B3 Shampoo Producer': [
       { label: 'Switch Role as Customer', action: () => this.onMenuItemClick() },
-      { label: 'Check Cashbox Status', action: (cashBox:any) => { this.calB3shampoo(); this.openCashbox(cashBox); } },
+      { label: 'Check Cashbox Status', action: (cashBox: any) => { this.calB3shampoo(); this.openCashbox(cashBox); } },
       { label: 'Produce Shampoo', action: () => this.placeOrder() },
       { label: 'Check Ledger book', action: null, disabled: true },
     ],
 
     'B4 Shampoo Producer': [
       { label: 'Switch Role as Customer', action: () => this.onMenuItemClick() },
-      { label: 'Check Cashbox Status', action: (cashBox:any) => { this.calB4shampoo(); this.openCashbox(cashBox); } },
+      { label: 'Check Cashbox Status', action: (cashBox: any) => { this.calB4shampoo(); this.openCashbox(cashBox); } },
       { label: 'Produce Shampoo', action: () => this.placeOrder() },
       { label: 'Check Ledger book', action: null, disabled: true },
     ],
 
     'B5 Shampoo Producer': [
       { label: 'Switch Role as Customer', action: () => this.onMenuItemClick() },
-      { label: 'Check Cashbox Status', action: (cashBox:any) => { this.calB5shampoo(); this.openCashbox(cashBox); } },
+      { label: 'Check Cashbox Status', action: (cashBox: any) => { this.calB5shampoo(); this.openCashbox(cashBox); } },
       { label: 'Produce Shampoo', action: () => this.placeOrder() },
       { label: 'Check Ledger book', action: null, disabled: true },
     ],
   };
 
   // extra global menu items
-  extraMenu: MenuItem[]  = [
+  extraMenu: MenuItem[] = [
     { label: 'View The Environment Tax Regimes', action: () => this.showCityRuleview('displayrule') },
   ];
 

@@ -1,4 +1,5 @@
 <div class="form-container">
+  <app-alert-modal #alertModal></app-alert-modal>
   <form [formGroup]="inventoryForm" (ngSubmit)="onSubmit()" class="inventory-form">
     <div class="form-header">
       <h2>Bottle Inventory Management</h2>
@@ -85,17 +86,17 @@
         </mat-form-field>
         <mat-form-field appearance="outline" class="form-field">
           <mat-label>Content Price (per ml)</mat-label>
-          <input matInput type="number" step="0.01" formControlName="content_price_per_ml" />
+          <input matInput type="number" step="0.01" formControlName="content_price_per_ml" [readonly]="currentRole==='Supermarket Owner'"/>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="form-field">
           <mat-label>Bottle Price</mat-label>
-          <input matInput type="number" step="0.01" formControlName="bottle_price" />
+          <input matInput type="number" step="0.01" formControlName="bottle_price" [readonly]="currentRole==='Supermarket Owner'"/>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="form-field">
           <mat-label>Total MRP</mat-label>
-          <input matInput type="number" step="0.01" formControlName="total_mrp" />
+          <input matInput type="number" step="0.01" formControlName="total_mrp" [readonly]="currentRole==='Supermarket Owner'"/>
         </mat-form-field>
       </div>
     </div>
@@ -105,17 +106,17 @@
       <div class="form-grid">
         <mat-form-field appearance="outline" class="form-field">
           <mat-label>Max Refill Count</mat-label>
-          <input matInput type="number" formControlName="max_refill_count" required />
+          <input matInput type="number" formControlName="max_refill_count" required [readonly]="currentRole==='Supermarket Owner'"/>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="form-field">
           <mat-label>Redeem Value (Good Condition)</mat-label>
-          <input matInput type="number" step="0.01" formControlName="redeem_value_good" />
+          <input matInput type="number" step="0.01" formControlName="redeem_value_good" [readonly]="currentRole==='Supermarket Owner'"/>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="form-field">
           <mat-label>Redeem Value (Damaged)</mat-label>
-          <input matInput type="number" step="0.01" formControlName="redeem_value_damaged" />
+          <input matInput type="number" step="0.01" formControlName="redeem_value_damaged" [readonly]="currentRole==='Supermarket Owner'"/>
         </mat-form-field>
       </div>
     </div>
@@ -125,7 +126,7 @@
       <div class="form-grid">
         <mat-form-field appearance="outline" class="form-field">
           <mat-label>Supermarket Commission (%)</mat-label>
-          <input matInput type="number" step="0.01" formControlName="supermarket_commission_percent" />
+          <input matInput type="number" step="0.01" formControlName="supermarket_commission_percent" [readonly]="currentRole==='Supermarket Owner'"/>
 
           <mat-error *ngIf="hasError('supermarket_commission_percent', 'required')">
             supermarket_commission_percent is required
@@ -134,7 +135,7 @@
 
         <mat-form-field appearance="outline" class="form-field">
           <mat-label>Consumer Discount (%)</mat-label>
-          <input matInput type="number" step="0.01" formControlName="consumer_discount_percent" />
+          <input matInput type="number" step="0.01" formControlName="consumer_discount_percent" [readonly]="currentRole==='Supermarket Owner'"/>
         </mat-form-field>
       </div>
     </div>
@@ -144,12 +145,12 @@
       <div class="form-grid">
         <mat-form-field appearance="outline" class="form-field">
           <mat-label>Bottles to Produce (Day N*30+1)</mat-label>
-          <input matInput type="number" formControlName="bottles_to_produce" required />
+          <input matInput type="number" formControlName="bottles_to_produce" required [readonly]="currentRole==='Supermarket Owner'"/>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="form-field">
           <mat-label>Bottles to Sell to Supermarket (Day N*30+2)</mat-label>
-          <input matInput type="number" formControlName="bottles_to_sell_to_supermarket" required />
+          <input matInput type="number" formControlName="bottles_to_sell_to_supermarket" required [readonly]="currentRole!=='Supermarket Owner'"/>
         </mat-form-field>
       </div>
     </div>
