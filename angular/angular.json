@@ -20,7 +20,7 @@
             "outputPath": "dist/shorterloops",
             "index": "src/index.html",
             "main": "src/main.ts",
-            "allowedCommonJsDependencies": ["panzoom", "jquery"],
+            "allowedCommonJsDependencies": ["panzoom", "jquery","file-saver"],
             "polyfills": [
               "zone.js"
             ],
