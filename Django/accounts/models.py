@@ -84,6 +84,7 @@ class City(models.Model):
     garbage_truck_announcement = models.BooleanField(
         null=True, blank=True, default=False)
     timer_paused = models.BooleanField(null=True, blank=True, default=False)
+    initial_inventory_created = models.BooleanField(default=False)
     cityrul_notification = models.CharField(
         null=True, default='0', max_length=70)
 
@@ -105,17 +106,17 @@ class Asset(models.Model):
     class Meta:
         db_table = "Asset"
     AssetDbId = models.AutoField(primary_key=True)
-    AssetId = models.CharField(max_length=1000, blank=True)
+    AssetId = models.CharField(max_length=100,unique=True)
     Asset_CityId = models.ForeignKey("city", on_delete=models.CASCADE)
-    CategoryCode = models.CharField(max_length=1000, blank=True)
-    Bottle_Code = models.CharField(max_length=1000, blank=True)
-    Content_Code = models.CharField(max_length=1000, blank=True)
-    Current_Content_Code = models.CharField(max_length=1000, blank=True)
+    CategoryCode = models.CharField(max_length=100, blank=True)
+    Bottle_Code = models.CharField(max_length=100, blank=True)
+    Content_Code = models.CharField(max_length=100, blank=True)
+    Current_Content_Code = models.CharField(max_length=100, blank=True)
     Quantity = models.CharField(max_length=70, blank=True)
     remQuantity = models.CharField(max_length=70, blank=True)
     Units = models.CharField(max_length=70, blank=True)
-    Bottle_loc = models.CharField(max_length=1000, blank=True)
-    Bottle_Status = models.CharField(max_length=1000, blank=True)
+    Bottle_loc = models.CharField(max_length=100, blank=True)
+    Bottle_Status = models.CharField(max_length=100, blank=True)
     DOM = models.CharField(max_length=70, blank=True)
     Max_Refill_Count = models.IntegerField(default=5, blank=True)
     Current_PlantRefill_Count = models.IntegerField(default=0, blank=True)

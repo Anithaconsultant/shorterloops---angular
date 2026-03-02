@@ -137,20 +137,6 @@ timers = {}
 User = get_user_model()
 
 
-def get_bottle_type(asset: Asset):
-    """Classify Asset into BottleInventory type."""
-    print(asset.Bottle_Code, asset.Current_PlantRefill_Count)
-    if asset.Bottle_Code in ["B1.V", "B5.V"]:
-        return "BVB"
-    elif asset.Bottle_Code == "B2.R":
-        return "BRFB" if asset.Current_PlantRefill_Count > 0 else "BRCB"
-    elif asset.Bottle_Code == "B3.R":
-        return "BRFB" if asset.Current_PlantRefill_Count > 0 else "BRCB"
-    elif asset.Bottle_Code == "UB.V":
-        return "UVB"
-    elif asset.Bottle_Code == "UB.R":
-        return "URFB" if asset.Current_PlantRefill_Count > 0 else "URCB"
-    return None
 
 
 from collections import Counter
@@ -166,98 +152,105 @@ from django.utils import timezone
 from collections import Counter
 from .models import Asset, BottleInventory, City
 
+#@receiver(post_save, sender=Asset)
+# def create_initial_bottle_inventory(sender, instance, created, **kwargs):
+#     """
+#     Create BottleInventory ONCE per city when initial asset batch is ready.
+#     SAFE against duplicate signals and race conditions.
+#     """
+#     if not created:
+#         return
 
-@receiver(post_save, sender=Asset)
-def create_initial_bottle_inventory(sender, instance, created, **kwargs):
-    """
-    Triggered only once when all initial assets for a city are populated.
-    Populates BottleInventory entries only the first time.
-    """
-    if not created:
-        return  # Only act when an Asset is newly created
+#     city_id = instance.Asset_CityId_id
 
-    with transaction.atomic():
-        city_id = instance.Asset_CityId_id
+#     with transaction.atomic():
 
-        # ✅ Check if inventory already exists for this city
-        if BottleInventory.objects.filter(Bottle_CityId_id=city_id).exists():
-            # Already populated before → do nothing
-            return
+#         # 🔒 Lock inventory table rows for this city
+#         existing_inventory = (
+#             BottleInventory.objects
+#             .select_for_update()
+#             .filter(Bottle_CityId_id=city_id)
+#         )
 
-        # ✅ Get all assets for that city
-        assets_qs = Asset.objects.filter(Asset_CityId=city_id)
-        total_assets = assets_qs.count()
+#         if existing_inventory.exists():
+#             return  # already created safely
 
-        # Wait until full set of assets (e.g. 90) are inserted
-        if total_assets < 90:
-            return  # wait until all assets for this city are ready
+#         assets_qs = Asset.objects.filter(Asset_CityId=city_id)
+#         total_assets = assets_qs.count()
 
-        # --- Step 1: Categorize by bottle_type + producer_code ---
-        category_counts = Counter()
-        sample_asset_for_category = {}
+#         # ⚠️ adjust if your expected asset count changes
+#         if total_assets < 90:
+#             return
 
-        for asset in assets_qs:
-            bottle_type = get_bottle_type(asset)
-            if not bottle_type:
-                continue
+#         from collections import Counter
+#         category_counts = Counter()
+#         sample_asset_for_category = {}
 
-            # Extract producer code safely
-            producer_code = None
-            if asset.Content_Code:
-                parts = asset.Content_Code.split(".")
-                producer_code = parts[1] if len(parts) > 1 else None
-            if bottle_type in ["UVB", "URCB", "URFB"]:
-                producer_code = "Universal"
+#         for asset in assets_qs:
+#             bottle_type = get_bottle_type(asset)
+#             if not bottle_type:
+#                 continue
 
-            key = (bottle_type, producer_code)
-            category_counts[key] += 1
-            sample_asset_for_category.setdefault(key, asset)
+#             producer_code = None
+#             if asset.Content_Code:
+#                 parts = asset.Content_Code.split(".")
+#                 producer_code = parts[1] if len(parts) > 1 else None
 
-        # --- Step 2: Create BottleInventory entries ---
-        for (bottle_type, producer_code), count in category_counts.items():
-            asset = sample_asset_for_category[(bottle_type, producer_code)]
+#             if bottle_type in ["UVB", "URCB", "URFB"]:
+#                 producer_code = "Universal"
 
-            bottle_price = float(asset.Bottle_Price or 0)
-            content_price = float(asset.Content_Price or 0)
-            env_tax = float(asset.Env_Tax_Customer or 0)
-            max_refill = int(asset.Max_Refill_Count or 0)
-            redeem_good = float(asset.Redeem_Good or 0)
-            redeem_damaged = float(asset.Redeem_Damaged or 0)
-            discount = float(asset.Discount_RefillB or 0)
+#             key = (bottle_type, producer_code)
+#             category_counts[key] += 1
+#             sample_asset_for_category.setdefault(key, asset)
 
-            shampoo_price_per_ml = 0.0
-            if asset.Quantity:
-                shampoo_price_per_ml = content_price / float(asset.Quantity)
+#         # ✅ SAFE creation
+#         for (bottle_type, producer_code), count in category_counts.items():
+#             asset = sample_asset_for_category[(bottle_type, producer_code)]
 
-            total_mrp = bottle_price + content_price + env_tax
+#             bottle_price = float(asset.Bottle_Price or 0)
+#             content_price = float(asset.Content_Price or 0)
+#             env_tax = float(asset.Env_Tax_Customer or 0)
+#             max_refill = int(asset.Max_Refill_Count or 0)
+#             redeem_good = float(asset.Redeem_Good or 0)
+#             redeem_damaged = float(asset.Redeem_Damaged or 0)
+#             discount = float(asset.Discount_RefillB or 0)
 
-            # ✅ Create only once
-            BottleInventory.objects.create(
-                producer_code=producer_code,
-                bottle_type=bottle_type,
-                Bottle_CityId_id=asset.Asset_CityId_id,
-                cycle_number=0,
-                current_total_stock=0,
-                bottles_sold_to_supermarket_prev_cycle=count,
-                bottles_bought_by_consumers=0,
-                bottles_returned_good=0,
-                bottles_returned_damaged=0,
-                manufacturing_day=asset.DOM,
-                content_price_per_ml=shampoo_price_per_ml,
-                bottle_price=bottle_price,
-                total_mrp=total_mrp,
-                max_refill_count=max_refill,
-                redeem_value_good=redeem_good,
-                redeem_value_damaged=redeem_damaged,
-                supermarket_commission_percent=0,
-                consumer_discount_percent=discount,
-                bottles_to_produce=0,
-                bottles_to_sell_to_supermarket=0,
-                stock_updated_day="0",
-                last_updated=timezone.now(),
-            )
+#             shampoo_price_per_ml = (
+#                 content_price / float(asset.Quantity)
+#                 if asset.Quantity else 0
+#             )
 
-        print(f"✅ BottleInventory created for city {city_id} with {len(category_counts)} entries.")
+#             total_mrp = bottle_price + content_price + env_tax
+
+#             BottleInventory.objects.get_or_create(
+#                 producer_code=producer_code,
+#                 bottle_type=bottle_type,
+#                 Bottle_CityId_id=city_id,
+#                 cycle_number=0,
+#                 defaults={
+#                     "current_total_stock": 0,
+#                     "bottles_sold_to_supermarket_prev_cycle": count,
+#                     "bottles_bought_by_consumers": 0,
+#                     "bottles_returned_good": 0,
+#                     "bottles_returned_damaged": 0,
+#                     "manufacturing_day": asset.DOM,
+#                     "content_price_per_ml": shampoo_price_per_ml,
+#                     "bottle_price": bottle_price,
+#                     "total_mrp": total_mrp,
+#                     "max_refill_count": max_refill,
+#                     "redeem_value_good": redeem_good,
+#                     "redeem_value_damaged": redeem_damaged,
+#                     "supermarket_commission_percent": 0,
+#                     "consumer_discount_percent": discount,
+#                     "bottles_to_produce": 0,
+#                     "bottles_to_sell_to_supermarket": 0,
+#                     "stock_updated_day": "0",
+#                     "last_updated": timezone.now(),
+#                 }
+#             )
+
+#         print(f"✅ BottleInventory created safely for city {city_id}")
+
 
 class CityTimer(threading.Thread):
     def __init__(self, city_id, clocktickrate):

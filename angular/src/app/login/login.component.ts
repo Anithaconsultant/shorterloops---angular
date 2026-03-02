@@ -104,7 +104,6 @@ export class LoginComponent implements OnInit {
 
   private handleSuccessfulLogin(user: any): void {
 
-    console.log(user)
     this.setCurrentUser(user);
     this.loginForm.reset();
     this.userobj.login = '1';

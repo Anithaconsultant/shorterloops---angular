@@ -14,7 +14,7 @@ interface AuthResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  //private apiUrl = 'https://dbl.iihs.in/api/auth';
+ // private apiUrl = 'https://dbl.iihs.in/api/auth';
   private apiUrl = 'http://127.0.0.1:8000/api/auth';
   private currentUserSubject = new BehaviorSubject<any>(null);
 
@@ -75,7 +75,6 @@ export class AuthService {
   login(credentials: { Username: string, Password: string }): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login/`, credentials).pipe(
       tap(response => {
-        console.log(response);
         this.storeAuthData(response);
         //this.router.navigate(['/home']);
       })

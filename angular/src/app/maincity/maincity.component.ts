@@ -1,4 +1,4 @@
-import { Component, HostListener, ViewChild, AfterViewInit, ElementRef, OnInit, OnDestroy, Renderer2 } from '@angular/core';
+import { Component, HostListener, ViewChild, AfterViewInit, ElementRef, OnInit, QueryList, OnDestroy, Renderer2, ViewChildren, ChangeDetectorRef } from '@angular/core';
 import panzoom from "panzoom";
 import { forkJoin, from, of } from 'rxjs';
 import { LoginserviceService } from '../services/loginservice.service';
@@ -10,6 +10,11 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem, CdkDrag, CdkDragEnd, C
 import { interval, Subscription } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
 import { AlertModalComponent } from '../alert-modal/alert-modal.component';
+
+export interface Bottle {
+  id: string;
+  className: string; // shinyvpn, spikyrpn, etc
+}
 @Component({
   selector: 'app-maincity',
   templateUrl: './maincity.component.html',
@@ -18,6 +23,7 @@ import { AlertModalComponent } from '../alert-modal/alert-modal.component';
 export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
   @ViewChild('alertModal') alertModal!: AlertModalComponent;
+  @ViewChildren(CdkDropList) dropLists!: QueryList<CdkDropList>;
 
   noavatar = false;
   userobj = {
@@ -59,7 +65,6 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   isMuted = false;
 
   @ViewChild('allAudio', { static: true }) allAudio!: ElementRef<HTMLAudioElement[]>;
-
   netamount = 0;
   boughtbottledata: any[] = [];
   getcurrentplacedbrand = '';
@@ -73,17 +78,109 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   bottledropped: string[] = [];
   reversedBottles: string[] = [];
   bottletaken: string[] = [];
+  //bottletaken: { id: string; className: string }[] = [];
   commonobj: any[] = [];
-  silkyvpn: string[] = [];
-  shinyvpn: string[] = [];
-  shinyuvpn: string[] = [];
-  spikyrpn: string[] = [];
-  spikyrpr: string[] = [];
-  bouncyrpn: string[] = [];
-  bouncyurpn: string[] = [];
-  wavyurpn: string[] = [];
-  wavyurpr: string[] = [];
-  bottles = ['silkyvpn', 'spikyrpn', 'shiny_vpn', 'bouncyrpn']
+
+
+  shinyvpn: Bottle[] = [];
+  shinyvpr: Bottle[] = [];
+  shinyrpn: Bottle[] = [];
+  shinyrpr: Bottle[] = [];
+  shinyuvpn: Bottle[] = [];
+  shinyuvpr: Bottle[] = [];
+  shinyurpn: Bottle[] = [];
+  shinyurpr: Bottle[] = [];
+
+
+
+
+  spikyvpn: Bottle[] = [];
+  spikyvpr: Bottle[] = [];
+  spikyrpn: Bottle[] = [];
+  spikyrpr: Bottle[] = [];
+  spikyuvpn: Bottle[] = [];
+  spikyuvpr: Bottle[] = [];
+  spikyurpn: Bottle[] = [];
+  spikyurpr: Bottle[] = [];
+
+  silkyvpn: Bottle[] = [];
+  silkyvpr: Bottle[] = [];
+  silkyrpn: Bottle[] = [];
+  silkyrpr: Bottle[] = [];
+  silkyuvpn: Bottle[] = [];
+  silkyuvpr: Bottle[] = [];
+  silkyurpn: Bottle[] = [];
+  silkyurpr: Bottle[] = [];
+
+  bouncyvpn: Bottle[] = [];
+  bouncyvpr: Bottle[] = [];
+  bouncyrpn: Bottle[] = [];
+  bouncyrpr: Bottle[] = [];
+  bouncyuvpn: Bottle[] = [];
+  bouncyuvpr: Bottle[] = [];
+  bouncyurpn: Bottle[] = [];
+  bouncyurpr: Bottle[] = [];
+
+  wavyvpn: Bottle[] = [];
+  wavyvpr: Bottle[] = [];
+  wavyrpn: Bottle[] = [];
+  wavyrpr: Bottle[] = [];
+  wavyuvpn: Bottle[] = [];
+  wavyuvpr: Bottle[] = [];
+  wavyurpn: Bottle[] = [];
+  wavyurpr: Bottle[] = [];
+
+  shelfMap: Record<string, Bottle[]> = {
+
+    shinyvpn: this.shinyvpn,
+    shinyvpr: this.shinyvpr,
+    shinyrpn: this.shinyrpn,
+    shinyrpr: this.shinyrpr,
+    shinyuvpn: this.shinyuvpn,
+    shinyuvpr: this.shinyuvpr,
+    shinyurpn: this.shinyurpn,
+    shinyurpr: this.shinyurpr,
+
+
+
+
+    spikyvpn: this.spikyvpn,
+    spikyvpr: this.spikyvpr,
+    spikyrpn: this.spikyrpn,
+    spikyrpr: this.spikyrpr,
+    spikyuvpn: this.spikyuvpn,
+    spikyuvpr: this.spikyuvpr,
+    spikyurpn: this.spikyurpn,
+    spikyurpr: this.spikyurpr,
+
+    silkyvpn: this.silkyvpn,
+    silkyvpr: this.silkyvpr,
+    silkyrpn: this.silkyrpn,
+    silkyrpr: this.silkyrpr,
+    silkyuvpn: this.silkyuvpn,
+    silkyuvpr: this.silkyuvpr,
+    silkyurpn: this.silkyurpn,
+    silkyurpr: this.silkyurpr,
+
+    bouncyvpn: this.bouncyvpn,
+    bouncyvpr: this.bouncyvpr,
+    bouncyrpn: this.bouncyrpn,
+    bouncyrpr: this.bouncyrpr,
+    bouncyuvpn: this.bouncyuvpn,
+    bouncyuvpr: this.bouncyuvpr,
+    bouncyurpn: this.bouncyurpn,
+    bouncyurpr: this.bouncyurpr,
+
+    wavyvpn: this.wavyvpn,
+    wavyvpr: this.wavyvpr,
+    wavyrpn: this.wavyrpn,
+    wavyrpr: this.wavyrpr,
+    wavyuvpn: this.wavyuvpn,
+    wavyuvpr: this.wavyuvpr,
+    wavyurpn: this.wavyurpn,
+    wavyurpr: this.wavyurpr,
+
+  };
   BottleInHouseList: string[] = [];
   throwntoTruckList: string[] = [];
   refillbottles: string[] = [];
@@ -129,7 +226,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     'Supermarket Owner': [[-5651, -3616], [6268, 4010]],
     'Universal Bottle Manufacturing Plant owner': [[-7116, -3154], [7590, 3584]],
     'Bottle Reverse Vending Machine Owner': [[-6635, -3154], [7279, 3584]],
-    'B1 Shampoo Producer': [[-6135, -3562], [6943, 4010]],
+    'B1 Shampoo Producer': [[-6135, -3562], [6604, 4010]],
     'B2 Shampoo Producer': [[-6435, -3183], [6943, 3584]],
     'B3 Shampoo Producer': [[-6472, -3562], [6943, 4010]],
     'B4 Shampoo Producer': [[-6793, -3562], [7280, 4010]],
@@ -208,6 +305,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     'contentCode': '',
     'Latest_Refill_Date': ''
   }
+
   updatebottlereturn = {
     'currentitem': '',
     'Bottleloc': '',
@@ -233,7 +331,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   loadPlantBottlesSubscription!: Subscription;
   //houseshelfList: string | CdkDropList<any> ='';
   constructor(private logser: LoginserviceService, private router: Router,
-    private modalService: NgbModal, private sharedService: SharedServiceService, private renderer: Renderer2) {
+    private modalService: NgbModal, private sharedService: SharedServiceService, private renderer: Renderer2, private cdr: ChangeDetectorRef) {
     this.currentUserRole = this.logser.currentuser.Role;
     this.currentUserCartId = this.logser.currentuser.cartId;
     this.currentusername = this.logser.currentuser.Username;
@@ -269,6 +367,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
 
+  shelfDropLists: CdkDropList[] = [];
   private initializeCityData(): void {
     // Prevent multiple initializations
     if (this.cityInitialized) return;
@@ -297,9 +396,6 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     });
 
     // Get prices
-    this.logser.getBottlePrice().subscribe((data: any) => {
-      this.bottlePrice = data;
-    });
 
     this.logser.getShampooPrice().subscribe((data: any) => {
       this.shampooPrice = data;
@@ -307,6 +403,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   private processUserData(): void {
+    $(".houselite").hide();
     for (const user of this.user) {
       if (user.login == 1 && user.User_cityid == this.logser.currentuser.CityId) {
         $("." + user.Role.split(" ")[0]).show();
@@ -326,13 +423,13 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           $(".displaypic,.cartavatar").addClass('pic_' + user.avatar);
         }
       }
-      $(".houselite").hide();
+      
       if (user.Role && user.User_cityid == this.logser.currentuser.CityId) {
+
         const word = this.formatKey(user.Role);
         $(`.${word} .displaypanel`).html(user.Role);
         $(`.${word} .housedisplay`).html(user.Username).show();
         $(`.${word} .houselite`).show();
-
         if ([
           'Supermarket_Owner',
           'Plastic_Recycling_Plant_Owner',
@@ -402,7 +499,6 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     this.canMoveRight = true;
     this.canMoveLeft = true;
   }
-  bottlePrice: any[] = [];
   shampooPrice: any[] = [];
   onDragStart(event: DragEvent) {
 
@@ -995,27 +1091,212 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   }
   totalReturnedBottles: any[] = [];
   maxRefill: string = '';
+  shelfConfig = [
+    // SHINY
+    { key: 'shinyvpn', class: 'shinyvpn' },
+    { key: 'shinyvpr', class: 'shinyvpr' },
+    { key: 'shinyrpn', class: 'shinyrpn' },
+    { key: 'shinyrpr', class: 'shinyrpr' },
+    { key: 'shinyuvpn', class: 'shinyuvpn' },
+    { key: 'shinyuvpr', class: 'shinyuvpr' },
+    { key: 'shinyurpn', class: 'shinyurpn' },
+    { key: 'shinyurpr', class: 'shinyurpr' },
+
+    // SPIKY
+    { key: 'spikyvpn', class: 'spikyvpn' },
+    { key: 'spikyvpr', class: 'spikyvpr' },
+    { key: 'spikyrpn', class: 'spikyrpn' },
+    { key: 'spikyrpr', class: 'spikyrpr' },
+    { key: 'spikyuvpn', class: 'spikyuvpn' },
+    { key: 'spikyuvpr', class: 'spikyuvpr' },
+    { key: 'spikyurpn', class: 'spikyurpn' },
+    { key: 'spikyurpr', class: 'spikyurpr' },
+
+    // SILKY
+    { key: 'silkyvpn', class: 'silkyvpn' },
+    { key: 'silkyvpr', class: 'silkyvpr' },
+    { key: 'silkyrpn', class: 'silkyrpn' },
+    { key: 'silkyrpr', class: 'silkyrpr' },
+    { key: 'silkyuvpn', class: 'silkyuvpn' },
+    { key: 'silkyuvpr', class: 'silkyuvpr' },
+    { key: 'silkyurpn', class: 'silkyurpn' },
+    { key: 'silkyurpr', class: 'silkyurpr' },
+
+    // BOUNCY
+    { key: 'bouncyvpn', class: 'bouncyvpn' },
+    { key: 'bouncyvpr', class: 'bouncyvpr' },
+    { key: 'bouncyrpn', class: 'bouncyrpn' },
+    { key: 'bouncyrpr', class: 'bouncyrpr' },
+    { key: 'bouncyuvpn', class: 'bouncyuvpn' },
+    { key: 'bouncyuvpr', class: 'bouncyuvpr' },
+    { key: 'bouncyurpn', class: 'bouncyurpn' },
+    { key: 'bouncyurpr', class: 'bouncyurpr' },
+
+    // WAVY
+    { key: 'wavyvpn', class: 'wavyvpn' },
+    { key: 'wavyvpr', class: 'wavyvpr' },
+    { key: 'wavyrpn', class: 'wavyrpn' },
+    { key: 'wavyrpr', class: 'wavyrpr' },
+    { key: 'wavyuvpn', class: 'wavyuvpn' },
+    { key: 'wavyuvpr', class: 'wavyuvpr' },
+    { key: 'wavyurpn', class: 'wavyurpn' },
+    { key: 'wavyurpr', class: 'wavyurpr' },
+  ];
+  getShelfArray(key: string): string[] {
+    const shelf = this.shelfConfig.find(s => s.key === key);
+    if (!shelf) {
+      return [];
+    }
+    return this[key as keyof this] as string[];
+  }
+  modifiedKeyMap: { [key: string]: string } = {};
+
+  private pushToContentArray(
+    contentCode: string,
+    bottleCode: string,
+    refillCount: number,
+    key: string,
+    isDragged: boolean,
+    bottleloc: string
+  ) {
+
+    // 🔐 SAFETY
+    if (!contentCode || !contentCode.includes('.')) {
+      console.warn('Invalid Content_Code', contentCode, key);
+      return;
+    }
+
+    const content = contentCode.split('.')[1].toLowerCase();
+
+    const isUB = bottleCode?.startsWith('UB');
+    const isV = bottleCode?.endsWith('V');
+    const isRefill = refillCount > 0;
+
+    let suffix = '';
+    if (isUB) suffix += 'u';
+    suffix += isV ? 'v' : 'r';
+    suffix += isRefill ? 'pr' : 'pn';
+
+    const arrayName = `${content}${suffix}`;
+    const modifiedKey = `${key}at${arrayName}`;
+
+    // ✅ ALWAYS STORE
+    this.modifiedKeyMap[key] = modifiedKey;
+
+    // 🚦 Only control pushing into arrays
+    if (isDragged || bottleloc !== 'Supermarket shelf') return;
+
+    if ((this as any)[arrayName]) {
+      (this as any)[arrayName].push(modifiedKey);
+    }
+
+  }
+
+
+
+  // shelfRules: Record<string, (el: HTMLElement) => boolean> = {
+  //   // SHINY
+  //   shinyvpn: el => el.classList.contains('shinyvpn'),
+  //   shinyvpr: el => el.classList.contains('shinyvpr'),
+  //   shinyrpn: el => el.classList.contains('shinyrpn'),
+  //   shinyrpr: el => el.classList.contains('shinyrpr'),
+  //   shinyuvpn: el => el.classList.contains('shinyuvpn'),
+  //   shinyuvpr: el => el.classList.contains('shinyuvpr'),
+  //   shinyurpn: el => el.classList.contains('shinyurpn'),
+  //   shinyurpr: el => el.classList.contains('shinyurpr'),
+
+  //   // SPIKY
+  //   spikyvpn: el => el.classList.contains('spikyvpn'),
+  //   spikyvpr: el => el.classList.contains('spikyvpr'),
+  //   spikyrpn: el => el.classList.contains('spikyrpn'),
+  //   spikyrpr: el => el.classList.contains('spikyrpr'),
+  //   spikyuvpn: el => el.classList.contains('spikyuvpn'),
+  //   spikyuvpr: el => el.classList.contains('spikyuvpr'),
+  //   spikyurpn: el => el.classList.contains('spikyurpn'),
+  //   spikyurpr: el => el.classList.contains('spikyurpr'),
+
+  //   // BOUNCY
+  //   bouncyvpn: el => el.classList.contains('bouncyvpn'),
+  //   bouncyvpr: el => el.classList.contains('bouncyvpr'),
+  //   bouncyrpn: el => el.classList.contains('bouncyrpn'),
+  //   bouncyrpr: el => el.classList.contains('bouncyrpr'),
+  //   bouncyuvpn: el => el.classList.contains('bouncyuvpn'),
+  //   bouncyuvpr: el => el.classList.contains('bouncyuvpr'),
+  //   bouncyurpn: el => el.classList.contains('bouncyurpn'),
+  //   bouncyurpr: el => el.classList.contains('bouncyurpr'),
+
+  //   // SILKY
+  //   silkyvpn: el => el.classList.contains('silkyvpn'),
+  //   silkyvpr: el => el.classList.contains('silkyvpr'),
+  //   silkyrpn: el => el.classList.contains('silkyrpn'),
+  //   silkyrpr: el => el.classList.contains('silkyrpr'),
+  //   silkyuvpn: el => el.classList.contains('silkyuvpn'),
+  //   silkyuvpr: el => el.classList.contains('silkyuvpr'),
+  //   silkyurpn: el => el.classList.contains('silkyurpn'),
+  //   silkyurpr: el => el.classList.contains('silkyurpr'),
+
+  //   // WAVY (id based)
+  //   wavyvpn: el => el.id.includes('wavyvpn'),
+  //   wavyvpr: el => el.id.includes('wavyvpr'),
+  //   wavyrpn: el => el.id.includes('wavyrpn'),
+  //   wavyrpr: el => el.id.includes('wavyrpr'),
+  //   wavyuvpn: el => el.id.includes('wavyuvpn'),
+  //   wavyuvpr: el => el.id.includes('wavyuvpr'),
+  //   wavyurpn: el => el.id.includes('wavyurpn'),
+  //   wavyurpr: el => el.id.includes('wavyurpr'),
+  // };
+
   async loadAvailableAsset() {
     if (this.logser.currentuser.Username != '' && this.currentusercityId != '') {
       $(".loadinglogo").hide();
       this.logser.getAllAssets().subscribe((data) => {
         this.assetdataset = [];
-        this.shinyvpn = [];
-        this.shinyuvpn = [];
-        this.spikyrpn = [];
         this.throwntoTruckList = [];
-        this.spikyrpr = [];
-        this.bouncyrpn = [];
-        this.bouncyurpn = [];
-        this.wavyurpn = [];
         this.dustbinbottles = [];
         this.refillbottles = [];
-        this.wavyurpr = [];
-        this.silkyvpn = [];
         this.BottleInHouseList = [];
         this.currentUserPurhcased = [];
         this.totalReturnedBottles = [];
-
+        this.shinyvpn = [];
+        this.shinyvpr = [];
+        this.shinyrpn = [];
+        this.shinyrpr = [];
+        this.shinyuvpn = [];
+        this.shinyuvpr = [];
+        this.shinyurpn = [];
+        this.shinyurpr = [];
+        this.spikyvpn = [];
+        this.spikyvpr = [];
+        this.spikyrpn = [];
+        this.spikyrpr = [];
+        this.spikyuvpn = [];
+        this.spikyuvpr = [];
+        this.spikyurpn = [];
+        this.spikyurpr = [];
+        this.silkyvpn = [];
+        this.silkyvpr = [];
+        this.silkyrpn = [];
+        this.silkyrpr = [];
+        this.silkyuvpn = [];
+        this.silkyuvpr = [];
+        this.silkyurpn = [];
+        this.silkyurpr = [];
+        this.bouncyvpn = [];
+        this.bouncyvpr = [];
+        this.bouncyrpn = [];
+        this.bouncyrpr = [];
+        this.bouncyuvpn = [];
+        this.bouncyuvpr = [];
+        this.bouncyurpn = [];
+        this.bouncyurpr = [];
+        this.wavyvpn = [];
+        this.wavyvpr = [];
+        this.wavyrpn = [];
+        this.wavyrpr = [];
+        this.wavyuvpn = [];
+        this.wavyuvpr = [];
+        this.wavyurpn = [];
+        this.wavyurpr = [];
         for (let y = 0; y < data.length; y++) {
           this.assetdataset.push(data[y]);
 
@@ -1026,75 +1307,34 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           let bottle_remquantity = data[y]['remQuantity'];
 
 
-          switch (true) {
-            case data[y]['Content_Code'] == "B1.Shiny" && data[y]['Bottle_Code'] == "UB.V":
-              let cat1 = "City" + data[y]['AssetId'] + 'atU' + data[y]['Content_Code'].split('.')[0];
-              if (isDragged == false && bottleloc == 'Supermarket shelf') {
-                this.shinyuvpn.push(cat1);
-              }
-              this.updateobjects(cat1, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
-              break;
-            case data[y]['Content_Code'] == "B1.Shiny" && data[y]['Bottle_Code'] == "B1.V":
-              let cat2 = "City" + data[y]['AssetId'] + 'at' + data[y]['Content_Code'].split('.')[0];
-              if (isDragged == false && bottleloc == 'Supermarket shelf') {
-                this.shinyvpn.push(cat2);
-              }
-              this.updateobjects(cat2, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
-              break;
-            case data[y]['Content_Code'] == "B2.Spiky" && data[y]['Bottle_Code'] == "B2.R" && data[y]['Current_PlantRefill_Count'] > 0:
-              let cat3 = "City" + data[y]['AssetId'] + 'at' + data[y]['Content_Code'].split('.')[0];
-              if (isDragged == false && bottleloc == 'Supermarket shelf') {
-                this.spikyrpr.push(cat3);
-              }
-              this.updateobjects(cat3, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
-              break;
-            case data[y]['Content_Code'] == "B2.Spiky" && data[y]['Bottle_Code'] == "B2.R" && data[y]['Current_PlantRefill_Count'] == 0:
-              let cat4 = "City" + data[y]['AssetId'] + 'at' + data[y]['Content_Code'].split('.')[0];
-              if (isDragged == false && bottleloc == 'Supermarket shelf') {
-                this.spikyrpn.push(cat4);
-              }
-              this.updateobjects(cat4, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
-              break;
-            case data[y]['Content_Code'] == "B3.Bouncy" && data[y]['Bottle_Code'] == "B3.R":
-              let cat5 = "City" + data[y]['AssetId'] + 'at' + data[y]['Content_Code'].split('.')[0];
-              if (isDragged == false && bottleloc == 'Supermarket shelf') {
-                this.bouncyrpn.push(cat5);
-              }
-              this.updateobjects(cat5, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
-              break;
-            case data[y]['Content_Code'] == "B3.Bouncy" && data[y]['Bottle_Code'] == "UB.R":
-              let cat6 = "City" + data[y]['AssetId'] + 'atU' + data[y]['Content_Code'].split('.')[0];
-              if (isDragged == false && bottleloc == 'Supermarket shelf') {
-                this.bouncyurpn.push(cat6);
-              }
-              this.updateobjects(cat6, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
-              break;
-            case data[y]['Content_Code'] == "B4.Wavy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Current_PlantRefill_Count'] > 0:
-              let cat7 = "City" + data[y]['AssetId'] + 'atU' + data[y]['Content_Code'].split('.')[0];
-              if (isDragged == false && bottleloc == 'Supermarket shelf') {
-                this.wavyurpr.push(cat7);
-              }
-              this.updateobjects(cat7, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
-              break;
-            case data[y]['Content_Code'] == "B4.Wavy" && data[y]['Bottle_Code'] == "UB.R" && data[y]['Current_PlantRefill_Count'] == 0:
-              let cat8 = "City" + data[y]['AssetId'] + 'atU' + data[y]['Content_Code'].split('.')[0];
-              if (isDragged == false && bottleloc == 'Supermarket shelf') {
-                this.wavyurpn.push(cat8);
-              }
-              this.updateobjects(cat8, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
-              break;
-            case data[y]['Content_Code'] == "B5.Silky" && data[y]['Bottle_Code'] == "B5.V":
+          const contentCode = data[y]['Content_Code'];
+          const bottleCode = data[y]['Bottle_Code'];
+          const refillCount = data[y]['Current_PlantRefill_Count'];
 
-              let cat9 = "City" + data[y]['AssetId'] + 'at' + data[y]['Content_Code'].split('.')[0];
-              if (isDragged == false && bottleloc == 'Supermarket shelf') {
-                this.silkyvpn.push(cat9);
-              }
-              this.updateobjects(cat9, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
-              break;
-            default:
-              let cat10 = "City" + data[y]['AssetId'] + 'at' + data[y]['Content_Code'].split('.')[0];
-              this.updateobjects(cat10, isDragged, isPurchased, bottleloc, bottle_status, bottle_remquantity);
-          }
+          const key =
+            "City" +
+            data[y]['AssetId'];
+
+          // Push into correct array (Shiny / Spiky / Silky / Bouncy / Wavy)
+          this.pushToContentArray(
+            contentCode,
+            bottleCode,
+            refillCount,
+            key,
+            isDragged,
+            bottleloc
+          );
+          // Always update objects (same behavior as before)
+          const finalKey = this.modifiedKeyMap[key];
+          this.updateobjects(
+            finalKey,
+            isDragged,
+            isPurchased,
+            bottleloc,
+            bottle_status,
+            bottle_remquantity
+          );
+
 
         }
       });
@@ -1154,6 +1394,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     if (bottleloc == this.currentUserCartId && bottle_remquantity == 0) {
       this.refillbottles.push(cat);
     }
+
     else if (bottleloc == this.currentUserCartId && bottle_remquantity > 0) {
       this.currentUserPurhcased.push(cat);
     }
@@ -1825,6 +2066,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     this.marketright = true;
     this.marketbottom = true;
   }
+  previousBottleTakenIds: string[] = [];
   private previousBottleTaken: string[] = [];
   private arraysAreEqual(arr1: string[], arr2: string[]): boolean {
     if (arr1.length !== arr2.length) return false;
@@ -1971,6 +2213,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           this.startbilling();
           this.playAudioElement(this.cityrail.nativeElement, 0.3);
         }
+
       }
       else if (topValue > 1005 && topValue < 1270 && leftValue > 5600 && leftValue < 6050) {
         if (this.billpaid == true && this.bottletaken.length > 0) {
@@ -2197,9 +2440,12 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
                       this.updatebottleasset['Bottleloc'] = this.currentUserCartId;
                       for (let i = 0; i < this.bottletaken.length; i++) {
                         this.updatebottleasset['currentitem'] = this.bottletaken[i].split("at")[0].split('City')[1];
+                        console.log(this.updatebottleasset)
                         this.logser.updatethisAssets(this.updatebottleasset).subscribe((data) => {
                           // $(".pay").hide();
                           $(".close").show();
+                          console.log("Purchased data")
+                          console.log(data);
                           this.playAudioElement(this.transactioncomplete.nativeElement, 0.8);
                           this.billpaid = true;
                           this.logser.getFacilitycashbox('Municipality Office').subscribe(data => {
@@ -2282,6 +2528,13 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+
+    Promise.resolve().then(() => {
+      this.shelfDropLists = this.dropLists
+        .filter(dl => dl.id !== 'cartDropList');
+
+      this.cdr.detectChanges();
+    });
     if (this.logser.currentuser.Username !== '') {
       this.initializePanzoom();
       this.subscribeToSharedServices();
@@ -2508,15 +2761,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
     else { return true; }
   }
-  checkcondition(item: CdkDrag<string>) {
-    if (item.element.nativeElement.classList.contains('B1')) { return true; }
-    else { return false; }
 
-  }
-  checkshinyuniver(item: CdkDrag<string>) {
-    if (item.element.nativeElement.classList.contains('UB1')) { return true; }
-    else { return false; }
-  }
   checkamountdetect(item: CdkDrag<string>) {
     if (!item.element.nativeElement.classList.contains('Amountcredited')) { return true; }
     else { return false; }
@@ -2525,37 +2770,15 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     if (item.element.nativeElement.classList.contains('_SB_UB1') || item.element.nativeElement.classList.contains('_SB_B1')) { return true; }
     else { return false; }
   }
-  checkspikyrpn(item: CdkDrag<string>) {
-    if (item.element.nativeElement.classList.contains('B2')) { return true; }
-    else { return false; }
-  }
-  checkbouncyrpn(item: CdkDrag<string>) {
-    if (item.element.nativeElement.classList.contains('B3')) { return true; }
-    else { return false; }
-  }
-  checkbouncyrpnrefill(item: CdkDrag<string>) {
-    if (item.element.nativeElement.classList.contains('_SB_B3') || item.element.nativeElement.classList.contains('_SB_UB3')) { return true; }
-    else {
-      return false;
-    }
-  }
-  checkbouncyurpn(item: CdkDrag<string>) {
-    if (item.element.nativeElement.classList.contains('UB3')) { return true; }
-    else { return false; }
 
+  trackByBottleId(index: number, item: string) {
+    return item;
   }
-  checkwavyurpn(item: CdkDrag<string>) {
-    if (item.element.nativeElement.id.includes('@0')) { return true; }
-    else { return false; }
-  }
-  checkwavyurpr(item: CdkDrag<string>) {
-    if (item.element.nativeElement.id.includes('@1')) { return true; }
-    else { return false; }
-  }
-  checksilkyvpn(item: CdkDrag<string>) {
-    if (item.element.nativeElement.classList.contains('B5')) { return true; }
-    else { return false; }
-  }
+  genericShelfPredicate =
+    (shelfKey: string) =>
+      (item: CdkDrag<Bottle>) =>
+        item.data.className === shelfKey;
+
   bottleclass = '';
   exit() {
     this.router.navigate(["login"]);
@@ -2730,6 +2953,84 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     } else {
       this.billpaid = true;
     }
+    // if (this.bottletaken.length > 0) {
+    //   this.billpaid = false;
+
+    //   const assetObservables = [];
+    //   const invalidItems: { id: string; className: string }[] = [];
+
+    //   for (let i = 0; i < this.bottletaken.length; i++) {
+
+    //     const bottle = this.bottletaken[i];          // ✅ object
+    //     const bottleId = bottle.id;                  // ✅ string id
+    //     console.log(bottleId,bottle);
+    //     const existingItemIndex = this.commonobj.findIndex(
+    //       item => item.id === bottleId
+    //     );
+
+    //     console.log(this.commonobj[existingItemIndex]);
+
+    //     if (
+    //       this.commonobj[existingItemIndex]['Bottle_loc'] ===
+    //       'In' + this.currentUserCartId
+    //     ) {
+    //       // extract numeric id (same logic as before)
+    //       const getcurrent = bottleId.split('at')[0].split('City')[1];
+    //       assetObservables.push(this.logser.getthisAssets(getcurrent));
+
+    //     } else {
+    //       this.alertModal.openModal(
+    //         bottleId + ' This Item has been picked by someone else.',
+    //         false
+    //       );
+    //       invalidItems.push(bottle);
+    //     }
+    //   }
+
+    //   // ✅ Wait for all asset observables
+    //   forkJoin(assetObservables).subscribe((results) => {
+    //     results.forEach((data) => {
+
+    //       const calc =
+    //         parseInt(data[0]['Content_Price']) +
+    //         parseInt(data[0]['Bottle_Price']);
+
+    //       const discount =
+    //         calc * (parseInt(data[0]['Discount_RefillB']) / 100);
+
+    //       const env =
+    //         calc * (parseInt(data[0]['Env_Tax_Customer']) / 100);
+
+    //       this.currentPurchaseContainer += parseInt(data[0]['Bottle_Price']);
+    //       this.currentPurchaseContent += parseInt(data[0]['Content_Price']);
+    //       this.totalenv += env;
+
+    //       const totalvalue = (calc + env) - discount;
+
+    //       data[0]['Totalvalue'] = totalvalue;
+    //       data[0]['Env_Tax_Customer'] = env;
+
+    //       this.totalsupermarketbill += totalvalue;
+    //       this.netamount += totalvalue;
+
+    //       this.boughtbottledata.push(data[0]);
+    //     });
+    //   });
+
+    //   // ✅ Remove invalid bottles (object-safe removal)
+    //   invalidItems.forEach((invalidBottle) => {
+    //     const index = this.bottletaken.findIndex(
+    //       bottle => bottle.id === invalidBottle.id
+    //     );
+    //     if (index > -1) {
+    //       this.bottletaken.splice(index, 1);
+    //     }
+    //   });
+
+    // } else {
+    //   this.billpaid = true;
+    // }
+
   }
   currentPurchaseContainer = 0.0;
   currentPurchaseContent = 0.0;
@@ -2742,9 +3043,9 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     let elementClass = element.className;
     this.logser.getthisAssets(elementId).subscribe((data) => {
       this.assetdata = data;
-      this.frontclass = elementClass.split(" ")[1] + "_big";
+      this.frontclass = element.id.split("at")[1] + "_big";
       let checkuniversal = this.assetdata[0]['Bottle_Code'].split(".")[0];
-      this.shapooprice = parseFloat(this.assetdata[0]['Content_Price']) / parseFloat(this.assetdata[0]['Quantity']);
+      this.shapooprice = (parseFloat(this.assetdata[0]['Content_Price'])-parseFloat(this.assetdata[0]['Bottle_Price']) ) / parseFloat(this.assetdata[0]['Quantity']);
       this.totalamount = parseFloat(this.assetdata[0]['Bottle_Price']) + parseFloat(this.assetdata[0]['Content_Price']) + parseFloat(this.assetdata[0]['Env_Tax_Customer'])
       if (checkuniversal == 'UB') {
         this.leblfound = true;
@@ -2816,22 +3117,23 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   getdetailbrandfunction(placedBottle: string) {
 
     let getbrand = placedBottle.split("at")[1];
-    if (getbrand == 'B1') {
+    console.log(getbrand, 'coming from getdetail')
+    if (getbrand.includes('shiny')) {
       this.getcurrentplacedbrand = 'B1.Shiny';
     }
-    else if (getbrand == 'B2') {
+    else if (getbrand.includes('spiky')) {
       this.getcurrentplacedbrand = 'B2.Spiky';
     }
-    else if (getbrand == 'B3') {
+    else if (getbrand.includes('bouncy')) {
       this.getcurrentplacedbrand = 'B3.Bouncy';
     }
-    else if (getbrand == 'B4') {
+    else if (getbrand.includes('wavy')) {
       this.getcurrentplacedbrand = 'B4.Wavy';
     }
-    else if (getbrand == 'B5') {
+    else if (getbrand.includes('silky')) {
       this.getcurrentplacedbrand = 'B5.Silky';
     }
-    else if (getbrand == 'UB1' || getbrand == 'UB2' || getbrand == 'UB3' || getbrand == 'UB4' || getbrand == 'UB5') {
+    else if (getbrand.includes('uvpn') || getbrand.includes('uvpr') || getbrand.includes('urpn') || getbrand.includes('urpr')) {
       this.getcurrentplacedbrand = 'Universal';
     }
 
@@ -2909,6 +3211,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
 
     if (this.droppedbottle == true && this.resetanimation == true) {
       this.refillbrandselected = currentbrand;
+      console.log(this.getcurrentplacedbrand)
       if (this.refillbrandselected == this.getcurrentplacedbrand) {
         this.playAudioElement(this.useplusminus.nativeElement, 0.8);
         $(".displaylight").removeClass('off').addClass('on');
@@ -3103,191 +3406,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   cart_bottle_list: string[] = [];
   dustbin_bottles: string[] = [];
   truckContList: string[] = [];
-  // boughtdrop(event: CdkDragDrop<string[]>) {
-  //   if (event.previousContainer === event.container) {
-  //     // Move item within the same container
-  //     moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-  //   } else {
-  //     // Transfer item between containers
-  //     transferArrayItem(
-  //       event.previousContainer.data,
-  //       event.container.data,
-  //       event.previousIndex,
-  //       event.currentIndex
-  //     );
 
-  //     // Get the currently dropped item's ID and dropzone class
-  //     let currentlyDroped = event.item.element.nativeElement.id;
-  //     let currentDropzone = event.container.element.nativeElement.classList;
-
-  //     // Extract bottle ID from the element ID
-  //     let bottleId = currentlyDroped.split('City')[1].split("at")[0];
-
-  //     if (currentDropzone.contains('Inhouseshelf_bottles')) {
-  //       // Update bottle location to house
-  //       this.updateonlyloc['currentbottle'] = bottleId;
-  //       this.updateonlyloc['Bottleloc'] = 'House@' + this.currentUserCartId;
-
-  //       this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
-  //         //console.log("Bottle location updated to house");
-
-  //         // Explicitly update the dropzone list
-  //         this.Inhouseshelf_bottles = [...event.container.data];
-  //       });
-
-  //     } else if (currentDropzone.contains('newbottle_list') || currentDropzone.contains('cart_bottle_list')) {
-  //       this.updateonlyloc['currentbottle'] = bottleId;
-  //       this.updateonlyloc['Bottleloc'] = this.currentUserCartId;
-
-  //       this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
-  //         (this as any)[event.container.element.nativeElement.classList[0]] = [...event.container.data];
-
-  //       });
-
-  //     } else if (currentDropzone.contains('dustbin_bottles')) {
-  //       // Handle the bottle being dropped into the dustbin
-  //       this.logser.getthisAssets(bottleId).subscribe((data) => {
-  //         this.updatebottlereturn['currentitem'] = bottleId;
-  //         this.updatebottlereturn['Bottleloc'] = "City Dustbin";
-  //         this.updatebottlereturn['bottlestatus'] = data[0]['Bottle_Status'];
-  //         this.updatebottlereturn['fromfacility'] = this.currentUserRole;
-  //         this.updatebottlereturn['tofacility'] = 'Municipality Office';
-
-
-  //         let dustbin_fine = 0.0;
-  //         // Calculate the fine
-  //         for (let i = 0; i < this.bottlePrice.length; i++) {
-  //           if (this.bottlePrice[i]['BottleType'] == currentlyDroped.split('id')[0].split('_')[2] + '.' + currentlyDroped.split('id')[1].split('_')[0]) {
-  //             dustbin_fine = parseFloat(this.bottlePrice[i]['OriginalPrice']) * 0.5;
-  //             break;
-  //           }
-  //         }
-
-  //         if (this.currentwallet > dustbin_fine) {
-  //           this.alertModal.openModal("A fine of ₹" + dustbin_fine + " has been charged for this offense");
-  //           this.currentwallet = this.currentwallet - dustbin_fine;
-  //           this.logser.currentuser.wallet = this.currentwallet;
-
-  //           this.logser.updatewallet().subscribe(
-  //             data => {
-  //               data = this.currentwallet;
-  //               this.playAudioElement(this.Fine.nativeElement, 0.8);
-
-  //               // Handle the transaction for the fine
-  //               this.logser.gettransactions().subscribe(data => {
-  //                 let transactioncount = '0000' + (data.length + 1);
-  //                 this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + transactioncount + '_04';
-  //                 this.transaction['Amount'] = String(dustbin_fine);
-  //                 this.transaction['CreditFacility'] = 'Municipality Office';
-  //                 this.transaction['DebitFacility'] = this.currentUserRole;
-  //                 this.transaction['Purpose'] = 'Fine for Throwing Bottle to City Dustbin';
-
-  //                 this.logser.createtransaction(this.transaction).subscribe(
-  //                   data => {
-  //                     data = this.transaction;
-  //                     this.updatebottlereturn['transactionid'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + transactioncount + '_04';
-  //                     this.updatebottlereturn['transactiondate'] = String(this.citytiming['CurrentDay']);
-
-
-  //                     this.logser.updateConveyorAssets(this.updatebottlereturn).subscribe((data) => {
-  //                       //console.log("Bottle location updated to City Dustbin");
-  //                       this.playAudioElement(this.Fine.nativeElement, 0.8);
-  //                       this.logser.getFacilitycashbox('Municipality Office').subscribe(data => {
-  //                         (data[0]['Cashbox'] == '') ? this.municipalcashbox = 0 : this.municipalcashbox = parseInt(data[0]['Cashbox']);
-  //                         this.municipalcashbox += dustbin_fine;
-  //                         this.logser.updateFacilitycashbox('Municipality Office', String(this.municipalcashbox)).subscribe(data => { });
-  //                       });
-  //                     });
-
-  //                   });
-  //               });
-
-
-  //             },
-  //             error => {
-  //               //console.log(error);
-  //             });
-
-  //           // Update the municipality cashbox
-
-  //         }
-
-  //         // Explicitly update the dustbin list
-  //         this.dustbin_bottles = [...event.container.data];
-  //       });
-
-  //     } else if (currentDropzone.contains('truckContList')) {
-  //       // Update bottle location to landfill
-  //       this.logser.getthisAssets(bottleId).subscribe((data) => {
-  //         this.updatebottlereturn['currentitem'] = bottleId;
-  //         this.updatebottlereturn['Bottleloc'] = "Garbage Truck";
-  //         this.updatebottlereturn['bottlestatus'] = data[0]['Bottle_Status'];
-  //         this.updatebottlereturn['fromfacility'] = this.currentUserRole;
-  //         this.updatebottlereturn['tofacility'] = 'Municipality Office';
-
-
-  //         let garbagetruck_fine = 0.0;
-  //         // Calculate the fine
-  //         for (let i = 0; i < this.bottlePrice.length; i++) {
-  //           if (this.bottlePrice[i]['BottleType'] == currentlyDroped.split('id')[0].split('_')[2] + '.' + currentlyDroped.split('id')[1].split('_')[0]) {
-  //             garbagetruck_fine = parseFloat(this.bottlePrice[i]['OriginalPrice']) * 0.5;
-  //             break;
-  //           }
-  //         }
-
-  //         if (this.currentwallet > garbagetruck_fine) {
-  //           this.alertModal.openModal("A fine of ₹" + garbagetruck_fine + " has been charged for this offense");
-  //           this.currentwallet = this.currentwallet - garbagetruck_fine;
-  //           this.logser.currentuser.wallet = this.currentwallet;
-
-  //           this.logser.updatewallet().subscribe(
-  //             data => {
-  //               data = this.currentwallet;
-  //               this.playAudioElement(this.Fine.nativeElement, 0.8);
-
-  //               // Handle the transaction for the fine
-  //               this.logser.gettransactions().subscribe(data => {
-  //                 let transactioncount = '0000' + (data.length + 1);
-  //                 this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + transactioncount + '_05';
-  //                 this.transaction['Amount'] = String(this.refill_amount_topay);
-  //                 this.transaction['CreditFacility'] = 'Municipality Office';
-  //                 this.transaction['DebitFacility'] = this.currentUserRole;
-  //                 this.transaction['Purpose'] = 'Fine for Throwing Bottle to Garbage Truck';
-
-  //                 this.logser.createtransaction(this.transaction).subscribe(
-  //                   data => {
-  //                     data = this.transaction;
-  //                     this.updatebottlereturn['transactionid'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + transactioncount + '_05';
-  //                     this.updatebottlereturn['transactiondate'] = String(this.citytiming['CurrentDay']);
-
-
-  //                     this.logser.updateConveyorAssets(this.updatebottlereturn).subscribe((data) => {
-  //                       //console.log("Bottle location updated to Garbage Truck");
-  //                       this.playAudioElement(this.Fine.nativeElement, 0.8);
-  //                       this.logser.getFacilitycashbox('Municipality Office').subscribe(data => {
-  //                         (data[0]['Cashbox'] == '') ? this.municipalcashbox = 0 : this.municipalcashbox = parseInt(data[0]['Cashbox']);
-  //                         this.municipalcashbox += garbagetruck_fine;
-  //                         this.logser.updateFacilitycashbox('Municipality Office', String(this.municipalcashbox)).subscribe(data => { });
-  //                       });
-  //                     });
-  //                   });
-  //               });
-
-
-  //             },
-  //             error => {
-  //               //console.log(error);
-  //             });
-
-  //           // Update the municipality cashbox
-
-  //         }
-  //         // Explicitly update the truck container list
-  //         this.truckContList = [...event.container.data];
-  //       });
-  //     }
-  //   }
-  // }
   boughtdrop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -3315,8 +3434,8 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   private calculateFine(bottleType: string): number {
-    const bottle = this.bottlePrice.find(b => b['BottleType'] === bottleType);
-    return bottle ? parseFloat(bottle['OriginalPrice']) * 0.5 : 0;
+    const bottle = this.assetdataset.find(b => b['Bottle_Code'] === bottleType);
+    return bottle ? parseFloat(bottle['Bottle_Price']) * 0.5 : 0;
   }
 
   // Helper function to update bottle location
@@ -3461,6 +3580,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
       this.updatebottlereturn['fromfacility'] = this.currentUserRole;
       this.updatebottlereturn['tofacility'] = "Return Conveyor";
       this.updatebottlereturn['Bottleloc'] = "Return Conveyor";
+      console.log("Starting refund")
       // Logic to update bottle status, wallet, and perform refund
       this.logser.getthisAssets(this.updatebottlereturn['currentitem']).subscribe(data => {
         this.updatebottlereturn['bottlestatus'] = data[0]['Bottle_Status'];
@@ -3468,7 +3588,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         let getMaxRefillCount, getCurrentRefillCount;
         getMaxRefillCount = data[0]['Max_Refill_Count'];
         getCurrentRefillCount = data[0]['Current_PlantRefill_Count'];
-
+        console.log(getMaxRefillCount, getCurrentRefillCount)
         if (getMaxRefillCount == 0) {
           amount_refund = 0.0;
           this.alertModal.openModal("Thanks for returning the bottle.Unfortunately, producer of this shampoo brand is NOT entertaining empty bottle returns. We will be sending this bottle to the recycling plant. An amount of ₹00.00 has been credited to your wallet. Remember to check the \"Max refill count\" on the bottle lable  next time you buy or return.However, you may refill such bottle at the refilling station if you wish.(next time) ", false, () => {
@@ -3487,6 +3607,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         else if (getCurrentRefillCount >= getMaxRefillCount) {
 
           amount_refund = this.calculateReturnCreditAmount(currentlyDroped, amount_refund);
+          console.log('amont', amount_refund)
           this.alertModal.openModal("Thanks for returning the bottle. This bottle has reached the Max-Refill count limit. We will be sending this bottle to the recycling plant. An amount of ₹ " + amount_refund.toFixed(2) + " has been credited to your wallet.", false, () => {
             this.bottleStatus_Display['Bottle_Status'] = 'Damaged-Empty';
             this.getBottleStatus = 'Damaged-Empty';
@@ -3503,8 +3624,9 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
         }
         else {
           this.getBottleStatus = data[0]['Bottle_Status'];
+          console.log(amount_refund)
           amount_refund = this.calculateReturnCreditAmount(currentlyDroped, amount_refund)
-
+          console.log(this.getBottleStatus, amount_refund)
           this.returnCashTransactions(amount_refund, currentlyDroped, true, '06', 'Return Conveyor');
         }
 
@@ -3611,16 +3733,21 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   }
   getReverseVendingCashbox = 0;
   calculateReturnCreditAmount(currentlyDroped: any, amount_refund: any) {
-    for (let i = 0; i < this.bottlePrice.length; i++) {
-      const bottleType = currentlyDroped.split('id')[0].split('_')[2] + '.' + currentlyDroped.split('id')[1].split('_')[0];
 
-      if (this.bottlePrice[i]['BottleType'] === bottleType && this.updatebottlereturn['bottlestatus'] == 'Empty-Dirty') {
-        amount_refund = parseFloat(this.bottlePrice[i]['OriginalPrice']) * (this.bottlePrice[i]['percentReturnGood'] / 100);
+
+
+    for (let i = 0; i < this.assetdataset.length; i++) {
+      console.log(this.assetdataset[i]['AssetId'], currentlyDroped.split('City')[1].split("at")[0])
+      console.log(this.assetdataset[i]['AssetId'] === currentlyDroped.split('City')[1].split("at")[0])
+      if (this.assetdataset[i]['AssetId'] === currentlyDroped.split('City')[1].split("at")[0] && this.assetdataset[i]['Bottle_Status'] == 'Empty-Dirty') {
+        amount_refund = parseFloat(this.assetdataset[i]['Bottle_Price']) * (this.assetdataset[i]['Redeem_Good'] / 100);
+        console.log(amount_refund)
         return amount_refund;
 
       }
-      else if (this.bottlePrice[i]['BottleType'] === bottleType && this.updatebottlereturn['bottlestatus'] == 'Damaged-Empty') {
-        amount_refund = parseFloat(this.bottlePrice[i]['OriginalPrice']) * (this.bottlePrice[i]['percentReturnDamage'] / 100);
+      else if (this.assetdataset[i]['AssetId'] === currentlyDroped.split('City')[1].split("at")[0] && this.assetdataset[i]['Bottle_Status'] == 'Damaged-Empty') {
+        amount_refund = parseFloat(this.assetdataset[i]['Bottle_Price']) * (this.assetdataset[i]['Redeem_Damaged'] / 100);
+         console.log(amount_refund)
         return amount_refund;
       }
     }
@@ -3795,6 +3922,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
           }
 
           this.droppedbottle = true;
+          this.getdetailbrandfunction(currentlyDroped);
           if (this.resetanimation == true) {
             this.initiateanimation(currentlyDroped);
             this.playAudioElement(this.bottledroppeded.nativeElement, 0.8);
@@ -3850,68 +3978,225 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     }
   }
 
+  droppedItemClassName = '';
+  // drop(event: CdkDragDrop<any[]>) {
+  //   if (event.previousContainer === event.container) {
+  //     return;
+  //   } else {
+  //     transferArrayItem(
+  //       event.previousContainer.data, // source array
+  //       event.container.data,         // target array (bottletaken in this case)
+  //       event.previousIndex,          // index of the item in the source array
+  //       event.currentIndex            // index where the item should be added in the target array
+  //     );
 
+
+  //     const draggedData = event.item.data;
+
+  //     // ⬇️ FIX: store class per item (NOT globally)
+  //     event.container.data[event.currentIndex] = {
+  //       id: draggedData.id ?? event.item.element.nativeElement.id,
+  //       className: draggedData.className
+  //     };
+
+  //     // If the item is dropped into a different container
+  //     const currentlyDropped = event.item.element.nativeElement.id;
+  //     const currentDropzone = event.container.element.nativeElement.classList;
+  //     const itemid = currentlyDropped.split("at")[0].split('City')[1];
+
+  //     if (currentDropzone.contains('newbottle_list')) {
+  //       // Handle drop into the newbottle_list container
+  //       this.logser.getthisAssets(itemid).subscribe((data) => {
+  //         if (!data[0]['dragged'] && !data[0]['purchased']) {
+  //           this.logser.lockthisAsset(itemid).subscribe(
+  //             (response) => {
+  //               if (response['success'] === true) {
+  //                 this.updateonlyloc['currentbottle'] = itemid;
+  //                 this.updateonlyloc['Bottleloc'] = 'In' + this.currentUserCartId;
+  //                 this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
+  //                   console.log('item location changed', data);
+  //                   this.updateStatus(currentlyDropped, 'blocked', this.currentUserCartId);
+  //                 });
+  //               }
+  //             },
+  //             (error) => {
+  //               console.error(error);
+  //             }
+  //           );
+  //         }
+  //       });
+  //     } else if (
+  //       currentDropzone.contains('shinyuvpn_list') ||
+  //       currentDropzone.contains('shinyvpn_list') ||
+  //       currentDropzone.contains('spikyrpr_list') ||
+  //       currentDropzone.contains('spikyrpn_list') ||
+  //       currentDropzone.contains('bouncyrpn_list') ||
+  //       currentDropzone.contains('bouncyurpn_list') ||
+  //       currentDropzone.contains('wavyurpr_list') ||
+  //       currentDropzone.contains('wavyurpn_list') ||
+  //       currentDropzone.contains('silkyvpn_list')
+  //     ) {
+  //       // Handle return to the original holder
+  //       if (event.container.id !== event.previousContainer.id) {
+  //         this.logser.getthisAssets(itemid).subscribe((data) => {
+  //           this.updateDragged['currentbottle'] = itemid;
+  //           this.updateDragged['Bottleloc'] = 'Supermarket shelf';
+  //           this.updateDragged['dragged'] = false;
+  //           this.logser.updatedragged(this.updateDragged).subscribe(() => {
+  //             this.updateStatus(currentlyDropped, 'available', 'Supermarket shelf');
+  //           });
+  //         });
+  //       }
+  //     }
+  //   }
+  // }
+  // drop(event: CdkDragDrop<{ id: string; className: string }[]>) {
+  //   // reorder inside same container
+  //   if (event.previousContainer === event.container) {
+  //     return;
+  //   }
+
+  //   const draggedData = event.item.data;
+  //   const bottle = {
+  //     id: draggedData.id ?? event.item.element.nativeElement.id,
+  //     className: draggedData.className
+  //   };
+
+  //   const currentlyDropped = bottle.id;
+  //   const itemid = currentlyDropped.split("at")[0].split('City')[1];
+  //   const currentDropzone = event.container.element.nativeElement.classList;
+  //   console.log(this.bottletaken);
+  //   /* ----------------------------------------------------
+  //      CASE 1: SHELF ➜ CART
+  //   ---------------------------------------------------- */
+  //   if (currentDropzone.contains('newbottle_list')) {
+
+  //     transferArrayItem(
+  //       event.previousContainer.data,
+  //       event.container.data,
+  //       event.previousIndex,
+  //       event.currentIndex
+  //     );
+
+  //     // 🔒 YOUR EXISTING BUSINESS LOGIC (UNCHANGED)
+  //     this.logser.getthisAssets(itemid).subscribe((data) => {
+  //       if (!data[0]['dragged'] && !data[0]['purchased']) {
+  //         this.logser.lockthisAsset(itemid).subscribe((response) => {
+  //           if (response['success'] === true) {
+  //             this.updateonlyloc['currentbottle'] = itemid;
+  //             this.updateonlyloc['Bottleloc'] = 'In' + this.currentUserCartId;
+  //             this.logser.updatelocation(this.updateonlyloc).subscribe(() => {
+  //               this.updateStatus(currentlyDropped, 'blocked', this.currentUserCartId);
+  //             });
+  //           }
+  //         });
+  //       }
+  //     });
+
+  //     return;
+  //   }
+
+  //   /* ----------------------------------------------------
+  //      CASE 2: CART ➜ SHELF (AUTO RETURN TO CORRECT SHELF)
+  //   ---------------------------------------------------- */
+  //   if (event.previousContainer.element.nativeElement.classList.contains('newbottle_list')) {
+
+  //     // remove from cart
+  //     event.previousContainer.data.splice(event.previousIndex, 1);
+
+  //     // push to correct shelf based on class
+  //     const correctShelfArray = this.getShelfArray(bottle.className);
+  //     correctShelfArray.push(bottle);
+
+  //     // 🔓 YOUR EXISTING BUSINESS LOGIC (UNCHANGED)
+  //     this.logser.getthisAssets(itemid).subscribe(() => {
+  //       this.updateDragged['currentbottle'] = itemid;
+  //       this.updateDragged['Bottleloc'] = 'Supermarket shelf';
+  //       this.updateDragged['dragged'] = false;
+  //       this.logser.updatedragged(this.updateDragged).subscribe(() => {
+  //         this.updateStatus(currentlyDropped, 'available', 'Supermarket shelf');
+  //       });
+  //     });
+
+  //     return;
+  //   }
+  // }
   drop(event: CdkDragDrop<string[]>) {
+
     if (event.previousContainer === event.container) {
-      // If the item is dropped within the same container
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    } else {
-      transferArrayItem(
-        event.previousContainer.data, // source array
-        event.container.data,         // target array (bottletaken in this case)
-        event.previousIndex,          // index of the item in the source array
-        event.currentIndex            // index where the item should be added in the target array
-      );
-      // If the item is dropped into a different container
-      const currentlyDropped = event.item.element.nativeElement.id;
-      const currentDropzone = event.container.element.nativeElement.classList;
-      const itemid = currentlyDropped.split("at")[0].split('City')[1];
-      if (currentDropzone.contains('newbottle_list')) {
-        // Handle drop into the newbottle_list container
-        this.logser.getthisAssets(itemid).subscribe((data) => {
-          if (!data[0]['dragged'] && !data[0]['purchased']) {
-            this.logser.lockthisAsset(itemid).subscribe(
-              (response) => {
-                if (response['success'] === true) {
-                  this.updateonlyloc['currentbottle'] = itemid;
-                  this.updateonlyloc['Bottleloc'] = 'In' + this.currentUserCartId;
-                  this.logser.updatelocation(this.updateonlyloc).subscribe((data) => {
-                    console.log('item location changed', data);
-                    this.updateStatus(currentlyDropped, 'blocked', this.currentUserCartId);
-                  });
-                }
-              },
-              (error) => {
-                console.error(error);
-              }
-            );
-          }
-        });
-      } else if (
-        currentDropzone.contains('shinyuvpn_list') ||
-        currentDropzone.contains('shinyvpn_list') ||
-        currentDropzone.contains('spikyrpr_list') ||
-        currentDropzone.contains('spikyrpn_list') ||
-        currentDropzone.contains('bouncyrpn_list') ||
-        currentDropzone.contains('bouncyurpn_list') ||
-        currentDropzone.contains('wavyurpr_list') ||
-        currentDropzone.contains('wavyurpn_list') ||
-        currentDropzone.contains('silkyvpn_list')
-      ) {
-        // Handle return to the original holder
-        if (event.container.id !== event.previousContainer.id) {
-          this.logser.getthisAssets(itemid).subscribe((data) => {
-            this.updateDragged['currentbottle'] = itemid;
-            this.updateDragged['Bottleloc'] = 'Supermarket shelf';
-            this.updateDragged['dragged'] = false;
-            this.logser.updatedragged(this.updateDragged).subscribe(() => {
-              this.updateStatus(currentlyDropped, 'available', 'Supermarket shelf');
-            });
+      return;
+    }
+
+    // ✅ dragged data IS STRING
+    const bottleId: string =
+      event.item.data ?? event.item.element.nativeElement.id;
+
+    // ✅ derive className ONLY when routing to shelf
+    const className = Array.from(
+      event.item.element.nativeElement.classList
+    ).find(c => c !== 'cdk-drag');
+
+    const itemid = bottleId.split('at')[0].split('City')[1];
+    const currentDropzone = event.container.element.nativeElement.classList;
+
+    /* ----------------------------------------------------
+       CASE 1: SHELF ➜ CART
+    ---------------------------------------------------- */
+    if (currentDropzone.contains('newbottle_list')) {
+
+      // remove from shelf (string[])
+      event.previousContainer.data.splice(event.previousIndex, 1);
+
+      // add to cart (string[])
+      this.bottletaken.splice(event.currentIndex, 0, bottleId);
+
+      // 🔒 business logic (unchanged)
+      this.logser.getthisAssets(itemid).subscribe((data) => {
+        if (!data[0]['dragged'] && !data[0]['purchased']) {
+          this.logser.lockthisAsset(itemid).subscribe((response) => {
+            if (response['success']) {
+              this.updateonlyloc['currentbottle'] = itemid;
+              this.updateonlyloc['Bottleloc'] = 'In' + this.currentUserCartId;
+              this.logser.updatelocation(this.updateonlyloc).subscribe(() => {
+                this.updateStatus(bottleId, 'blocked', this.currentUserCartId);
+              });
+            }
           });
         }
-      }
+      });
+
+      return;
+    }
+
+    /* ----------------------------------------------------
+       CASE 2: CART ➜ SHELF
+    ---------------------------------------------------- */
+    if (
+      event.previousContainer.element.nativeElement.classList
+        .contains('newbottle_list')
+    ) {
+
+      // remove from cart
+      this.bottletaken.splice(event.previousIndex, 1);
+
+      // push back to shelf (string[])
+      const correctShelfArray = this.getShelfArray(className!);
+      correctShelfArray.push(bottleId);
+
+      // 🔓 business logic (unchanged)
+      this.logser.getthisAssets(itemid).subscribe(() => {
+        this.updateDragged['currentbottle'] = itemid;
+        this.updateDragged['Bottleloc'] = 'Supermarket shelf';
+        this.updateDragged['dragged'] = false;
+        this.logser.updatedragged(this.updateDragged).subscribe(() => {
+          this.updateStatus(bottleId, 'available', 'Supermarket shelf');
+        });
+      });
+
+      return;
     }
   }
+
 
 
   updateStatus(itemid: any, status: any, loc: any) {
@@ -3994,7 +4279,9 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   }
   showbutton = false;
   selectedbottle = '';
-
+  cartPredicate = (drag: any, drop: any): boolean => {
+    return drop.element.nativeElement.classList.contains('newbottle_list');
+  };
   openwhyshorter(whyshorter: any) {
     this.closeothermodels();
     this.modalService.open(whyshorter, { windowClass: "frontpage" });
@@ -4236,7 +4523,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   makeitEmpty() {
     this.isDisabled = true;
     this.bottleStatus_Display['currentQuantity'] = 0;
-    $("." + this.selectedBottleatStage.split("at")[1] + ".shampoolevel").css('height', '0px');
+    $("." + this.bottleStatus_Display['contentCode'] + ".shampoolevel").css('height', '0px');
     if (this.bottleStatus_Display['Bottle_Status'] == 'InUse') {
       $(".Inhouseshelf_bottles #" + this.selectedBottleatStage).addClass('Empty-Dirty');
       this.bottleStatus_Display['Bottle_Status'] = "Empty-Dirty";
@@ -4268,81 +4555,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
     this.logser.updatethisAssetQuantity(this.bottleStatus_Display).subscribe((data) => { });
   }
   isThrown: boolean = false;
-  // makeitThrown() {
-  //   $('.btncont,.shampoolevel').hide();
-  //   this.isThrown = true;
-  //   let thrown_fine = 0.0;
-  //   for (let i = 0; i < this.bottlePrice.length; i++) {
-  //     if (this.bottlePrice[i]['BottleType'] == this.selectedBottleatStage.split('id')[0].split('_')[2] + '.' + this.selectedBottleatStage.split('id')[1].split('_')[0]) {
-  //       thrown_fine = parseFloat(this.bottlePrice[i]['OriginalPrice']) * 0.5;
-  //       break;
-  //     }
-  //   }
-  //   this.updatebottlereturn['currentitem'] = this.selectedBottleatStage.split("at")[0].split("City")[1];
-  //   this.updatebottlereturn['Bottleloc'] = 'Street'
-  //   this.updatebottlereturn['bottlestatus'] = this.bottleStatus_Display['Bottle_Status'];
-  //   this.updatebottlereturn['fromfacility'] = this.currentUserRole;
-  //   this.updatebottlereturn['tofacility'] = 'Municipality Office';
 
-
-  //   if (this.currentwallet > thrown_fine) {
-  //     this.alertModal.openModal("A fine of ₹" + thrown_fine + " has been charged for this offense");
-  //     this.currentwallet = this.currentwallet - thrown_fine;
-  //     this.logser.currentuser.wallet = this.currentwallet;
-
-  //     this.logser.updatewallet().subscribe(
-  //       data => {
-  //         data = this.currentwallet;
-
-  //         this.logser.gettransactions().subscribe(data => {
-  //           let transactioncount = '0000' + (data.length + 1);
-
-
-  //           this.transaction['TransactionId'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + transactioncount + '_08';
-  //           this.transaction['Amount'] = String(thrown_fine);
-  //           this.transaction['CreditFacility'] = 'Municipality Office';
-  //           this.transaction['DebitFacility'] = this.currentUserRole;
-  //           this.transaction['Purpose'] = 'Fine for Throwing Bottle';
-  //           this.logser.createtransaction(this.transaction).subscribe(
-  //             data => {
-  //               data = this.transaction;
-  //               this.updatebottlereturn['transactionid'] = this.currentusercityId + '_' + this.citytiming['CurrentDay'] + '_' + this.citytiming['CurrentTime'] + '_' + transactioncount + '_08';
-  //               this.updatebottlereturn['transactiondate'] = String(this.citytiming['CurrentDay']);
-
-
-  //               this.logser.updateConveyorAssets(this.updatebottlereturn).subscribe((data) => {
-  //                 this.bottleStatus_Display['Bottle_loc'] = "Street";
-  //                 this.playAudioElement(this.Fine.nativeElement, 0.8);
-  //                 let index = this.currentUserPurhcased.findIndex(item => item === this.bottleStatus_Display['currentbottle'])
-  //                 this.currentUserPurhcased.splice(index, 1);
-  //                 this.logser.getFacilitycashbox('Municipality Office').subscribe(data => {
-  //                   (data[0]['Cashbox'] == '') ? this.municipalcashbox = 0 : this.municipalcashbox = parseInt(data[0]['Cashbox']);
-  //                   this.municipalcashbox += thrown_fine;
-  //                   this.logser.updateFacilitycashbox('Municipality Office', String(this.municipalcashbox)).subscribe(data => { });
-  //                 });
-  //               });
-
-  //             });
-
-  //         },
-  //           error => {
-  //             //console.log(error);
-  //           });
-
-
-  //       });
-
-
-
-
-
-  //   }
-  //   $("#" + this.selectedBottleatStage.split("at")[0].split("City")[1]).addClass('Street');
-
-
-
-
-  // }
   makeitThrown() {
     $('.btncont,.shampoolevel').hide();
     this.isThrown = true;
@@ -4390,6 +4603,7 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   openbottelstages(cartcontent: any, event: any) {
     let element = event.target || event.srcElement || event.currentTarget;
     this.selectedBottleatStage = element.id;
+    console.log(this.selectedBottleatStage)
     this.bottleStatus_Display['currentbottle'] = element.id.split("at")[0].split("City")[1];
     this.calculatenetfine();
     if (this.opensuperflag == 0) {
@@ -4413,9 +4627,10 @@ export class MaincityComponent implements AfterViewInit, OnInit, OnDestroy {
   isDisabled: boolean = false;
   checkthebottlestatusfordisplay() {
     if (this.bottleStatus_Display['currentbottle'] != '') {
-
+      console.log(this.bottleStatus_Display['currentbottle'])
       this.logser.getthisAssets(this.bottleStatus_Display['currentbottle']).subscribe((data) => {
         this.sldBottleData = data;
+        console.log(data);
         $(".loading").hide();
         if (data[0]['remQuantity'] == '') {
           data[0]['remQuantity'] = 500;

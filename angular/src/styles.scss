@@ -499,6 +499,7 @@ app-signup {
       top: 3800px;
       left: 7214px;
     }
+
     .B5_Shampoo_Producer {
       top: 3800px;
       left: 7561px;
@@ -1130,105 +1131,108 @@ app-signup {
 }
 
 .shinyvpn_list,
+.shinyvpr_list,
+.shinyrpn_list,
+.shinyrpr_list,
 .shinyuvpn_list,
+.shinyuvpr_list,
+.shinyurpn_list,
+.shinyurpr_list,
+.spikyvpn_list,
+.spikyvpr_list,
 .spikyrpn_list,
 .spikyrpr_list,
-.bouncyurpn_list,
+.spikyuvpn_list,
+.spikyuvpr_list,
+.spikyurpn_list,
+.spikyurpr_list,
+.bouncyvpn_list,
+.bouncyvpr_list,
 .bouncyrpn_list,
-.wavyurpr_list,
+.bouncyrpr_list,
+.bouncyuvpn_list,
+.bouncyuvpr_list,
+.bouncyurpn_list,
+.bouncyurpr_list,
+.wavyvpn_list,
+.wavyvpr_list,
+.wavyrpn_list,
+.wavyrpr_list,
+.wavyuvpn_list,
+.wavyuvpr_list,
 .wavyurpn_list,
-.silkyvpn_list {
+.wavyurpr_list,
+.silkyvpn_list,
+.silkyvpr_list,
+.silkyrpn_list,
+.silkyrpr_list,
+.silkyuvpn_list,
+.silkyuvpr_list,
+.silkyurpn_list,
+.silkyurpr_list {
   display: flex;
   width: 275px;
 }
 
-.shinyshelfvpn {
-  left: 17px;
-  top: 92px;
+@mixin shelf($left, $top) {
+  left: $left;
+  top: $top;
+
 }
 
-.silkyshelfvpn {
-  left: 1218px;
-  top: 92px;
-}
+$shelves: (
+  shinyvpn_shelf: (17px, 92px),
+  shinyvpr_shelf: (162px, 92px),
+  shinyrpn_shelf: (17px, 230px),
+  shinyrpr_shelf: (162px, 230px),
+  shinyuvpn_shelf: (17px, 376px),
+  shinyuvpr_shelf: (162px, 376px),
+  shinyurpn_shelf: (17px, 507px),
+  shinyurpr_shelf: (162px, 507px),
 
-.spikeshelfrpr {
-  top: 236px;
-  left: 457px;
-}
+  spikyvpn_shelf:(317px, 92px),
+  spikyvpr_shelf:(457px, 92px),
+  spikyrpn_shelf:(317px, 236px),
+  spikyrpr_shelf:(457px, 236px),
+  spikyuvpn_shelf:(317px, 376px),
+  spikyuvpr_shelf:(457px, 376px),
+  spikyurpn_shelf:(317px, 512px),
+  spikyurpr_shelf:(457px, 512px),
 
-.spikeshelfrpn {
-  top: 236px;
-  left: 317px;
-}
+  bouncyvpn_shelf :(615px, 92px),
+  bouncyvpr_shelf :(757px, 92px),
+  bouncyrpn_shelf :(615px, 236px),
+  bouncyrpr_shelf :(757px, 236px),
+  bouncyuvpn_shelf :(615px, 376px),
+  bouncyuvpr_shelf :(757px, 376px),
+  bouncyurpn_shelf :(615px, 512px),
+  bouncyurpr_shelf :(757px, 512px),
 
-.shinyshelfuvpn {
-  left: 17px;
-  top: 375px;
-}
+  wavyvpn_shelf:(917px, 92px),
+  wavyvpr_shelf:(1059px, 92px),
+  wavyrpn_shelf:(917px, 236px),
+  wavyrpr_shelf:(1059px, 236px),
+  wavyuvpn_shelf:(917px, 376px),
+  wavyuvpr_shelf:(1059px, 376px),
+  wavyurpn_shelf:(917px, 512px),
+  wavyurpr_shelf:(1059px, 512px),
 
-.bouncyshelfrpn {
-  left: 615px;
-  top: 236px;
-}
+  silkyvpn_shelf:(1218px, 92px),
+  silkyvpr_shelf:(1365px, 92px),
+  silkyrpn_shelf:(1218px, 236px),
+  silkyrpr_shelf:(1365px, 236px),
+  silkyuvpn_shelf:(1218px, 376px),
+  silkyuvpr_shelf:(1365px, 376px),
+  silkyurpn_shelf:(1218px, 512px),
+  silkyurpr_shelf:(1365px, 512px),
+);
 
-.bouncyshelfurpn {
-  left: 617px;
-  top: 512px;
-}
-
-.wavyshelfurpn {
-  left: 917px;
-  top: 512px;
-}
-
-.wavyshelfurpr {
-  left: 1059px;
-  top: 512px;
-}
-
-.shiny_vpn,
-.B1 {
-  background-image: url("./assets/img/shiny.png");
-  width: 40px;
-  height: 91px;
-  @extend .just;
-
-  &.refillbtl {
-    width: 11px !important;
-    height: 24px !important;
-  }
-
-  &.removedcap {
-    background-image: url("./assets/img/shiny_without.png") !important;
-    width: 11px !important;
+@each $name, $values in $shelves {
+  .#{$name} {
+    @include shelf(nth($values, 1), nth($values, 2));
   }
 }
 
-.B1_InUse,
-.B1_Empty-Dirty {
-  background-image: url("./assets/img/B1_use.png");
-}
-
-.B1_Damaged-Empty,
-.B1_Damaged-InUse {
-  background-image: url("./assets/img/B1_dmg.png");
-}
-
-.B2_InUse,
-.B2_Empty-Dirty {
-  background-image: url("./assets/img/B2_use.png");
-}
-
-.B2_Damaged-Empty,
-.B2_Damaged-InUse {
-  background-image: url("./assets/img/B2_dmg.png");
-}
-
-.B3_InUse,
-.B3_Empty-Dirty {
-  background-image: url("./assets/img/B3_use.png");
-}
 
 .accordion-item,
 .accordion-header,
@@ -1241,52 +1245,78 @@ app-signup {
   width: 100% !important;
 }
 
-.B3_Damaged-Empty,
-.B3_Damaged-InUse {
-  background-image: url("./assets/img/B3_dmg.png");
+
+
+
+
+
+$contents: (
+  shiny: B1,
+  spiky: B2,
+  bouncy: B3,
+  wavy: B4,
+  silky: B5
+);
+
+$variants: vpn, vpr, rpn, rpr;
+
+@each $name, $img in $contents {
+
+  // InUse + Empty-Dirty
+  @each $v in $variants {
+
+    .#{$name}#{$v}_InUse,
+    .#{$name}#{$v}_Empty-Dirty {
+      background-image: url("./assets/img/#{$img}_use.png");
+    }
+  }
+
+  // Damaged
+  @each $v in $variants {
+
+    .#{$name}#{$v}_Damaged-Empty,
+    .#{$name}#{$v}_Damaged-InUse {
+      background-image: url("./assets/img/#{$img}_dmg.png");
+    }
+  }
 }
 
-.B5_InUse,
-.B5_Empty-Dirty {
-  background-image: url("./assets/img/B5_use.png");
+$contents: shiny, spiky, bouncy, wavy, silky;
+$types: vpn, vpr, rpn, rpr;
+$statuses-use: InUse, Empty-Dirty;
+$statuses-dmg: Damaged-Empty, Damaged-InUse;
+
+$ub-width: 96px;
+$ub-height: 253px;
+
+/* =========================
+   UB — USE / EMPTY-DIRTY
+   ========================= */
+@each $content in $contents {
+  @each $type in $types {
+    @each $status in $statuses-use {
+      .#{$content}u#{$type}_#{$status} {
+        background-image: url("./assets/img/UB_use.png");
+        width: $ub-width !important;
+        height: $ub-height !important;
+      }
+    }
+  }
 }
 
-.B5_Damaged-Empty,
-.B5_Damaged-InUse {
-  background-image: url("./assets/img/B5_dmg.png");
-}
-
-.UB1_InUse,
-.UB2_InUse,
-.UB3_InUse,
-.UB4_InUse,
-.UB5_InUse,
-.UB4_Empty-Dirty,
-.U1B4_Empty-Dirty,
-.UB1_Empty-Dirty,
-.UB2_Empty-Dirty,
-.UB3_Empty-Dirty,
-.UB4_Empty-Dirty,
-.U1B4_Empty-Dirty,
-.UB5_Empty-Dirty {
-  background-image: url("./assets/img/UB_use.png");
-  width: 96px !important;
-  height: 253px !important;
-}
-
-.UB1_Damaged-Empty,
-.UB1_Damaged-InUse,
-.UB2_Damaged-Empty,
-.UB2_Damaged-InUse,
-.UB3_Damaged-Empty,
-.UB3_Damaged-InUse,
-.UB4_Damaged-Empty,
-.UB4_Damaged-InUse,
-.UB5_Damaged-Empty,
-.UB5_Damaged-InUse {
-  background-image: url("./assets/img/UB_dmg.png");
-  width: 96px !important;
-  height: 253px !important;
+/* =========================
+   UB — DAMAGED
+   ========================= */
+@each $content in $contents {
+  @each $type in $types {
+    @each $status in $statuses-dmg {
+      .#{$content}u#{$type}_#{$status} {
+        background-image: url("./assets/img/UB_dmg.png");
+        width: $ub-width !important;
+        height: $ub-height !important;
+      }
+    }
+  }
 }
 
 .Street {
@@ -1295,128 +1325,131 @@ app-signup {
   height: 253px !important;
 }
 
-.bouncyrpn,
-.B3 {
-  background-image: url("./assets/img/bouncy.png");
-  width: 42px;
-  height: 90px;
-  @extend .just;
 
-  &.refillbtl {
-    width: 9px !important;
-    height: 24px !important;
-  }
-
-  &.removedcap {
-    background-image: url("./assets/img/bouncy_without.png") !important;
-    width: 11px !important;
-  }
-}
-
-.spikyrpn,
-.spikyrpr,
-.B2 {
-  background-image: url("./assets/img/spiky.png");
-  width: 42px;
-  height: 90px;
-  @extend .just;
-
-  &.refillbtl {
-    width: 11px !important;
-    height: 24px !important;
-  }
-
-  &.removedcap {
-    background-image: url("./assets/img/spiky_without.png") !important;
-    width: 12px !important;
-  }
-}
-
-.silkyvpn,
-.B5 {
-  background-image: url("./assets/img/silky.png");
-  width: 34px;
-  height: 90px;
-  @extend .just;
-
-  &.refillbtl {
-    width: 9px !important;
-    height: 24px !important;
-  }
-
-  &.removedcap {
-    background-image: url("./assets/img/silky_without.png") !important;
-    width: 11px !important;
-  }
-}
-
-.just {
-  text-align: center;
-  font-size: 20px;
-  color: #0ff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-size: cover;
+.bottle {
   background-repeat: no-repeat;
+  background-size: contain;
 }
 
-.wavyurpn,
-.U1B4,
-.UB4,
-.wavyurpr {
-  background-image: url("./assets/img/wavy_uvpn.png");
-  width: 34px;
-  height: 90px;
-  @extend .just;
+@mixin bottle($img,
+  $w,
+  $h,
+  $img-without: null,
+  $refill-w: null,
+  $refill-h: null) {
+  @extend .bottle;
+  background-image: url($img);
+  width: $w;
+  height: $h;
 
   &.refillbtl {
-    width: 10px !important;
-    height: 24px !important;
+    @if $refill-w and $refill-h {
+      width: $refill-w !important;
+      height: $refill-h !important;
+    }
   }
 
   &.removedcap {
-    background-image: url("./assets/img/wavyub_without.png") !important;
-    width: 11px !important;
+    @if $img-without {
+      background-image: url($img-without) !important;
+    }
   }
 }
 
-.shiny_uvpn,
-.UB1 {
-  background-image: url("./assets/img/shiny_uvpn.png");
-  width: 38px;
-  height: 94px;
-  @extend .just;
-  position: relative;
+$bottles: (
+  shiny: (img: "./assets/img/shiny.png",
+    img_no: "./assets/img/shiny_without.png",
+    w: 40px,
+    h: 91px,
+    rw: 11px,
+    rh: 24px),
 
-  &.refillbtl {
-    width: 10px !important;
-    height: 24px !important;
-  }
+  bouncy: (img: "./assets/img/bouncy.png",
+    img_no: "./assets/img/bouncy_without.png",
+    w: 42px,
+    h: 90px,
+    rw: 9px,
+    rh: 24px),
 
-  &.removedcap {
-    background-image: url("./assets/img/shinyub_without.png") !important;
-    width: 11px !important;
+  spiky: (img: "./assets/img/spiky.png",
+    img_no: "./assets/img/spiky_without.png",
+    w: 42px,
+    h: 90px,
+    rw: 11px,
+    rh: 24px),
+
+  silky: (img: "./assets/img/silky.png",
+    img_no: "./assets/img/silky_without.png",
+    w: 34px,
+    h: 90px,
+    rw: 9px,
+    rh: 24px),
+
+  wavy: (img: "./assets/img/wavy.png",
+    img_no: "./assets/img/wavy_without.png",
+    w: 34px,
+    h: 90px,
+    rw: 9px,
+    rh: 24px)
+);
+
+@each $name, $cfg in $bottles {
+
+  .#{$name}vpn,
+  .#{$name}vpr,
+  .#{$name}rpn,
+  .#{$name}rpr {
+    @include bottle(map-get($cfg, img),
+      map-get($cfg, w),
+      map-get($cfg, h),
+      map-get($cfg, img_no),
+      map-get($cfg, rw),
+      map-get($cfg, rh));
   }
 }
 
-.bouncyurpn,
-.UB3 {
-  background-image: url("./assets/img/bouncy_uvpn.png");
-  width: 38px;
-  height: 94px;
-  @extend .just;
-  position: relative;
+$uv-bottles: (
+  shiny: (img: "./assets/img/shiny_uvpn.png",
+    img_no: "./assets/img/shinyub_without.png",
+    w: 38px,
+    h: 94px),
 
-  &.refillbtl {
-    width: 10px !important;
-    height: 24px !important;
-  }
+  wavy: (img: "./assets/img/wavy_uvpn.png",
+    img_no: "./assets/img/wavyub_without.png",
+    w: 34px,
+    h: 90px),
 
-  &.removedcap {
-    background-image: url("./assets/img/bouncyub_without.png") !important;
+  bouncy: (img: "./assets/img/bouncy_uvpn.png",
+    img_no: "./assets/img/bouncyub_without.png",
+    w: 38px,
+    h: 94px),
+
+  spiky: (img: "./assets/img/spiky_uvpn.png",
+    img_no: "./assets/img/spikyub_without.png",
+    w: 38px,
+    h: 94px),
+  silky: (img: "./assets/img/silky_uvpn.png",
+    img_no: "./assets/img/silkyub_without.png",
+    w: 38px,
+    h: 94px)
+);
+
+@each $name, $cfg in $uv-bottles {
+
+  .#{$name}uvpn,
+  .#{$name}uvpr,
+  .#{$name}urpn,
+  .#{$name}urpr {
+    position: relative;
+    @include bottle(map-get($cfg, img),
+      map-get($cfg, w),
+      map-get($cfg, h),
+      map-get($cfg, img_no),
+      10px,
+      24px);
   }
 }
+
 
 .labelholder {
   position: absolute;
@@ -1515,44 +1548,8 @@ app-signup {
   }
 }
 
-.shiny_uvpn_big,
-.bouncyurpn_big,
-.bouncyurpn_big,
-.wavyurpn_big,
-.wavyurpn_big,
-.wavyurpr_big,
-.wavyurpr_big {
-  background-image: url("./assets/img/universal.png");
-  width: 300px;
-  @extend .bigcss;
-}
 
-.bouncyrpn_big {
-  background-image: url("./assets/img/bouncy.png");
-  width: 355px;
-  @extend .bigcss;
-}
-
-.spikyrpn_big,
-.spikyrpr_big {
-  background-image: url("./assets/img/spiky.png");
-  width: 363px;
-  @extend .bigcss;
-}
-
-.shiny_vpn_big {
-  background-image: url("./assets/img/shiny.png");
-  width: 361px;
-  @extend .bigcss;
-}
-
-.silkyvpn_big {
-  background-image: url("./assets/img/silky.svg");
-  width: 275px;
-  @extend .bigcss;
-}
-
-.bigcss {
+.big-view {
   height: 768px;
   position: absolute;
   top: 26px;
@@ -1560,228 +1557,175 @@ app-signup {
   background-size: contain;
 }
 
-.newheader {
-  border-bottom: 0px solid !important;
-}
-
-.bigback {
+.back-view {
   background-size: contain;
-  margin-left: 541px;
   position: relative;
 }
 
-.chotaback {
-  background-size: contain;
+.back-big {
+  margin-left: 541px;
+}
+
+.back-small {
   margin-left: 450px;
 }
 
-.shinyback {
-  background-image: url("./assets/img/shiny_backside.png");
-  width: 362px;
-  height: 770px;
-  @extend .bigback;
+@mixin big-front($img, $width) {
+  background-image: url($img);
+  width: $width;
+}
 
-  .labelholder {
-    color: #dddd6b;
+@mixin back-view($img, $w, $h) {
+  background-image: url($img);
+  width: $w;
+  height: $h;
+}
 
-    .AssetId {
-      left: -278px;
-      top: 27px;
-    }
+$big-fronts: (
+  shinyuvpn_big: ("./assets/img/universal.png", 300px),
+  shinyuvpr_big: ("./assets/img/universal.png", 300px),
+  shinyurpn_big: ("./assets/img/universal.png", 300px),
+  shinyurpr_big: ("./assets/img/universal.png", 300px),
 
-    .Env_Tax_Customer {
-      top: 189px;
-    }
+  bouncyurpn_big: ("./assets/img/universal.png", 300px),
+  bouncyuvpn_big: ("./assets/img/universal.png", 300px),
+  bouncyurpr_big: ("./assets/img/universal.png", 300px),
+  bouncyuvpr_big: ("./assets/img/universal.png", 300px),
 
-    .Total_price {
-      top: 204px;
-    }
+  wavyurpn_big: ("./assets/img/universal.png", 300px),
+  wavyurpr_big: ("./assets/img/universal.png", 300px),
+  wavyuvpn_big: ("./assets/img/universal.png", 300px),
+  wavyuvpr_big: ("./assets/img/universal.png", 300px),
 
-    .Max_Refill_Count {
-      top: 221px;
+  spikyurpn_big: ("./assets/img/universal.png", 300px),
+  spikyurpr_big: ("./assets/img/universal.png", 300px),
+  spikyuvpn_big: ("./assets/img/universal.png", 300px),
+  spikyuvpr_big: ("./assets/img/universal.png", 300px),
+
+  silkyurpn_big: ("./assets/img/universal.png", 300px),
+  silkyurpr_big: ("./assets/img/universal.png", 300px),
+  silkyuvpn_big: ("./assets/img/universal.png", 300px),
+  silkyuvpr_big: ("./assets/img/universal.png", 300px),
+
+  bouncyrpn_big: ("./assets/img/bouncy.png", 355px),
+  bouncyrpr_big: ("./assets/img/bouncy.png", 355px),
+  bouncyvpn_big: ("./assets/img/bouncy.png", 355px),
+  bouncyvpr_big: ("./assets/img/bouncy.png", 355px),
+
+  spikyrpn_big: ("./assets/img/spiky.png", 363px),
+  spikyrpr_big: ("./assets/img/spiky.png", 363px),
+  spikyvpr_big: ("./assets/img/spiky.png", 363px),
+  spikyvpn_big: ("./assets/img/spiky.png", 363px),
+
+  shinyvpn_big: ("./assets/img/shiny.png", 361px),
+  shinyvpr_big: ("./assets/img/shiny.png", 361px),
+  shinyrpn_big: ("./assets/img/shiny.png", 361px),
+  shinyrpr_big: ("./assets/img/shiny.png", 361px),
+
+  silkyvpn_big: ("./assets/img/silky.svg", 275px),
+  silkyrpn_big: ("./assets/img/silky.svg", 275px),
+  silkyrpr_big: ("./assets/img/silky.svg", 275px),
+  silkyvpr_big: ("./assets/img/silky.svg", 275px),
+
+  wavyvpn_big: ("./assets/img/wavy.svg", 275px),
+  wavyrpn_big: ("./assets/img/wavy.svg", 275px),
+  wavyrpr_big: ("./assets/img/wavy.svg", 275px),
+  wavyvpr_big: ("./assets/img/wavy.svg", 275px),
+);
+
+@each $name, $cfg in $big-fronts {
+  .#{$name} {
+    @include big-front(nth($cfg, 1), nth($cfg, 2));
+    @extend .big-view;
+  }
+}
+
+$back-big: (
+  shiny: ("./assets/img/shiny_back.png", 362px, 770px, #dddd6b),
+  silky: ("./assets/img/silky_back.png", 276px, 770px, #fff),
+  spiky: ("./assets/img/spiky_back.png", 362px, 764px, #633cce),
+  wavy: ("./assets/img/wavy_back.png", 362px, 770px, #633cce),
+  bouncy:("./assets/img/bouncy_back.png", 355px, 770px, #fff),
+  universal: ("./assets/img/universal_back.png", 299px, 770px, #000)
+);
+
+@each $name, $cfg in $back-big {
+  .#{$name}back {
+    @include back-view(nth($cfg, 1), nth($cfg, 2), nth($cfg, 3));
+    @extend .back-view;
+    @extend .back-big;
+
+    .labelholder {
+      color: nth($cfg, 4);
     }
   }
 }
 
-.silkyback {
-  background-image: url("./assets/img/silky_back.png");
-  width: 276px;
-  height: 770px;
-  @extend .bigback;
+@each $name, $cfg in $back-big {
+  .#{$name}back_small {
+    @include back-view(nth($cfg, 1), nth($cfg, 2), nth($cfg, 3));
+    @extend .back-view;
+    @extend .back-small;
 
-  .labelholder {
-    color: #fff;
-    top: 480px;
-    left: 183px;
-    width: 100%;
-  }
-}
-
-.spikyback {
-  background-image: url("./assets/img/spiky_back.png");
-  width: 362px;
-  height: 764px;
-  @extend .bigback;
-
-  .labelholder {
-    top: 472px;
-    color: #633cce;
-
-    .AssetId {
-      left: -278px !important;
-      top: 35px !important;
-    }
-
-    .Total_price {
-      top: 203px;
-    }
-
-    .Max_Refill_Count {
-      top: 218px;
+    .labelholder {
+      color: nth($cfg, 4);
     }
   }
 }
 
-.wavyback {
-  background-image: url("./assets/img/wavy_back.png");
-  width: 362px;
-  height: 770px;
-  @extend .bigback;
-
-  .labelholder {
-    color: #633cce;
+.shinyback .labelholder {
+  .AssetId {
+    left: -278px;
+    top: 27px;
   }
-}
 
-.bouncyback {
-  background-image: url("./assets/img/bouncy_back.png");
-  width: 355px;
-  height: 770px;
-  @extend .bigback;
-
-  .labelholder {
-    color: #fff;
-    top: 471px;
-    left: 221px;
-
-    .AssetId {
-      left: -277px;
-      top: 37px;
-    }
-  }
-}
-
-.universalback {
-  background-image: url("./assets/img/universal_back.png");
-  width: 299px;
-  height: 770px;
-  @extend .bigback;
-
-  .labelholder {
-    color: #000;
-    top: 475px;
-    left: 192px;
-
-    .AssetId {
-      left: -249px;
-      top: 72px;
-    }
-
-    .Total_price {
-      top: 208px;
-    }
-
-    .Env_Tax_Customer {
-      top: 192px;
-    }
-
-    .Discard_fine {
-      top: 176px;
-    }
-
-    .Redeem_Good {
-      top: 159px;
-    }
-
-    .Bottle_Price {
-      top: 124px;
-    }
-  }
-}
-
-.shinyback_small {
-  background-image: url("./assets/img/shiny_backside.png");
-  width: 362px;
-  height: 770px;
-  @extend .bigback;
-
-  .labelholder {
-    color: #dddd6b;
-  }
-}
-
-.silkyback_small {
-  background-image: url("./assets/img/silky_back.png");
-  width: 276px;
-  height: 770px;
-  @extend .chotaback;
-
-  .labelholder {
-    color: #fff;
-    top: 482px;
-    left: 183px;
-  }
-}
-
-.spikyback_small {
-  background-image: url("./assets/img/spiky_back.png");
-  width: 150px;
-  height: 317px;
-  @extend .chotaback;
-
-  .labelholder {
+  .Env_Tax_Customer {
     top: 189px;
-    color: #633cce;
-    left: 126px;
+  }
+
+  .Total_price {
+    top: 204px;
+  }
+
+  .Max_Refill_Count {
+    top: 221px;
   }
 }
 
-.wavyback_small {
-  background-image: url("./assets/img/wavy_back.png");
-  width: 362px;
-  height: 770px;
-  @extend .chotaback;
+.universalback .labelholder {
+  top: 475px;
+  left: 192px;
 
-  .labelholder {
-    color: #633cce;
+  .AssetId {
+    left: -249px;
+    top: 72px;
+  }
+
+  .Bottle_Price {
+    top: 124px;
+  }
+
+  .Redeem_Good {
+    top: 159px;
+  }
+
+  .Discard_fine {
+    top: 176px;
+  }
+
+  .Env_Tax_Customer {
+    top: 192px;
+  }
+
+  .Total_price {
+    top: 208px;
   }
 }
 
-.bouncyback_small {
-  background-image: url("./assets/img/bouncy_back.png");
-  width: 355px;
-  height: 770px;
-  @extend .chotaback;
-
-  .labelholder {
-    color: #fff;
-    top: 466px;
-    left: 218px;
-  }
+.newheader {
+  border-bottom: 0 !important;
 }
 
-.universalback_small {
-  background-image: url("./assets/img/universal_back.png");
-  width: 299px;
-  height: 770px;
-  @extend .chotaback;
-
-  .labelholder {
-    color: #000;
-    top: 475px;
-    left: 192px;
-  }
-}
 
 html,
 body {
@@ -2168,8 +2112,6 @@ body {
   top: -391px;
   display: inline-block;
 
-  .templates {
-  }
 }
 
 .template {
@@ -2218,6 +2160,7 @@ body {
     background-repeat: no-repeat;
   }
 }
+
 .cityruleLink {
   cursor: pointer;
   color: #fff;
@@ -2232,9 +2175,11 @@ body {
   border-radius: 5px;
   text-align: center;
 }
+
 .cssalignment {
   text-align: left;
 }
+
 .displayheader {
   display: flex !important;
   justify-content: flex-end !important;
@@ -2447,10 +2392,12 @@ html,
 body {
   height: 100%;
 }
+
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
 app-bottle-inventory-form {
   width: 100%;
   height: 100%;

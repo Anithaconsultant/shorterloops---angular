@@ -74,7 +74,10 @@ class AssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Asset
         fields = '__all__'
-
+    def validate_asset_id(self, value):
+        if Asset.objects.filter(asset_id=value).exists():
+            raise serializers.ValidationError("Asset ID already exists.")
+        return value
 
 class AuditSerializer(serializers.ModelSerializer):
     class Meta:

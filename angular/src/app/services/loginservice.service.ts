@@ -327,7 +327,7 @@ export class LoginserviceService {
     return this.http.put(this.baseurl + 'updateusercity/' + this.currentuser.UserId, body,
       { headers: this.getAuthHeaders() }).pipe(
         catchError(this.handleError)
-      );;
+      );
   }
   updatewallet(): Observable<any> {
     let body = { wallet: this.currentuser.wallet };
@@ -371,12 +371,7 @@ export class LoginserviceService {
         catchError(this.handleError)
       );;
   }
-  // createInventory(data: any): Observable<any> {
-  //   return this.http.post(this.baseurl + 'inventory/', data,
-  //     { headers: this.getAuthHeaders() }).pipe(
-  //       catchError(this.handleError)
-  //     );;
-  // }
+
   createInventory(producerCode: string, bottleType: string, cityId: string, data: any) {
     const payload = {
       ...data,
@@ -388,18 +383,39 @@ export class LoginserviceService {
     console.log("Inventory Payload:", payload); // Debugging line
     return this.http.post(this.baseurl + 'inventory/', payload);
   }
- get_last_serial_number(producerCode: string, bottleType: string, cityId: string) {
-    const params = new HttpParams()
-      .set('producer_code', producerCode)
-      .set('bottle_type', bottleType)
-      .set('city_id', cityId.toString());
-    return this.http.get(this.baseurl + 'get_last_serial/', { params });
+
+
+  updateBottlesSoldToSupermarket(producerCode: string, bottleType: string, cityId: string, cycleNumber: number, bottles_to_sell_to_supermarket: number) {
+    let params = {
+      'producer_code': producerCode,
+      'bottle_type': bottleType,
+      'Bottle_CityId': cityId.toString(),
+      'cycle_number': cycleNumber.toString(),
+      'bottles_to_sell_to_supermarket': bottles_to_sell_to_supermarket.toString()
+    }
+
+
+    return this.http.put(this.baseurl + 'inventory/', params, { headers: this.getAuthHeaders() }).pipe(
+      catchError(this.handleError)
+    );
   }
-  getInventory(producerCode: string, bottleType: string, cityId: number) {
-    const params = new HttpParams()
+
+
+  // get_last_serial_number(producerCode: string, bottleType: string, cityId: string) {
+  //   const params = new HttpParams()
+  //     .set('producer_code', producerCode)
+  //     .set('bottle_type', bottleType)
+  //     .set('city_id', cityId.toString());
+  //   return this.http.get(this.baseurl + 'get_last_serial/', { params });
+  // }
+  getInventory(producerCode: string, bottleType: string, cityId: number, cycleNumber?: number) {
+    let params = new HttpParams()
       .set('producer_code', producerCode)
       .set('bottle_type', bottleType)
       .set('city_id', cityId.toString());
+    if (cycleNumber !== undefined && cycleNumber !== null) {
+      params = params.set('cycle_number', cycleNumber.toString());
+    }
 
     return this.http.get<any>(this.baseurl + 'inventory/', { params });
   }
@@ -475,11 +491,18 @@ export class LoginserviceService {
       headers: this.getAuthHeaders()
     }).pipe(
       catchError(error => {
-        console.error('Error fetching shampoo price:', error);
-        // You can transform the error here if needed
+
         return throwError(() => new Error('Failed to fetch shampoo price'));
       })
     );
+  }
+
+  updateShampooPrice(UnitPrice: any, Discount: any, BottleContent: any): Observable<any> {
+    const body = { 'UnitPrice': UnitPrice, 'Discount': Discount, 'BottleContent': BottleContent }
+    return this.http.put(this.baseurl + 'shampooprice/', body,
+      { headers: this.getAuthHeaders() }).pipe(
+        catchError(this.handleError)
+      );;
   }
 
   getFilterOptions(): Observable<any> {
